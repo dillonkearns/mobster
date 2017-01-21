@@ -19,7 +19,7 @@
     require('./renderer.js')
     const {ipcRenderer} = require('electron')
 
-    let timer = Elm.Timer.fullscreen();
+    let timer = Elm.Timer.Main.fullscreen();
 
     document.getElementById('timer-window')
       .addEventListener("mouseenter", function(event) {

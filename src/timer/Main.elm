@@ -1,4 +1,4 @@
-module Timer exposing (..)
+module Timer.Main exposing (..)
 
 import Html exposing (..)
 import Time exposing (..)

@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "elm-test"
+    "test": "elm-test",
+    "build": "cd src && elm-make timer/Main.elm --output elm.js && cd -"
   },
   "repository": "https://github.com/dillonkearns/mobster",
   "keywords": [

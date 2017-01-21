@@ -2,7 +2,7 @@ module Tests exposing (..)
 
 import Test exposing (..)
 import Expect
-import Timer
+import Timer.Main as Timer
 
 
 all : Test
