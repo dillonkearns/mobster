@@ -2,7 +2,8 @@ module Tests exposing (..)
 
 import Test exposing (..)
 import Expect
-import Timer.Main as Timer
+import Timer.Main as TimerMain
+import Timer.Timer as Timer
 
 
 all : Test
@@ -19,9 +20,9 @@ all =
         , describe "tick"
             [ test "timer decrements" <|
                 \() ->
-                    Expect.equal (Timer.updateTimer 123) 122
+                    Expect.equal (TimerMain.updateTimer 123) 122
             , test "timer decrements for another value" <|
                 \() ->
-                    Expect.equal (Timer.updateTimer 10) 9
+                    Expect.equal (TimerMain.updateTimer 10) 9
             ]
         ]
