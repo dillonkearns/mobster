@@ -1,4 +1,5 @@
 const electron = require('electron')
+const {ipcMain} = require('electron')
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -11,12 +12,27 @@ const url = require('url')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-function createWindow () {
-  // Create the browser window.
-  // mainWindow = new BrowserWindow({width: 800, height: 600})
+function positionWindowLeft(window) {
   let bounds = electron.screen.getPrimaryDisplay().bounds
+  let height = 100;
+  let width = 200;
+  window.setPosition(0, bounds.height - height);
+}
+
+function positionWindowRight(window) {
+  let bounds = electron.screen.getPrimaryDisplay().bounds
+  let height = 100;
+  let width = 200;
+  window.setPosition(bounds.width - width, bounds.height - height);
+}
+
+function createWindow () {
+  let height = 100;
+  let width = 200;
   mainWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
-    width: bounds.width, height: bounds.height})
+    width: width, height: height})
+
+  positionWindowLeft(mainWindow)
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -33,6 +49,16 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  ipcMain.on('timer-mouse-hover', (event) => {
+    [x, y] = mainWindow.getPosition()
+    if (x === 0) {
+      positionWindowRight(mainWindow)
+    } else {
+      positionWindowLeft(mainWindow)
+    }
+  })
+
 }
 
 // This method will be called when Electron has finished
