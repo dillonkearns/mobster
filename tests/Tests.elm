@@ -16,4 +16,12 @@ all =
                 \() ->
                     Expect.equal (Timer.secondsToTimer 181) (Timer.Timer 3 1)
             ]
+        , describe "tick"
+            [ test "timer decrements" <|
+                \() ->
+                    Expect.equal (Timer.updateTimer 123) 122
+            , test "timer decrements for another value" <|
+                \() ->
+                    Expect.equal (Timer.updateTimer 10) 9
+            ]
         ]
