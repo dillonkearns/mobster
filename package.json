@@ -4,7 +4,8 @@
   "description": "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "test": "elm-test"
   },
   "repository": "https://github.com/dillonkearns/mobster",
   "keywords": [
@@ -16,6 +17,7 @@
   "author": "Dillon Kearns",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^1.4.1"
+    "electron": "^1.4.1",
+    "elm-test": "^0.18.2"
   }
 }
