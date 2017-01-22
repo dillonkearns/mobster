@@ -13,23 +13,21 @@ const url = require('url')
 let mainWindow, timerWindow
 
 const timerHeight = 130
+const timerWidth = 150
 
 function positionWindowLeft(window) {
   let bounds = electron.screen.getPrimaryDisplay().bounds
-  let width = 150;
   window.setPosition(0, bounds.height - timerHeight);
 }
 
 function positionWindowRight(window) {
   let bounds = electron.screen.getPrimaryDisplay().bounds
-  let width = 150;
-  window.setPosition(bounds.width - width, bounds.height - timerHeight);
+  window.setPosition(bounds.width - timerWidth, bounds.height - timerHeight);
 }
 
 function startTimer(flags) {
-  let width = 150;
   timerWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
-    width: width, height: timerHeight})
+    width: timerWidth, height: timerHeight})
 
   positionWindowLeft(timerWindow)
 
