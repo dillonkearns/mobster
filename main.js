@@ -65,6 +65,7 @@ function closeTimer() {
 function showSetupAgain(setupWindow) {
   setupWindow.setAlwaysOnTop(true)
   setupWindow.maximize()
+  setupWindow.show()
 }
 
 function createWindow () {
@@ -86,7 +87,7 @@ function createWindow () {
 
   ipcMain.on('timer-done', (event) => {
     closeTimer()
-    mainWindow.show()
+    showSetupAgain(mainWindow)
   })
 
 
