@@ -69,7 +69,7 @@ function showSetupAgain(setupWindow) {
 
 function createWindow () {
   mainWindow = new BrowserWindow({transparent: true, frame: false,
-    width: 350, height: 250})
+    width: 550, height: 400})
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'setup.html'),
