@@ -10,36 +10,63 @@ const url = require('url')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow, timerWindow
+
+const timerHeight = 130
 
 function positionWindowLeft(window) {
   let bounds = electron.screen.getPrimaryDisplay().bounds
-  let height = 100;
-  let width = 200;
-  window.setPosition(0, bounds.height - height);
+  let width = 150;
+  window.setPosition(0, bounds.height - timerHeight);
 }
 
 function positionWindowRight(window) {
   let bounds = electron.screen.getPrimaryDisplay().bounds
-  let height = 100;
-  let width = 200;
-  window.setPosition(bounds.width - width, bounds.height - height);
+  let width = 150;
+  window.setPosition(bounds.width - width, bounds.height - timerHeight);
 }
 
-function createWindow () {
-  let height = 100;
-  let width = 200;
-  mainWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
-    width: width, height: height})
+function createTimerWindow() {
+  let width = 150;
+  timerWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
+    width: width, height: timerHeight})
 
-  positionWindowLeft(mainWindow)
+  positionWindowLeft(timerWindow)
 
   // and load the index.html of the app.
-  mainWindow.loadURL(url.format({
+  timerWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
     slashes: true
   }))
+
+  ipcMain.on('timer-mouse-hover', (event) => {
+    [x, y] = timerWindow.getPosition()
+    if (x === 0) {
+      positionWindowRight(timerWindow)
+    } else {
+      positionWindowLeft(timerWindow)
+    }
+  })
+}
+
+function showSetupAgain(setupWindow) {
+  setupWindow.setAlwaysOnTop(true)
+  setupWindow.maximize()
+}
+
+function createWindow () {
+  mainWindow = new BrowserWindow({transparent: true, frame: false,
+    width: 350, height: 250})
+
+  // and load the index.html of the app.
+  mainWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'setup.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+
+  mainWindow.center()
 
 
   // Emitted when the window is closed.
@@ -50,21 +77,18 @@ function createWindow () {
     mainWindow = null
   })
 
-  ipcMain.on('timer-mouse-hover', (event) => {
-    [x, y] = mainWindow.getPosition()
-    if (x === 0) {
-      positionWindowRight(mainWindow)
-    } else {
-      positionWindowLeft(mainWindow)
-    }
-  })
 
+}
+
+function createWindows() {
+  createWindow()
+  createTimerWindow()
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', createWindows)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
