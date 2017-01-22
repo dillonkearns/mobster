@@ -1,7 +1,7 @@
 port module Setup.Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, type_, id)
+import Html.Attributes exposing (class, value, type_, id, style)
 import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
 
@@ -105,7 +105,7 @@ timerDurationInputView duration =
 quitButton : Html Msg
 quitButton =
     div []
-        [ button [ onClick Quit, class "btn btn-primary btn-md" ] [ text "Quit" ]
+        [ button [ onClick Quit, class "btn btn-primary btn-md btn-block" ] [ text "Quit" ]
         ]
 
 
@@ -127,7 +127,7 @@ continueView model =
     h1 [ class "text-primary text-center" ]
         [ text "Mobster"
         , div [ class "text-center" ]
-            [ button [ onClick StartTimer, class "btn btn-primary btn-lg" ] [ text "Continue" ]
+            [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block" ] [ text "Continue" ]
             , div [] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md" ] [ text "Configure" ] ]
             , quitButton
             ]
@@ -136,7 +136,7 @@ continueView model =
 
 addMobsterInputView : Mobster -> Html Msg
 addMobsterInputView newMobster =
-    div [ class "col-lg-6" ]
+    div []
         [ div [ class "input-group" ]
             [ input [ type_ "text", class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster ] []
             , span [ class "input-group-btn", type_ "button" ] [ button [ class "btn btn-primary", onClick AddMobster ] [ text "Add Mobster" ] ]
@@ -146,9 +146,9 @@ addMobsterInputView newMobster =
 
 mobstersView : Mobster -> MobsterList -> Html Msg
 mobstersView newMobster mobsterList =
-    div []
-        [ ul [] (List.map (\mobsterName -> li [] [ mobsterView mobsterName ]) mobsterList)
-        , addMobsterInputView newMobster
+    div [ style [ ( "padding-bottom", "50px" ) ] ]
+        [ addMobsterInputView newMobster
+        , ul [] (List.map (\mobsterName -> li [] [ mobsterView mobsterName ]) mobsterList)
         ]
 
 
