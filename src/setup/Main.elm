@@ -1,7 +1,7 @@
 port module Setup.Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, type_, id, style)
+import Html.Attributes exposing (class, value, type_, id, style, src)
 import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
 import Mobsters
@@ -119,9 +119,52 @@ continueView model =
         [ text "Mobster"
         , div [ class "text-center" ]
             [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block" ] [ text "Continue" ]
+            , nextDriverNavigatorView model
             , div [] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md" ] [ text "Configure" ] ]
             , quitButton
             ]
+        ]
+
+
+nextDriverNavigatorView : Model -> Html msg
+nextDriverNavigatorView model =
+    let
+        driverNavigator =
+            Mobsters.nextDriverNavigator model.mobsterList
+    in
+        div []
+            [ div [ class "text-muted col-md-4" ] [ text "Next:" ]
+            , driverView driverNavigator.driver
+            , navigatorView driverNavigator.navigator
+            ]
+
+
+driverView : String -> Html msg
+driverView name =
+    div [ class "col-md-4" ]
+        [ iconView "./assets/driver-icon.png"
+        , text name
+        ]
+
+
+navigatorView : String -> Html msg
+navigatorView name =
+    div [ class "col-md-4" ]
+        [ iconView "./assets/navigator-icon.png"
+        , text name
+        ]
+
+
+iconView : String -> Html msg
+iconView iconUrl =
+    img [ style [ ( "max-width", "40px" ) ], src iconUrl ] []
+
+
+nextView : String -> String -> Html msg
+nextView thing name =
+    span []
+        [ span [ class "text-muted" ] [ text ("Next " ++ thing ++ ": ") ]
+        , span [ class "text-info" ] [ text name ]
         ]
 
 
