@@ -11,8 +11,13 @@ type Msg
     | SelectDurationInput
 
 
+type ScreenState
+    = Configure
+    | Continue
+
+
 type alias Model =
-    Int
+    { timerDuration : Int, screenState : ScreenState }
 
 
 type alias TimerConfiguration =
@@ -21,7 +26,7 @@ type alias TimerConfiguration =
 
 flags : Model -> TimerConfiguration
 flags model =
-    { minutes = model, driver = "Hello", navigator = "World" }
+    { minutes = model.timerDuration, driver = "Hello", navigator = "World" }
 
 
 port starttimer : TimerConfiguration -> Cmd msg
@@ -30,7 +35,7 @@ port starttimer : TimerConfiguration -> Cmd msg
 port selectduration : String -> Cmd msg
 
 
-timerDurationInputView : a -> Html Msg
+timerDurationInputView : Int -> Html Msg
 timerDurationInputView duration =
     input
         [ id "timer-duration"
@@ -44,25 +49,45 @@ timerDurationInputView duration =
         []
 
 
-view : Model -> Html Msg
-view model =
+configureView : Model -> Html Msg
+configureView model =
     h1 [ class "text-primary text-center" ]
         [ text "Mobster"
         , div [ class "text-center" ]
             [ button [ onClick StartTimer, class "btn btn-primary btn-lg" ] [ text "Start Mobbing" ]
             , div []
-                [ timerDurationInputView model
+                [ timerDurationInputView model.timerDuration
                 , text "Minutes"
                 ]
             ]
         ]
 
 
+continueView : Model -> Html Msg
+continueView model =
+    h1 [ class "text-primary text-center" ]
+        [ text "Mobster"
+        , div [ class "text-center" ]
+            [ button [ onClick StartTimer, class "btn btn-primary btn-lg" ] [ text "Continue" ]
+            ]
+        ]
+
+
+view : Model -> Html Msg
+view model =
+    case model.screenState of
+        Configure ->
+            configureView model
+
+        Continue ->
+            continueView model
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         StartTimer ->
-            model
+            { model | screenState = Continue }
                 ! [ (starttimer (flags model)) ]
 
         ChangeTimerDuration durationAsString ->
@@ -78,7 +103,7 @@ update msg model =
                     else
                         rawDuration
             in
-                duration ! []
+                { model | timerDuration = duration } ! []
 
         SelectDurationInput ->
             model ! [ selectduration "timer-duration" ]
@@ -87,7 +112,7 @@ update msg model =
 main : Program Never Model Msg
 main =
     Html.program
-        { init = ( 5, Cmd.none )
+        { init = ( { timerDuration = 5, screenState = Configure }, Cmd.none )
         , subscriptions = \_ -> Sub.none
         , update = update
         , view = view
