@@ -13,8 +13,12 @@ git clone https://github.com/dillonkearns/mobster
 cd mobster
 # Install dependencies
 npm install
+# Run the test watcher
+npm run test
+# Run the elm compiler watcher
+npm run build
 # Run the app
-npm start
+npm run dev
 ```
 
 #### Under [MIT license](LICENSE.md)

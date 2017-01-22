@@ -5,8 +5,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "elm-test",
-    "build": "cd src && elm-make timer/Main.elm --output elm.js && cd -"
+    "test": "elm-test --watch",
+    "dev": "gulp dev",
+    "build": "cd src && elm-live timer/Main.elm setup/Main.elm --output elm.js"
   },
   "repository": "https://github.com/dillonkearns/mobster",
   "keywords": [
@@ -19,6 +20,9 @@
   "license": "MIT",
   "devDependencies": {
     "electron": "^1.4.1",
-    "elm-test": "^0.18.2"
+    "electron-connect": "^0.6.1",
+    "elm-live": "^2.7.4",
+    "elm-test": "^0.18.2",
+    "gulp": "^3.9.1"
   }
 }
