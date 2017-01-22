@@ -2,11 +2,26 @@ port module Setup.Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, value, type_, id)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
+import Json.Decode as Json
+
+
+onEnter : Msg -> Attribute Msg
+onEnter msg =
+    let
+        isEnter code =
+            if code == 13 then
+                Json.succeed msg
+            else
+                Json.fail "not the right keycode"
+    in
+        on "keydown" (keyCode |> Json.andThen isEnter)
 
 
 type Msg
     = StartTimer
+    | UpdateMobsterInput String
+    | AddMobster
     | ChangeTimerDuration String
     | SelectDurationInput
     | OpenConfigure
@@ -18,8 +33,38 @@ type ScreenState
     | Continue
 
 
+type alias Mobster =
+    String
+
+
+type alias MobsterList =
+    List Mobster
+
+
+emptyMobsterList : MobsterList
+emptyMobsterList =
+    []
+
+
+
+-- , current : Int }
+
+
 type alias Model =
-    { timerDuration : Int, screenState : ScreenState }
+    { timerDuration : Int
+    , screenState : ScreenState
+    , mobsterList : MobsterList
+    , newMobster : Mobster
+    }
+
+
+initialModel : Model
+initialModel =
+    { timerDuration = 5
+    , screenState = Configure
+    , mobsterList = emptyMobsterList
+    , newMobster = ""
+    }
 
 
 type alias TimerConfiguration =
@@ -42,16 +87,19 @@ port selectduration : String -> Cmd msg
 
 timerDurationInputView : Int -> Html Msg
 timerDurationInputView duration =
-    input
-        [ id "timer-duration"
-        , onClick SelectDurationInput
-        , onInput ChangeTimerDuration
-        , type_ "number"
-        , Html.Attributes.min "1"
-        , Html.Attributes.max "15"
-        , value (toString duration)
+    div [ class "text-primary h1" ]
+        [ input
+            [ id "timer-duration"
+            , onClick SelectDurationInput
+            , onInput ChangeTimerDuration
+            , type_ "number"
+            , Html.Attributes.min "1"
+            , Html.Attributes.max "15"
+            , value (toString duration)
+            ]
+            []
+        , text "Minutes"
         ]
-        []
 
 
 quitButton : Html Msg
@@ -63,14 +111,12 @@ quitButton =
 
 configureView : Model -> Html Msg
 configureView model =
-    h1 [ class "text-primary text-center" ]
-        [ text "Mobster"
+    div []
+        [ h1 [ class "text-primary text-center" ] [ text "Mobster" ]
         , div [ class "text-center" ]
             [ button [ onClick StartTimer, class "btn btn-primary btn-lg" ] [ text "Start Mobbing" ]
-            , div []
-                [ timerDurationInputView model.timerDuration
-                , text "Minutes"
-                ]
+            , timerDurationInputView model.timerDuration
+            , mobstersView model.newMobster model.mobsterList
             , quitButton
             ]
         ]
@@ -85,6 +131,17 @@ continueView model =
             , div [] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md" ] [ text "Configure" ] ]
             , quitButton
             ]
+        ]
+
+
+mobstersView : Mobster -> MobsterList -> Html Msg
+mobstersView newMobster mobsterList =
+    div []
+        [ ul [] (List.map (\mobsterName -> li [] [ text mobsterName ]) mobsterList)
+        , div []
+            [ input [ type_ "text", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster ] []
+            ]
+        , button [ class "btn btn-primary", onClick AddMobster ] [ text "Add Mobster" ]
         ]
 
 
@@ -126,6 +183,16 @@ update msg model =
         OpenConfigure ->
             { model | screenState = Configure } ! []
 
+        AddMobster ->
+            let
+                updatedMobsterList =
+                    model.newMobster :: model.mobsterList
+            in
+                { model | newMobster = "", mobsterList = updatedMobsterList } ! []
+
+        UpdateMobsterInput text ->
+            { model | newMobster = text } ! []
+
         Quit ->
             model ! [ quit "" ]
 
@@ -133,7 +200,7 @@ update msg model =
 main : Program Never Model Msg
 main =
     Html.program
-        { init = ( { timerDuration = 5, screenState = Configure }, Cmd.none )
+        { init = ( initialModel, Cmd.none )
         , subscriptions = \_ -> Sub.none
         , update = update
         , view = view
