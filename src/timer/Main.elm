@@ -1,4 +1,4 @@
-module Timer.Main exposing (..)
+port module Timer.Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (src, style, class)
@@ -16,6 +16,9 @@ type Msg
 
 type alias Flags =
     { minutes : Int, driver : String, navigator : String }
+
+
+port timerdone : String -> Cmd msg
 
 
 driverView : String -> Html msg
@@ -57,7 +60,14 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick time ->
-            { model | secondsLeft = (updateTimer model.secondsLeft) } ! []
+            let
+                updatedSecondsLeft =
+                    updateTimer model.secondsLeft
+            in
+                if updatedSecondsLeft <= 0 then
+                    model ! [ timerdone "" ]
+                else
+                    { model | secondsLeft = updatedSecondsLeft } ! []
 
 
 init : Flags -> ( Model, Cmd msg )

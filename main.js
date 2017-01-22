@@ -55,6 +55,13 @@ function startTimer(flags) {
   })
 }
 
+function closeTimer() {
+  if (timerWindow) {
+    timerWindow.close()
+    timerWindow = null
+  }
+}
+
 function showSetupAgain(setupWindow) {
   setupWindow.setAlwaysOnTop(true)
   setupWindow.maximize()
@@ -76,6 +83,12 @@ function createWindow () {
     startTimer(flags)
     mainWindow.hide()
   })
+
+  ipcMain.on('timer-done', (event) => {
+    closeTimer()
+    mainWindow.show()
+  })
+
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
