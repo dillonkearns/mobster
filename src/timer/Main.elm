@@ -17,7 +17,7 @@ type Msg
 driverView : Html msg
 driverView =
     p []
-        [ iconView "./driver-icon.png"
+        [ iconView "./assets/driver-icon.png"
         , text "Jane"
         ]
 
@@ -25,7 +25,7 @@ driverView =
 navigatorView : Html msg
 navigatorView =
     p []
-        [ iconView "./navigator-icon.png"
+        [ iconView "./assets/navigator-icon.png"
         , text "John"
         ]
 
