@@ -49,5 +49,9 @@
       ipcRenderer.send('start-timer', flags)
     });
 
+    setup.ports.selectduration.subscribe(function(id) {
+      document.getElementById(id).select()
+    });
+
   </script>
 </html>

@@ -1,13 +1,14 @@
 port module Setup.Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, type_)
+import Html.Attributes exposing (class, value, type_, id)
 import Html.Events exposing (onClick, onInput)
 
 
 type Msg
     = StartTimer
     | ChangeTimerDuration String
+    | SelectDurationInput
 
 
 type alias Model =
@@ -26,9 +27,21 @@ flags model =
 port starttimer : TimerConfiguration -> Cmd msg
 
 
+port selectduration : String -> Cmd msg
+
+
 timerDurationInputView : a -> Html Msg
 timerDurationInputView duration =
-    input [ onInput ChangeTimerDuration, type_ "number", Html.Attributes.min "1", Html.Attributes.max "15", value (toString duration) ] []
+    input
+        [ id "timer-duration"
+        , onClick SelectDurationInput
+        , onInput ChangeTimerDuration
+        , type_ "number"
+        , Html.Attributes.min "1"
+        , Html.Attributes.max "15"
+        , value (toString duration)
+        ]
+        []
 
 
 view : Model -> Html Msg
@@ -66,6 +79,9 @@ update msg model =
                         rawDuration
             in
                 duration ! []
+
+        SelectDurationInput ->
+            model ! [ selectduration "timer-duration" ]
 
 
 main : Program Never Model Msg
