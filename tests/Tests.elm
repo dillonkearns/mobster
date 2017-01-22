@@ -45,4 +45,32 @@ mobsterTests =
                         |> Mobsters.add "John Smith"
                     )
                     { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+        , describe "get driver and navigator"
+            [ test
+                "with two mobsters"
+              <|
+                \() ->
+                    let
+                        startingList =
+                            { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+                    in
+                        Expect.equal (Mobsters.nextDriverNavigator startingList)
+                            { driver = "Jane Doe", navigator = "John Smith" }
+            , test "is duplicated with one mobster" <|
+                \() ->
+                    let
+                        startingList =
+                            { mobsters = [ "Jane Doe" ], nextDriver = 0 }
+                    in
+                        Expect.equal (Mobsters.nextDriverNavigator startingList)
+                            { driver = "Jane Doe", navigator = "Jane Doe" }
+            , test "uses default with no mobsters" <|
+                \() ->
+                    let
+                        startingList =
+                            { mobsters = [], nextDriver = 0 }
+                    in
+                        Expect.equal (Mobsters.nextDriverNavigator startingList)
+                            { driver = "", navigator = "" }
+            ]
         ]

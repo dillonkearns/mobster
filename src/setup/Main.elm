@@ -57,7 +57,14 @@ type alias TimerConfiguration =
 
 flags : Model -> TimerConfiguration
 flags model =
-    { minutes = model.timerDuration, driver = "Hello", navigator = "World" }
+    let
+        driverNavigator =
+            Mobsters.nextDriverNavigator model.mobsterList
+    in
+        { minutes = model.timerDuration
+        , driver = driverNavigator.driver
+        , navigator = driverNavigator.navigator
+        }
 
 
 port starttimer : TimerConfiguration -> Cmd msg
