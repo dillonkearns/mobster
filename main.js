@@ -26,18 +26,24 @@ function positionWindowRight(window) {
   window.setPosition(bounds.width - width, bounds.height - timerHeight);
 }
 
-function createTimerWindow() {
+function startTimer(flags) {
   let width = 150;
   timerWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
     width: width, height: timerHeight})
 
   positionWindowLeft(timerWindow)
 
+  ipcMain.once('timer-flags', (event) => {
+    event.returnValue = flags
+  })
+
+
   timerWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'timer.html'),
     protocol: 'file:',
     slashes: true
   }))
+
 
   ipcMain.on('timer-mouse-hover', (event) => {
     [x, y] = timerWindow.getPosition()
@@ -66,6 +72,10 @@ function createWindow () {
 
   mainWindow.center()
 
+  ipcMain.on('start-timer', (event, flags) => {
+    startTimer(flags)
+    mainWindow.hide()
+  })
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -80,7 +90,6 @@ function createWindow () {
 
 function createWindows() {
   createWindow()
-  createTimerWindow()
 }
 
 // This method will be called when Electron has finished

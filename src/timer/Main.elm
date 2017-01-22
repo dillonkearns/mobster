@@ -7,26 +7,30 @@ import Timer.Timer exposing (..)
 
 
 type alias Model =
-    { secondsLeft : Int }
+    { driver : String, navigator : String, secondsLeft : Int }
 
 
 type Msg
     = Tick Time.Time
 
 
-driverView : Html msg
-driverView =
+type alias Flags =
+    { minutes : Int, driver : String, navigator : String }
+
+
+driverView : String -> Html msg
+driverView name =
     p []
         [ iconView "./assets/driver-icon.png"
-        , text "Jane"
+        , text name
         ]
 
 
-navigatorView : Html msg
-navigatorView =
+navigatorView : String -> Html msg
+navigatorView name =
     p []
         [ iconView "./assets/navigator-icon.png"
-        , text "John"
+        , text name
         ]
 
 
@@ -39,8 +43,8 @@ view : Model -> Html msg
 view model =
     div [ class "text-center" ]
         [ h1 [] [ text (timerToString (secondsToTimer model.secondsLeft)) ]
-        , driverView
-        , navigatorView
+        , driverView model.driver
+        , navigatorView model.navigator
         ]
 
 
@@ -56,15 +60,19 @@ update msg model =
             { model | secondsLeft = (updateTimer model.secondsLeft) } ! []
 
 
-initialModel : Model
-initialModel =
-    { secondsLeft = 300 }
+init : Flags -> ( Model, Cmd msg )
+init flags =
+    let
+        secondsLeft =
+            flags.minutes * 60
+    in
+        ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator }, Cmd.none )
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Html.program
-        { init = ( initialModel, Cmd.none )
+    Html.programWithFlags
+        { init = init
         , subscriptions = \_ -> every second Tick
         , update = update
         , view = view
