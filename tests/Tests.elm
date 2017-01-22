@@ -46,9 +46,7 @@ mobsterTests =
                     )
                     { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
         , describe "get driver and navigator"
-            [ test
-                "with two mobsters"
-              <|
+            [ test "with two mobsters" <|
                 \() ->
                     let
                         startingList =
@@ -56,6 +54,22 @@ mobsterTests =
                     in
                         Expect.equal (Mobsters.nextDriverNavigator startingList)
                             { driver = "Jane Doe", navigator = "John Smith" }
+            , test "with two mobsters" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 1 }
+                    in
+                        Expect.equal (Mobsters.nextDriverNavigator list)
+                            { driver = "John Smith", navigator = "Bob Jones" }
+            , test "wraps at end of mobster list" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 2 }
+                    in
+                        Expect.equal (Mobsters.nextDriverNavigator list)
+                            { driver = "Bob Jones", navigator = "Jane Doe" }
             , test "is duplicated with one mobster" <|
                 \() ->
                     let
@@ -72,5 +86,21 @@ mobsterTests =
                     in
                         Expect.equal (Mobsters.nextDriverNavigator startingList)
                             { driver = "", navigator = "" }
+            ]
+        , describe "rotate"
+            [ test "without wrapping" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+                    in
+                        Expect.equal (Mobsters.rotate list).nextDriver 1
+            , test "with wrapping" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 1 }
+                    in
+                        Expect.equal (Mobsters.rotate list).nextDriver 0
             ]
         ]

@@ -34,7 +34,7 @@ nextDriverNavigator list =
             Array.fromList list.mobsters
 
         maybeDriver =
-            Array.get 0 mobstersAsArray
+            Array.get list.nextDriver mobstersAsArray
 
         driver =
             case maybeDriver of
@@ -45,7 +45,7 @@ nextDriverNavigator list =
                     ""
 
         maybeNavigator =
-            Array.get 1 mobstersAsArray
+            Array.get (nextIndex list.nextDriver list) mobstersAsArray
 
         navigator =
             case maybeNavigator of
@@ -58,3 +58,23 @@ nextDriverNavigator list =
         { driver = driver
         , navigator = navigator
         }
+
+
+nextIndex : Int -> MobsterList -> Int
+nextIndex currentIndex mobsterList =
+    let
+        mobSize =
+            List.length mobsterList.mobsters
+
+        index =
+            if mobSize == 0 then
+                0
+            else
+                (currentIndex + 1) % mobSize
+    in
+        index
+
+
+rotate : MobsterList -> MobsterList
+rotate mobsterList =
+    { mobsterList | nextDriver = (nextIndex mobsterList.nextDriver mobsterList) }

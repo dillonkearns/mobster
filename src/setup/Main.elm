@@ -162,8 +162,15 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         StartTimer ->
-            { model | screenState = Continue }
-                ! [ (starttimer (flags model)) ]
+            let
+                rotatedMobsterList =
+                    Mobsters.rotate model.mobsterList
+            in
+                { model
+                    | screenState = Continue
+                    , mobsterList = rotatedMobsterList
+                }
+                    ! [ (starttimer (flags model)) ]
 
         ChangeTimerDuration durationAsString ->
             let
