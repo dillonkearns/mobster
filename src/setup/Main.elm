@@ -95,34 +95,37 @@ timerDurationInputView duration =
 
 quitButton : Html Msg
 quitButton =
-    div []
-        [ button [ onClick Quit, class "btn btn-primary btn-md btn-block" ] [ text "Quit" ]
-        ]
+    button [ onClick Quit, class "btn btn-primary btn-md btn-block" ] [ text "Quit" ]
+
+
+titleTextView : Html msg
+titleTextView =
+    h1 [ class "text-primary text-center" ] [ text "Mobster" ]
 
 
 configureView : Model -> Html Msg
 configureView model =
     div []
-        [ h1 [ class "text-primary text-center" ] [ text "Mobster" ]
+        [ titleTextView
         , div [ class "text-center" ]
             [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block" ] [ text "Start Mobbing" ]
             , timerDurationInputView model.timerDuration
             , mobstersView model.newMobster model.mobsterList
-            , quitButton
+            , div [ class "row top-buffer" ] [ quitButton ]
             ]
         ]
 
 
 continueView : Model -> Html Msg
 continueView model =
-    h1 [ class "text-primary text-center" ]
-        [ text "Mobster"
-        , div [ class "text-center" ]
+    div [ class "container-fluid" ]
+        [ titleTextView
+        , div [ class "row" ]
             [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block" ] [ text "Continue" ]
-            , nextDriverNavigatorView model
-            , div [] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md" ] [ text "Configure" ] ]
-            , quitButton
             ]
+        , nextDriverNavigatorView model
+        , div [ class "row top-buffer" ] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
+        , div [ class "row top-buffer" ] [ quitButton ]
         ]
 
 
@@ -132,7 +135,7 @@ nextDriverNavigatorView model =
         driverNavigator =
             Mobsters.nextDriverNavigator model.mobsterList
     in
-        div []
+        div [ class "row h1" ]
             [ div [ class "text-muted col-md-4" ] [ text "Next:" ]
             , driverView driverNavigator.driver
             , navigatorView driverNavigator.navigator
@@ -141,7 +144,7 @@ nextDriverNavigatorView model =
 
 driverView : String -> Html msg
 driverView name =
-    div [ class "col-md-4" ]
+    div [ class "col-md-4 text-success" ]
         [ iconView "./assets/driver-icon.png"
         , text name
         ]
@@ -149,7 +152,7 @@ driverView name =
 
 navigatorView : String -> Html msg
 navigatorView name =
-    div [ class "col-md-4" ]
+    div [ class "col-md-4 text-success" ]
         [ iconView "./assets/navigator-icon.png"
         , text name
         ]
@@ -170,7 +173,7 @@ nextView thing name =
 
 addMobsterInputView : String -> Html Msg
 addMobsterInputView newMobster =
-    div []
+    div [ class "row top-buffer" ]
         [ div [ class "input-group" ]
             [ input [ type_ "text", class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster ] []
             , span [ class "input-group-btn", type_ "button" ] [ button [ class "btn btn-primary", onClick AddMobster ] [ text "Add Mobster" ] ]
