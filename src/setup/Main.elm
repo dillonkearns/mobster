@@ -9,6 +9,7 @@ type Msg
     = StartTimer
     | ChangeTimerDuration String
     | SelectDurationInput
+    | OpenConfigure
 
 
 type ScreenState
@@ -69,6 +70,7 @@ continueView model =
         [ text "Mobster"
         , div [ class "text-center" ]
             [ button [ onClick StartTimer, class "btn btn-primary btn-lg" ] [ text "Continue" ]
+            , div [] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md" ] [ text "Configure" ] ]
             ]
         ]
 
@@ -107,6 +109,9 @@ update msg model =
 
         SelectDurationInput ->
             model ! [ selectduration "timer-duration" ]
+
+        OpenConfigure ->
+            { model | screenState = Configure } ! []
 
 
 main : Program Never Model Msg
