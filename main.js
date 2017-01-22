@@ -62,14 +62,13 @@ function closeTimer() {
 }
 
 function showSetupAgain(setupWindow) {
-  setupWindow.setAlwaysOnTop(true)
-  setupWindow.maximize()
   setupWindow.show()
 }
 
 function createWindow () {
-  mainWindow = new BrowserWindow({transparent: true, frame: false,
-    width: 550, height: 400})
+  mainWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true})
+  mainWindow.maximize()
+  mainWindow.setResizable(false)
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'setup.html'),
