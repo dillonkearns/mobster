@@ -4,6 +4,7 @@ import Test exposing (..)
 import Expect
 import Timer.Main as TimerMain
 import Timer.Timer as Timer
+import Mobsters
 
 
 all : Test
@@ -25,4 +26,23 @@ all =
                 \() ->
                     Expect.equal (TimerMain.updateTimer 10) 9
             ]
+        , mobsterTests
+        ]
+
+
+mobsterTests : Test
+mobsterTests =
+    describe "mobster list"
+        [ test "add to empty" <|
+            \() ->
+                Expect.equal (Mobsters.empty |> Mobsters.add "John Doe")
+                    { mobsters = [ "John Doe" ], nextDriver = 0 }
+        , test "add" <|
+            \() ->
+                Expect.equal
+                    (Mobsters.empty
+                        |> Mobsters.add "Jane Doe"
+                        |> Mobsters.add "John Smith"
+                    )
+                    { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
         ]

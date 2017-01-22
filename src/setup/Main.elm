@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class, value, type_, id, style)
 import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
+import Mobsters
 
 
 onEnter : Msg -> Attribute Msg
@@ -33,28 +34,11 @@ type ScreenState
     | Continue
 
 
-type alias Mobster =
-    String
-
-
-type alias MobsterList =
-    List Mobster
-
-
-emptyMobsterList : MobsterList
-emptyMobsterList =
-    []
-
-
-
--- , current : Int }
-
-
 type alias Model =
     { timerDuration : Int
     , screenState : ScreenState
-    , mobsterList : MobsterList
-    , newMobster : Mobster
+    , mobsterList : Mobsters.MobsterList
+    , newMobster : String
     }
 
 
@@ -62,7 +46,7 @@ initialModel : Model
 initialModel =
     { timerDuration = 5
     , screenState = Configure
-    , mobsterList = emptyMobsterList
+    , mobsterList = Mobsters.empty
     , newMobster = ""
     }
 
@@ -134,7 +118,7 @@ continueView model =
         ]
 
 
-addMobsterInputView : Mobster -> Html Msg
+addMobsterInputView : String -> Html Msg
 addMobsterInputView newMobster =
     div []
         [ div [ class "input-group" ]
@@ -144,15 +128,15 @@ addMobsterInputView newMobster =
         ]
 
 
-mobstersView : Mobster -> MobsterList -> Html Msg
+mobstersView : String -> Mobsters.MobsterList -> Html Msg
 mobstersView newMobster mobsterList =
     div [ style [ ( "padding-bottom", "50px" ) ] ]
         [ addMobsterInputView newMobster
-        , ul [] (List.map (\mobsterName -> li [] [ mobsterView mobsterName ]) mobsterList)
+        , ul [] (List.map (\mobsterName -> li [] [ mobsterView mobsterName ]) mobsterList.mobsters)
         ]
 
 
-mobsterView : Mobster -> Html Msg
+mobsterView : String -> Html Msg
 mobsterView mobster =
     span [] [ text mobster ]
 
@@ -208,11 +192,13 @@ update msg model =
             model ! [ quit "" ]
 
 
-addMobster : Mobster -> Model -> Model
+addMobster : String -> Model -> Model
 addMobster newMobster model =
     let
         updatedMobsterList =
-            model.newMobster :: model.mobsterList
+            Mobsters.add
+                model.newMobster
+                model.mobsterList
     in
         { model | newMobster = "", mobsterList = updatedMobsterList }
 
