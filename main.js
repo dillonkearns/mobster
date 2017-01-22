@@ -45,15 +45,16 @@ function startTimer(flags) {
   }))
 
 
-  ipcMain.on('timer-mouse-hover', (event) => {
-    [x, y] = timerWindow.getPosition()
-    if (x === 0) {
-      positionWindowRight(timerWindow)
-    } else {
-      positionWindowLeft(timerWindow)
-    }
-  })
 }
+
+ipcMain.on('timer-mouse-hover', (event) => {
+  [x, y] = timerWindow.getPosition()
+  if (x === 0) {
+    positionWindowRight(timerWindow)
+  } else {
+    positionWindowLeft(timerWindow)
+  }
+})
 
 function closeTimer() {
   if (timerWindow) {
