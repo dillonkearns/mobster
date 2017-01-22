@@ -184,17 +184,25 @@ update msg model =
             { model | screenState = Configure } ! []
 
         AddMobster ->
-            let
-                updatedMobsterList =
-                    model.newMobster :: model.mobsterList
-            in
-                { model | newMobster = "", mobsterList = updatedMobsterList } ! []
+            if model.newMobster == "" then
+                model ! []
+            else
+                (addMobster model.newMobster model) ! []
 
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []
 
         Quit ->
             model ! [ quit "" ]
+
+
+addMobster : Mobster -> Model -> Model
+addMobster newMobster model =
+    let
+        updatedMobsterList =
+            model.newMobster :: model.mobsterList
+    in
+        { model | newMobster = "", mobsterList = updatedMobsterList }
 
 
 main : Program Never Model Msg
