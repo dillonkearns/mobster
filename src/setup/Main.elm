@@ -114,7 +114,7 @@ configureView model =
     div []
         [ h1 [ class "text-primary text-center" ] [ text "Mobster" ]
         , div [ class "text-center" ]
-            [ button [ onClick StartTimer, class "btn btn-primary btn-lg" ] [ text "Start Mobbing" ]
+            [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block" ] [ text "Start Mobbing" ]
             , timerDurationInputView model.timerDuration
             , mobstersView model.newMobster model.mobsterList
             , quitButton
