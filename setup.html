@@ -13,6 +13,8 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="./src/setup.js"></script>
+    <script>window.Elm = require('./src/setup.js');</script>
     <style>
       html,body{
         width: 100%;
@@ -20,12 +22,12 @@
       </style>
   </head>
   <body id="setup-window" style="color: white; background-color: white;">
-    <h1 class="text-primary text-center">Mobster</h1>
   </body>
 
   <script>
-    const {ipcRenderer} = require('electron')
+    const {ipcRenderer} = require('electron');
 
+    let setup = Elm.Setup.Main.fullscreen();
 
   </script>
 </html>
