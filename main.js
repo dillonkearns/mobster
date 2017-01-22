@@ -33,9 +33,8 @@ function createTimerWindow() {
 
   positionWindowLeft(timerWindow)
 
-  // and load the index.html of the app.
   timerWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
+    pathname: path.join(__dirname, 'timer.html'),
     protocol: 'file:',
     slashes: true
   }))
@@ -59,7 +58,6 @@ function createWindow () {
   mainWindow = new BrowserWindow({transparent: true, frame: false,
     width: 350, height: 250})
 
-  // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'setup.html'),
     protocol: 'file:',
