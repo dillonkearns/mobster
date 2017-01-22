@@ -134,15 +134,27 @@ continueView model =
         ]
 
 
+addMobsterInputView : Mobster -> Html Msg
+addMobsterInputView newMobster =
+    div [ class "col-lg-6" ]
+        [ div [ class "input-group" ]
+            [ input [ type_ "text", class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster ] []
+            , span [ class "input-group-btn", type_ "button" ] [ button [ class "btn btn-primary", onClick AddMobster ] [ text "Add Mobster" ] ]
+            ]
+        ]
+
+
 mobstersView : Mobster -> MobsterList -> Html Msg
 mobstersView newMobster mobsterList =
     div []
-        [ ul [] (List.map (\mobsterName -> li [] [ text mobsterName ]) mobsterList)
-        , div []
-            [ input [ type_ "text", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster ] []
-            ]
-        , button [ class "btn btn-primary", onClick AddMobster ] [ text "Add Mobster" ]
+        [ ul [] (List.map (\mobsterName -> li [] [ mobsterView mobsterName ]) mobsterList)
+        , addMobsterInputView newMobster
         ]
+
+
+mobsterView : Mobster -> Html Msg
+mobsterView mobster =
+    span [] [ text mobster ]
 
 
 view : Model -> Html Msg
