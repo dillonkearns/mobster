@@ -10,6 +10,7 @@ type Msg
     | ChangeTimerDuration String
     | SelectDurationInput
     | OpenConfigure
+    | Quit
 
 
 type ScreenState
@@ -33,6 +34,9 @@ flags model =
 port starttimer : TimerConfiguration -> Cmd msg
 
 
+port quit : String -> Cmd msg
+
+
 port selectduration : String -> Cmd msg
 
 
@@ -50,6 +54,13 @@ timerDurationInputView duration =
         []
 
 
+quitButton : Html Msg
+quitButton =
+    div []
+        [ button [ onClick Quit, class "btn btn-primary btn-md" ] [ text "Quit" ]
+        ]
+
+
 configureView : Model -> Html Msg
 configureView model =
     h1 [ class "text-primary text-center" ]
@@ -60,6 +71,7 @@ configureView model =
                 [ timerDurationInputView model.timerDuration
                 , text "Minutes"
                 ]
+            , quitButton
             ]
         ]
 
@@ -71,6 +83,7 @@ continueView model =
         , div [ class "text-center" ]
             [ button [ onClick StartTimer, class "btn btn-primary btn-lg" ] [ text "Continue" ]
             , div [] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md" ] [ text "Configure" ] ]
+            , quitButton
             ]
         ]
 
@@ -112,6 +125,9 @@ update msg model =
 
         OpenConfigure ->
             { model | screenState = Configure } ! []
+
+        Quit ->
+            model ! [ quit "" ]
 
 
 main : Program Never Model Msg

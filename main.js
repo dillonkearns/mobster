@@ -91,6 +91,9 @@ function createWindow () {
     showSetupAgain(mainWindow)
   })
 
+  ipcMain.on('quit', (event) => {
+    app.quit()
+  })
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
