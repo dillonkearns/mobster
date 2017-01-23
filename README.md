@@ -18,7 +18,7 @@ npm run test
 # Run the elm compiler watcher
 npm run build
 # Run the app
-npm run dev
+electron .
 ```
 
 #### Under [MIT license](LICENSE.md)
