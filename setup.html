@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Mobster</title>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -44,12 +43,18 @@
       .top-buffer {
         margin-top: 20px;
       }
+
+      .transparent {
+        opacity: .2 !important;
+        background-color: rgba(150, 150, 150, 0.2);
+      }
       </style>
   </head>
   <body id="setup-window">
   </body>
 
   <script>
+    const $ = require('jquery')
     const {ipcRenderer} = require('electron');
 
     let setup = Elm.Setup.Main.fullscreen();
@@ -65,6 +70,13 @@
     setup.ports.selectduration.subscribe(function(id) {
       document.getElementById(id).select()
     });
+
+    $(() => {
+      $('.invisible-trigger').hover(
+        () => { $('body').addClass('transparent') },
+        () => { $('body').removeClass('transparent') }
+      )
+    })
 
   </script>
 </html>
