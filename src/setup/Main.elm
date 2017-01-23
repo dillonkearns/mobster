@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class, value, type_, id, style, src)
 import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
-import Mobsters
+import Mobster
 
 
 onEnter : Msg -> Attribute Msg
@@ -43,7 +43,7 @@ type ScreenState
 type alias Model =
     { timerDuration : Int
     , screenState : ScreenState
-    , mobsterList : Mobsters.MobsterList
+    , mobsterList : Mobster.MobsterList
     , newMobster : String
     }
 
@@ -52,7 +52,7 @@ initialModel : Model
 initialModel =
     { timerDuration = 5
     , screenState = Configure
-    , mobsterList = Mobsters.empty
+    , mobsterList = Mobster.empty
     , newMobster = ""
     }
 
@@ -65,7 +65,7 @@ flags : Model -> TimerConfiguration
 flags model =
     let
         driverNavigator =
-            Mobsters.nextDriverNavigator model.mobsterList
+            Mobster.nextDriverNavigator model.mobsterList
     in
         { minutes = model.timerDuration
         , driver = driverNavigator.driver
@@ -144,7 +144,7 @@ nextDriverNavigatorView : Model -> Html msg
 nextDriverNavigatorView model =
     let
         driverNavigator =
-            Mobsters.nextDriverNavigator model.mobsterList
+            Mobster.nextDriverNavigator model.mobsterList
     in
         div [ class "row h1" ]
             [ div [ class "text-muted col-md-4" ] [ text "Next:" ]
@@ -192,7 +192,7 @@ addMobsterInputView newMobster =
         ]
 
 
-mobstersView : String -> Mobsters.MobsterList -> Html Msg
+mobstersView : String -> Mobster.MobsterList -> Html Msg
 mobstersView newMobster mobsterList =
     div [ style [ ( "padding-bottom", "50px" ) ] ]
         [ addMobsterInputView newMobster
@@ -232,7 +232,7 @@ update msg model =
         StartTimer ->
             let
                 rotatedMobsterList =
-                    Mobsters.rotate model.mobsterList
+                    Mobster.rotate model.mobsterList
             in
                 { model
                     | screenState = Continue
@@ -272,10 +272,10 @@ update msg model =
                 updatedMobsterList =
                     case direction of
                         Up ->
-                            Mobsters.moveUp mobsterIndex model.mobsterList
+                            Mobster.moveUp mobsterIndex model.mobsterList
 
                         Down ->
-                            Mobsters.moveDown mobsterIndex model.mobsterList
+                            Mobster.moveDown mobsterIndex model.mobsterList
             in
                 { model | mobsterList = updatedMobsterList } ! []
 
@@ -290,7 +290,7 @@ addMobster : String -> Model -> Model
 addMobster newMobster model =
     let
         updatedMobsterList =
-            Mobsters.add
+            Mobster.add
                 model.newMobster
                 model.mobsterList
     in

@@ -4,7 +4,7 @@ import Test exposing (..)
 import Expect
 import Timer.Main as TimerMain
 import Timer.Timer as Timer
-import Mobsters
+import Mobster
 
 
 all : Test
@@ -35,14 +35,14 @@ mobsterTests =
     describe "mobster list"
         [ test "add to empty" <|
             \() ->
-                Expect.equal (Mobsters.empty |> Mobsters.add "John Doe")
+                Expect.equal (Mobster.empty |> Mobster.add "John Doe")
                     { mobsters = [ "John Doe" ], nextDriver = 0 }
         , test "add" <|
             \() ->
                 Expect.equal
-                    (Mobsters.empty
-                        |> Mobsters.add "Jane Doe"
-                        |> Mobsters.add "John Smith"
+                    (Mobster.empty
+                        |> Mobster.add "Jane Doe"
+                        |> Mobster.add "John Smith"
                     )
                     { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
         , describe "get driver and navigator"
@@ -52,7 +52,7 @@ mobsterTests =
                         startingList =
                             { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
                     in
-                        Expect.equal (Mobsters.nextDriverNavigator startingList)
+                        Expect.equal (Mobster.nextDriverNavigator startingList)
                             { driver = "Jane Doe", navigator = "John Smith" }
             , test "with two mobsters" <|
                 \() ->
@@ -60,7 +60,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 1 }
                     in
-                        Expect.equal (Mobsters.nextDriverNavigator list)
+                        Expect.equal (Mobster.nextDriverNavigator list)
                             { driver = "John Smith", navigator = "Bob Jones" }
             , test "wraps at end of mobster list" <|
                 \() ->
@@ -68,7 +68,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 2 }
                     in
-                        Expect.equal (Mobsters.nextDriverNavigator list)
+                        Expect.equal (Mobster.nextDriverNavigator list)
                             { driver = "Bob Jones", navigator = "Jane Doe" }
             , test "is duplicated with one mobster" <|
                 \() ->
@@ -76,7 +76,7 @@ mobsterTests =
                         startingList =
                             { mobsters = [ "Jane Doe" ], nextDriver = 0 }
                     in
-                        Expect.equal (Mobsters.nextDriverNavigator startingList)
+                        Expect.equal (Mobster.nextDriverNavigator startingList)
                             { driver = "Jane Doe", navigator = "Jane Doe" }
             , test "uses default with no mobsters" <|
                 \() ->
@@ -84,7 +84,7 @@ mobsterTests =
                         startingList =
                             { mobsters = [], nextDriver = 0 }
                     in
-                        Expect.equal (Mobsters.nextDriverNavigator startingList)
+                        Expect.equal (Mobster.nextDriverNavigator startingList)
                             { driver = "", navigator = "" }
             ]
         , describe "rotate"
@@ -94,14 +94,14 @@ mobsterTests =
                         list =
                             { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
                     in
-                        Expect.equal (Mobsters.rotate list).nextDriver 1
+                        Expect.equal (Mobster.rotate list).nextDriver 1
             , test "with wrapping" <|
                 \() ->
                     let
                         list =
                             { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 1 }
                     in
-                        Expect.equal (Mobsters.rotate list).nextDriver 0
+                        Expect.equal (Mobster.rotate list).nextDriver 0
             ]
         , describe "move"
             [ test "single item list" <|
@@ -110,7 +110,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "only item" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobsters.moveUp 0)
+                        Expect.equal (list |> Mobster.moveUp 0)
                             { mobsters = [ "only item" ], nextDriver = 0 }
             , test "index not in list" <|
                 \() ->
@@ -118,7 +118,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobsters.moveUp 4)
+                        Expect.equal (list |> Mobster.moveUp 4)
                             { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
             , test "multiple items without wrapping" <|
                 \() ->
@@ -126,7 +126,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobsters.moveUp 3)
+                        Expect.equal (list |> Mobster.moveUp 3)
                             { mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
             , test "multiple items move down without wrapping" <|
                 \() ->
@@ -134,7 +134,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobsters.moveDown 0)
+                        Expect.equal (list |> Mobster.moveDown 0)
                             { mobsters = [ "b", "a", "d", "c" ], nextDriver = 0 }
             ]
         ]

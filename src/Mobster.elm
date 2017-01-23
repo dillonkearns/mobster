@@ -1,4 +1,4 @@
-module Mobsters exposing (..)
+module Mobster exposing (..)
 
 import Array
 import Maybe
