@@ -19,9 +19,14 @@ onEnter msg =
         on "keydown" (keyCode |> Json.andThen isEnter)
 
 
+type ReorderDirection
+    = Up
+    | Down
+
+
 type Msg
     = StartTimer
-    | MoveUp Int
+    | Move ReorderDirection Int
     | UpdateMobsterInput String
     | AddMobster
     | ChangeTimerDuration String
@@ -198,10 +203,18 @@ mobstersView newMobster mobsterList =
 mobsterView : Int -> String -> Html Msg
 mobsterView index mobster =
     li []
-        [ span []
-            [ text mobster
-            , button [ class "btn btn-small btn-primary", onClick (MoveUp index) ] [ text "↑" ]
+        [ div [ class "row" ]
+            [ span [ class "right-buffer mobster-name", style [ ( "text-align", "right" ), ( "min-width", "60px" ) ] ] [ text mobster ]
+            , reorderButtonView index
             ]
+        ]
+
+
+reorderButtonView : Int -> Html Msg
+reorderButtonView mobsterIndex =
+    div [ class "btn-group btn-group-xs" ]
+        [ button [ class "btn btn-small btn-primary", onClick (Move Up mobsterIndex) ] [ text "↑" ]
+        , button [ class "btn btn-small btn-primary", onClick (Move Down mobsterIndex) ] [ text "↓" ]
         ]
 
 
@@ -256,10 +269,15 @@ update msg model =
             else
                 (addMobster model.newMobster model) ! []
 
-        MoveUp mobsterIndex ->
+        Move direction mobsterIndex ->
             let
                 updatedMobsterList =
-                    Mobsters.moveUp mobsterIndex model.mobsterList
+                    case direction of
+                        Up ->
+                            Mobsters.moveUp mobsterIndex model.mobsterList
+
+                        Down ->
+                            Mobsters.moveDown mobsterIndex model.mobsterList
             in
                 { model | mobsterList = updatedMobsterList } ! []
 

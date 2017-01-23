@@ -81,6 +81,11 @@ rotate mobsterList =
     { mobsterList | nextDriver = (nextIndex mobsterList.nextDriver mobsterList) }
 
 
+moveDown : Int -> MobsterList -> MobsterList
+moveDown itemIndex list =
+    moveUp (itemIndex + 1) list
+
+
 moveUp : Int -> MobsterList -> MobsterList
 moveUp itemIndex list =
     let

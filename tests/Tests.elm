@@ -128,5 +128,13 @@ mobsterTests =
                     in
                         Expect.equal (list |> Mobsters.moveUp 3)
                             { mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
+            , test "multiple items move down without wrapping" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobsters.moveDown 0)
+                            { mobsters = [ "b", "a", "d", "c" ], nextDriver = 0 }
             ]
         ]
