@@ -44,7 +44,7 @@ type ScreenState
 type alias Model =
     { timerDuration : Int
     , screenState : ScreenState
-    , mobsterList : Mobster.MobsterList
+    , mobsterList : Mobster.MobsterData
     , newMobster : String
     }
 
@@ -122,7 +122,7 @@ configureView model =
         , titleTextView
         , button [ onClick StartTimer, class "btn btn-info btn-lg btn-block" ] [ text "Start Mobbing" ]
         , timerDurationInputView model.timerDuration
-        , mobstersView model.newMobster model.mobsterList
+        , mobstersView model.newMobster (Mobster.mobsters model.mobsterList)
         , div [ class "row top-buffer" ] [ quitButton ]
         ]
 
@@ -193,20 +193,34 @@ addMobsterInputView newMobster =
         ]
 
 
-mobstersView : String -> Mobster.MobsterList -> Html Msg
-mobstersView newMobster mobsterList =
+mobstersView : String -> Mobster.Mobsters -> Html Msg
+mobstersView newMobster mobsters =
     div [ style [ ( "padding-bottom", "50px" ) ] ]
         [ addMobsterInputView newMobster
-        , table [ class "table" ] (List.indexedMap mobsterView mobsterList.mobsters)
+        , table [ class "table" ] (List.map mobsterView mobsters)
         ]
 
 
-mobsterView : Int -> String -> Html Msg
-mobsterView index mobster =
+mobsterView : Mobster.Mobster -> Html Msg
+mobsterView mobster =
     tr []
-        [ td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ] [ text mobster ]
-        , td [] [ reorderButtonView index ]
+        [ td [] [ roleView mobster.role ]
+        , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ] [ text mobster.name ]
+        , td [] [ reorderButtonView mobster.index ]
         ]
+
+
+roleView : Maybe Mobster.Role -> Html Msg
+roleView role =
+    case role of
+        Just (Mobster.Driver) ->
+            iconView "./assets/driver-icon.png"
+
+        Just (Mobster.Navigator) ->
+            iconView "./assets/navigator-icon.png"
+
+        Nothing ->
+            span [] []
 
 
 reorderButtonView : Int -> Html Msg
@@ -233,12 +247,12 @@ update msg model =
     case msg of
         StartTimer ->
             let
-                rotatedMobsterList =
+                rotatedMobsterData =
                     Mobster.rotate model.mobsterList
             in
                 { model
                     | screenState = Continue
-                    , mobsterList = rotatedMobsterList
+                    , mobsterList = rotatedMobsterData
                 }
                     ! [ (starttimer (flags model)) ]
 
@@ -278,7 +292,7 @@ update msg model =
 
         Move direction mobsterIndex ->
             let
-                updatedMobsterList =
+                updatedMobsterData =
                     case direction of
                         Up ->
                             Mobster.moveUp mobsterIndex model.mobsterList
@@ -286,7 +300,7 @@ update msg model =
                         Down ->
                             Mobster.moveDown mobsterIndex model.mobsterList
             in
-                { model | mobsterList = updatedMobsterList } ! []
+                { model | mobsterList = updatedMobsterData } ! []
 
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []
@@ -298,12 +312,12 @@ update msg model =
 addMobster : String -> Model -> Model
 addMobster newMobster model =
     let
-        updatedMobsterList =
+        updatedMobsterData =
             Mobster.add
                 model.newMobster
                 model.mobsterList
     in
-        { model | newMobster = "", mobsterList = updatedMobsterList }
+        { model | newMobster = "", mobsterList = updatedMobsterData }
 
 
 main : Program Never Model Msg

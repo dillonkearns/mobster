@@ -5,20 +5,16 @@ import Maybe
 import Array.Extra
 
 
-type alias Mobster =
-    String
+type alias MobsterData =
+    { mobsters : List String, nextDriver : Int }
 
 
-type alias MobsterList =
-    { mobsters : List Mobster, nextDriver : Int }
-
-
-empty : MobsterList
+empty : MobsterData
 empty =
     { mobsters = [], nextDriver = 0 }
 
 
-add : String -> MobsterList -> MobsterList
+add : String -> MobsterData -> MobsterData
 add mobster list =
     { list | mobsters = (List.append list.mobsters [ mobster ]) }
 
@@ -29,7 +25,7 @@ type alias DriverNavigator =
     }
 
 
-nextDriverNavigator : MobsterList -> DriverNavigator
+nextDriverNavigator : MobsterData -> DriverNavigator
 nextDriverNavigator list =
     let
         mobstersAsArray =
@@ -62,7 +58,7 @@ nextDriverNavigator list =
         }
 
 
-nextIndex : Int -> MobsterList -> Int
+nextIndex : Int -> MobsterData -> Int
 nextIndex currentIndex mobsterList =
     let
         mobSize =
@@ -77,17 +73,17 @@ nextIndex currentIndex mobsterList =
         index
 
 
-rotate : MobsterList -> MobsterList
+rotate : MobsterData -> MobsterData
 rotate mobsterList =
     { mobsterList | nextDriver = (nextIndex mobsterList.nextDriver mobsterList) }
 
 
-moveDown : Int -> MobsterList -> MobsterList
+moveDown : Int -> MobsterData -> MobsterData
 moveDown itemIndex list =
     moveUp (itemIndex + 1) list
 
 
-moveUp : Int -> MobsterList -> MobsterList
+moveUp : Int -> MobsterData -> MobsterData
 moveUp itemIndex list =
     let
         asArray =
@@ -114,7 +110,7 @@ moveUp itemIndex list =
         { list | mobsters = updatedMobsters }
 
 
-remove : Int -> MobsterList -> MobsterList
+remove : Int -> MobsterData -> MobsterData
 remove index list =
     let
         asArray =
@@ -133,3 +129,35 @@ remove index list =
                 index
     in
         { list | mobsters = updatedMobsters, nextDriver = nextDriverInBounds }
+
+
+type Role
+    = Driver
+    | Navigator
+
+
+type alias Mobster =
+    { name : String, role : Maybe Role, index : Int }
+
+
+type alias Mobsters =
+    List Mobster
+
+
+mobsterListItemToMobster : DriverNavigator -> Int -> String -> Mobster
+mobsterListItemToMobster driverNavigator index mobsterName =
+    let
+        role =
+            if mobsterName == driverNavigator.driver then
+                Just Driver
+            else if mobsterName == driverNavigator.navigator then
+                Just Navigator
+            else
+                Nothing
+    in
+        { name = mobsterName, role = role, index = index }
+
+
+mobsters : MobsterData -> Mobsters
+mobsters mobsterList =
+    List.indexedMap (mobsterListItemToMobster (nextDriverNavigator mobsterList)) mobsterList.mobsters
