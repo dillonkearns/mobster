@@ -158,7 +158,7 @@ nextDriverNavigatorView model =
 driverView : String -> Html msg
 driverView name =
     div [ class "col-md-4 text-success" ]
-        [ iconView "./assets/driver-icon.png"
+        [ iconView "./assets/driver-icon.png" 40
         , text name
         ]
 
@@ -166,14 +166,14 @@ driverView name =
 navigatorView : String -> Html msg
 navigatorView name =
     div [ class "col-md-4 text-success" ]
-        [ iconView "./assets/navigator-icon.png"
+        [ iconView "./assets/navigator-icon.png" 40
         , text name
         ]
 
 
-iconView : String -> Html msg
-iconView iconUrl =
-    img [ style [ ( "max-width", "40px" ) ], src iconUrl ] []
+iconView : String -> Int -> Html msg
+iconView iconUrl maxWidth =
+    img [ style [ ( "max-width", (toString maxWidth) ++ "px" ) ], src iconUrl ] []
 
 
 nextView : String -> String -> Html msg
@@ -215,10 +215,10 @@ roleView : Maybe Mobster.Role -> Html Msg
 roleView role =
     case role of
         Just (Mobster.Driver) ->
-            iconView "./assets/driver-icon.png"
+            iconView "./assets/driver-icon.png" 20
 
         Just (Mobster.Navigator) ->
-            iconView "./assets/navigator-icon.png"
+            iconView "./assets/navigator-icon.png" 20
 
         Nothing ->
             span [] []
