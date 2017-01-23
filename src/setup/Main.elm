@@ -196,17 +196,15 @@ mobstersView : String -> Mobsters.MobsterList -> Html Msg
 mobstersView newMobster mobsterList =
     div [ style [ ( "padding-bottom", "50px" ) ] ]
         [ addMobsterInputView newMobster
-        , ul [] (List.indexedMap mobsterView mobsterList.mobsters)
+        , table [ class "table" ] (List.indexedMap mobsterView mobsterList.mobsters)
         ]
 
 
 mobsterView : Int -> String -> Html Msg
 mobsterView index mobster =
-    li []
-        [ div [ class "row" ]
-            [ span [ class "right-buffer mobster-name", style [ ( "text-align", "right" ), ( "min-width", "60px" ) ] ] [ text mobster ]
-            , reorderButtonView index
-            ]
+    tr []
+        [ td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ] [ text mobster ]
+        , td [] [ reorderButtonView index ]
         ]
 
 
