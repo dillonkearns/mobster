@@ -27,6 +27,7 @@ type ReorderDirection
 type Msg
     = StartTimer
     | Move ReorderDirection Int
+    | RemoveMobster Int
     | UpdateMobsterInput String
     | AddMobster
     | ChangeTimerDuration String
@@ -213,6 +214,7 @@ reorderButtonView mobsterIndex =
     div [ class "btn-group btn-group-xs" ]
         [ button [ class "btn btn-small btn-primary", onClick (Move Up mobsterIndex) ] [ text "↑" ]
         , button [ class "btn btn-small btn-primary", onClick (Move Down mobsterIndex) ] [ text "↓" ]
+        , button [ class "btn btn-small btn-danger", onClick (RemoveMobster mobsterIndex) ] [ text "x" ]
         ]
 
 
@@ -266,6 +268,13 @@ update msg model =
                 model ! []
             else
                 (addMobster model.newMobster model) ! []
+
+        RemoveMobster index ->
+            let
+                something =
+                    (Mobster.remove index model.mobsterList)
+            in
+                { model | mobsterList = something } ! []
 
         Move direction mobsterIndex ->
             let

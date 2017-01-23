@@ -2,6 +2,7 @@ module Mobster exposing (..)
 
 import Array
 import Maybe
+import Array.Extra
 
 
 type alias Mobster =
@@ -111,3 +112,24 @@ moveUp itemIndex list =
                     list.mobsters
     in
         { list | mobsters = updatedMobsters }
+
+
+remove : Int -> MobsterList -> MobsterList
+remove index list =
+    let
+        asArray =
+            (Array.fromList list.mobsters)
+
+        updatedMobsters =
+            Array.toList (Array.Extra.removeAt index asArray)
+
+        maxIndex =
+            ((List.length updatedMobsters) - 1)
+
+        nextDriverInBounds =
+            if index > maxIndex && index > 0 then
+                maxIndex
+            else
+                index
+    in
+        { list | mobsters = updatedMobsters, nextDriver = nextDriverInBounds }

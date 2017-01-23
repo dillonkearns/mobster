@@ -137,4 +137,30 @@ mobsterTests =
                         Expect.equal (list |> Mobster.moveDown 0)
                             { mobsters = [ "b", "a", "d", "c" ], nextDriver = 0 }
             ]
+        , describe "remove"
+            [ test "list with single item" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "only item" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobster.remove 0)
+                            { mobsters = [], nextDriver = 0 }
+            , test "with multiple items" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "first", "second" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobster.remove 0)
+                            { mobsters = [ "second" ], nextDriver = 0 }
+            , test "with nextDriver falling outside of list" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "first", "second", "third" ], nextDriver = 2 }
+                    in
+                        Expect.equal (list |> Mobster.remove 2)
+                            { mobsters = [ "first", "second" ], nextDriver = 1 }
+            ]
         ]
