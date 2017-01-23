@@ -6,7 +6,6 @@
   "scripts": {
     "start": "electron .",
     "test": "elm-test --watch",
-    "dev": "gulp dev",
     "build": "cd src && elm-live timer/Main.elm setup/Main.elm --output elm.js"
   },
   "repository": "https://github.com/dillonkearns/mobster",
