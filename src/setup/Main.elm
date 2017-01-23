@@ -21,6 +21,7 @@ onEnter msg =
 
 type Msg
     = StartTimer
+    | MoveUp Int
     | UpdateMobsterInput String
     | AddMobster
     | ChangeTimerDuration String
@@ -190,13 +191,18 @@ mobstersView : String -> Mobsters.MobsterList -> Html Msg
 mobstersView newMobster mobsterList =
     div [ style [ ( "padding-bottom", "50px" ) ] ]
         [ addMobsterInputView newMobster
-        , ul [] (List.map (\mobsterName -> li [] [ mobsterView mobsterName ]) mobsterList.mobsters)
+        , ul [] (List.indexedMap mobsterView mobsterList.mobsters)
         ]
 
 
-mobsterView : String -> Html Msg
-mobsterView mobster =
-    span [] [ text mobster ]
+mobsterView : Int -> String -> Html Msg
+mobsterView index mobster =
+    li []
+        [ span []
+            [ text mobster
+            , button [ class "btn btn-small btn-primary", onClick (MoveUp index) ] [ text "↑" ]
+            ]
+        ]
 
 
 view : Model -> Html Msg
@@ -249,6 +255,13 @@ update msg model =
                 model ! []
             else
                 (addMobster model.newMobster model) ! []
+
+        MoveUp mobsterIndex ->
+            let
+                updatedMobsterList =
+                    Mobsters.moveUp mobsterIndex model.mobsterList
+            in
+                { model | mobsterList = updatedMobsterList } ! []
 
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []

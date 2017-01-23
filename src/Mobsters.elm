@@ -1,6 +1,7 @@
 module Mobsters exposing (..)
 
 import Array
+import Maybe
 
 
 type alias Mobster =
@@ -78,3 +79,30 @@ nextIndex currentIndex mobsterList =
 rotate : MobsterList -> MobsterList
 rotate mobsterList =
     { mobsterList | nextDriver = (nextIndex mobsterList.nextDriver mobsterList) }
+
+
+moveUp : Int -> MobsterList -> MobsterList
+moveUp itemIndex list =
+    let
+        asArray =
+            Array.fromList list.mobsters
+
+        maybeItemToMove =
+            Array.get itemIndex asArray
+
+        maybeNeighboringItem =
+            Array.get (itemIndex - 1) asArray
+
+        updatedMobsters =
+            case ( maybeItemToMove, maybeNeighboringItem ) of
+                ( Just itemToMove, Just neighboringItem ) ->
+                    Array.toList
+                        (asArray
+                            |> Array.set itemIndex neighboringItem
+                            |> Array.set (itemIndex - 1) itemToMove
+                        )
+
+                ( _, _ ) ->
+                    list.mobsters
+    in
+        { list | mobsters = updatedMobsters }

@@ -103,4 +103,30 @@ mobsterTests =
                     in
                         Expect.equal (Mobsters.rotate list).nextDriver 0
             ]
+        , describe "move"
+            [ test "single item list" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "only item" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobsters.moveUp 0)
+                            { mobsters = [ "only item" ], nextDriver = 0 }
+            , test "index not in list" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobsters.moveUp 4)
+                            { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+            , test "multiple items without wrapping" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobsters.moveUp 3)
+                            { mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
+            ]
         ]
