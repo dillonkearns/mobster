@@ -161,3 +161,8 @@ mobsterListItemToMobster driverNavigator index mobsterName =
 mobsters : MobsterData -> Mobsters
 mobsters mobsterList =
     List.indexedMap (mobsterListItemToMobster (nextDriverNavigator mobsterList)) mobsterList.mobsters
+
+
+setNextDriver : Int -> MobsterData -> MobsterData
+setNextDriver newDriver mobsterData =
+    { mobsterData | nextDriver = newDriver }

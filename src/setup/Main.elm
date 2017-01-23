@@ -28,6 +28,7 @@ type Msg
     = StartTimer
     | Move ReorderDirection Int
     | RemoveMobster Int
+    | SetNextDriver Int
     | UpdateMobsterInput String
     | AddMobster
     | ChangeTimerDuration String
@@ -226,9 +227,10 @@ roleView role =
 reorderButtonView : Int -> Html Msg
 reorderButtonView mobsterIndex =
     div [ class "btn-group btn-group-xs" ]
-        [ button [ class "btn btn-small btn-primary", onClick (Move Up mobsterIndex) ] [ text "↑" ]
-        , button [ class "btn btn-small btn-primary", onClick (Move Down mobsterIndex) ] [ text "↓" ]
+        [ button [ class "btn btn-small btn-default", onClick (Move Up mobsterIndex) ] [ text "↑" ]
+        , button [ class "btn btn-small btn-default", onClick (Move Down mobsterIndex) ] [ text "↓" ]
         , button [ class "btn btn-small btn-danger", onClick (RemoveMobster mobsterIndex) ] [ text "x" ]
+        , button [ class "btn btn-small btn-default", onClick (SetNextDriver mobsterIndex) ] [ text "Drive" ]
         ]
 
 
@@ -285,10 +287,17 @@ update msg model =
 
         RemoveMobster index ->
             let
-                something =
+                updatedMobsterData =
                     (Mobster.remove index model.mobsterList)
             in
-                { model | mobsterList = something } ! []
+                { model | mobsterList = updatedMobsterData } ! []
+
+        SetNextDriver index ->
+            let
+                updatedMobsterData =
+                    (Mobster.setNextDriver index model.mobsterList)
+            in
+                { model | mobsterList = updatedMobsterData } ! []
 
         Move direction mobsterIndex ->
             let
