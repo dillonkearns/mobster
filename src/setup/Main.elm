@@ -19,15 +19,15 @@ onEnter msg =
         on "keydown" (keyCode |> Json.andThen isEnter)
 
 
-type ReorderDirection
-    = Up
-    | Down
+type MoblistOperation
+    = MoveUp
+    | MoveDown
+    | Remove
 
 
 type Msg
     = StartTimer
-    | Move ReorderDirection Int
-    | RemoveMobster Int
+    | UpdateMoblist MoblistOperation Int
     | SetNextDriver Int
     | UpdateMobsterInput String
     | AddMobster
@@ -227,9 +227,9 @@ roleView role =
 reorderButtonView : Int -> Html Msg
 reorderButtonView mobsterIndex =
     div [ class "btn-group btn-group-xs" ]
-        [ button [ class "btn btn-small btn-default", onClick (Move Up mobsterIndex) ] [ text "↑" ]
-        , button [ class "btn btn-small btn-default", onClick (Move Down mobsterIndex) ] [ text "↓" ]
-        , button [ class "btn btn-small btn-danger", onClick (RemoveMobster mobsterIndex) ] [ text "x" ]
+        [ button [ class "btn btn-small btn-default", onClick (UpdateMoblist MoveUp mobsterIndex) ] [ text "↑" ]
+        , button [ class "btn btn-small btn-default", onClick (UpdateMoblist MoveDown mobsterIndex) ] [ text "↓" ]
+        , button [ class "btn btn-small btn-danger", onClick (UpdateMoblist Remove mobsterIndex) ] [ text "x" ]
         , button [ class "btn btn-small btn-default", onClick (SetNextDriver mobsterIndex) ] [ text "Drive" ]
         ]
 
@@ -285,13 +285,6 @@ update msg model =
             else
                 (addMobster model.newMobster model) ! []
 
-        RemoveMobster index ->
-            let
-                updatedMobsterData =
-                    (Mobster.remove index model.mobsterList)
-            in
-                { model | mobsterList = updatedMobsterData } ! []
-
         SetNextDriver index ->
             let
                 updatedMobsterData =
@@ -299,15 +292,18 @@ update msg model =
             in
                 { model | mobsterList = updatedMobsterData } ! []
 
-        Move direction mobsterIndex ->
+        UpdateMoblist direction mobsterIndex ->
             let
                 updatedMobsterData =
                     case direction of
-                        Up ->
+                        MoveUp ->
                             Mobster.moveUp mobsterIndex model.mobsterList
 
-                        Down ->
+                        MoveDown ->
                             Mobster.moveDown mobsterIndex model.mobsterList
+
+                        Remove ->
+                            Mobster.remove mobsterIndex model.mobsterList
             in
                 { model | mobsterList = updatedMobsterData } ! []
 
