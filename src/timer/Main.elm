@@ -18,7 +18,7 @@ type alias Flags =
     { minutes : Int, driver : String, navigator : String }
 
 
-port timerdone : String -> Cmd msg
+port timerDone : () -> Cmd msg
 
 
 driverView : String -> Html msg
@@ -65,7 +65,7 @@ update msg model =
                     updateTimer model.secondsLeft
             in
                 if updatedSecondsLeft <= 0 then
-                    model ! [ timerdone "" ]
+                    model ! [ timerDone () ]
                 else
                     { model | secondsLeft = updatedSecondsLeft } ! []
 

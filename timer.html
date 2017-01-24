@@ -43,7 +43,7 @@
         ipcRenderer.send('timer-mouse-hover')
       }, false);
 
-    timer.ports.timerdone.subscribe(function() {
+    timer.ports.timerDone.subscribe(function() {
       ipcRenderer.send('timer-done')
     })
   </script>
