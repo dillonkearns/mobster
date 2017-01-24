@@ -62,15 +62,15 @@
 
     let setup = Elm.Setup.Main.fullscreen();
 
-    setup.ports.starttimer.subscribe(function(flags) {
+    setup.ports.startTimer.subscribe(function(flags) {
       ipcRenderer.send('start-timer', flags)
     });
 
-    setup.ports.quit.subscribe(function(flags) {
+    setup.ports.quit.subscribe(function() {
       ipcRenderer.send('quit')
     });
 
-    setup.ports.selectduration.subscribe(function(id) {
+    setup.ports.selectDuration.subscribe(function(id) {
       document.getElementById(id).select()
     });
 

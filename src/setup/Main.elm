@@ -75,13 +75,13 @@ flags model =
         }
 
 
-port starttimer : TimerConfiguration -> Cmd msg
+port startTimer : TimerConfiguration -> Cmd msg
 
 
-port quit : String -> Cmd msg
+port quit : () -> Cmd msg
 
 
-port selectduration : String -> Cmd msg
+port selectDuration : String -> Cmd msg
 
 
 timerDurationInputView : Int -> Html Msg
@@ -256,7 +256,7 @@ update msg model =
                     | screenState = Continue
                     , mobsterList = rotatedMobsterData
                 }
-                    ! [ (starttimer (flags model)) ]
+                    ! [ (startTimer (flags model)) ]
 
         ChangeTimerDuration durationAsString ->
             let
@@ -274,7 +274,7 @@ update msg model =
                 { model | timerDuration = duration } ! []
 
         SelectDurationInput ->
-            model ! [ selectduration "timer-duration" ]
+            model ! [ selectDuration "timer-duration" ]
 
         OpenConfigure ->
             { model | screenState = Configure } ! []
@@ -311,7 +311,7 @@ update msg model =
             { model | newMobster = text } ! []
 
         Quit ->
-            model ! [ quit "" ]
+            model ! [ quit () ]
 
 
 addMobster : String -> Model -> Model
