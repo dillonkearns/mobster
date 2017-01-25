@@ -4,7 +4,7 @@ import Test exposing (..)
 import Expect
 import Timer.Main as TimerMain
 import Timer.Timer as Timer
-import Mobster
+import Mobster exposing (MoblistOperation(..))
 
 
 all : Test
@@ -110,7 +110,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "only item" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.moveUp 0)
+                        Expect.equal (list |> Mobster.updateMoblist (MoveUp 0))
                             { mobsters = [ "only item" ], nextDriver = 0 }
             , test "index not in list" <|
                 \() ->
@@ -118,7 +118,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.moveUp 4)
+                        Expect.equal (list |> Mobster.updateMoblist (MoveUp 4))
                             { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
             , test "multiple items without wrapping" <|
                 \() ->
@@ -126,7 +126,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.moveUp 3)
+                        Expect.equal (list |> Mobster.updateMoblist (MoveUp 3))
                             { mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
             , test "multiple items move down without wrapping" <|
                 \() ->
@@ -134,7 +134,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.moveDown 0)
+                        Expect.equal (list |> Mobster.updateMoblist (MoveDown 0))
                             { mobsters = [ "b", "a", "d", "c" ], nextDriver = 0 }
             ]
         , describe "remove"
@@ -144,7 +144,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "only item" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.remove 0)
+                        Expect.equal (list |> Mobster.updateMoblist (Remove 0))
                             { mobsters = [], nextDriver = 0 }
             , test "with multiple items" <|
                 \() ->
@@ -152,7 +152,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "first", "second" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.remove 0)
+                        Expect.equal (list |> Mobster.updateMoblist (Remove 0))
                             { mobsters = [ "second" ], nextDriver = 0 }
             , test "with nextDriver falling outside of list" <|
                 \() ->
@@ -160,7 +160,7 @@ mobsterTests =
                         list =
                             { mobsters = [ "first", "second", "third" ], nextDriver = 2 }
                     in
-                        Expect.equal (list |> Mobster.remove 2)
+                        Expect.equal (list |> Mobster.updateMoblist (Remove 2))
                             { mobsters = [ "first", "second" ], nextDriver = 1 }
             ]
         ]
