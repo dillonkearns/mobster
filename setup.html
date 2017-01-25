@@ -54,7 +54,8 @@
     const $ = require('jquery')
     const {ipcRenderer} = require('electron');
 
-    let setup = Elm.Setup.Main.fullscreen();
+    let settings = JSON.parse(window.localStorage.getItem('setup'))
+    let setup = Elm.Setup.Main.fullscreen(settings);
 
     setup.ports.startTimer.subscribe(function(flags) {
       ipcRenderer.send('start-timer', flags)
@@ -67,6 +68,10 @@
     setup.ports.selectDuration.subscribe(function(id) {
       document.getElementById(id).select()
     });
+
+    setup.ports.saveSetup.subscribe(function(setup) {
+      window.localStorage.setItem('setup', JSON.stringify(setup))
+    })
 
     $(() => {
       $('.invisible-trigger').hover(

@@ -1,8 +1,11 @@
-module Mobster exposing (MoblistOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate)
+module Mobster exposing (MoblistOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, encode, decode)
 
 import Array
 import Maybe
 import Array.Extra
+import Json.Decode as Decode exposing (Decoder)
+import Json.Encode as Encode
+import Json.Decode.Pipeline as Pipeline exposing (required, optional, hardcoded)
 
 
 type MoblistOperation
@@ -14,6 +17,18 @@ type MoblistOperation
 
 type alias MobsterData =
     { mobsters : List String, nextDriver : Int }
+
+
+decoder : Decoder MobsterData
+decoder =
+    Pipeline.decode MobsterData
+        |> required "mobsters" (Decode.list Decode.string)
+        |> required "nextDriver" (Decode.int)
+
+
+decode : Encode.Value -> Result String MobsterData
+decode data =
+    Decode.decodeValue decoder data
 
 
 updateMoblist : MoblistOperation -> MobsterData -> MobsterData

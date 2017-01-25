@@ -7,6 +7,7 @@ import Json.Decode as Json
 import Task
 import Dom
 import Mobster exposing (MoblistOperation)
+import Json.Decode as Decode
 
 
 onEnter : Msg -> Attribute Msg
@@ -73,6 +74,9 @@ flags model =
 
 
 port startTimer : TimerConfiguration -> Cmd msg
+
+
+port saveSetup : Mobster.MobsterData -> Cmd msg
 
 
 port quit : () -> Cmd msg
@@ -280,7 +284,11 @@ update msg model =
             if model.newMobster == "" then
                 model ! []
             else
-                (addMobster model.newMobster model) ! []
+                let
+                    updatedModel =
+                        (addMobster model.newMobster model)
+                in
+                    updatedModel ! [ saveSetup updatedModel.mobsterList ]
 
         ClickAddMobster ->
             if model.newMobster == "" then
@@ -289,17 +297,24 @@ update msg model =
                 let
                     command =
                         Task.attempt DomFocusResult (Dom.focus "add-mobster")
+
+                    updatedModel =
+                        (addMobster model.newMobster model)
                 in
-                    (addMobster model.newMobster model) ! [ command ]
+                    updatedModel ! [ command, saveSetup updatedModel.mobsterList ]
 
         DomFocusResult _ ->
             model ! []
 
         UpdateMoblist operation ->
-            { model
-                | mobsterList = Mobster.updateMoblist operation model.mobsterList
-            }
-                ! []
+            let
+                updatedMobsterData =
+                    Mobster.updateMoblist operation model.mobsterList
+            in
+                { model
+                    | mobsterList = updatedMobsterData
+                }
+                    ! [ saveSetup updatedMobsterData ]
 
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []
@@ -319,10 +334,24 @@ addMobster newMobster model =
         { model | newMobster = "", mobsterList = updatedMobsterData }
 
 
-main : Program Never Model Msg
+init : Decode.Value -> ( Model, Cmd msg )
+init flags =
+    let
+        decodedMobsterData =
+            Mobster.decode flags
+    in
+        case decodedMobsterData of
+            Ok mobsterData ->
+                { initialModel | mobsterList = mobsterData } ! []
+
+            Err errorString ->
+                initialModel ! []
+
+
+main : Program Decode.Value Model Msg
 main =
-    Html.program
-        { init = ( initialModel, Cmd.none )
+    Html.programWithFlags
+        { init = init
         , subscriptions = \_ -> Sub.none
         , update = update
         , view = view
