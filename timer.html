@@ -9,17 +9,24 @@
     <script type="text/javascript" src="./src/elm.js"></script>
     <script>window.Elm = require('./src/elm.js');</script>
     <style>
-      html,body{
+      html {
+        background-color: rgba(0, 0, 0, 0);
+      }
+      body {
         width: 100%;
-        height: 100%;   }
+        height: 100%;
 
+        opacity: .7 !important;
+        background-color: rgba(0, 0, 0, 0.2);
+        color: white;
+      }
 
       .btn:focus {
         outline: none;
       }
       </style>
   </head>
-  <body id="timer-window" style="color: white; background-color: rgba(0, 0, 0, .6);">
+  <body id="timer-window">
   </body>
 
   <script>
