@@ -22,15 +22,15 @@ onEnter msg =
 
 
 type MoblistOperation
-    = MoveUp
-    | MoveDown
-    | Remove
+    = MoveUp Int
+    | MoveDown Int
+    | Remove Int
+    | SetNextDriver Int
 
 
 type Msg
     = StartTimer
-    | UpdateMoblist MoblistOperation Int
-    | SetNextDriver Int
+    | UpdateMoblist MoblistOperation
     | UpdateMobsterInput String
     | AddMobster
     | ClickAddMobster
@@ -231,10 +231,10 @@ roleView role =
 reorderButtonView : Int -> Html Msg
 reorderButtonView mobsterIndex =
     div [ class "btn-group btn-group-xs" ]
-        [ button [ class "btn btn-small btn-default", onClick (UpdateMoblist MoveUp mobsterIndex) ] [ text "↑" ]
-        , button [ class "btn btn-small btn-default", onClick (UpdateMoblist MoveDown mobsterIndex) ] [ text "↓" ]
-        , button [ class "btn btn-small btn-danger", onClick (UpdateMoblist Remove mobsterIndex) ] [ text "x" ]
-        , button [ class "btn btn-small btn-default", onClick (SetNextDriver mobsterIndex) ] [ text "Drive" ]
+        [ button [ class "btn btn-small btn-default", onClick (UpdateMoblist (MoveUp mobsterIndex)) ] [ text "↑" ]
+        , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (MoveDown mobsterIndex)) ] [ text "↓" ]
+        , button [ class "btn btn-small btn-danger", onClick (UpdateMoblist (Remove mobsterIndex)) ] [ text "x" ]
+        , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (SetNextDriver mobsterIndex)) ] [ text "Drive" ]
         ]
 
 
@@ -302,25 +302,21 @@ update msg model =
         DomFocusResult _ ->
             model ! []
 
-        SetNextDriver index ->
-            let
-                updatedMobsterData =
-                    (Mobster.setNextDriver index model.mobsterList)
-            in
-                { model | mobsterList = updatedMobsterData } ! []
-
-        UpdateMoblist direction mobsterIndex ->
+        UpdateMoblist direction ->
             let
                 updatedMobsterData =
                     case direction of
-                        MoveUp ->
+                        MoveUp mobsterIndex ->
                             Mobster.moveUp mobsterIndex model.mobsterList
 
-                        MoveDown ->
+                        MoveDown mobsterIndex ->
                             Mobster.moveDown mobsterIndex model.mobsterList
 
-                        Remove ->
+                        Remove mobsterIndex ->
                             Mobster.remove mobsterIndex model.mobsterList
+
+                        SetNextDriver index ->
+                            Mobster.setNextDriver index model.mobsterList
             in
                 { model | mobsterList = updatedMobsterData } ! []
 
