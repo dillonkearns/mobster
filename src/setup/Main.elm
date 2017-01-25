@@ -6,7 +6,7 @@ import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
 import Task
 import Dom
-import Mobster
+import Mobster exposing (MoblistOperation)
 
 
 onEnter : Msg -> Attribute Msg
@@ -19,13 +19,6 @@ onEnter msg =
                 Json.fail "not the right keycode"
     in
         on "keydown" (keyCode |> Json.andThen isEnter)
-
-
-type MoblistOperation
-    = MoveUp Int
-    | MoveDown Int
-    | Remove Int
-    | SetNextDriver Int
 
 
 type Msg
@@ -198,7 +191,7 @@ addMobsterInputView newMobster =
         ]
 
 
-mobstersView : String -> Mobster.Mobsters -> Html Msg
+mobstersView : String -> List Mobster.Mobster -> Html Msg
 mobstersView newMobster mobsters =
     div [ style [ ( "padding-bottom", "50px" ) ] ]
         [ addMobsterInputView newMobster
@@ -231,10 +224,10 @@ roleView role =
 reorderButtonView : Int -> Html Msg
 reorderButtonView mobsterIndex =
     div [ class "btn-group btn-group-xs" ]
-        [ button [ class "btn btn-small btn-default", onClick (UpdateMoblist (MoveUp mobsterIndex)) ] [ text "↑" ]
-        , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (MoveDown mobsterIndex)) ] [ text "↓" ]
-        , button [ class "btn btn-small btn-danger", onClick (UpdateMoblist (Remove mobsterIndex)) ] [ text "x" ]
-        , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (SetNextDriver mobsterIndex)) ] [ text "Drive" ]
+        [ button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveUp mobsterIndex)) ] [ text "↑" ]
+        , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveDown mobsterIndex)) ] [ text "↓" ]
+        , button [ class "btn btn-small btn-danger", onClick (UpdateMoblist (Mobster.Remove mobsterIndex)) ] [ text "x" ]
+        , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.SetNextDriver mobsterIndex)) ] [ text "Drive" ]
         ]
 
 
@@ -302,23 +295,11 @@ update msg model =
         DomFocusResult _ ->
             model ! []
 
-        UpdateMoblist direction ->
-            let
-                updatedMobsterData =
-                    case direction of
-                        MoveUp mobsterIndex ->
-                            Mobster.moveUp mobsterIndex model.mobsterList
-
-                        MoveDown mobsterIndex ->
-                            Mobster.moveDown mobsterIndex model.mobsterList
-
-                        Remove mobsterIndex ->
-                            Mobster.remove mobsterIndex model.mobsterList
-
-                        SetNextDriver index ->
-                            Mobster.setNextDriver index model.mobsterList
-            in
-                { model | mobsterList = updatedMobsterData } ! []
+        UpdateMoblist operation ->
+            { model
+                | mobsterList = Mobster.updateMoblist operation model.mobsterList
+            }
+                ! []
 
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []

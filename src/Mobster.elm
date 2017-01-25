@@ -1,12 +1,35 @@
-module Mobster exposing (..)
+module Mobster exposing (MoblistOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate)
 
 import Array
 import Maybe
 import Array.Extra
 
 
+type MoblistOperation
+    = MoveUp Int
+    | MoveDown Int
+    | Remove Int
+    | SetNextDriver Int
+
+
 type alias MobsterData =
     { mobsters : List String, nextDriver : Int }
+
+
+updateMoblist : MoblistOperation -> MobsterData -> MobsterData
+updateMoblist moblistOperation moblist =
+    case moblistOperation of
+        MoveUp mobsterIndex ->
+            moveUp mobsterIndex moblist
+
+        MoveDown mobsterIndex ->
+            moveDown mobsterIndex moblist
+
+        Remove mobsterIndex ->
+            remove mobsterIndex moblist
+
+        SetNextDriver index ->
+            setNextDriver index moblist
 
 
 empty : MobsterData
