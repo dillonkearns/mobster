@@ -4,6 +4,8 @@ import Html exposing (..)
 import Html.Attributes exposing (class, value, type_, id, style, src)
 import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
+import Task
+import Dom
 import Mobster
 
 
@@ -31,6 +33,8 @@ type Msg
     | SetNextDriver Int
     | UpdateMobsterInput String
     | AddMobster
+    | ClickAddMobster
+    | DomFocusResult (Result Dom.Error ())
     | ChangeTimerDuration String
     | SelectDurationInput
     | OpenConfigure
@@ -188,8 +192,8 @@ addMobsterInputView : String -> Html Msg
 addMobsterInputView newMobster =
     div [ class "row top-buffer" ]
         [ div [ class "input-group" ]
-            [ input [ type_ "text", class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster ] []
-            , span [ class "input-group-btn", type_ "button" ] [ button [ class "btn btn-primary", onClick AddMobster ] [ text "Add Mobster" ] ]
+            [ input [ id "add-mobster", Html.Attributes.placeholder "Jane Doe", type_ "text", class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster ] []
+            , span [ class "input-group-btn", type_ "button" ] [ button [ class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
             ]
         ]
 
@@ -284,6 +288,19 @@ update msg model =
                 model ! []
             else
                 (addMobster model.newMobster model) ! []
+
+        ClickAddMobster ->
+            if model.newMobster == "" then
+                model ! []
+            else
+                let
+                    command =
+                        Task.attempt DomFocusResult (Dom.focus "add-mobster")
+                in
+                    (addMobster model.newMobster model) ! [ command ]
+
+        DomFocusResult _ ->
+            model ! []
 
         SetNextDriver index ->
             let
