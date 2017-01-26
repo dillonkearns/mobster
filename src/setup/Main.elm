@@ -109,20 +109,22 @@ quitButton =
 
 titleTextView : Html msg
 titleTextView =
-    h1 [ class "text-primary text-center", id "mobster-title" ] [ text "Mobster" ]
+    h1 [ class "text-info text-center", id "mobster-title", style [ ( "font-size", "62px" ) ] ] [ text "Mobster" ]
 
 
 invisibleTrigger : Html msg
 invisibleTrigger =
-    img [ src "./assets/invisible.png", class "invisible-trigger", style [ ( "max-width", "30px" ) ] ] []
+    img [ src "./assets/invisible.png", class "invisible-trigger pull-left", style [ ( "max-width", "30px" ) ] ] []
 
 
 configureView : Model -> Html Msg
 configureView model =
     div [ class "container-fluid" ]
-        [ invisibleTrigger
-        , titleTextView
-        , button [ onClick StartTimer, class "btn btn-info btn-lg btn-block" ] [ text "Start Mobbing" ]
+        [ div [ class "row" ]
+            [ invisibleTrigger
+            , titleTextView
+            ]
+        , button [ onClick StartTimer, class "btn btn-success btn-lg btn-block top-buffer", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
         , timerDurationInputView model.timerDuration
         , mobstersView model.newMobster (Mobster.mobsters model.mobsterList)
         , div [ class "row top-buffer" ] [ quitButton ]
