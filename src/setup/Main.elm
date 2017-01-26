@@ -115,7 +115,7 @@ titleTextView =
 
 invisibleTrigger : Html msg
 invisibleTrigger =
-    img [ src "./assets/invisible.png", class "invisible-trigger pull-left", style [ ( "max-width", "30px" ) ] ] []
+    img [ src "./assets/invisible.png", class "invisible-trigger pull-left", style [ ( "max-width", "35px" ) ] ] []
 
 
 configureView : Model -> Html Msg
@@ -204,7 +204,7 @@ addMobsterInputView newMobster =
 
 mobstersView : String -> List Mobster.Mobster -> Html Msg
 mobstersView newMobster mobsters =
-    div [ style [ ( "padding-bottom", "50px" ) ] ]
+    div [ style [ ( "padding-bottom", "35px" ) ] ]
         [ addMobsterInputView newMobster
         , table [ class "table h3" ] (List.map mobsterView mobsters)
         ]
