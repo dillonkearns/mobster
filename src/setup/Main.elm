@@ -160,8 +160,8 @@ driverView : Mobster.Mobster -> Html Msg
 driverView mobster =
     div [ class "col-md-4 text-success" ]
         [ iconView "./assets/driver-icon.png" 40
-        , text mobster.name
-        , button [ onClick (UpdateMoblist (Mobster.Remove mobster.index)), class "btn btn-small btn-danger" ] [ text "Not here" ]
+        , span [ class "right-buffer" ] [ text mobster.name ]
+        , button [ onClick (UpdateMoblist (Mobster.Remove mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
         ]
 
 
@@ -169,8 +169,8 @@ navigatorView : Mobster.Mobster -> Html Msg
 navigatorView mobster =
     div [ class "col-md-4 text-success" ]
         [ iconView "./assets/navigator-icon.png" 40
-        , text mobster.name
-        , button [ onClick (UpdateMoblist (Mobster.Remove mobster.index)), class "btn btn-small btn-danger" ] [ text "Not here" ]
+        , span [ class "right-buffer" ] [ text mobster.name ]
+        , button [ onClick (UpdateMoblist (Mobster.Remove mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
         ]
 
 
@@ -201,7 +201,7 @@ mobstersView : String -> List Mobster.Mobster -> Html Msg
 mobstersView newMobster mobsters =
     div [ style [ ( "padding-bottom", "50px" ) ] ]
         [ addMobsterInputView newMobster
-        , table [ class "table" ] (List.map mobsterView mobsters)
+        , table [ class "table h3" ] (List.map mobsterView mobsters)
         ]
 
 
