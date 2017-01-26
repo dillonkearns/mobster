@@ -1,5 +1,5 @@
 const electron = require('electron')
-const {ipcMain} = require('electron')
+const {ipcMain, globalShortcut} = require('electron')
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -103,8 +103,22 @@ function createWindow () {
 
 }
 
+function toggleMainWindow() {
+  if (mainWindow.isVisible()) {
+    mainWindow.hide()
+  }
+  else {
+    mainWindow.show()
+  }
+}
+
 function createWindows() {
   createWindow()
+  globalShortcut.register('CommandOrControl+Shift+K', () => {
+    if (!timerWindow) {
+      toggleMainWindow()
+    }
+  })
 }
 
 // This method will be called when Electron has finished
