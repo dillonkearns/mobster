@@ -58,19 +58,22 @@ add mobster list =
 
 
 type alias DriverNavigator =
-    { driver : String
-    , navigator : String
+    { driver : Mobster
+    , navigator : Mobster
     }
 
 
 nextDriverNavigator : MobsterData -> DriverNavigator
-nextDriverNavigator list =
+nextDriverNavigator mobsterData =
     let
+        list =
+            asMobsterList mobsterData
+
         mobstersAsArray =
-            Array.fromList list.mobsters
+            Array.fromList list
 
         maybeDriver =
-            Array.get list.nextDriver mobstersAsArray
+            Array.get mobsterData.nextDriver mobstersAsArray
 
         driver =
             case maybeDriver of
@@ -78,10 +81,16 @@ nextDriverNavigator list =
                     justDriver
 
                 Nothing ->
-                    ""
+                    { name = "", role = Nothing, index = -1 }
+
+        driverWithRole =
+            { driver | role = Just Driver }
+
+        navigatorIndex =
+            nextIndex mobsterData.nextDriver mobsterData
 
         maybeNavigator =
-            Array.get (nextIndex list.nextDriver list) mobstersAsArray
+            Array.get navigatorIndex mobstersAsArray
 
         navigator =
             case maybeNavigator of
@@ -90,9 +99,12 @@ nextDriverNavigator list =
 
                 Nothing ->
                     driver
+
+        navigatorWithRole =
+            { navigator | role = Just Navigator }
     in
-        { driver = driver
-        , navigator = navigator
+        { driver = driverWithRole
+        , navigator = navigatorWithRole
         }
 
 
@@ -186,14 +198,20 @@ mobsterListItemToMobster : DriverNavigator -> Int -> String -> Mobster
 mobsterListItemToMobster driverNavigator index mobsterName =
     let
         role =
-            if mobsterName == driverNavigator.driver then
+            if mobsterName == driverNavigator.driver.name then
                 Just Driver
-            else if mobsterName == driverNavigator.navigator then
+            else if mobsterName == driverNavigator.navigator.name then
                 Just Navigator
             else
                 Nothing
     in
         { name = mobsterName, role = role, index = index }
+
+
+asMobsterList : MobsterData -> List Mobster
+asMobsterList mobsterData =
+    List.indexedMap (\index mobsterName -> { name = mobsterName, index = index, role = Nothing }) mobsterData.mobsters
+        |> List.map (\details -> { details | role = Nothing })
 
 
 mobsters : MobsterData -> Mobsters

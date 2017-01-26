@@ -68,8 +68,8 @@ flags model =
             Mobster.nextDriverNavigator model.mobsterList
     in
         { minutes = model.timerDuration
-        , driver = driverNavigator.driver
-        , navigator = driverNavigator.navigator
+        , driver = driverNavigator.driver.name
+        , navigator = driverNavigator.navigator.name
         }
 
 
@@ -143,7 +143,7 @@ continueView model =
         ]
 
 
-nextDriverNavigatorView : Model -> Html msg
+nextDriverNavigatorView : Model -> Html Msg
 nextDriverNavigatorView model =
     let
         driverNavigator =
@@ -156,19 +156,21 @@ nextDriverNavigatorView model =
             ]
 
 
-driverView : String -> Html msg
-driverView name =
+driverView : Mobster.Mobster -> Html Msg
+driverView mobster =
     div [ class "col-md-4 text-success" ]
         [ iconView "./assets/driver-icon.png" 40
-        , text name
+        , text mobster.name
+        , button [ onClick (UpdateMoblist (Mobster.Remove mobster.index)), class "btn btn-small btn-danger" ] [ text "Not here" ]
         ]
 
 
-navigatorView : String -> Html msg
-navigatorView name =
+navigatorView : Mobster.Mobster -> Html Msg
+navigatorView mobster =
     div [ class "col-md-4 text-success" ]
         [ iconView "./assets/navigator-icon.png" 40
-        , text name
+        , text mobster.name
+        , button [ onClick (UpdateMoblist (Mobster.Remove mobster.index)), class "btn btn-small btn-danger" ] [ text "Not here" ]
         ]
 
 

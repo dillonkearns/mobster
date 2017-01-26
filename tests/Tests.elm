@@ -51,41 +51,71 @@ mobsterTests =
                     let
                         startingList =
                             { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+
+                        expectedDriver =
+                            { name = "Jane Doe", index = 0, role = Just Mobster.Driver }
+
+                        expectedNavigator =
+                            { name = "John Smith", index = 1, role = Just Mobster.Navigator }
                     in
                         Expect.equal (Mobster.nextDriverNavigator startingList)
-                            { driver = "Jane Doe", navigator = "John Smith" }
-            , test "with two mobsters" <|
+                            { driver = expectedDriver, navigator = expectedNavigator }
+            , test "with three mobsters" <|
                 \() ->
                     let
                         list =
                             { mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 1 }
+
+                        expectedDriver =
+                            { name = "John Smith", index = 1, role = Just Mobster.Driver }
+
+                        expectedNavigator =
+                            { name = "Bob Jones", index = 2, role = Just Mobster.Navigator }
                     in
                         Expect.equal (Mobster.nextDriverNavigator list)
-                            { driver = "John Smith", navigator = "Bob Jones" }
+                            { driver = expectedDriver, navigator = expectedNavigator }
             , test "wraps at end of mobster list" <|
                 \() ->
                     let
                         list =
                             { mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 2 }
+
+                        expectedDriver =
+                            { name = "Bob Jones", index = 2, role = Just Mobster.Driver }
+
+                        expectedNavigator =
+                            { name = "Jane Doe", index = 0, role = Just Mobster.Navigator }
                     in
                         Expect.equal (Mobster.nextDriverNavigator list)
-                            { driver = "Bob Jones", navigator = "Jane Doe" }
+                            { driver = expectedDriver, navigator = expectedNavigator }
             , test "is duplicated with one mobster" <|
                 \() ->
                     let
                         startingList =
                             { mobsters = [ "Jane Doe" ], nextDriver = 0 }
+
+                        expectedDriver =
+                            { name = "Jane Doe", index = 0, role = Just Mobster.Driver }
+
+                        expectedNavigator =
+                            { name = "Jane Doe", index = 0, role = Just Mobster.Navigator }
                     in
                         Expect.equal (Mobster.nextDriverNavigator startingList)
-                            { driver = "Jane Doe", navigator = "Jane Doe" }
+                            { driver = expectedDriver, navigator = expectedNavigator }
             , test "uses default with no mobsters" <|
                 \() ->
                     let
                         startingList =
                             { mobsters = [], nextDriver = 0 }
+
+                        expectedDriver =
+                            { name = "", index = -1, role = Just Mobster.Driver }
+
+                        expectedNavigator =
+                            { name = "", index = -1, role = Just Mobster.Navigator }
                     in
                         Expect.equal (Mobster.nextDriverNavigator startingList)
-                            { driver = "", navigator = "" }
+                            { driver = expectedDriver, navigator = expectedNavigator }
             ]
         , describe "rotate"
             [ test "without wrapping" <|
