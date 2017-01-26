@@ -137,8 +137,10 @@ configureView model =
 continueView : Model -> Html Msg
 continueView model =
     div [ class "container-fluid" ]
-        [ invisibleTrigger
-        , titleTextView
+        [ div [ class "row" ]
+            [ invisibleTrigger
+            , titleTextView
+            ]
         , div [ class "row", style [ ( "padding-bottom", "20px" ) ] ]
             [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Continue" ]
             ]
