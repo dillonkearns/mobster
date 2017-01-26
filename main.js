@@ -16,13 +16,13 @@ const timerHeight = 130
 const timerWidth = 150
 
 function positionWindowLeft(window) {
-  let bounds = electron.screen.getPrimaryDisplay().bounds
-  window.setPosition(0, bounds.height - timerHeight);
+  let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
+  window.setPosition(0, height - timerHeight);
 }
 
 function positionWindowRight(window) {
-  let bounds = electron.screen.getPrimaryDisplay().bounds
-  window.setPosition(bounds.width - timerWidth, bounds.height - timerHeight);
+  const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
+  window.setPosition(width - timerWidth, height - timerHeight);
 }
 
 function startTimer(flags) {
