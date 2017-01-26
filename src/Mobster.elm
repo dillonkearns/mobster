@@ -173,10 +173,10 @@ remove index list =
             ((List.length updatedMobsters) - 1)
 
         nextDriverInBounds =
-            if index > maxIndex && index > 0 then
-                maxIndex
+            if list.nextDriver > maxIndex && list.nextDriver > 0 then
+                0
             else
-                index
+                list.nextDriver
     in
         { list | mobsters = updatedMobsters, nextDriver = nextDriverInBounds }
 

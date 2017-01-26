@@ -184,13 +184,21 @@ mobsterTests =
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Remove 0))
                             { mobsters = [ "second" ], nextDriver = 0 }
-            , test "with nextDriver falling outside of list" <|
+            , test "driver doesn't change when navigator is removed" <|
                 \() ->
                     let
                         list =
-                            { mobsters = [ "first", "second", "third" ], nextDriver = 2 }
+                            { mobsters = [ "Kirk", "Spock", "McCoy" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobster.updateMoblist (Remove 1))
+                            { mobsters = [ "Kirk", "McCoy" ], nextDriver = 0 }
+            , test "wraps around list for next driver when nextDriver is removed and was at end of list" <|
+                \() ->
+                    let
+                        list =
+                            { mobsters = [ "Kirk", "Spock", "McCoy" ], nextDriver = 2 }
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Remove 2))
-                            { mobsters = [ "first", "second" ], nextDriver = 1 }
+                            { mobsters = [ "Kirk", "Spock" ], nextDriver = 0 }
             ]
         ]
