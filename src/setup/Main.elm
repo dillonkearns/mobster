@@ -125,8 +125,10 @@ configureView model =
             , titleTextView
             ]
         , button [ onClick StartTimer, class "btn btn-success btn-lg btn-block top-buffer", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
-        , timerDurationInputView model.timerDuration
-        , mobstersView model.newMobster (Mobster.mobsters model.mobsterList)
+        , div [ class "row" ]
+            [ div [ class "col-md-6" ] [ timerDurationInputView model.timerDuration ]
+            , div [ class "col-md-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterList) ]
+            ]
         , div [ class "row top-buffer" ] [ quitButton ]
         ]
 
