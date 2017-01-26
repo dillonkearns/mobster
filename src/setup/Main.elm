@@ -125,7 +125,7 @@ configureView model =
             [ invisibleTrigger
             , titleTextView
             ]
-        , button [ onClick StartTimer, class "btn btn-success btn-lg btn-block top-buffer", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
+        , button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
         , div [ class "row" ]
             [ div [ class "col-md-6" ] [ timerDurationInputView model.timerDuration ]
             , div [ class "col-md-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterList) ]
@@ -139,11 +139,11 @@ continueView model =
     div [ class "container-fluid" ]
         [ invisibleTrigger
         , titleTextView
-        , div [ class "row" ]
-            [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block" ] [ text "Continue" ]
+        , div [ class "row", style [ ( "padding-bottom", "20px" ) ] ]
+            [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Continue" ]
             ]
         , nextDriverNavigatorView model
-        , div [ class "row top-buffer" ] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
+        , div [ class "row top-buffer", style [ ( "padding-bottom", "20px" ) ] ] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
         , div [ class "row top-buffer" ] [ quitButton ]
         ]
 
