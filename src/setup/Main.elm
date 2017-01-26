@@ -96,6 +96,7 @@ timerDurationInputView duration =
             , Html.Attributes.min "1"
             , Html.Attributes.max "15"
             , value (toString duration)
+            , class "right-buffer"
             ]
             []
         , text "Minutes"
