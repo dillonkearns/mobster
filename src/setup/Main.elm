@@ -169,9 +169,10 @@ nextDriverNavigatorView model =
             Mobster.nextDriverNavigator model.mobsterList
     in
         div [ class "row h1" ]
-            [ div [ class "text-muted col-md-4" ] [ text "Next:" ]
+            [ div [ class "text-muted col-md-3" ] [ text "Next:" ]
             , driverView driverNavigator.driver
             , navigatorView driverNavigator.navigator
+            , button [ class "btn btn-small btn-default", onClick (UpdateMoblist Mobster.SkipTurn) ] [ text "Skip Turn" ]
             ]
 
 

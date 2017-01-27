@@ -13,6 +13,7 @@ type MoblistOperation
     | MoveDown Int
     | Remove Int
     | SetNextDriver Int
+    | SkipTurn
 
 
 type alias MobsterData =
@@ -45,6 +46,9 @@ updateMoblist moblistOperation moblist =
 
         SetNextDriver index ->
             setNextDriver index moblist
+
+        SkipTurn ->
+            setNextDriver (nextIndex moblist.nextDriver moblist) moblist
 
 
 empty : MobsterData
