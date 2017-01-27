@@ -113,11 +113,20 @@ function toggleMainWindow() {
   }
 }
 
+function onClickTrayIcon() {
+  if (!timerWindow) {
+    toggleMainWindow()
+  } else {
+    closeTimer()
+    showSetupAgain(mainWindow)
+  }
+}
+
 const createTray = () => {
   tray = new Tray(path.join(assetsDirectory, 'tray-icon.png'))
-  tray.on('right-click', toggleMainWindow)
-  tray.on('double-click', toggleMainWindow)
-  tray.on('click', toggleMainWindow)
+  tray.on('right-click', onClickTrayIcon)
+  tray.on('double-click', onClickTrayIcon)
+  tray.on('click', onClickTrayIcon)
 }
 
 function createWindows() {
