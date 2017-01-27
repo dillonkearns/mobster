@@ -27,7 +27,7 @@ function positionWindowRight(window) {
 
 function startTimer(flags) {
   timerWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
-    width: timerWidth, height: timerHeight})
+    width: timerWidth, height: timerHeight, focusable: false})
 
   positionWindowLeft(timerWindow)
 
