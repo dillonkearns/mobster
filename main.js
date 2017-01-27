@@ -1,19 +1,20 @@
 const electron = require('electron')
-const {ipcMain, globalShortcut} = require('electron')
-// Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
+const {ipcMain, globalShortcut, app, Tray, BrowserWindow} = require('electron')
 
 const path = require('path')
 const url = require('url')
+const assetsDirectory = path.join(__dirname, 'assets')
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, timerWindow
+let mainWindow, timerWindow, tray
 
 const timerHeight = 130
 const timerWidth = 150
+
+// Don't show the app in the doc
+app.dock.hide()
 
 function positionWindowLeft(window) {
   let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
@@ -112,8 +113,16 @@ function toggleMainWindow() {
   }
 }
 
+const createTray = () => {
+  tray = new Tray(path.join(assetsDirectory, 'tray-icon.png'))
+  tray.on('right-click', toggleMainWindow)
+  tray.on('double-click', toggleMainWindow)
+  tray.on('click', toggleMainWindow)
+}
+
 function createWindows() {
   createWindow()
+  createTray()
   globalShortcut.register('CommandOrControl+Shift+K', () => {
     if (!timerWindow) {
       toggleMainWindow()
