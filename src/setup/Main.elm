@@ -1,13 +1,14 @@
 port module Setup.Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, type_, id, style, src)
+import Html.Attributes exposing (class, value, type_, id, style, src, title)
 import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
 import Task
 import Dom
 import Mobster exposing (MoblistOperation)
 import Json.Decode as Decode
+import Keyboard.Combo
 
 
 onEnter : Msg -> Attribute Msg
@@ -33,6 +34,14 @@ type Msg
     | SelectDurationInput
     | OpenConfigure
     | Quit
+    | ComboMsg Keyboard.Combo.Msg
+
+
+keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
+keyboardCombos =
+    [ Keyboard.Combo.combo2 ( Keyboard.Combo.control, Keyboard.Combo.enter ) StartTimer
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.command, Keyboard.Combo.enter ) StartTimer
+    ]
 
 
 type ScreenState
@@ -45,6 +54,7 @@ type alias Model =
     , screenState : ScreenState
     , mobsterList : Mobster.MobsterData
     , newMobster : String
+    , combos : Keyboard.Combo.Model Msg
     }
 
 
@@ -54,6 +64,7 @@ initialModel =
     , screenState = Configure
     , mobsterList = Mobster.empty
     , newMobster = ""
+    , combos = Keyboard.Combo.init ComboMsg keyboardCombos
     }
 
 
@@ -125,7 +136,7 @@ configureView model =
             [ invisibleTrigger
             , titleTextView
             ]
-        , button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
+        , button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
         , div [ class "row" ]
             [ div [ class "col-md-6" ] [ timerDurationInputView model.timerDuration ]
             , div [ class "col-md-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterList) ]
@@ -142,7 +153,7 @@ continueView model =
             , titleTextView
             ]
         , div [ class "row", style [ ( "padding-bottom", "20px" ) ] ]
-            [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Continue" ]
+            [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Continue" ]
             ]
         , nextDriverNavigatorView model
         , div [ class "row top-buffer", style [ ( "padding-bottom", "20px" ) ] ] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
@@ -331,6 +342,13 @@ update msg model =
         Quit ->
             model ! [ quit () ]
 
+        ComboMsg msg ->
+            let
+                updatedCombos =
+                    Keyboard.Combo.update msg model.combos
+            in
+                { model | combos = updatedCombos } ! []
+
 
 addMobster : String -> Model -> Model
 addMobster newMobster model =
@@ -357,11 +375,16 @@ init flags =
                 initialModel ! []
 
 
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Keyboard.Combo.subscriptions model.combos
+
+
 main : Program Decode.Value Model Msg
 main =
     Html.programWithFlags
         { init = init
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         , update = update
         , view = view
         }
