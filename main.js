@@ -29,7 +29,7 @@ function startTimer(flags) {
   timerWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
     width: timerWidth, height: timerHeight, focusable: false})
 
-  positionWindowLeft(timerWindow)
+  positionWindowRight(timerWindow)
 
   ipcMain.once('timer-flags', (event) => {
     event.returnValue = flags
