@@ -217,7 +217,7 @@ addMobsterInputView newMobster =
         ]
 
 
-mobstersView : String -> List Mobster.Mobster -> Html Msg
+mobstersView : String -> List Mobster.MobsterWithRole -> Html Msg
 mobstersView newMobster mobsters =
     div [ style [ ( "padding-bottom", "35px" ) ] ]
         [ addMobsterInputView newMobster
@@ -225,7 +225,7 @@ mobstersView newMobster mobsters =
         ]
 
 
-mobsterView : Mobster.Mobster -> Html Msg
+mobsterView : Mobster.MobsterWithRole -> Html Msg
 mobsterView mobster =
     tr []
         [ td [] [ roleView mobster.role ]

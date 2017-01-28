@@ -1,4 +1,4 @@
-module Mobster exposing (MoblistOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode)
+module Mobster exposing (MoblistOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole)
 
 import Array
 import Maybe
@@ -85,10 +85,7 @@ nextDriverNavigator mobsterData =
                     justDriver
 
                 Nothing ->
-                    { name = "", role = Nothing, index = -1 }
-
-        driverWithRole =
-            { driver | role = Just Driver }
+                    { name = "", index = -1 }
 
         navigatorIndex =
             nextIndex mobsterData.nextDriver mobsterData
@@ -103,12 +100,9 @@ nextDriverNavigator mobsterData =
 
                 Nothing ->
                     driver
-
-        navigatorWithRole =
-            { navigator | role = Just Navigator }
     in
-        { driver = driverWithRole
-        , navigator = navigatorWithRole
+        { driver = driver
+        , navigator = navigator
         }
 
 
@@ -191,14 +185,18 @@ type Role
 
 
 type alias Mobster =
+    { name : String, index : Int }
+
+
+type alias MobsterWithRole =
     { name : String, role : Maybe Role, index : Int }
 
 
 type alias Mobsters =
-    List Mobster
+    List MobsterWithRole
 
 
-mobsterListItemToMobster : DriverNavigator -> Int -> String -> Mobster
+mobsterListItemToMobster : DriverNavigator -> Int -> String -> MobsterWithRole
 mobsterListItemToMobster driverNavigator index mobsterName =
     let
         role =
@@ -214,8 +212,7 @@ mobsterListItemToMobster driverNavigator index mobsterName =
 
 asMobsterList : MobsterData -> List Mobster
 asMobsterList mobsterData =
-    List.indexedMap (\index mobsterName -> { name = mobsterName, index = index, role = Nothing }) mobsterData.mobsters
-        |> List.map (\details -> { details | role = Nothing })
+    List.indexedMap (\index mobsterName -> { name = mobsterName, index = index }) mobsterData.mobsters
 
 
 mobsters : MobsterData -> Mobsters
