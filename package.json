@@ -1,6 +1,6 @@
 {
   "name": "Mobster",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
   "scripts": {
@@ -10,7 +10,8 @@
     "pack": "build --dir",
     "dist-mac": "build --mac",
     "dist-win": "build --win",
-    "dist": "build --mac --win"
+    "dist": "build --mac --win",
+    "release": "build --mac --win"
   },
   "build": {
     "appId": "com.dillonkearns.mobster",
