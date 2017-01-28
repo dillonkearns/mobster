@@ -60,4 +60,12 @@ tips =
                 , small [] [ text "Llewellyn Falco" ]
                 ]
       }
+    , { url = "https://github.com/MobProgramming/MobTimer.Python/blob/master/Tips/MobProgramming"
+      , title = "Mob Descision-Making Protocol"
+      , body =
+            blockquote []
+                [ p [] [ text "Arguing about solutions? Try going with the least experienced navigator and have the more experienced team members course correct only as needed." ]
+                , small [] [ text "The Hunter Mob" ]
+                ]
+      }
     ]
