@@ -1,7 +1,7 @@
 port module Setup.Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, type_, id, style, src, title)
+import Html.Attributes exposing (class, value, type_, id, style, src, title, href, target)
 import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
 import Task
@@ -157,9 +157,51 @@ continueView model =
             [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Continue" ]
             ]
         , nextDriverNavigatorView model
+        , tipView strongStyleTip
         , div [ class "row top-buffer", style [ ( "padding-bottom", "20px" ) ] ] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
         , div [ class "row top-buffer" ] [ quitButton ]
         ]
+
+
+type alias Tip =
+    { url : String
+    , body : Html Msg
+    , title : String
+    }
+
+
+strongStyleTip : Tip
+strongStyleTip =
+    { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
+    , body =
+        blockquote []
+            [ p [] [ text "For an idea to go from your head into the computer it MUST go through someone else's hands" ]
+            , small [] [ text "Llewellyn Falco" ]
+            ]
+    , title = "Driver/Navigator Pattern"
+    }
+
+
+tipView : Tip -> Html Msg
+tipView tip =
+    div [ class "jumbotron tip", style [ ( "margin", "0px" ), ( "padding", "25px" ) ] ]
+        [ div [ class "row" ]
+            [ h2 [ class "text-success pull-left", style [ ( "margin", "0px" ), ( "padding-bottom", "10px" ) ] ]
+                [ text tip.title ]
+            , a [ target "_blank", class "btn btn-sm btn-primary pull-right", href tip.url ] [ text "Learn More" ]
+            ]
+        , div [ class "row", style [ ( "font-size", "20px" ) ] ] [ tip.body ]
+        ]
+
+
+
+{-
+   <blockquote>
+     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+     <small>Someone famous in <cite title="Source Title">Source Title</cite></small>
+   </blockquote>
+
+-}
 
 
 nextDriverNavigatorView : Model -> Html Msg
@@ -178,7 +220,7 @@ nextDriverNavigatorView model =
 
 driverView : Mobster.Mobster -> Html Msg
 driverView mobster =
-    div [ class "col-md-4 text-success" ]
+    div [ class "col-md-4 text-default" ]
         [ iconView "./assets/driver-icon.png" 40
         , span [ class "right-buffer" ] [ text mobster.name ]
         , button [ onClick (UpdateMoblist (Mobster.Remove mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
@@ -187,7 +229,7 @@ driverView mobster =
 
 navigatorView : Mobster.Mobster -> Html Msg
 navigatorView mobster =
-    div [ class "col-md-4 text-success" ]
+    div [ class "col-md-4 text-default" ]
         [ iconView "./assets/navigator-icon.png" 40
         , span [ class "right-buffer" ] [ text mobster.name ]
         , button [ onClick (UpdateMoblist (Mobster.Remove mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
@@ -196,7 +238,7 @@ navigatorView mobster =
 
 iconView : String -> Int -> Html msg
 iconView iconUrl maxWidth =
-    img [ style [ ( "max-width", (toString maxWidth) ++ "px" ) ], src iconUrl ] []
+    img [ style [ ( "max-width", (toString maxWidth) ++ "px" ), ( "margin-right", "8px" ) ], src iconUrl ] []
 
 
 nextView : String -> String -> Html msg
