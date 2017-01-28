@@ -1,7 +1,7 @@
 port module Setup.Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, type_, id, style, src, title, href, target)
+import Html.Attributes exposing (class, value, type_, id, style, src, title, href, target, placeholder)
 import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
 import Task
@@ -36,6 +36,8 @@ type Msg
     | SelectDurationInput
     | OpenConfigure
     | NewTip Int
+    | SetGoal
+    | UpdateGoalInput String
     | Quit
     | ComboMsg Keyboard.Combo.Msg
 
@@ -59,6 +61,8 @@ type alias Model =
     , newMobster : String
     , combos : Keyboard.Combo.Model Msg
     , tip : Tip.Tip Msg
+    , goal : Maybe String
+    , newGoal : String
     }
 
 
@@ -75,6 +79,8 @@ initialModel =
     , newMobster = ""
     , combos = Keyboard.Combo.init ComboMsg keyboardCombos
     , tip = Tip.emptyTip
+    , goal = Nothing
+    , newGoal = ""
     }
 
 
@@ -152,8 +158,23 @@ configureView model =
             [ div [ class "col-md-6" ] [ timerDurationInputView model.timerDuration ]
             , div [ class "col-md-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterList) ]
             ]
+        , div [ class "h1" ] [ goalView model.newGoal model.goal ]
         , div [ class "row top-buffer" ] [ quitButton ]
         ]
+
+
+goalView : String -> Maybe String -> Html Msg
+goalView newGoal maybeGoal =
+    case maybeGoal of
+        Just goal ->
+            div [] [ text goal ]
+
+        Nothing ->
+            -- div [] [ input [ placeholder "Please give me a goal" ] [] ]
+            div [ class "input-group" ]
+                [ input [ id "add-mobster", placeholder "Please give me a goal", type_ "text", class "form-control", value newGoal, onInput UpdateGoalInput, onEnter SetGoal, style [ ( "font-size", "30px" ) ] ] []
+                , span [ class "input-group-btn", type_ "button" ] [ button [ class "btn btn-primary", onClick SetGoal ] [ text "Set Goal" ] ]
+                ]
 
 
 continueView : Model -> Html Msg
@@ -376,6 +397,12 @@ update msg model =
 
         NewTip tipIndex ->
             { model | tip = (Tip.get tipIndex) } ! []
+
+        SetGoal ->
+            { model | goal = Just model.newGoal } ! []
+
+        UpdateGoalInput newGoal ->
+            { model | newGoal = newGoal } ! []
 
 
 addMobster : String -> Model -> Model
