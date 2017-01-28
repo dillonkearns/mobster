@@ -10,7 +10,6 @@ import Mobster exposing (MoblistOperation)
 import Json.Decode as Decode
 import Keyboard.Combo
 import Random
-import Array
 import Tip
 
 
