@@ -182,6 +182,32 @@ strongStyleTip =
     }
 
 
+tip2 : Tip
+tip2 =
+    { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
+    , body =
+        blockquote []
+            [ p [ style [ ( "font-size", "20px" ) ] ] [ text "When you are the driver trust that your navigator knows what they are telling you. If you don't understand what they are telling you ask questions, but if you don't understand why they are telling you something don't worry about it until you've finished the method or section of code. The right time to discuss and challenge design decisions is after the solution is out of the navigator's head or when the navigator is confused and unable to navigate." ]
+            , small [] [ text "Llewellyn Falco" ]
+            ]
+    , title =
+        "Trust your navigator"
+    }
+
+
+tip3 : Tip
+tip3 =
+    { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
+    , title =
+        "Driving With An Idea"
+    , body =
+        blockquote []
+            [ p [] [ text "What if I have an idea I want to implement? Great! Switch places and become the navigator." ]
+            , small [] [ text "Llewellyn Falco" ]
+            ]
+    }
+
+
 tipView : Tip -> Html Msg
 tipView tip =
     div [ class "jumbotron tip", style [ ( "margin", "0px" ), ( "padding", "25px" ) ] ]
@@ -192,16 +218,6 @@ tipView tip =
             ]
         , div [ class "row", style [ ( "font-size", "20px" ) ] ] [ tip.body ]
         ]
-
-
-
-{-
-   <blockquote>
-     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-     <small>Someone famous in <cite title="Source Title">Source Title</cite></small>
-   </blockquote>
-
--}
 
 
 nextDriverNavigatorView : Model -> Html Msg
