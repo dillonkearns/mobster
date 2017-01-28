@@ -14,7 +14,7 @@
         "category": "Utility"
       },
       "win": {
-        "iconUrl": "(windows-only) https link to icon"
+        "iconUrl": "https://raw.githubusercontent.com/dillonkearns/mobster/master/assets/icon.ico"
       }
     }
   },
