@@ -11,6 +11,7 @@ import Json.Decode as Decode
 import Keyboard.Combo
 import Random
 import Array
+import Tip
 
 
 onEnter : Msg -> Attribute Msg
@@ -58,18 +59,13 @@ type alias Model =
     , mobsterList : Mobster.MobsterData
     , newMobster : String
     , combos : Keyboard.Combo.Model Msg
-    , tip : Tip
+    , tip : Tip.Tip Msg
     }
-
-
-emptyTip : Tip
-emptyTip =
-    { url = "", title = "", body = text "" }
 
 
 changeTip : Cmd Msg
 changeTip =
-    Random.generate NewTip (Random.int 0 ((List.length tips) - 1))
+    Random.generate NewTip Tip.random
 
 
 initialModel : Model
@@ -79,7 +75,7 @@ initialModel =
     , mobsterList = Mobster.empty
     , newMobster = ""
     , combos = Keyboard.Combo.init ComboMsg keyboardCombos
-    , tip = emptyTip
+    , tip = Tip.emptyTip
     }
 
 
@@ -178,45 +174,7 @@ continueView model =
         ]
 
 
-type alias Tip =
-    { url : String
-    , body : Html Msg
-    , title : String
-    }
-
-
-tips : List Tip
-tips =
-    [ { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
-      , body =
-            blockquote []
-                [ p [] [ text "For an idea to go from your head into the computer it MUST go through someone else's hands" ]
-                , small [] [ text "Llewellyn Falco" ]
-                ]
-      , title = "Driver/Navigator Pattern"
-      }
-    , { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
-      , body =
-            blockquote []
-                [ p [ style [ ( "font-size", "20px" ) ] ] [ text "When you are the driver trust that your navigator knows what they are telling you. If you don't understand what they are telling you ask questions, but if you don't understand why they are telling you something don't worry about it until you've finished the method or section of code. The right time to discuss and challenge design decisions is after the solution is out of the navigator's head or when the navigator is confused and unable to navigate." ]
-                , small [] [ text "Llewellyn Falco" ]
-                ]
-      , title =
-            "Trust your navigator"
-      }
-    , { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
-      , title =
-            "Driving With An Idea"
-      , body =
-            blockquote []
-                [ p [] [ text "What if I have an idea I want to implement? Great! Switch places and become the navigator." ]
-                , small [] [ text "Llewellyn Falco" ]
-                ]
-      }
-    ]
-
-
-tipView : Tip -> Html Msg
+tipView : Tip.Tip Msg -> Html Msg
 tipView tip =
     div [ class "jumbotron tip", style [ ( "margin", "0px" ), ( "padding", "25px" ) ] ]
         [ div [ class "row" ]
@@ -418,14 +376,7 @@ update msg model =
                 { model | combos = updatedCombos } ! []
 
         NewTip tipIndex ->
-            let
-                maybeTip =
-                    Array.get tipIndex (Array.fromList tips)
-
-                tip =
-                    Maybe.withDefault emptyTip maybeTip
-            in
-                { model | tip = tip } ! []
+            { model | tip = (Tip.get tipIndex) } ! []
 
 
 addMobster : String -> Model -> Model
