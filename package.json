@@ -6,16 +6,17 @@
   "scripts": {
     "start": "electron .",
     "test": "elm-test --watch",
-    "build": "cd src && elm-live timer/Main.elm setup/Main.elm --output elm.js"
+    "build": "cd src && elm-live timer/Main.elm setup/Main.elm --output elm.js",
+    "pack": "build --dir",
+    "dist": "build"
   },
   "build": {
     "appId": "com.dillonkearns.mobster",
-      "mac": {
-        "category": "Utility"
-      },
-      "win": {
-        "iconUrl": "https://raw.githubusercontent.com/dillonkearns/mobster/master/build/icon.ico?raw=true"
-      }
+    "mac": {
+      "category": "Utility"
+    },
+    "win": {
+      "iconUrl": "https://raw.githubusercontent.com/dillonkearns/mobster/master/build/icon.ico?raw=true"
     }
   },
   "repository": "https://github.com/dillonkearns/mobster",
@@ -28,11 +29,12 @@
   "author": "Dillon Kearns",
   "license": "MIT",
   "devDependencies": {
+    "electron": "^1.5.0",
+    "electron-builder": "^11.7.0",
     "elm-live": "^2.7.4",
     "elm-test": "^0.18.2"
   },
   "dependencies": {
-    "electron": "^1.5.0",
     "jquery": "^3.1.1"
   }
 }
