@@ -37,6 +37,7 @@ type Msg
     | OpenConfigure
     | NewTip Int
     | SetGoal
+    | ChangeGoal
     | UpdateGoalInput String
     | Quit
     | ComboMsg Keyboard.Combo.Msg
@@ -167,10 +168,9 @@ goalView : String -> Maybe String -> Html Msg
 goalView newGoal maybeGoal =
     case maybeGoal of
         Just goal ->
-            div [] [ text goal ]
+            div [] [ text goal, button [ onClick ChangeGoal, class "btn btn-sm btn-primary" ] [ text "Edit goal" ] ]
 
         Nothing ->
-            -- div [] [ input [ placeholder "Please give me a goal" ] [] ]
             div [ class "input-group" ]
                 [ input [ id "add-mobster", placeholder "Please give me a goal", type_ "text", class "form-control", value newGoal, onInput UpdateGoalInput, onEnter SetGoal, style [ ( "font-size", "30px" ) ] ] []
                 , span [ class "input-group-btn", type_ "button" ] [ button [ class "btn btn-primary", onClick SetGoal ] [ text "Set Goal" ] ]
@@ -399,10 +399,16 @@ update msg model =
             { model | tip = (Tip.get tipIndex) } ! []
 
         SetGoal ->
-            { model | goal = Just model.newGoal } ! []
+            if model.newGoal == "" then
+                model ! []
+            else
+                { model | goal = Just model.newGoal } ! []
 
         UpdateGoalInput newGoal ->
             { model | newGoal = newGoal } ! []
+
+        ChangeGoal ->
+            { model | goal = Nothing } ! []
 
 
 addMobster : String -> Model -> Model
