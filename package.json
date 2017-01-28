@@ -1,5 +1,5 @@
 {
-  "name": "mobster",
+  "name": "Mobster",
   "version": "0.0.1",
   "description": "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
@@ -7,6 +7,16 @@
     "start": "electron .",
     "test": "elm-test --watch",
     "build": "cd src && elm-live timer/Main.elm setup/Main.elm --output elm.js"
+  },
+  "build": {
+    "appId": "com.dillonkearns.mobster",
+      "mac": {
+        "category": "Utility"
+      },
+      "win": {
+        "iconUrl": "(windows-only) https link to icon"
+      }
+    }
   },
   "repository": "https://github.com/dillonkearns/mobster",
   "keywords": [

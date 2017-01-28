@@ -71,7 +71,12 @@ function showSetupAgain(setupWindow) {
 }
 
 function createWindow () {
-  mainWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true})
+  mainWindow = new BrowserWindow({
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true,
+    icon: `${assetsDirectory}/icon.ico`
+  })
   mainWindow.maximize()
   mainWindow.setResizable(false)
 
