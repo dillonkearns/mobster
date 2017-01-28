@@ -177,6 +177,31 @@ goalView newGoal maybeGoal =
                 ]
 
 
+goalTextForButton : Maybe String -> Html msg
+goalTextForButton maybeGoal =
+    case maybeGoal of
+        Just goal ->
+            text goal
+
+        Nothing ->
+            text ""
+
+
+continueButtonChildren : Model -> List (Html Msg)
+continueButtonChildren model =
+    [ div [ class "col-md-4" ] [ text "Continue" ]
+    , div
+        [ class "col-md-8"
+        , style
+            [ ( "font-size", "22px" )
+            , ( "font-style", "italic" )
+            , ( "text-align", "left" )
+            ]
+        ]
+        [ goalTextForButton model.goal ]
+    ]
+
+
 continueView : Model -> Html Msg
 continueView model =
     div [ class "container-fluid" ]
@@ -185,7 +210,13 @@ continueView model =
             , titleTextView
             ]
         , div [ class "row", style [ ( "padding-bottom", "20px" ) ] ]
-            [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Continue" ]
+            [ button
+                [ onClick StartTimer
+                , class "btn btn-info btn-lg btn-block top-buffer"
+                , title "Ctrl+Enter or ⌘+Enter"
+                , style [ ( "font-size", "30px" ), ( "padding", "20px" ) ]
+                ]
+                (continueButtonChildren model)
             ]
         , nextDriverNavigatorView model
         , tipView model.tip
