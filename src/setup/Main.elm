@@ -9,6 +9,8 @@ import Dom
 import Mobster exposing (MoblistOperation)
 import Json.Decode as Decode
 import Keyboard.Combo
+import Random
+import Array
 
 
 onEnter : Msg -> Attribute Msg
@@ -33,6 +35,7 @@ type Msg
     | ChangeTimerDuration String
     | SelectDurationInput
     | OpenConfigure
+    | NewTip Int
     | Quit
     | ComboMsg Keyboard.Combo.Msg
 
@@ -55,7 +58,18 @@ type alias Model =
     , mobsterList : Mobster.MobsterData
     , newMobster : String
     , combos : Keyboard.Combo.Model Msg
+    , tip : Tip
     }
+
+
+emptyTip : Tip
+emptyTip =
+    { url = "", title = "", body = text "" }
+
+
+changeTip : Cmd Msg
+changeTip =
+    Random.generate NewTip (Random.int 0 ((List.length tips) - 1))
 
 
 initialModel : Model
@@ -65,6 +79,7 @@ initialModel =
     , mobsterList = Mobster.empty
     , newMobster = ""
     , combos = Keyboard.Combo.init ComboMsg keyboardCombos
+    , tip = emptyTip
     }
 
 
@@ -157,7 +172,7 @@ continueView model =
             [ button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Continue" ]
             ]
         , nextDriverNavigatorView model
-        , tipView strongStyleTip
+        , tipView model.tip
         , div [ class "row top-buffer", style [ ( "padding-bottom", "20px" ) ] ] [ button [ onClick OpenConfigure, class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
         , div [ class "row top-buffer" ] [ quitButton ]
         ]
@@ -170,42 +185,35 @@ type alias Tip =
     }
 
 
-strongStyleTip : Tip
-strongStyleTip =
-    { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
-    , body =
-        blockquote []
-            [ p [] [ text "For an idea to go from your head into the computer it MUST go through someone else's hands" ]
-            , small [] [ text "Llewellyn Falco" ]
-            ]
-    , title = "Driver/Navigator Pattern"
-    }
-
-
-tip2 : Tip
-tip2 =
-    { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
-    , body =
-        blockquote []
-            [ p [ style [ ( "font-size", "20px" ) ] ] [ text "When you are the driver trust that your navigator knows what they are telling you. If you don't understand what they are telling you ask questions, but if you don't understand why they are telling you something don't worry about it until you've finished the method or section of code. The right time to discuss and challenge design decisions is after the solution is out of the navigator's head or when the navigator is confused and unable to navigate." ]
-            , small [] [ text "Llewellyn Falco" ]
-            ]
-    , title =
-        "Trust your navigator"
-    }
-
-
-tip3 : Tip
-tip3 =
-    { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
-    , title =
-        "Driving With An Idea"
-    , body =
-        blockquote []
-            [ p [] [ text "What if I have an idea I want to implement? Great! Switch places and become the navigator." ]
-            , small [] [ text "Llewellyn Falco" ]
-            ]
-    }
+tips : List Tip
+tips =
+    [ { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
+      , body =
+            blockquote []
+                [ p [] [ text "For an idea to go from your head into the computer it MUST go through someone else's hands" ]
+                , small [] [ text "Llewellyn Falco" ]
+                ]
+      , title = "Driver/Navigator Pattern"
+      }
+    , { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
+      , body =
+            blockquote []
+                [ p [ style [ ( "font-size", "20px" ) ] ] [ text "When you are the driver trust that your navigator knows what they are telling you. If you don't understand what they are telling you ask questions, but if you don't understand why they are telling you something don't worry about it until you've finished the method or section of code. The right time to discuss and challenge design decisions is after the solution is out of the navigator's head or when the navigator is confused and unable to navigate." ]
+                , small [] [ text "Llewellyn Falco" ]
+                ]
+      , title =
+            "Trust your navigator"
+      }
+    , { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
+      , title =
+            "Driving With An Idea"
+      , body =
+            blockquote []
+                [ p [] [ text "What if I have an idea I want to implement? Great! Switch places and become the navigator." ]
+                , small [] [ text "Llewellyn Falco" ]
+                ]
+      }
+    ]
 
 
 tipView : Tip -> Html Msg
@@ -337,7 +345,7 @@ update msg model =
                     | screenState = Continue
                     , mobsterList = rotatedMobsterData
                 }
-                    ! [ (startTimer (flags model)) ]
+                    ! [ (startTimer (flags model)), changeTip ]
 
         ChangeTimerDuration durationAsString ->
             let
@@ -409,6 +417,16 @@ update msg model =
             in
                 { model | combos = updatedCombos } ! []
 
+        NewTip tipIndex ->
+            let
+                maybeTip =
+                    Array.get tipIndex (Array.fromList tips)
+
+                tip =
+                    Maybe.withDefault emptyTip maybeTip
+            in
+                { model | tip = tip } ! []
+
 
 addMobster : String -> Model -> Model
 addMobster newMobster model =
@@ -421,7 +439,7 @@ addMobster newMobster model =
         { model | newMobster = "", mobsterList = updatedMobsterData }
 
 
-init : Decode.Value -> ( Model, Cmd msg )
+init : Decode.Value -> ( Model, Cmd Msg )
 init flags =
     let
         decodedMobsterData =
