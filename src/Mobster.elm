@@ -202,9 +202,9 @@ mobsterListItemToMobster : DriverNavigator -> Int -> String -> Mobster
 mobsterListItemToMobster driverNavigator index mobsterName =
     let
         role =
-            if mobsterName == driverNavigator.driver.name then
+            if index == driverNavigator.driver.index then
                 Just Driver
-            else if mobsterName == driverNavigator.navigator.name then
+            else if index == driverNavigator.navigator.index then
                 Just Navigator
             else
                 Nothing
