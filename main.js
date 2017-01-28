@@ -15,11 +15,6 @@ const timerWidth = 150
 
 const onMac = /^darwin/.test(process.platform)
 
-if (onMac) {
-  // Don't show the app in the doc
-  app.dock.hide()
-}
-
 function positionWindowLeft(window) {
   let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
   window.setPosition(0, height - timerHeight);
