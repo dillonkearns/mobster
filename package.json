@@ -38,6 +38,7 @@
     "elm-test": "^0.18.2"
   },
   "dependencies": {
+    "electron-is-dev": "^0.1.2",
     "jquery": "^3.1.1"
   }
 }

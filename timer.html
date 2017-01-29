@@ -33,17 +33,17 @@
   </body>
 
   <script>
-    // You can also require other files to run in this process
     require('./renderer.js')
     const {ipcRenderer} = require('electron')
 
     let flags = ipcRenderer.sendSync('timer-flags')
-    let timer = Elm.Timer.Main.fullscreen(flags);
+    flags.isDev = require('electron-is-dev')
+    let timer = Elm.Timer.Main.fullscreen(flags)
 
     document.getElementById('timer-window')
       .addEventListener("mouseenter", function(event) {
         ipcRenderer.send('timer-mouse-hover')
-      }, false);
+      }, false)
 
     timer.ports.timerDone.subscribe(function() {
       ipcRenderer.send('timer-done')

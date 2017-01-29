@@ -15,7 +15,7 @@ type Msg
 
 
 type alias Flags =
-    { minutes : Int, driver : String, navigator : String }
+    { minutes : Int, driver : String, navigator : String, isDev : Bool }
 
 
 port timerDone : () -> Cmd msg
@@ -74,7 +74,11 @@ init : Flags -> ( Model, Cmd msg )
 init flags =
     let
         secondsLeft =
-            flags.minutes * 60
+            if flags.isDev then
+                -- just show timer for one second no matter what it's set to
+                1
+            else
+                flags.minutes * 60
     in
         ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator }, Cmd.none )
 
