@@ -39,6 +39,7 @@ type Msg
     | SetGoal
     | ChangeGoal
     | UpdateGoalInput String
+    | EnterRating Int
     | Quit
     | ComboMsg Keyboard.Combo.Msg
 
@@ -47,6 +48,9 @@ keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
 keyboardCombos =
     [ Keyboard.Combo.combo2 ( Keyboard.Combo.control, Keyboard.Combo.enter ) StartTimer
     , Keyboard.Combo.combo2 ( Keyboard.Combo.command, Keyboard.Combo.enter ) StartTimer
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.one ) (EnterRating 1)
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.two ) (EnterRating 2)
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.three ) (EnterRating 3)
     ]
 
 
@@ -64,6 +68,7 @@ type alias Model =
     , tip : Tip.Tip Msg
     , goal : Maybe String
     , newGoal : String
+    , ratings : List Int
     }
 
 
@@ -82,6 +87,7 @@ initialModel =
     , tip = Tip.emptyTip
     , goal = Nothing
     , newGoal = ""
+    , ratings = []
     }
 
 
@@ -440,6 +446,9 @@ update msg model =
 
         ChangeGoal ->
             { model | goal = Nothing } ! []
+
+        EnterRating rating ->
+            { model | ratings = model.ratings ++ [ rating ] } ! []
 
 
 addMobster : String -> Model -> Model
