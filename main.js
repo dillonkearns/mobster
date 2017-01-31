@@ -3,7 +3,11 @@ const {ipcMain, globalShortcut, app, Tray, BrowserWindow} = require('electron')
 
 const path = require('path')
 const url = require('url')
+const log = require('electron-log')
 const assetsDirectory = path.join(__dirname, 'assets')
+const {version} = require('./package')
+
+log.info(`Running version ${version}`)
 
 
 // Keep a global reference of the window object, if you don't, the window will
