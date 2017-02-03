@@ -4,7 +4,7 @@ import Test exposing (..)
 import Expect
 import Timer.Main as TimerMain
 import Timer.Timer as Timer
-import Mobster exposing (MoblistOperation(..))
+import Mobster exposing (MoblistOperation(..), empty)
 
 
 all : Test
@@ -36,7 +36,7 @@ mobsterTests =
         [ test "add to empty" <|
             \() ->
                 Expect.equal (Mobster.empty |> Mobster.add "John Doe")
-                    { mobsters = [ "John Doe" ], nextDriver = 0 }
+                    { empty | mobsters = [ "John Doe" ] }
         , test "add" <|
             \() ->
                 Expect.equal
@@ -44,13 +44,13 @@ mobsterTests =
                         |> Mobster.add "Jane Doe"
                         |> Mobster.add "John Smith"
                     )
-                    { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+                    { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
         , describe "get driver and navigator"
             [ test "with two mobsters" <|
                 \() ->
                     let
                         startingList =
-                            { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+                            { empty | mobsters = [ "Jane Doe", "John Smith" ] }
 
                         expectedDriver =
                             { name = "Jane Doe", index = 0 }
@@ -64,7 +64,7 @@ mobsterTests =
                 \() ->
                     let
                         list =
-                            { mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 1 }
+                            { empty | mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 1 }
 
                         expectedDriver =
                             { name = "John Smith", index = 1 }
@@ -78,7 +78,7 @@ mobsterTests =
                 \() ->
                     let
                         list =
-                            { mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 2 }
+                            { empty | mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 2 }
 
                         expectedDriver =
                             { name = "Bob Jones", index = 2 }
@@ -92,7 +92,7 @@ mobsterTests =
                 \() ->
                     let
                         startingList =
-                            { mobsters = [ "Jane Doe" ], nextDriver = 0 }
+                            { empty | mobsters = [ "Jane Doe" ], nextDriver = 0 }
 
                         expectedDriver =
                             { name = "Jane Doe", index = 0 }
@@ -106,7 +106,7 @@ mobsterTests =
                 \() ->
                     let
                         startingList =
-                            { mobsters = [], nextDriver = 0 }
+                            empty
 
                         expectedDriver =
                             { name = "", index = -1 }
@@ -122,14 +122,14 @@ mobsterTests =
                 \() ->
                     let
                         list =
-                            { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+                            { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
                     in
                         Expect.equal (Mobster.rotate list).nextDriver 1
             , test "with wrapping" <|
                 \() ->
                     let
                         list =
-                            { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 1 }
+                            { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 1 }
                     in
                         Expect.equal (Mobster.rotate list).nextDriver 0
             ]
@@ -138,67 +138,67 @@ mobsterTests =
                 \() ->
                     let
                         list =
-                            { mobsters = [ "only item" ], nextDriver = 0 }
+                            { empty | mobsters = [ "only item" ], nextDriver = 0 }
                     in
                         Expect.equal (list |> Mobster.updateMoblist (MoveUp 0))
-                            { mobsters = [ "only item" ], nextDriver = 0 }
+                            { empty | mobsters = [ "only item" ], nextDriver = 0 }
             , test "index not in list" <|
                 \() ->
                     let
                         list =
-                            { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+                            { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
                         Expect.equal (list |> Mobster.updateMoblist (MoveUp 4))
-                            { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+                            { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
             , test "multiple items without wrapping" <|
                 \() ->
                     let
                         list =
-                            { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+                            { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
                         Expect.equal (list |> Mobster.updateMoblist (MoveUp 3))
-                            { mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
+                            { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
             , test "multiple items move down without wrapping" <|
                 \() ->
                     let
                         list =
-                            { mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+                            { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
                         Expect.equal (list |> Mobster.updateMoblist (MoveDown 0))
-                            { mobsters = [ "b", "a", "d", "c" ], nextDriver = 0 }
+                            { empty | mobsters = [ "b", "a", "d", "c" ], nextDriver = 0 }
             ]
         , describe "remove"
             [ test "list with single item" <|
                 \() ->
                     let
                         list =
-                            { mobsters = [ "only item" ], nextDriver = 0 }
+                            { empty | mobsters = [ "only item" ] }
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Remove 0))
-                            { mobsters = [], nextDriver = 0 }
+                            empty
             , test "with multiple items" <|
                 \() ->
                     let
                         list =
-                            { mobsters = [ "first", "second" ], nextDriver = 0 }
+                            { empty | mobsters = [ "first", "second" ] }
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Remove 0))
-                            { mobsters = [ "second" ], nextDriver = 0 }
+                            { empty | mobsters = [ "second" ] }
             , test "driver doesn't change when navigator is removed" <|
                 \() ->
                     let
                         list =
-                            { mobsters = [ "Kirk", "Spock", "McCoy" ], nextDriver = 0 }
+                            { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Remove 1))
-                            { mobsters = [ "Kirk", "McCoy" ], nextDriver = 0 }
+                            { empty | mobsters = [ "Kirk", "McCoy" ], nextDriver = 0 }
             , test "wraps around list for next driver when nextDriver is removed and was at end of list" <|
                 \() ->
                     let
                         list =
-                            { mobsters = [ "Kirk", "Spock", "McCoy" ], nextDriver = 2 }
+                            { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], nextDriver = 2 }
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Remove 2))
-                            { mobsters = [ "Kirk", "Spock" ], nextDriver = 0 }
+                            { empty | mobsters = [ "Kirk", "Spock" ], nextDriver = 0 }
             ]
         ]

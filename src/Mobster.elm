@@ -17,13 +17,17 @@ type MoblistOperation
 
 
 type alias MobsterData =
-    { mobsters : List String, nextDriver : Int }
+    { mobsters : List String
+    , inactiveMobsters : List String
+    , nextDriver : Int
+    }
 
 
 decoder : Decoder MobsterData
 decoder =
     Pipeline.decode MobsterData
         |> required "mobsters" (Decode.list Decode.string)
+        |> optional "inactiveMobsters" (Decode.list Decode.string) []
         |> required "nextDriver" (Decode.int)
 
 
@@ -53,7 +57,7 @@ updateMoblist moblistOperation moblist =
 
 empty : MobsterData
 empty =
-    { mobsters = [], nextDriver = 0 }
+    { mobsters = [], inactiveMobsters = [], nextDriver = 0 }
 
 
 add : String -> MobsterData -> MobsterData
