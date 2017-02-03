@@ -268,28 +268,28 @@ nextDriverNavigatorView model =
     in
         div [ class "row h1" ]
             [ div [ class "text-muted col-md-3" ] [ text "Next:" ]
-            , driverView driverNavigator.driver
-            , navigatorView driverNavigator.navigator
+            , dnView driverNavigator.driver Mobster.Driver
+            , dnView driverNavigator.navigator Mobster.Navigator
             , button [ class "btn btn-small btn-default", onClick (UpdateMoblist Mobster.SkipTurn) ] [ text "Skip Turn" ]
             ]
 
 
-driverView : Mobster.Mobster -> Html Msg
-driverView mobster =
-    div [ class "col-md-4 text-default" ]
-        [ iconView "./assets/driver-icon.png" 40
-        , span [ class "right-buffer" ] [ text mobster.name ]
-        , button [ onClick (UpdateMoblist (Mobster.Bench mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
-        ]
+dnView : Mobster.Mobster -> Mobster.Role -> Html Msg
+dnView mobster role =
+    let
+        icon =
+            case role of
+                Mobster.Driver ->
+                    "./assets/driver-icon.png"
 
-
-navigatorView : Mobster.Mobster -> Html Msg
-navigatorView mobster =
-    div [ class "col-md-4 text-default" ]
-        [ iconView "./assets/navigator-icon.png" 40
-        , span [ class "right-buffer" ] [ text mobster.name ]
-        , button [ onClick (UpdateMoblist (Mobster.Bench mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
-        ]
+                Mobster.Navigator ->
+                    "./assets/navigator-icon.png"
+    in
+        div [ class "col-md-4 text-default" ]
+            [ iconView icon 40
+            , span [ class "right-buffer" ] [ text mobster.name ]
+            , button [ onClick (UpdateMoblist (Mobster.Bench mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
+            ]
 
 
 iconView : String -> Int -> Html msg
