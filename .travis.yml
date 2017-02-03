@@ -8,4 +8,4 @@ install:
   - npm install -g elm@0.18.0 elm-test
 
 script:
-  - cd tests && elm package install --yes && cd .. && elm-test
+  - elm-test

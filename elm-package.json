@@ -4,7 +4,7 @@
     "repository": "https://github.com/dillonkearns/mobster.git",
     "license": "MIT",
     "source-directories": [
-        "."
+        "./src"
     ],
     "exposed-modules": [],
     "dependencies": {

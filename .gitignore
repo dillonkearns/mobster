@@ -1,5 +1,5 @@
 node_modules
 elm-stuff
-src/*.js
+elm.js
 npm-debug.log
 dist/
