@@ -217,4 +217,13 @@ mobsterTests =
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Bench 1) |> Mobster.updateMoblist (Bench 1)) { empty | mobsters = [ "Kirk" ], inactiveMobsters = [ "Spock", "McCoy" ] }
             ]
+        , describe "remove"
+            [ test "removes an item from bench with no active mobsters" <|
+                \() ->
+                    let
+                        list =
+                            { empty | inactiveMobsters = [ "Kirk", "Spock", "McCoy" ] }
+                    in
+                        Expect.equal (list |> Mobster.updateMoblist (Remove 1)) { empty | inactiveMobsters = [ "Kirk", "McCoy" ] }
+            ]
         ]

@@ -326,16 +326,19 @@ mobstersView newMobster mobsters =
 inactiveMobstersView : List String -> Html Msg
 inactiveMobstersView inactiveMobsters =
     div []
-        [ table [ class "table h3" ] (List.map inactiveMobsterView inactiveMobsters)
+        [ table [ class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
         ]
 
 
-inactiveMobsterView : String -> Html Msg
-inactiveMobsterView inactiveMobster =
+inactiveMobsterView : Int -> String -> Html Msg
+inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
         [ td [] []
         , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
             [ text inactiveMobster
+            , div [ class "btn-group btn-group-xs", style [ ( "margin-left", "10px" ) ] ]
+                [ button [ class "btn btn-small btn-danger", onClick (UpdateMoblist (Mobster.Remove mobsterIndex)) ] [ text "x" ]
+                ]
             ]
         ]
 

@@ -204,22 +204,13 @@ bench index list =
 remove : Int -> MobsterData -> MobsterData
 remove index list =
     let
-        asArray =
-            (Array.fromList list.mobsters)
-
-        updatedMobsters =
-            Array.toList (Array.Extra.removeAt index asArray)
-
-        maxIndex =
-            ((List.length updatedMobsters) - 1)
-
-        nextDriverInBounds =
-            if list.nextDriver > maxIndex && list.nextDriver > 0 then
-                0
-            else
-                list.nextDriver
+        updatedBench =
+            list.inactiveMobsters
+                |> Array.fromList
+                |> Array.Extra.removeAt index
+                |> Array.toList
     in
-        { list | mobsters = updatedMobsters, nextDriver = nextDriverInBounds }
+        { list | inactiveMobsters = updatedBench }
 
 
 type Role
