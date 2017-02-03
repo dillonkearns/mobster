@@ -325,33 +325,41 @@ mobstersView newMobster mobsters =
 mobsterView : Mobster.MobsterWithRole -> Html Msg
 mobsterView mobster =
     tr []
-        [ td [] [ roleView mobster.role ]
-        , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ] [ text mobster.name ]
-        , td [] [ reorderButtonView mobster.index ]
+        [ td [] []
+        , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
+            [ text mobster.name
+            ]
+        , td [] [ reorderButtonView mobster ]
         ]
 
 
-roleView : Maybe Mobster.Role -> Html Msg
-roleView role =
-    case role of
+roleView : Mobster.MobsterWithRole -> Html Msg
+roleView mobster =
+    case mobster.role of
         Just (Mobster.Driver) ->
-            iconView "./assets/driver-icon.png" 20
+            span [ class "role-icon driver-icon", onClick (UpdateMoblist (Mobster.SetNextDriver mobster.index)) ] []
 
         Just (Mobster.Navigator) ->
-            iconView "./assets/navigator-icon.png" 20
+            span [ class "role-icon navigator-icon", onClick (UpdateMoblist (Mobster.SetNextDriver mobster.index)) ] []
 
         Nothing ->
-            span [] []
+            span [ class "role-icon no-role-icon", onClick (UpdateMoblist (Mobster.SetNextDriver mobster.index)) ] []
 
 
-reorderButtonView : Int -> Html Msg
-reorderButtonView mobsterIndex =
-    div [ class "btn-group btn-group-xs" ]
-        [ button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveUp mobsterIndex)) ] [ text "↑" ]
-        , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveDown mobsterIndex)) ] [ text "↓" ]
-        , button [ class "btn btn-small btn-danger", onClick (UpdateMoblist (Mobster.Remove mobsterIndex)) ] [ text "x" ]
-        , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.SetNextDriver mobsterIndex)) ] [ text "Drive" ]
-        ]
+reorderButtonView : Mobster.MobsterWithRole -> Html Msg
+reorderButtonView mobster =
+    let
+        mobsterIndex =
+            mobster.index
+    in
+        div []
+            [ roleView mobster
+            , div [ class "btn-group btn-group-xs" ]
+                [ button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveUp mobsterIndex)) ] [ text "↑" ]
+                , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveDown mobsterIndex)) ] [ text "↓" ]
+                , button [ class "btn btn-small btn-danger", onClick (UpdateMoblist (Mobster.Remove mobsterIndex)) ] [ text "x" ]
+                ]
+            ]
 
 
 view : Model -> Html Msg
