@@ -164,8 +164,9 @@ configureView model =
             ]
         , button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
         , div [ class "row" ]
-            [ div [ class "col-md-6" ] [ timerDurationInputView model.timerDuration ]
-            , div [ class "col-md-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterList) ]
+            [ div [ class "col-md-4" ] [ timerDurationInputView model.timerDuration ]
+            , div [ class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterList) ]
+            , div [ class "col-md-4" ] [ inactiveMobstersView model.mobsterList.inactiveMobsters ]
             ]
         , div [ class "h1" ] [ goalView model.newGoal model.goal ]
         , div [ class "row top-buffer" ] [ quitButton ]
@@ -278,7 +279,7 @@ driverView mobster =
     div [ class "col-md-4 text-default" ]
         [ iconView "./assets/driver-icon.png" 40
         , span [ class "right-buffer" ] [ text mobster.name ]
-        , button [ onClick (UpdateMoblist (Mobster.Remove mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
+        , button [ onClick (UpdateMoblist (Mobster.Bench mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
         ]
 
 
@@ -287,7 +288,7 @@ navigatorView mobster =
     div [ class "col-md-4 text-default" ]
         [ iconView "./assets/navigator-icon.png" 40
         , span [ class "right-buffer" ] [ text mobster.name ]
-        , button [ onClick (UpdateMoblist (Mobster.Remove mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
+        , button [ onClick (UpdateMoblist (Mobster.Bench mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
         ]
 
 
@@ -319,6 +320,23 @@ mobstersView newMobster mobsters =
     div [ style [ ( "padding-bottom", "35px" ) ] ]
         [ addMobsterInputView newMobster
         , table [ class "table h3" ] (List.map mobsterView mobsters)
+        ]
+
+
+inactiveMobstersView : List String -> Html Msg
+inactiveMobstersView inactiveMobsters =
+    div []
+        [ table [ class "table h3" ] (List.map inactiveMobsterView inactiveMobsters)
+        ]
+
+
+inactiveMobsterView : String -> Html Msg
+inactiveMobsterView inactiveMobster =
+    tr []
+        [ td [] []
+        , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
+            [ text inactiveMobster
+            ]
         ]
 
 
@@ -357,7 +375,7 @@ reorderButtonView mobster =
             , div [ class "btn-group btn-group-xs" ]
                 [ button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveUp mobsterIndex)) ] [ text "↑" ]
                 , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveDown mobsterIndex)) ] [ text "↓" ]
-                , button [ class "btn btn-small btn-danger", onClick (UpdateMoblist (Mobster.Remove mobsterIndex)) ] [ text "x" ]
+                , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.Bench mobsterIndex)) ] [ text "x" ]
                 ]
             ]
 

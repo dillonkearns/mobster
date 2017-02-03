@@ -201,4 +201,20 @@ mobsterTests =
                         Expect.equal (list |> Mobster.updateMoblist (Remove 2))
                             { empty | mobsters = [ "Kirk", "Spock" ], nextDriver = 0 }
             ]
+        , describe "move to inactive"
+            [ test "moves a single mobster to an empty bench" <|
+                \() ->
+                    let
+                        list =
+                            { empty | mobsters = [ "Spock" ] }
+                    in
+                        Expect.equal (list |> Mobster.updateMoblist (Bench 0)) { empty | inactiveMobsters = [ "Spock" ] }
+            , test "puts mobsters on bench in order they are added" <|
+                \() ->
+                    let
+                        list =
+                            { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
+                    in
+                        Expect.equal (list |> Mobster.updateMoblist (Bench 1) |> Mobster.updateMoblist (Bench 1)) { empty | mobsters = [ "Kirk" ], inactiveMobsters = [ "Spock", "McCoy" ] }
+            ]
         ]

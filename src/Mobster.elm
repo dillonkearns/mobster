@@ -14,6 +14,7 @@ type MoblistOperation
     | Remove Int
     | SetNextDriver Int
     | SkipTurn
+    | Bench Int
 
 
 type alias MobsterData =
@@ -53,6 +54,30 @@ updateMoblist moblistOperation moblist =
 
         SkipTurn ->
             setNextDriver (nextIndex moblist.nextDriver moblist) moblist
+
+        Bench mobsterIndex ->
+            let
+                activeAsArray =
+                    (Array.fromList moblist.mobsters)
+
+                maybeMobster =
+                    Array.get mobsterIndex activeAsArray
+            in
+                case maybeMobster of
+                    Just nowBenchedMobster ->
+                        let
+                            updatedActive =
+                                activeAsArray
+                                    |> Array.Extra.removeAt mobsterIndex
+                                    |> Array.toList
+
+                            updatedInactive =
+                                List.append moblist.inactiveMobsters [ nowBenchedMobster ]
+                        in
+                            { moblist | mobsters = updatedActive, inactiveMobsters = updatedInactive }
+
+                    Nothing ->
+                        moblist
 
 
 empty : MobsterData
