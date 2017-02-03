@@ -174,32 +174,32 @@ mobsterTests =
                         list =
                             { empty | mobsters = [ "only item" ] }
                     in
-                        Expect.equal (list |> Mobster.updateMoblist (Remove 0))
-                            empty
+                        Expect.equal (list |> Mobster.updateMoblist (Bench 0))
+                            { empty | inactiveMobsters = [ "only item" ], nextDriver = 0 }
             , test "with multiple items" <|
                 \() ->
                     let
                         list =
                             { empty | mobsters = [ "first", "second" ] }
                     in
-                        Expect.equal (list |> Mobster.updateMoblist (Remove 0))
-                            { empty | mobsters = [ "second" ] }
+                        Expect.equal (list |> Mobster.updateMoblist (Bench 0))
+                            { empty | mobsters = [ "second" ], inactiveMobsters = [ "first" ], nextDriver = 0 }
             , test "driver doesn't change when navigator is removed" <|
                 \() ->
                     let
                         list =
                             { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
                     in
-                        Expect.equal (list |> Mobster.updateMoblist (Remove 1))
-                            { empty | mobsters = [ "Kirk", "McCoy" ], nextDriver = 0 }
+                        Expect.equal (list |> Mobster.updateMoblist (Bench 1))
+                            { empty | mobsters = [ "Kirk", "McCoy" ], inactiveMobsters = [ "Spock" ], nextDriver = 0 }
             , test "wraps around list for next driver when nextDriver is removed and was at end of list" <|
                 \() ->
                     let
                         list =
                             { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], nextDriver = 2 }
                     in
-                        Expect.equal (list |> Mobster.updateMoblist (Remove 2))
-                            { empty | mobsters = [ "Kirk", "Spock" ], nextDriver = 0 }
+                        Expect.equal (list |> Mobster.updateMoblist (Bench 2))
+                            { empty | mobsters = [ "Kirk", "Spock" ], inactiveMobsters = [ "McCoy" ], nextDriver = 0 }
             ]
         , describe "move to inactive"
             [ test "moves a single mobster to an empty bench" <|

@@ -56,28 +56,7 @@ updateMoblist moblistOperation moblist =
             setNextDriver (nextIndex moblist.nextDriver moblist) moblist
 
         Bench mobsterIndex ->
-            let
-                activeAsArray =
-                    (Array.fromList moblist.mobsters)
-
-                maybeMobster =
-                    Array.get mobsterIndex activeAsArray
-            in
-                case maybeMobster of
-                    Just nowBenchedMobster ->
-                        let
-                            updatedActive =
-                                activeAsArray
-                                    |> Array.Extra.removeAt mobsterIndex
-                                    |> Array.toList
-
-                            updatedInactive =
-                                List.append moblist.inactiveMobsters [ nowBenchedMobster ]
-                        in
-                            { moblist | mobsters = updatedActive, inactiveMobsters = updatedInactive }
-
-                    Nothing ->
-                        moblist
+            bench mobsterIndex moblist
 
 
 empty : MobsterData
@@ -185,6 +164,41 @@ moveUp itemIndex list =
                     list.mobsters
     in
         { list | mobsters = updatedMobsters }
+
+
+bench : Int -> MobsterData -> MobsterData
+bench index list =
+    let
+        activeAsArray =
+            (Array.fromList list.mobsters)
+
+        maybeMobster =
+            Array.get index activeAsArray
+    in
+        case maybeMobster of
+            Just nowBenchedMobster ->
+                let
+                    updatedActive =
+                        activeAsArray
+                            |> Array.Extra.removeAt index
+                            |> Array.toList
+
+                    updatedInactive =
+                        List.append list.inactiveMobsters [ nowBenchedMobster ]
+
+                    maxIndex =
+                        (List.length updatedActive) - 1
+
+                    nextDriverInBounds =
+                        if list.nextDriver > maxIndex && list.nextDriver > 0 then
+                            0
+                        else
+                            list.nextDriver
+                in
+                    { list | mobsters = updatedActive, inactiveMobsters = updatedInactive, nextDriver = nextDriverInBounds }
+
+            Nothing ->
+                list
 
 
 remove : Int -> MobsterData -> MobsterData
