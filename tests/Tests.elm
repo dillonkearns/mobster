@@ -53,10 +53,10 @@ mobsterTests =
                             { mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
 
                         expectedDriver =
-                            { name = "Jane Doe", index = 0, role = Just Mobster.Driver }
+                            { name = "Jane Doe", index = 0 }
 
                         expectedNavigator =
-                            { name = "John Smith", index = 1, role = Just Mobster.Navigator }
+                            { name = "John Smith", index = 1 }
                     in
                         Expect.equal (Mobster.nextDriverNavigator startingList)
                             { driver = expectedDriver, navigator = expectedNavigator }
@@ -67,10 +67,10 @@ mobsterTests =
                             { mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 1 }
 
                         expectedDriver =
-                            { name = "John Smith", index = 1, role = Just Mobster.Driver }
+                            { name = "John Smith", index = 1 }
 
                         expectedNavigator =
-                            { name = "Bob Jones", index = 2, role = Just Mobster.Navigator }
+                            { name = "Bob Jones", index = 2 }
                     in
                         Expect.equal (Mobster.nextDriverNavigator list)
                             { driver = expectedDriver, navigator = expectedNavigator }
@@ -81,10 +81,10 @@ mobsterTests =
                             { mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 2 }
 
                         expectedDriver =
-                            { name = "Bob Jones", index = 2, role = Just Mobster.Driver }
+                            { name = "Bob Jones", index = 2 }
 
                         expectedNavigator =
-                            { name = "Jane Doe", index = 0, role = Just Mobster.Navigator }
+                            { name = "Jane Doe", index = 0 }
                     in
                         Expect.equal (Mobster.nextDriverNavigator list)
                             { driver = expectedDriver, navigator = expectedNavigator }
@@ -95,10 +95,10 @@ mobsterTests =
                             { mobsters = [ "Jane Doe" ], nextDriver = 0 }
 
                         expectedDriver =
-                            { name = "Jane Doe", index = 0, role = Just Mobster.Driver }
+                            { name = "Jane Doe", index = 0 }
 
                         expectedNavigator =
-                            { name = "Jane Doe", index = 0, role = Just Mobster.Navigator }
+                            { name = "Jane Doe", index = 0 }
                     in
                         Expect.equal (Mobster.nextDriverNavigator startingList)
                             { driver = expectedDriver, navigator = expectedNavigator }
@@ -109,10 +109,10 @@ mobsterTests =
                             { mobsters = [], nextDriver = 0 }
 
                         expectedDriver =
-                            { name = "", index = -1, role = Just Mobster.Driver }
+                            { name = "", index = -1 }
 
                         expectedNavigator =
-                            { name = "", index = -1, role = Just Mobster.Navigator }
+                            { name = "", index = -1 }
                     in
                         Expect.equal (Mobster.nextDriverNavigator startingList)
                             { driver = expectedDriver, navigator = expectedNavigator }
