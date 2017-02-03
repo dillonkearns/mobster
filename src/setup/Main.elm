@@ -11,6 +11,8 @@ import Json.Decode as Decode
 import Keyboard.Combo
 import Random
 import Tip
+import Setup.PlotScatter
+import Svg
 
 
 onEnter : Msg -> Attribute Msg
@@ -203,6 +205,24 @@ continueButtonChildren model =
             [ div [] [ text "Continue" ] ]
 
 
+ratingsToPlotData : List Int -> List ( Float, Float )
+ratingsToPlotData ratings =
+    List.indexedMap (\index value -> ( toFloat index, toFloat value )) ratings
+
+
+ratingsView : Model -> Svg.Svg Msg
+ratingsView model =
+    case model.goal of
+        Just _ ->
+            if List.length model.ratings > 0 then
+                Setup.PlotScatter.view (ratingsToPlotData model.ratings)
+            else
+                div [] []
+
+        Nothing ->
+            div [] []
+
+
 continueView : Model -> Html Msg
 continueView model =
     div [ class "container-fluid" ]
@@ -210,6 +230,7 @@ continueView model =
             [ invisibleTrigger
             , titleTextView
             ]
+        , ratingsView model
         , div [ class "row", style [ ( "padding-bottom", "20px" ) ] ]
             [ button
                 [ onClick StartTimer
@@ -443,7 +464,7 @@ update msg model =
             { model | goal = Nothing } ! []
 
         EnterRating rating ->
-            { model | ratings = model.ratings ++ [ rating ] } ! []
+            update StartTimer { model | ratings = model.ratings ++ [ rating ] }
 
 
 addMobster : String -> Model -> Model
