@@ -183,29 +183,24 @@ goalView newGoal maybeGoal =
                 ]
 
 
-goalTextForButton : Maybe String -> Html msg
-goalTextForButton maybeGoal =
-    case maybeGoal of
-        Just goal ->
-            text goal
-
-        Nothing ->
-            text ""
-
-
 continueButtonChildren : Model -> List (Html Msg)
 continueButtonChildren model =
-    [ div [ class "col-md-4" ] [ text "Continue" ]
-    , div
-        [ class "col-md-8"
-        , style
-            [ ( "font-size", "22px" )
-            , ( "font-style", "italic" )
-            , ( "text-align", "left" )
+    case model.goal of
+        Just goalText ->
+            [ div [ class "col-md-4" ] [ text "Continue" ]
+            , div
+                [ class "col-md-8"
+                , style
+                    [ ( "font-size", "22px" )
+                    , ( "font-style", "italic" )
+                    , ( "text-align", "left" )
+                    ]
+                ]
+                [ text goalText ]
             ]
-        ]
-        [ goalTextForButton model.goal ]
-    ]
+
+        Nothing ->
+            [ div [] [ text "Continue" ] ]
 
 
 continueView : Model -> Html Msg
