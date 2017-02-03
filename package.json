@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "elm-test --watch",
+    "test-watch": "elm-test --watch",
+    "test": "elm-test",
     "build": "elm-live src/timer/Main.elm src/setup/Main.elm --output elm.js",
     "pack": "build --dir",
     "dist-mac": "build --mac",
