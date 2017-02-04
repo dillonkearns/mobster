@@ -87,7 +87,7 @@ initialModel =
     , goal = Nothing
     , newGoal = ""
     , ratings = []
-    , elapsedSeconds = 23 * 60 + 59
+    , elapsedSeconds = 0
     }
 
 
