@@ -507,14 +507,7 @@ update msg model =
             update StartTimer { model | ratings = model.ratings ++ [ rating ] }
 
         ReorderMobsters shuffledMobsters ->
-            let
-                mobsterData =
-                    model.mobsterList
-
-                updatedMobsterData =
-                    { mobsterData | mobsters = shuffledMobsters, nextDriver = 0 }
-            in
-                { model | mobsterList = updatedMobsterData } ! []
+            { model | mobsterList = (model.mobsterList |> Mobster.reorder shuffledMobsters) } ! []
 
         ShuffleMobsters ->
             model ! [ shuffleMobstersCmd model.mobsterList ]

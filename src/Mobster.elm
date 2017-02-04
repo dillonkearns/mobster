@@ -1,4 +1,4 @@
-module Mobster exposing (MoblistOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters)
+module Mobster exposing (MoblistOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters, reorder)
 
 import Array
 import Maybe
@@ -68,6 +68,11 @@ updateMoblist moblistOperation moblist =
 
         RotateIn mobsterIndex ->
             rotateIn mobsterIndex moblist
+
+
+reorder : List String -> MobsterData -> MobsterData
+reorder shuffledMobsters mobsterData =
+    { mobsterData | mobsters = shuffledMobsters, nextDriver = 0 }
 
 
 empty : MobsterData
