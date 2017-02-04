@@ -348,23 +348,26 @@ mobsterView mobster =
     tr []
         [ td [] []
         , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
-            [ text mobster.name
+            [ span [ class "active-mobster", onClick (UpdateMoblist (Mobster.SetNextDriver mobster.index)) ]
+                [ text mobster.name
+                , roleView mobster.role
+                ]
             ]
         , td [] [ reorderButtonView mobster ]
         ]
 
 
-roleView : Mobster.MobsterWithRole -> Html Msg
-roleView mobster =
-    case mobster.role of
+roleView : Maybe Mobster.Role -> Html Msg
+roleView role =
+    case role of
         Just (Mobster.Driver) ->
-            span [ class "role-icon driver-icon", onClick (UpdateMoblist (Mobster.SetNextDriver mobster.index)) ] []
+            span [ class "role-icon driver-icon" ] []
 
         Just (Mobster.Navigator) ->
-            span [ class "role-icon navigator-icon", onClick (UpdateMoblist (Mobster.SetNextDriver mobster.index)) ] []
+            span [ class "role-icon navigator-icon" ] []
 
         Nothing ->
-            span [ class "role-icon no-role-icon", onClick (UpdateMoblist (Mobster.SetNextDriver mobster.index)) ] []
+            span [ class "role-icon no-role-icon" ] []
 
 
 reorderButtonView : Mobster.MobsterWithRole -> Html Msg
@@ -374,8 +377,7 @@ reorderButtonView mobster =
             mobster.index
     in
         div []
-            [ roleView mobster
-            , div [ class "btn-group btn-group-xs" ]
+            [ div [ class "btn-group btn-group-xs" ]
                 [ button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveUp mobsterIndex)) ] [ text "↑" ]
                 , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveDown mobsterIndex)) ] [ text "↓" ]
                 , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.Bench mobsterIndex)) ] [ text "x" ]
