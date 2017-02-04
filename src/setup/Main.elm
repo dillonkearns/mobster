@@ -357,7 +357,7 @@ mobsterView mobster =
     tr []
         [ td [] []
         , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
-            [ span [ class "active-mobster", onClick (UpdateMoblist (Mobster.SetNextDriver mobster.index)) ]
+            [ span [ Html.Attributes.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], class "active-mobster", onClick (UpdateMoblist (Mobster.SetNextDriver mobster.index)) ]
                 [ text mobster.name
                 , roleView mobster.role
                 ]
