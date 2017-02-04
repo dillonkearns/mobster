@@ -1,4 +1,4 @@
-module Mobster exposing (MoblistOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole)
+module Mobster exposing (MoblistOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters)
 
 import Array
 import Maybe
@@ -6,6 +6,8 @@ import Array.Extra
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
 import Json.Decode.Pipeline as Pipeline exposing (required, optional, hardcoded)
+import Random.List
+import Random
 
 
 type MoblistOperation
@@ -36,6 +38,11 @@ decoder =
 decode : Encode.Value -> Result String MobsterData
 decode data =
     Decode.decodeValue decoder data
+
+
+randomizeMobsters : MobsterData -> Random.Generator (List String)
+randomizeMobsters mobsterData =
+    Random.List.shuffle mobsterData.mobsters
 
 
 updateMoblist : MoblistOperation -> MobsterData -> MobsterData

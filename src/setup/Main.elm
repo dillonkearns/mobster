@@ -15,6 +15,11 @@ import Setup.PlotScatter
 import Svg
 
 
+shuffleMobstersCmd : Mobster.MobsterData -> Cmd Msg
+shuffleMobstersCmd mobsterData =
+    Random.generate ReorderMobsters (Mobster.randomizeMobsters mobsterData)
+
+
 onEnter : Msg -> Attribute Msg
 onEnter msg =
     let
@@ -44,6 +49,8 @@ type Msg
     | EnterRating Int
     | Quit
     | ComboMsg Keyboard.Combo.Msg
+    | ReorderMobsters (List String)
+    | ShuffleMobsters
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
@@ -319,6 +326,7 @@ mobstersView : String -> List Mobster.MobsterWithRole -> Html Msg
 mobstersView newMobster mobsters =
     div [ style [ ( "padding-bottom", "35px" ) ] ]
         [ addMobsterInputView newMobster
+        , button [ onClick ShuffleMobsters, class "btn btn-sm btn-success top-buffer" ] [ text "Shuffle!" ]
         , table [ class "table h3" ] (List.map mobsterView mobsters)
         ]
 
@@ -497,6 +505,19 @@ update msg model =
 
         EnterRating rating ->
             update StartTimer { model | ratings = model.ratings ++ [ rating ] }
+
+        ReorderMobsters shuffledMobsters ->
+            let
+                mobsterData =
+                    model.mobsterList
+
+                updatedMobsterData =
+                    { mobsterData | mobsters = shuffledMobsters, nextDriver = 0 }
+            in
+                { model | mobsterList = updatedMobsterData } ! []
+
+        ShuffleMobsters ->
+            model ! [ shuffleMobstersCmd model.mobsterList ]
 
 
 addMobster : String -> Model -> Model
