@@ -326,7 +326,8 @@ mobstersView newMobster mobsters =
 inactiveMobstersView : List String -> Html Msg
 inactiveMobstersView inactiveMobsters =
     div []
-        [ table [ class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
+        [ h2 [ class "text-center text-primary" ] [ text "Bench" ]
+        , table [ class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
         ]
 
 
