@@ -15,6 +15,7 @@ type MoblistOperation
     | SetNextDriver Int
     | SkipTurn
     | Bench Int
+    | RotateIn Int
 
 
 type alias MobsterData =
@@ -57,6 +58,9 @@ updateMoblist moblistOperation moblist =
 
         Bench mobsterIndex ->
             bench mobsterIndex moblist
+
+        RotateIn mobsterIndex ->
+            rotateIn mobsterIndex moblist
 
 
 empty : MobsterData
@@ -164,6 +168,32 @@ moveUp itemIndex list =
                     list.mobsters
     in
         { list | mobsters = updatedMobsters }
+
+
+rotateIn : Int -> MobsterData -> MobsterData
+rotateIn index list =
+    let
+        maybeMobster =
+            list.inactiveMobsters
+                |> Array.fromList
+                |> Array.get index
+    in
+        case maybeMobster of
+            Just nowActiveMobster ->
+                let
+                    updatedBench =
+                        list.inactiveMobsters
+                            |> Array.fromList
+                            |> Array.Extra.removeAt index
+                            |> Array.toList
+
+                    updatedActive =
+                        List.append list.mobsters [ nowActiveMobster ]
+                in
+                    { list | mobsters = updatedActive, inactiveMobsters = updatedBench }
+
+            Nothing ->
+                list
 
 
 bench : Int -> MobsterData -> MobsterData

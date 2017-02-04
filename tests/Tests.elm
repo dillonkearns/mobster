@@ -226,4 +226,13 @@ mobsterTests =
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Remove 1)) { empty | inactiveMobsters = [ "Kirk", "McCoy" ] }
             ]
+        , describe "active"
+            [ test "puts mobster back in rotation" <|
+                \() ->
+                    let
+                        list =
+                            { empty | inactiveMobsters = [ "Kirk", "Spock", "McCoy" ] }
+                    in
+                        Expect.equal (list |> Mobster.updateMoblist (RotateIn 2)) { empty | inactiveMobsters = [ "Kirk", "Spock" ], mobsters = [ "McCoy" ] }
+            ]
         ]

@@ -335,7 +335,7 @@ inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
         [ td [] []
         , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
-            [ text inactiveMobster
+            [ span [ class "inactive-mobster", onClick (UpdateMoblist (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , div [ class "btn-group btn-group-xs", style [ ( "margin-left", "10px" ) ] ]
                 [ button [ class "btn btn-small btn-danger", onClick (UpdateMoblist (Mobster.Remove mobsterIndex)) ] [ text "x" ]
                 ]
