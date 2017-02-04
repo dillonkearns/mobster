@@ -20,18 +20,6 @@ shuffleMobstersCmd mobsterData =
     Random.generate ReorderMobsters (Mobster.randomizeMobsters mobsterData)
 
 
-onEnter : Msg -> Attribute Msg
-onEnter msg =
-    let
-        isEnter code =
-            if code == 13 then
-                Json.succeed msg
-            else
-                Json.fail "not the right keycode"
-    in
-        on "keydown" (keyCode |> Json.andThen isEnter)
-
-
 type Msg
     = StartTimer
     | UpdateMoblist MoblistOperation
@@ -443,38 +431,25 @@ resetIfAfterBreak model =
         { model | elapsedSeconds = updatedElapsedSeconds }
 
 
+rotateMobsters : Model -> Model
+rotateMobsters model =
+    { model | mobsterList = (Mobster.rotate model.mobsterList) }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         StartTimer ->
             let
-                rotatedMobsterData =
-                    Mobster.rotate model.mobsterList
-
                 updatedModel =
-                    { model
-                        | screenState = Continue
-                        , mobsterList = rotatedMobsterData
-                    }
+                    { model | screenState = Continue }
+                        |> rotateMobsters
                         |> resetIfAfterBreak
             in
-                updatedModel
-                    ! [ (startTimer (flags model)), changeTip ]
+                updatedModel ! [ (startTimer (flags model)), changeTip ]
 
-        ChangeTimerDuration durationAsString ->
-            let
-                rawDuration =
-                    Result.withDefault 5 (String.toInt durationAsString)
-
-                duration =
-                    if rawDuration > 15 then
-                        15
-                    else if rawDuration < 1 then
-                        1
-                    else
-                        rawDuration
-            in
-                { model | timerDuration = duration } ! []
+        ChangeTimerDuration newDurationAsString ->
+            { model | timerDuration = (validateTimerDuration newDurationAsString model.timerDuration) } ! []
 
         SelectDurationInput ->
             model ! [ selectDuration "timer-duration" ]
@@ -563,6 +538,20 @@ update msg model =
                 { model | elapsedSeconds = updatedElapsedSeconds } ! []
 
 
+validateTimerDuration : String -> Int -> Int
+validateTimerDuration newDurationAsString oldTimerDuration =
+    let
+        rawDuration =
+            Result.withDefault 5 (String.toInt newDurationAsString)
+    in
+        if rawDuration > 15 then
+            15
+        else if rawDuration < 1 then
+            1
+        else
+            rawDuration
+
+
 addMobster : String -> Model -> Model
 addMobster newMobster model =
     let
@@ -594,6 +583,18 @@ subscriptions model =
         [ Keyboard.Combo.subscriptions model.combos
         , timeElapsed TimeElapsed
         ]
+
+
+onEnter : Msg -> Attribute Msg
+onEnter msg =
+    let
+        isEnter code =
+            if code == 13 then
+                Json.succeed msg
+            else
+                Json.fail "not the right keycode"
+    in
+        on "keydown" (keyCode |> Json.andThen isEnter)
 
 
 main : Program Decode.Value Model Msg
