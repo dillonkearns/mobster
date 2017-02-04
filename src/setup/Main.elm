@@ -60,7 +60,7 @@ type ScreenState
 type alias Model =
     { timerDuration : Int
     , screenState : ScreenState
-    , mobsterList : Mobster.MobsterData
+    , mobsterData : Mobster.MobsterData
     , newMobster : String
     , combos : Keyboard.Combo.Model Msg
     , tip : Tip.Tip Msg
@@ -80,7 +80,7 @@ initialModel : Model
 initialModel =
     { timerDuration = 5
     , screenState = Configure
-    , mobsterList = Mobster.empty
+    , mobsterData = Mobster.empty
     , newMobster = ""
     , combos = Keyboard.Combo.init ComboMsg keyboardCombos
     , tip = Tip.emptyTip
@@ -99,7 +99,7 @@ flags : Model -> TimerConfiguration
 flags model =
     let
         driverNavigator =
-            Mobster.nextDriverNavigator model.mobsterList
+            Mobster.nextDriverNavigator model.mobsterData
     in
         { minutes = model.timerDuration
         , driver = driverNavigator.driver.name
@@ -166,8 +166,8 @@ configureView model =
         , button [ onClick StartTimer, class "btn btn-info btn-lg btn-block top-buffer", title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
         , div [ class "row" ]
             [ div [ class "col-md-4" ] [ timerDurationInputView model.timerDuration ]
-            , div [ class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterList) ]
-            , div [ class "col-md-4" ] [ inactiveMobstersView model.mobsterList.inactiveMobsters ]
+            , div [ class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterData) ]
+            , div [ class "col-md-4" ] [ inactiveMobstersView model.mobsterData.inactiveMobsters ]
             ]
         , div [ class "h1" ] [ goalView model.newGoal model.goal ]
         , div [ class "row top-buffer" ] [ quitButton ]
@@ -286,7 +286,7 @@ nextDriverNavigatorView : Model -> Html Msg
 nextDriverNavigatorView model =
     let
         driverNavigator =
-            Mobster.nextDriverNavigator model.mobsterList
+            Mobster.nextDriverNavigator model.mobsterData
     in
         div [ class "row h1" ]
             [ div [ class "text-muted col-md-3" ] [ text "Next:" ]
@@ -433,7 +433,7 @@ resetIfAfterBreak model =
 
 rotateMobsters : Model -> Model
 rotateMobsters model =
-    { model | mobsterList = (Mobster.rotate model.mobsterList) }
+    { model | mobsterData = (Mobster.rotate model.mobsterData) }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -465,7 +465,7 @@ update msg model =
                     updatedModel =
                         (addMobster model.newMobster model)
                 in
-                    updatedModel ! [ saveSetup updatedModel.mobsterList ]
+                    updatedModel ! [ saveSetup updatedModel.mobsterData ]
 
         ClickAddMobster ->
             if model.newMobster == "" then
@@ -478,7 +478,7 @@ update msg model =
                     updatedModel =
                         (addMobster model.newMobster model)
                 in
-                    updatedModel ! [ command, saveSetup updatedModel.mobsterList ]
+                    updatedModel ! [ command, saveSetup updatedModel.mobsterData ]
 
         DomFocusResult _ ->
             model ! []
@@ -486,10 +486,10 @@ update msg model =
         UpdateMoblist operation ->
             let
                 updatedMobsterData =
-                    Mobster.updateMoblist operation model.mobsterList
+                    Mobster.updateMoblist operation model.mobsterData
             in
                 { model
-                    | mobsterList = updatedMobsterData
+                    | mobsterData = updatedMobsterData
                 }
                     ! [ saveSetup updatedMobsterData ]
 
@@ -525,10 +525,10 @@ update msg model =
             update StartTimer { model | ratings = model.ratings ++ [ rating ] }
 
         ReorderMobsters shuffledMobsters ->
-            { model | mobsterList = (model.mobsterList |> Mobster.reorder shuffledMobsters) } ! []
+            { model | mobsterData = (model.mobsterData |> Mobster.reorder shuffledMobsters) } ! []
 
         ShuffleMobsters ->
-            model ! [ shuffleMobstersCmd model.mobsterList ]
+            model ! [ shuffleMobstersCmd model.mobsterData ]
 
         TimeElapsed elapsedSeconds ->
             let
@@ -558,9 +558,9 @@ addMobster newMobster model =
         updatedMobsterData =
             Mobster.add
                 model.newMobster
-                model.mobsterList
+                model.mobsterData
     in
-        { model | newMobster = "", mobsterList = updatedMobsterData }
+        { model | newMobster = "", mobsterData = updatedMobsterData }
 
 
 init : Decode.Value -> ( Model, Cmd Msg )
@@ -571,7 +571,7 @@ init flags =
     in
         case decodedMobsterData of
             Ok mobsterData ->
-                { initialModel | mobsterList = mobsterData } ! []
+                { initialModel | mobsterData = mobsterData } ! []
 
             Err errorString ->
                 initialModel ! []

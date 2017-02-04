@@ -131,10 +131,10 @@ nextDriverNavigator mobsterData =
 
 
 nextIndex : Int -> MobsterData -> Int
-nextIndex currentIndex mobsterList =
+nextIndex currentIndex mobsterData =
     let
         mobSize =
-            List.length mobsterList.mobsters
+            List.length mobsterData.mobsters
 
         index =
             if mobSize == 0 then
@@ -146,8 +146,8 @@ nextIndex currentIndex mobsterList =
 
 
 rotate : MobsterData -> MobsterData
-rotate mobsterList =
-    { mobsterList | nextDriver = (nextIndex mobsterList.nextDriver mobsterList) }
+rotate mobsterData =
+    { mobsterData | nextDriver = (nextIndex mobsterData.nextDriver mobsterData) }
 
 
 moveDown : Int -> MobsterData -> MobsterData
@@ -292,8 +292,8 @@ asMobsterList mobsterData =
 
 
 mobsters : MobsterData -> Mobsters
-mobsters mobsterList =
-    List.indexedMap (mobsterListItemToMobster (nextDriverNavigator mobsterList)) mobsterList.mobsters
+mobsters mobsterData =
+    List.indexedMap (mobsterListItemToMobster (nextDriverNavigator mobsterData)) mobsterData.mobsters
 
 
 setNextDriver : Int -> MobsterData -> MobsterData
