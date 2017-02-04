@@ -1,11 +1,11 @@
 {
     "version": "1.0.0",
-    "summary": "Sample Elm Test",
-    "repository": "https://github.com/user/project.git",
+    "summary": "Mobster Tests",
+    "repository": "https://github.com/dillonkearns/mobster.git",
     "license": "BSD-3-Clause",
     "source-directories": [
         ".",
-        "../src"
+        "../src/"
     ],
     "exposed-modules": [],
     "dependencies": {
