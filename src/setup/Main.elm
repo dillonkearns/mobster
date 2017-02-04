@@ -326,7 +326,7 @@ mobstersView : String -> List Mobster.MobsterWithRole -> Html Msg
 mobstersView newMobster mobsters =
     div [ style [ ( "padding-bottom", "35px" ) ] ]
         [ addMobsterInputView newMobster
-        , button [ onClick ShuffleMobsters, class "btn btn-sm btn-success top-buffer" ] [ text "Shuffle!" ]
+        , img [ onClick ShuffleMobsters, class "top-buffer shuffle", src "./assets/dice.png", style [ ( "max-width", "25px" ) ] ] []
         , table [ class "table h3" ] (List.map mobsterView mobsters)
         ]
 
