@@ -45,8 +45,8 @@
         ipcRenderer.send('timer-mouse-hover')
       }, false)
 
-    timer.ports.timerDone.subscribe(function() {
-      ipcRenderer.send('timer-done')
+    timer.ports.timerDone.subscribe(function(elapsedSeconds) {
+      ipcRenderer.send('timer-done', elapsedSeconds)
     })
   </script>
 </html>

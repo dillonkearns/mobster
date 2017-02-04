@@ -7,7 +7,7 @@ import Timer.Timer exposing (..)
 
 
 type alias Model =
-    { driver : String, navigator : String, secondsLeft : Int }
+    { driver : String, navigator : String, secondsLeft : Int, originalDurationSeconds : Int }
 
 
 type Msg
@@ -18,7 +18,7 @@ type alias Flags =
     { minutes : Int, driver : String, navigator : String, isDev : Bool }
 
 
-port timerDone : () -> Cmd msg
+port timerDone : Int -> Cmd msg
 
 
 driverView : String -> Html msg
@@ -65,7 +65,7 @@ update msg model =
                     updateTimer model.secondsLeft
             in
                 if updatedSecondsLeft <= 0 then
-                    model ! [ timerDone () ]
+                    model ! [ timerDone model.originalDurationSeconds ]
                 else
                     { model | secondsLeft = updatedSecondsLeft } ! []
 
@@ -80,7 +80,7 @@ init flags =
             else
                 flags.minutes * 60
     in
-        ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator }, Cmd.none )
+        ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator, originalDurationSeconds = secondsLeft }, Cmd.none )
 
 
 main : Program Flags Model Msg

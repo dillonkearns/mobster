@@ -51,6 +51,7 @@ type Msg
     | ComboMsg Keyboard.Combo.Msg
     | ReorderMobsters (List String)
     | ShuffleMobsters
+    | TimeElapsed Int
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
@@ -78,6 +79,7 @@ type alias Model =
     , goal : Maybe String
     , newGoal : String
     , ratings : List Int
+    , elapsedSeconds : Int
     }
 
 
@@ -97,6 +99,7 @@ initialModel =
     , goal = Nothing
     , newGoal = ""
     , ratings = []
+    , elapsedSeconds = 23 * 60 + 59
     }
 
 
@@ -126,6 +129,9 @@ port quit : () -> Cmd msg
 
 
 port selectDuration : String -> Cmd msg
+
+
+port timeElapsed : (Int -> msg) -> Sub msg
 
 
 timerDurationInputView : Int -> Html Msg
@@ -231,6 +237,26 @@ ratingsView model =
             div [] []
 
 
+breakSuggested : Int -> Bool
+breakSuggested elapsedSeconds =
+    elapsedSeconds >= 24 * 60
+
+
+breakView : Int -> Html msg
+breakView elapsedSeconds =
+    let
+        elapsedMinutes =
+            elapsedSeconds // 60
+    in
+        if breakSuggested elapsedSeconds then
+            div [ class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
+                [ span [ class "glyphicon glyphicon-exclamation-sign right-buffer" ] []
+                , text ("How about a walk? (You've been mobbing for " ++ (toString elapsedMinutes) ++ " minutes.)")
+                ]
+        else
+            div [] []
+
+
 continueView : Model -> Html Msg
 continueView model =
     div [ class "container-fluid" ]
@@ -239,6 +265,7 @@ continueView model =
             , titleTextView
             ]
         , ratingsView model
+        , breakView model.elapsedSeconds
         , div [ class "row", style [ ( "padding-bottom", "20px" ) ] ]
             [ button
                 [ onClick StartTimer
@@ -404,6 +431,18 @@ view model =
             continueView model
 
 
+resetIfAfterBreak : Model -> Model
+resetIfAfterBreak model =
+    let
+        updatedElapsedSeconds =
+            if breakSuggested model.elapsedSeconds then
+                0
+            else
+                model.elapsedSeconds
+    in
+        { model | elapsedSeconds = updatedElapsedSeconds }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -411,11 +450,15 @@ update msg model =
             let
                 rotatedMobsterData =
                     Mobster.rotate model.mobsterList
+
+                updatedModel =
+                    { model
+                        | screenState = Continue
+                        , mobsterList = rotatedMobsterData
+                    }
+                        |> resetIfAfterBreak
             in
-                { model
-                    | screenState = Continue
-                    , mobsterList = rotatedMobsterData
-                }
+                updatedModel
                     ! [ (startTimer (flags model)), changeTip ]
 
         ChangeTimerDuration durationAsString ->
@@ -512,6 +555,13 @@ update msg model =
         ShuffleMobsters ->
             model ! [ shuffleMobstersCmd model.mobsterList ]
 
+        TimeElapsed elapsedSeconds ->
+            let
+                updatedElapsedSeconds =
+                    model.elapsedSeconds + elapsedSeconds
+            in
+                { model | elapsedSeconds = updatedElapsedSeconds } ! []
+
 
 addMobster : String -> Model -> Model
 addMobster newMobster model =
@@ -540,7 +590,10 @@ init flags =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Keyboard.Combo.subscriptions model.combos
+    Sub.batch
+        [ Keyboard.Combo.subscriptions model.combos
+        , timeElapsed TimeElapsed
+        ]
 
 
 main : Program Decode.Value Model Msg

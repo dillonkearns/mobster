@@ -92,8 +92,9 @@ function createWindow () {
     mainWindow.hide()
   })
 
-  ipcMain.on('timer-done', (event) => {
+  ipcMain.on('timer-done', (event, timeElapsed) => {
     closeTimer()
+    mainWindow.webContents.send('timer-done', timeElapsed)
     showSetupAgain(mainWindow)
   })
 

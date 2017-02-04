@@ -126,18 +126,22 @@
 
     setup.ports.startTimer.subscribe(function(flags) {
       ipcRenderer.send('start-timer', flags)
-    });
+    })
 
     setup.ports.quit.subscribe(function() {
       ipcRenderer.send('quit')
-    });
+    })
 
     setup.ports.selectDuration.subscribe(function(id) {
       document.getElementById(id).select()
-    });
+    })
 
     setup.ports.saveSetup.subscribe(function(setup) {
       window.localStorage.setItem('setup', JSON.stringify(setup))
+    })
+
+    ipcRenderer.on('timer-done', function (event, elapsedSeconds) {
+      setup.ports.timeElapsed.send(elapsedSeconds);
     })
 
     $(() => {
