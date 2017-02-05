@@ -14,11 +14,9 @@ cd mobster
 # Install dependencies
 npm install
 # Run the test watcher
-npm run test
-# Run the elm compiler watcher
-npm run build
+npm test
 # Run the app
-electron .
+npm start
 ```
 
 #### Under [MIT license](LICENSE.md)

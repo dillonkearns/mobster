@@ -4,10 +4,9 @@
   "description": "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "elm make src/timer/Main.elm src/setup/Main.elm --output elm.js && electron .",
     "test-watch": "elm-test --watch",
     "test": "elm-test",
-    "build": "elm-live src/timer/Main.elm src/setup/Main.elm --output elm.js",
     "pack": "build --dir",
     "dist-mac": "build --mac",
     "dist-win": "build --win",
@@ -35,7 +34,6 @@
   "devDependencies": {
     "electron": "^1.5.0",
     "electron-builder": "^11.7.0",
-    "elm-live": "^2.7.4",
     "elm-test": "^0.18.2"
   },
   "dependencies": {
