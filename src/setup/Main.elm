@@ -461,11 +461,7 @@ update msg model =
             if model.newMobster == "" then
                 model ! []
             else
-                let
-                    updatedModel =
-                        (addMobster model.newMobster model)
-                in
-                    updatedModel ! [ saveSetup updatedModel.mobsterData ]
+                update (UpdateMobsterData (Mobster.Add model.newMobster)) { model | newMobster = "" }
 
         ClickAddMobster ->
             if model.newMobster == "" then
@@ -488,10 +484,7 @@ update msg model =
                 updatedMobsterData =
                     Mobster.updateMoblist operation model.mobsterData
             in
-                { model
-                    | mobsterData = updatedMobsterData
-                }
-                    ! [ saveSetup updatedMobsterData ]
+                { model | mobsterData = updatedMobsterData } ! [ saveSetup updatedMobsterData ]
 
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []
