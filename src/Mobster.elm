@@ -1,4 +1,4 @@
-module Mobster exposing (MoblistOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters, reorder)
+module Mobster exposing (MobsterOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters, reorder)
 
 import Array
 import Maybe
@@ -10,7 +10,7 @@ import Random.List
 import Random
 
 
-type MoblistOperation
+type MobsterOperation
     = MoveUp Int
     | MoveDown Int
     | Remove Int
@@ -45,7 +45,7 @@ randomizeMobsters mobsterData =
     Random.List.shuffle mobsterData.mobsters
 
 
-updateMoblist : MoblistOperation -> MobsterData -> MobsterData
+updateMoblist : MobsterOperation -> MobsterData -> MobsterData
 updateMoblist moblistOperation moblist =
     case moblistOperation of
         MoveUp mobsterIndex ->

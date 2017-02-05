@@ -4,7 +4,7 @@ import Test exposing (..)
 import Expect
 import Timer.Main as TimerMain
 import Timer.Timer as Timer
-import Mobster exposing (MoblistOperation(..), empty)
+import Mobster exposing (MobsterOperation(..), empty)
 
 
 all : Test

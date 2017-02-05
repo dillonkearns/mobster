@@ -6,7 +6,7 @@ import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
 import Task
 import Dom
-import Mobster exposing (MoblistOperation)
+import Mobster exposing (MobsterOperation)
 import Json.Decode as Decode
 import Keyboard.Combo
 import Random
@@ -22,7 +22,7 @@ shuffleMobstersCmd mobsterData =
 
 type Msg
     = StartTimer
-    | UpdateMoblist MoblistOperation
+    | UpdateMobsterData MobsterOperation
     | UpdateMobsterInput String
     | AddMobster
     | ClickAddMobster
@@ -292,7 +292,7 @@ nextDriverNavigatorView model =
             [ div [ class "text-muted col-md-3" ] [ text "Next:" ]
             , dnView driverNavigator.driver Mobster.Driver
             , dnView driverNavigator.navigator Mobster.Navigator
-            , button [ class "btn btn-small btn-default", onClick (UpdateMoblist Mobster.SkipTurn) ] [ text "Skip Turn" ]
+            , button [ class "btn btn-small btn-default", onClick (UpdateMobsterData Mobster.SkipTurn) ] [ text "Skip Turn" ]
             ]
 
 
@@ -310,7 +310,7 @@ dnView mobster role =
         div [ class "col-md-4 text-default" ]
             [ iconView icon 40
             , span [ class "right-buffer" ] [ text mobster.name ]
-            , button [ onClick (UpdateMoblist (Mobster.Bench mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
+            , button [ onClick (UpdateMobsterData (Mobster.Bench mobster.index)), class "btn btn-small btn-default" ] [ text "Not here" ]
             ]
 
 
@@ -359,9 +359,9 @@ inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
         [ td [] []
         , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
-            [ span [ class "inactive-mobster", onClick (UpdateMoblist (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
+            [ span [ class "inactive-mobster", onClick (UpdateMobsterData (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , div [ class "btn-group btn-group-xs", style [ ( "margin-left", "10px" ) ] ]
-                [ button [ class "btn btn-small btn-danger", onClick (UpdateMoblist (Mobster.Remove mobsterIndex)) ] [ text "x" ]
+                [ button [ class "btn btn-small btn-danger", onClick (UpdateMobsterData (Mobster.Remove mobsterIndex)) ] [ text "x" ]
                 ]
             ]
         ]
@@ -372,7 +372,7 @@ mobsterView mobster =
     tr []
         [ td [] []
         , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
-            [ span [ Html.Attributes.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], class "active-mobster", onClick (UpdateMoblist (Mobster.SetNextDriver mobster.index)) ]
+            [ span [ Html.Attributes.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
                 [ text mobster.name
                 , roleView mobster.role
                 ]
@@ -402,9 +402,9 @@ reorderButtonView mobster =
     in
         div []
             [ div [ class "btn-group btn-group-xs" ]
-                [ button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveUp mobsterIndex)) ] [ text "↑" ]
-                , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.MoveDown mobsterIndex)) ] [ text "↓" ]
-                , button [ class "btn btn-small btn-default", onClick (UpdateMoblist (Mobster.Bench mobsterIndex)) ] [ text "x" ]
+                [ button [ class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.MoveUp mobsterIndex)) ] [ text "↑" ]
+                , button [ class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.MoveDown mobsterIndex)) ] [ text "↓" ]
+                , button [ class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.Bench mobsterIndex)) ] [ text "x" ]
                 ]
             ]
 
@@ -483,7 +483,7 @@ update msg model =
         DomFocusResult _ ->
             model ! []
 
-        UpdateMoblist operation ->
+        UpdateMobsterData operation ->
             let
                 updatedMobsterData =
                     Mobster.updateMoblist operation model.mobsterData
