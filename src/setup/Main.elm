@@ -67,7 +67,7 @@ type alias Model =
     , goal : Maybe String
     , newGoal : String
     , ratings : List Int
-    , elapsedSeconds : Int
+    , secondsSinceBreak : Int
     }
 
 
@@ -87,7 +87,7 @@ initialModel =
     , goal = Nothing
     , newGoal = ""
     , ratings = []
-    , elapsedSeconds = 0
+    , secondsSinceBreak = 0
     }
 
 
@@ -226,20 +226,20 @@ ratingsView model =
 
 
 breakSuggested : Int -> Bool
-breakSuggested elapsedSeconds =
-    elapsedSeconds >= 24 * 60
+breakSuggested secondsSinceBreak =
+    secondsSinceBreak >= 24 * 60
 
 
 breakView : Int -> Html msg
-breakView elapsedSeconds =
+breakView secondsSinceBreak =
     let
-        elapsedMinutes =
-            elapsedSeconds // 60
+        minutesSinceBreak =
+            secondsSinceBreak // 60
     in
-        if breakSuggested elapsedSeconds then
+        if breakSuggested secondsSinceBreak then
             div [ class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
                 [ span [ class "glyphicon glyphicon-exclamation-sign right-buffer" ] []
-                , text ("How about a walk? (You've been mobbing for " ++ (toString elapsedMinutes) ++ " minutes.)")
+                , text ("How about a walk? (You've been mobbing for " ++ (toString minutesSinceBreak) ++ " minutes.)")
                 ]
         else
             div [] []
@@ -253,7 +253,7 @@ continueView model =
             , titleTextView
             ]
         , ratingsView model
-        , breakView model.elapsedSeconds
+        , breakView model.secondsSinceBreak
         , div [ class "row", style [ ( "padding-bottom", "20px" ) ] ]
             [ button
                 [ onClick StartTimer
@@ -423,12 +423,12 @@ resetIfAfterBreak : Model -> Model
 resetIfAfterBreak model =
     let
         updatedElapsedSeconds =
-            if breakSuggested model.elapsedSeconds then
+            if breakSuggested model.secondsSinceBreak then
                 0
             else
-                model.elapsedSeconds
+                model.secondsSinceBreak
     in
-        { model | elapsedSeconds = updatedElapsedSeconds }
+        { model | secondsSinceBreak = updatedElapsedSeconds }
 
 
 rotateMobsters : Model -> Model
@@ -524,11 +524,7 @@ update msg model =
             model ! [ shuffleMobstersCmd model.mobsterData ]
 
         TimeElapsed elapsedSeconds ->
-            let
-                updatedElapsedSeconds =
-                    model.elapsedSeconds + elapsedSeconds
-            in
-                { model | elapsedSeconds = updatedElapsedSeconds } ! []
+            { model | secondsSinceBreak = (model.secondsSinceBreak + elapsedSeconds) } ! []
 
 
 validateTimerDuration : String -> Int -> Int
