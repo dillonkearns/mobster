@@ -13,6 +13,7 @@ import Random
 import Tip
 import Setup.PlotScatter
 import Svg
+import Update.Extra
 
 
 shuffleMobstersCmd : Mobster.MobsterData -> Cmd Msg
@@ -465,16 +466,11 @@ update msg model =
 
         ClickAddMobster ->
             if model.newMobster == "" then
-                model ! []
+                model ! [ focusAddMobsterInput ]
             else
-                let
-                    command =
-                        Task.attempt DomFocusResult (Dom.focus "add-mobster")
-
-                    updatedModel =
-                        (addMobster model.newMobster model)
-                in
-                    updatedModel ! [ command, saveSetup updatedModel.mobsterData ]
+                { model | newMobster = "" }
+                    ! [ focusAddMobsterInput ]
+                    |> Update.Extra.andThen update (UpdateMobsterData (Mobster.Add model.newMobster))
 
         DomFocusResult _ ->
             model ! []
@@ -527,6 +523,11 @@ update msg model =
             { model | secondsSinceBreak = (model.secondsSinceBreak + elapsedSeconds) } ! []
 
 
+focusAddMobsterInput : Cmd Msg
+focusAddMobsterInput =
+    Task.attempt DomFocusResult (Dom.focus "add-mobster")
+
+
 validateTimerDuration : String -> Int -> Int
 validateTimerDuration newDurationAsString oldTimerDuration =
     let
@@ -539,17 +540,6 @@ validateTimerDuration newDurationAsString oldTimerDuration =
             1
         else
             rawDuration
-
-
-addMobster : String -> Model -> Model
-addMobster newMobster model =
-    let
-        updatedMobsterData =
-            Mobster.add
-                model.newMobster
-                model.mobsterData
-    in
-        { model | newMobster = "", mobsterData = updatedMobsterData }
 
 
 init : Decode.Value -> ( Model, Cmd Msg )
