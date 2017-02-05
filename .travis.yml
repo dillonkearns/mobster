@@ -10,9 +10,7 @@ os:
   - osx
 
 env:
-  matrix:
-    - ELM_VERSION=0.18.0 TARGET_NODE_VERSION=node
-    - ELM_VERSION=0.18.0 TARGET_NODE_VERSION=4.0
+  - ELM_VERSION=0.18.0 TARGET_NODE_VERSION=node
 
 before_install:
   - if [ ${TRAVIS_OS_NAME} == "osx" ];
@@ -43,14 +41,7 @@ install:
   - cd tests
   - npm install
   - travis_retry elm-package install --yes
-  - ls
-  - pwd
   - cd ..
-  - ls
-  - pwd
 
 script:
   - npm test
-
-notifications:
-  email: false
