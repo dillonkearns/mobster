@@ -1,4 +1,4 @@
-# Mobster
+# Mobster [![Build Status](https://travis-ci.org/dillonkearns/mobster.svg?branch=master)](https://travis-ci.org/dillonkearns/mobster)
 A mob programming timer, inspired by the [MobProgramming/MobTimer.Python](https://github.com/MobProgramming/MobTimer.Python).
 Learn all about mobbing at the above github page, and at [mobprogramming.org](http://mobprogramming.org/).
 This app was created to have an easier to maintain cross-platform application (using github's [electron](electron.atom.io) framework).
