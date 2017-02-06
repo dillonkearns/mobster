@@ -144,7 +144,7 @@ timerDurationInputView duration =
             , Html.Attributes.min "1"
             , Html.Attributes.max "15"
             , value (toString duration)
-            , Html.Attributes.class "right-buffer"
+            , class [ BufferRight ]
             , style [ ( "font-size", "60px" ) ]
             ]
             []
@@ -249,7 +249,7 @@ breakView secondsSinceBreak =
     in
         if breakSuggested secondsSinceBreak then
             div [ Html.Attributes.class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
-                [ span [ Html.Attributes.class "glyphicon glyphicon-exclamation-sign right-buffer" ] []
+                [ span [ Html.Attributes.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
                 , text ("How about a walk? (You've been mobbing for " ++ (toString minutesSinceBreak) ++ " minutes.)")
                 ]
         else
@@ -321,7 +321,7 @@ dnView mobster role =
     in
         div [ Html.Attributes.class "col-md-4 text-default" ]
             [ iconView icon 40
-            , span [ Html.Attributes.class "right-buffer" ] [ text mobster.name ]
+            , span [ class [ BufferRight ] ] [ text mobster.name ]
             , button [ onClick (UpdateMobsterData (Mobster.Bench mobster.index)), Html.Attributes.class "btn btn-small btn-default" ] [ text "Not here" ]
             ]
 
