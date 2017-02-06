@@ -1,19 +1,19 @@
 module Tip exposing (..)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
 import Random
 import Array
+import Html exposing (..)
 
 
-type alias Tip msg =
+type alias Tip =
     { url : String
-    , body : Html msg
+    , body : String
     , title : String
+    , author : String
     }
 
 
-get : Int -> Tip msg
+get : Int -> Tip
 get index =
     let
         maybeTip =
@@ -27,45 +27,41 @@ random =
     (Random.int 0 ((List.length tips) - 1))
 
 
-emptyTip : Tip msg
+emptyTip : Tip
 emptyTip =
-    { url = "", title = "", body = text "" }
+    { url = "", title = "", body = "", author = "" }
 
 
-tips : List (Tip msg)
+tips : List Tip
 tips =
     [ { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
-      , body =
-            blockquote []
-                [ p [] [ text "For an idea to go from your head into the computer it MUST go through someone else's hands" ]
-                , small [] [ text "Llewellyn Falco" ]
-                ]
+      , body = "For an idea to go from your head into the computer it MUST go through someone else's hands"
       , title = "Driver/Navigator Pattern"
+      , author = "Llewellyn Falco"
       }
     , { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
       , body =
-            blockquote []
-                [ p [ style [ ( "font-size", "20px" ) ] ] [ text "When you are the driver trust that your navigator knows what they are telling you. If you don't understand what they are telling you ask questions, but if you don't understand why they are telling you something don't worry about it until you've finished the method or section of code. The right time to discuss and challenge design decisions is after the solution is out of the navigator's head or when the navigator is confused and unable to navigate." ]
-                , small [] [ text "Llewellyn Falco" ]
-                ]
-      , title =
-            "Trust your navigator"
+            "When you are the driver trust that your navigator knows what they are telling you. If you don't understand what they are telling you ask questions, but if you don't understand why they are telling you something don't worry about it until you've finished the method or section of code. The right time to discuss and challenge design decisions is after the solution is out of the navigator's head or when the navigator is confused and unable to navigate."
+      , author = "Llewellyn Falco"
+      , title = "Trust your navigator"
       }
     , { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
-      , title =
-            "Driving With An Idea"
-      , body =
-            blockquote []
-                [ p [] [ text "What if I have an idea I want to implement? Great! Switch places and become the navigator." ]
-                , small [] [ text "Llewellyn Falco" ]
-                ]
+      , title = "Driving With An Idea"
+      , body = "What if I have an idea I want to implement? Great! Switch places and become the navigator."
+      , author = "Llewellyn Falco"
       }
     , { url = "https://github.com/MobProgramming/MobTimer.Python/blob/master/Tips/MobProgramming"
       , title = "Mob Decision-Making Protocol"
       , body =
-            blockquote []
-                [ p [] [ text "Arguing about solutions? Try going with the least experienced navigator and have the more experienced team members course correct only as needed." ]
-                , small [] [ text "The Hunter Mob" ]
-                ]
+            "Arguing about solutions? Try going with the least experienced navigator and have the more experienced team members course correct only as needed."
+      , author = "The Hunter Mob"
       }
     ]
+
+
+tipView : Tip -> Html msg
+tipView tip =
+    blockquote []
+        [ p [] [ text tip.body ]
+        , small [] [ text tip.author ]
+        ]

@@ -65,7 +65,7 @@ type alias Model =
     , mobsterData : Mobster.MobsterData
     , newMobster : String
     , combos : Keyboard.Combo.Model Msg
-    , tip : Tip.Tip Msg
+    , tip : Tip.Tip
     , goal : Maybe String
     , newGoal : String
     , ratings : List Int
@@ -278,7 +278,7 @@ continueView model =
         ]
 
 
-tipView : Tip.Tip Msg -> Html Msg
+tipView : Tip.Tip -> Html Msg
 tipView tip =
     div [ class "jumbotron tip", style [ ( "margin", "0px" ), ( "padding", "25px" ) ] ]
         [ div [ class "row" ]
@@ -286,7 +286,7 @@ tipView tip =
                 [ text tip.title ]
             , a [ target "_blank", class "btn btn-sm btn-primary pull-right", href tip.url ] [ text "Learn More" ]
             ]
-        , div [ class "row", style [ ( "font-size", "20px" ) ] ] [ tip.body ]
+        , div [ class "row", style [ ( "font-size", "20px" ) ] ] [ Tip.tipView tip ]
         ]
 
 
