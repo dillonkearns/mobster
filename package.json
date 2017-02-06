@@ -4,7 +4,7 @@
   "description": "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
   "scripts": {
-    "start": "elm make src/timer/Main.elm src/setup/Main.elm --output elm.js && electron .",
+    "start": "npm test && elm make src/timer/Main.elm src/setup/Main.elm --output elm.js && electron .",
     "test-watch": "elm-test --watch",
     "test": "elm-test",
     "pack": "build --dir",
