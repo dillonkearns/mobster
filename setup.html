@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="./assets/css/bootstrap337.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="./assets/css/bootstrap-darkly-theme.min.css" crossorigin="anonymous">
     <script type="text/javascript" src="./elm.js"></script>
-    <script>window.Elm = require('./elm.js');</script>
+    <script>window.Elm = require('./elm.js')</script>
     <script type="text/javascript">
     const $ = jQuery = require('jquery')
     </script>
@@ -119,10 +119,10 @@
   </body>
 
   <script>
-    const {ipcRenderer} = require('electron');
+    const {ipcRenderer, clipboard} = require('electron')
 
     let settings = JSON.parse(window.localStorage.getItem('setup'))
-    let setup = Elm.Setup.Main.fullscreen(settings);
+    let setup = Elm.Setup.Main.fullscreen(settings)
 
     setup.ports.startTimer.subscribe(function(flags) {
       ipcRenderer.send('start-timer', flags)
@@ -136,12 +136,20 @@
       document.getElementById(id).select()
     })
 
+    setup.ports.copyActiveMobsters.subscribe(function(activeMobsters) {
+      clipboard.writeText(activeMobsters)
+    })
+
     setup.ports.saveSetup.subscribe(function(setup) {
       window.localStorage.setItem('setup', JSON.stringify(setup))
     })
 
     ipcRenderer.on('timer-done', function (event, elapsedSeconds) {
-      setup.ports.timeElapsed.send(elapsedSeconds);
+      setup.ports.timeElapsed.send(elapsedSeconds)
+    })
+
+    ipcRenderer.on('copy-active-mobsters', function (event) {
+      setup.ports.onCopyMobstersShortcut.send(null)
     })
 
     $(() => {

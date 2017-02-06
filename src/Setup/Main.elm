@@ -41,6 +41,7 @@ type Msg
     | ReorderMobsters (List String)
     | ShuffleMobsters
     | TimeElapsed Int
+    | CopyActiveMobsters ()
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
@@ -120,7 +121,13 @@ port quit : () -> Cmd msg
 port selectDuration : String -> Cmd msg
 
 
+port copyActiveMobsters : String -> Cmd msg
+
+
 port timeElapsed : (Int -> msg) -> Sub msg
+
+
+port onCopyMobstersShortcut : (() -> msg) -> Sub msg
 
 
 timerDurationInputView : Int -> Html Msg
@@ -522,6 +529,9 @@ update msg model =
         TimeElapsed elapsedSeconds ->
             { model | secondsSinceBreak = (model.secondsSinceBreak + elapsedSeconds) } ! []
 
+        CopyActiveMobsters _ ->
+            model ! [ (copyActiveMobsters (String.join ", " model.mobsterData.mobsters)) ]
+
 
 focusAddMobsterInput : Cmd Msg
 focusAddMobsterInput =
@@ -561,6 +571,7 @@ subscriptions model =
     Sub.batch
         [ Keyboard.Combo.subscriptions model.combos
         , timeElapsed TimeElapsed
+        , onCopyMobstersShortcut CopyActiveMobsters
         ]
 
 

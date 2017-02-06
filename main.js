@@ -146,6 +146,12 @@ function createWindows() {
       toggleMainWindow()
     }
   })
+  globalShortcut.register('CommandOrControl+Shift+;', () => {
+    copyActiveMobsters()
+  })
+}
+function copyActiveMobsters() {
+  mainWindow.webContents.send('copy-active-mobsters')
 }
 
 // This method will be called when Electron has finished
