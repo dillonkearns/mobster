@@ -1,7 +1,7 @@
 port module Setup.Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (value, type_, id, style, src, title, href, target, placeholder)
+import Html.Attributes as Attr exposing (value, type_, id, style, src, title, href, target, placeholder)
 import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
 import Json.Decode as Json
 import Task
@@ -135,14 +135,14 @@ port onCopyMobstersShortcut : (() -> msg) -> Sub msg
 
 timerDurationInputView : Int -> Html Msg
 timerDurationInputView duration =
-    div [ Html.Attributes.class "text-primary h1" ]
+    div [ Attr.class "text-primary h1" ]
         [ input
             [ id "timer-duration"
             , onClick SelectDurationInput
             , onInput ChangeTimerDuration
             , type_ "number"
-            , Html.Attributes.min "1"
-            , Html.Attributes.max "15"
+            , Attr.min "1"
+            , Attr.max "15"
             , value (toString duration)
             , class [ BufferRight ]
             , style [ ( "font-size", "60px" ) ]
@@ -154,34 +154,34 @@ timerDurationInputView duration =
 
 quitButton : Html Msg
 quitButton =
-    button [ onClick Quit, Html.Attributes.class "btn btn-primary btn-md btn-block" ] [ text "Quit" ]
+    button [ onClick Quit, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Quit" ]
 
 
 titleTextView : Html msg
 titleTextView =
-    h1 [ Html.Attributes.class "text-info text-center", id "mobster-title", style [ ( "font-size", "62px" ) ] ] [ text "Mobster" ]
+    h1 [ Attr.class "text-info text-center", id "mobster-title", style [ ( "font-size", "62px" ) ] ] [ text "Mobster" ]
 
 
 invisibleTrigger : Html msg
 invisibleTrigger =
-    img [ src "./assets/invisible.png", Html.Attributes.class "invisible-trigger pull-left", style [ ( "max-width", "35px" ) ] ] []
+    img [ src "./assets/invisible.png", Attr.class "invisible-trigger pull-left", style [ ( "max-width", "35px" ) ] ] []
 
 
 configureView : Model -> Html Msg
 configureView model =
-    div [ Html.Attributes.class "container-fluid" ]
-        [ div [ Html.Attributes.class "row" ]
+    div [ Attr.class "container-fluid" ]
+        [ div [ Attr.class "row" ]
             [ invisibleTrigger
             , titleTextView
             ]
-        , button [ onClick StartTimer, Html.Attributes.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
-        , div [ Html.Attributes.class "row" ]
-            [ div [ Html.Attributes.class "col-md-4" ] [ timerDurationInputView model.timerDuration ]
-            , div [ Html.Attributes.class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterData) ]
-            , div [ Html.Attributes.class "col-md-4" ] [ inactiveMobstersView model.mobsterData.inactiveMobsters ]
+        , button [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
+        , div [ Attr.class "row" ]
+            [ div [ Attr.class "col-md-4" ] [ timerDurationInputView model.timerDuration ]
+            , div [ Attr.class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterData) ]
+            , div [ Attr.class "col-md-4" ] [ inactiveMobstersView model.mobsterData.inactiveMobsters ]
             ]
-        , div [ Html.Attributes.class "h1" ] [ goalView model.newGoal model.goal ]
-        , div [ Html.Attributes.class "row", class [ BufferTop ] ] [ quitButton ]
+        , div [ Attr.class "h1" ] [ goalView model.newGoal model.goal ]
+        , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
         ]
 
 
@@ -189,12 +189,12 @@ goalView : String -> Maybe String -> Html Msg
 goalView newGoal maybeGoal =
     case maybeGoal of
         Just goal ->
-            div [] [ text goal, button [ onClick ChangeGoal, Html.Attributes.class "btn btn-sm btn-primary" ] [ text "Edit goal" ] ]
+            div [] [ text goal, button [ onClick ChangeGoal, Attr.class "btn btn-sm btn-primary" ] [ text "Edit goal" ] ]
 
         Nothing ->
-            div [ Html.Attributes.class "input-group" ]
-                [ input [ id "add-mobster", placeholder "Please give me a goal", type_ "text", Html.Attributes.class "form-control", value newGoal, onInput UpdateGoalInput, onEnter SetGoal, style [ ( "font-size", "30px" ) ] ] []
-                , span [ Html.Attributes.class "input-group-btn", type_ "button" ] [ button [ Html.Attributes.class "btn btn-primary", onClick SetGoal ] [ text "Set Goal" ] ]
+            div [ Attr.class "input-group" ]
+                [ input [ id "add-mobster", placeholder "Please give me a goal", type_ "text", Attr.class "form-control", value newGoal, onInput UpdateGoalInput, onEnter SetGoal, style [ ( "font-size", "30px" ) ] ] []
+                , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ Attr.class "btn btn-primary", onClick SetGoal ] [ text "Set Goal" ] ]
                 ]
 
 
@@ -202,9 +202,9 @@ continueButtonChildren : Model -> List (Html Msg)
 continueButtonChildren model =
     case model.goal of
         Just goalText ->
-            [ div [ Html.Attributes.class "col-md-4" ] [ text "Continue" ]
+            [ div [ Attr.class "col-md-4" ] [ text "Continue" ]
             , div
-                [ Html.Attributes.class "col-md-8"
+                [ Attr.class "col-md-8"
                 , style
                     [ ( "font-size", "22px" )
                     , ( "font-style", "italic" )
@@ -248,8 +248,8 @@ breakView secondsSinceBreak =
             secondsSinceBreak // 60
     in
         if breakSuggested secondsSinceBreak then
-            div [ Html.Attributes.class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
-                [ span [ Html.Attributes.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
+            div [ Attr.class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
+                [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
                 , text ("How about a walk? (You've been mobbing for " ++ (toString minutesSinceBreak) ++ " minutes.)")
                 ]
         else
@@ -258,17 +258,17 @@ breakView secondsSinceBreak =
 
 continueView : Model -> Html Msg
 continueView model =
-    div [ Html.Attributes.class "container-fluid" ]
-        [ div [ Html.Attributes.class "row" ]
+    div [ Attr.class "container-fluid" ]
+        [ div [ Attr.class "row" ]
             [ invisibleTrigger
             , titleTextView
             ]
         , ratingsView model
         , breakView model.secondsSinceBreak
-        , div [ Html.Attributes.class "row", style [ ( "padding-bottom", "20px" ) ] ]
+        , div [ Attr.class "row", style [ ( "padding-bottom", "20px" ) ] ]
             [ button
                 [ onClick StartTimer
-                , Html.Attributes.class "btn btn-info btn-lg btn-block"
+                , Attr.class "btn btn-info btn-lg btn-block"
                 , class [ BufferTop ]
                 , title "Ctrl+Enter or ⌘+Enter"
                 , style [ ( "font-size", "30px" ), ( "padding", "20px" ) ]
@@ -277,20 +277,20 @@ continueView model =
             ]
         , nextDriverNavigatorView model
         , tipView model.tip
-        , div [ Html.Attributes.class "row", class [ BufferTop ], style [ ( "padding-bottom", "20px" ) ] ] [ button [ onClick OpenConfigure, Html.Attributes.class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
-        , div [ Html.Attributes.class "row", class [ BufferTop ] ] [ quitButton ]
+        , div [ Attr.class "row", class [ BufferTop ], style [ ( "padding-bottom", "20px" ) ] ] [ button [ onClick OpenConfigure, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
+        , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
         ]
 
 
 tipView : Tip.Tip -> Html Msg
 tipView tip =
-    div [ Html.Attributes.class "jumbotron tip", style [ ( "margin", "0px" ), ( "padding", "25px" ) ] ]
-        [ div [ Html.Attributes.class "row" ]
-            [ h2 [ Html.Attributes.class "text-success pull-left", style [ ( "margin", "0px" ), ( "padding-bottom", "10px" ) ] ]
+    div [ Attr.class "jumbotron tip", style [ ( "margin", "0px" ), ( "padding", "25px" ) ] ]
+        [ div [ Attr.class "row" ]
+            [ h2 [ Attr.class "text-success pull-left", style [ ( "margin", "0px" ), ( "padding-bottom", "10px" ) ] ]
                 [ text tip.title ]
-            , a [ target "_blank", Html.Attributes.class "btn btn-sm btn-primary pull-right", href tip.url ] [ text "Learn More" ]
+            , a [ target "_blank", Attr.class "btn btn-sm btn-primary pull-right", href tip.url ] [ text "Learn More" ]
             ]
-        , div [ Html.Attributes.class "row", style [ ( "font-size", "20px" ) ] ] [ Tip.tipView tip ]
+        , div [ Attr.class "row", style [ ( "font-size", "20px" ) ] ] [ Tip.tipView tip ]
         ]
 
 
@@ -300,11 +300,11 @@ nextDriverNavigatorView model =
         driverNavigator =
             Mobster.nextDriverNavigator model.mobsterData
     in
-        div [ Html.Attributes.class "row h1" ]
-            [ div [ Html.Attributes.class "text-muted col-md-3" ] [ text "Next:" ]
+        div [ Attr.class "row h1" ]
+            [ div [ Attr.class "text-muted col-md-3" ] [ text "Next:" ]
             , dnView driverNavigator.driver Mobster.Driver
             , dnView driverNavigator.navigator Mobster.Navigator
-            , button [ Html.Attributes.class "btn btn-small btn-default", onClick (UpdateMobsterData Mobster.SkipTurn) ] [ text "Skip Turn" ]
+            , button [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData Mobster.SkipTurn) ] [ text "Skip Turn" ]
             ]
 
 
@@ -319,10 +319,10 @@ dnView mobster role =
                 Mobster.Navigator ->
                     "./assets/navigator-icon.png"
     in
-        div [ Html.Attributes.class "col-md-4 text-default" ]
+        div [ Attr.class "col-md-4 text-default" ]
             [ iconView icon 40
             , span [ class [ BufferRight ] ] [ text mobster.name ]
-            , button [ onClick (UpdateMobsterData (Mobster.Bench mobster.index)), Html.Attributes.class "btn btn-small btn-default" ] [ text "Not here" ]
+            , button [ onClick (UpdateMobsterData (Mobster.Bench mobster.index)), Attr.class "btn btn-small btn-default" ] [ text "Not here" ]
             ]
 
 
@@ -334,17 +334,17 @@ iconView iconUrl maxWidth =
 nextView : String -> String -> Html msg
 nextView thing name =
     span []
-        [ span [ Html.Attributes.class "text-muted" ] [ text ("Next " ++ thing ++ ": ") ]
-        , span [ Html.Attributes.class "text-info" ] [ text name ]
+        [ span [ Attr.class "text-muted" ] [ text ("Next " ++ thing ++ ": ") ]
+        , span [ Attr.class "text-info" ] [ text name ]
         ]
 
 
 addMobsterInputView : String -> Html Msg
 addMobsterInputView newMobster =
-    div [ Html.Attributes.class "row", class [ BufferTop ] ]
-        [ div [ Html.Attributes.class "input-group" ]
-            [ input [ id "add-mobster", Html.Attributes.placeholder "Jane Doe", type_ "text", Html.Attributes.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ ( "font-size", "30px" ) ] ] []
-            , span [ Html.Attributes.class "input-group-btn", type_ "button" ] [ button [ Html.Attributes.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
+    div [ Attr.class "row", class [ BufferTop ] ]
+        [ div [ Attr.class "input-group" ]
+            [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", Attr.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ ( "font-size", "30px" ) ] ] []
+            , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
             ]
         ]
 
@@ -353,16 +353,16 @@ mobstersView : String -> List Mobster.MobsterWithRole -> Html Msg
 mobstersView newMobster mobsters =
     div [ style [ ( "padding-bottom", "35px" ) ] ]
         [ addMobsterInputView newMobster
-        , img [ onClick ShuffleMobsters, Html.Attributes.class "shuffle", class [ BufferTop ], src "./assets/dice.png", style [ ( "max-width", "25px" ) ] ] []
-        , table [ Html.Attributes.class "table h3" ] (List.map mobsterView mobsters)
+        , img [ onClick ShuffleMobsters, Attr.class "shuffle", class [ BufferTop ], src "./assets/dice.png", style [ ( "max-width", "25px" ) ] ] []
+        , table [ Attr.class "table h3" ] (List.map mobsterView mobsters)
         ]
 
 
 inactiveMobstersView : List String -> Html Msg
 inactiveMobstersView inactiveMobsters =
     div []
-        [ h2 [ Html.Attributes.class "text-center text-primary" ] [ text "Bench" ]
-        , table [ Html.Attributes.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
+        [ h2 [ Attr.class "text-center text-primary" ] [ text "Bench" ]
+        , table [ Attr.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
         ]
 
 
@@ -371,9 +371,9 @@ inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
         [ td [] []
         , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
-            [ span [ Html.Attributes.class "inactive-mobster", onClick (UpdateMobsterData (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
-            , div [ Html.Attributes.class "btn-group btn-group-xs", style [ ( "margin-left", "10px" ) ] ]
-                [ button [ Html.Attributes.class "btn btn-small btn-danger", onClick (UpdateMobsterData (Mobster.Remove mobsterIndex)) ] [ text "x" ]
+            [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
+            , div [ Attr.class "btn-group btn-group-xs", style [ ( "margin-left", "10px" ) ] ]
+                [ button [ Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (Mobster.Remove mobsterIndex)) ] [ text "x" ]
                 ]
             ]
         ]
@@ -384,7 +384,7 @@ mobsterView mobster =
     tr []
         [ td [] []
         , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
-            [ span [ Html.Attributes.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], Html.Attributes.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
+            [ span [ Attr.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
                 [ text mobster.name
                 , roleView mobster.role
                 ]
@@ -397,13 +397,13 @@ roleView : Maybe Mobster.Role -> Html Msg
 roleView role =
     case role of
         Just (Mobster.Driver) ->
-            span [ Html.Attributes.class "role-icon driver-icon" ] []
+            span [ Attr.class "role-icon driver-icon" ] []
 
         Just (Mobster.Navigator) ->
-            span [ Html.Attributes.class "role-icon navigator-icon" ] []
+            span [ Attr.class "role-icon navigator-icon" ] []
 
         Nothing ->
-            span [ Html.Attributes.class "role-icon no-role-icon" ] []
+            span [ Attr.class "role-icon no-role-icon" ] []
 
 
 reorderButtonView : Mobster.MobsterWithRole -> Html Msg
@@ -413,10 +413,10 @@ reorderButtonView mobster =
             mobster.index
     in
         div []
-            [ div [ Html.Attributes.class "btn-group btn-group-xs" ]
-                [ button [ Html.Attributes.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.MoveUp mobsterIndex)) ] [ text "↑" ]
-                , button [ Html.Attributes.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.MoveDown mobsterIndex)) ] [ text "↓" ]
-                , button [ Html.Attributes.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.Bench mobsterIndex)) ] [ text "x" ]
+            [ div [ Attr.class "btn-group btn-group-xs" ]
+                [ button [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.MoveUp mobsterIndex)) ] [ text "↑" ]
+                , button [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.MoveDown mobsterIndex)) ] [ text "↓" ]
+                , button [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.Bench mobsterIndex)) ] [ text "x" ]
                 ]
             ]
 
