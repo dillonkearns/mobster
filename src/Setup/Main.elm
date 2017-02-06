@@ -36,9 +36,9 @@ type Msg
     | SelectDurationInput
     | OpenConfigure
     | NewTip Int
-    | SetGoal
-    | ChangeGoal
-    | UpdateGoalInput String
+    | SetExperiment
+    | ChangeExperiment
+    | UpdateExperimentInput String
     | EnterRating Int
     | Quit
     | ComboMsg Keyboard.Combo.Msg
@@ -69,8 +69,8 @@ type alias Model =
     , newMobster : String
     , combos : Keyboard.Combo.Model Msg
     , tip : Tip.Tip
-    , goal : Maybe String
-    , newGoal : String
+    , experiment : Maybe String
+    , newExperiment : String
     , ratings : List Int
     , secondsSinceBreak : Int
     }
@@ -89,8 +89,8 @@ initialModel =
     , newMobster = ""
     , combos = Keyboard.Combo.init ComboMsg keyboardCombos
     , tip = Tip.emptyTip
-    , goal = Nothing
-    , newGoal = ""
+    , experiment = Nothing
+    , newExperiment = ""
     , ratings = []
     , secondsSinceBreak = 0
     }
@@ -180,28 +180,28 @@ configureView model =
             , div [ Attr.class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterData) ]
             , div [ Attr.class "col-md-4" ] [ inactiveMobstersView model.mobsterData.inactiveMobsters ]
             ]
-        , div [ Attr.class "h1" ] [ goalView model.newGoal model.goal ]
+        , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
         , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
         ]
 
 
-goalView : String -> Maybe String -> Html Msg
-goalView newGoal maybeGoal =
-    case maybeGoal of
-        Just goal ->
-            div [] [ text goal, button [ onClick ChangeGoal, Attr.class "btn btn-sm btn-primary" ] [ text "Edit goal" ] ]
+experimentView : String -> Maybe String -> Html Msg
+experimentView newExperiment maybeExperiment =
+    case maybeExperiment of
+        Just experiment ->
+            div [] [ text experiment, button [ onClick ChangeExperiment, Attr.class "btn btn-sm btn-primary" ] [ text "Edit experiment" ] ]
 
         Nothing ->
             div [ Attr.class "input-group" ]
-                [ input [ id "add-mobster", placeholder "Please give me a goal", type_ "text", Attr.class "form-control", value newGoal, onInput UpdateGoalInput, onEnter SetGoal, style [ ( "font-size", "30px" ) ] ] []
-                , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ Attr.class "btn btn-primary", onClick SetGoal ] [ text "Set Goal" ] ]
+                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput UpdateExperimentInput, onEnter SetExperiment, style [ ( "font-size", "30px" ) ] ] []
+                , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ Attr.class "btn btn-primary", onClick SetExperiment ] [ text "Set" ] ]
                 ]
 
 
 continueButtonChildren : Model -> List (Html Msg)
 continueButtonChildren model =
-    case model.goal of
-        Just goalText ->
+    case model.experiment of
+        Just experimentText ->
             [ div [ Attr.class "col-md-4" ] [ text "Continue" ]
             , div
                 [ Attr.class "col-md-8"
@@ -211,7 +211,7 @@ continueButtonChildren model =
                     , ( "text-align", "left" )
                     ]
                 ]
-                [ text goalText ]
+                [ text experimentText ]
             ]
 
         Nothing ->
@@ -225,7 +225,7 @@ ratingsToPlotData ratings =
 
 ratingsView : Model -> Svg.Svg Msg
 ratingsView model =
-    case model.goal of
+    case model.experiment of
         Just _ ->
             if List.length model.ratings > 0 then
                 Setup.PlotScatter.view (ratingsToPlotData model.ratings)
@@ -509,17 +509,17 @@ update msg model =
         NewTip tipIndex ->
             { model | tip = (Tip.get tipIndex) } ! []
 
-        SetGoal ->
-            if model.newGoal == "" then
+        SetExperiment ->
+            if model.newExperiment == "" then
                 model ! []
             else
-                { model | goal = Just model.newGoal } ! []
+                { model | experiment = Just model.newExperiment } ! []
 
-        UpdateGoalInput newGoal ->
-            { model | newGoal = newGoal } ! []
+        UpdateExperimentInput newExperiment ->
+            { model | newExperiment = newExperiment } ! []
 
-        ChangeGoal ->
-            { model | goal = Nothing } ! []
+        ChangeExperiment ->
+            { model | experiment = Nothing } ! []
 
         EnterRating rating ->
             update StartTimer { model | ratings = model.ratings ++ [ rating ] }
