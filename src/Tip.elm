@@ -35,15 +35,15 @@ emptyTip =
 tips : List Tip
 tips =
     [ { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
-      , body = "For an idea to go from your head into the computer it MUST go through someone else's hands"
       , title = "Driver/Navigator Pattern"
+      , body = "For an idea to go from your head into the computer it MUST go through someone else's hands"
       , author = "Llewellyn Falco"
       }
     , { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
-      , body =
-            "When you are the driver trust that your navigator knows what they are telling you. If you don't understand what they are telling you ask questions, but if you don't understand why they are telling you something don't worry about it until you've finished the method or section of code. The right time to discuss and challenge design decisions is after the solution is out of the navigator's head or when the navigator is confused and unable to navigate."
-      , author = "Llewellyn Falco"
       , title = "Trust your navigator"
+      , body =
+            "The right time to discuss and challenge design decisions is after the solution is out of the navigator's head."
+      , author = "Llewellyn Falco"
       }
     , { url = "http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html"
       , title = "Driving With An Idea"
