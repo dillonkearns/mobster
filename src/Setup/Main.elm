@@ -18,7 +18,7 @@ import Update.Extra
 
 shuffleMobstersCmd : Mobster.MobsterData -> Cmd Msg
 shuffleMobstersCmd mobsterData =
-    Random.generate ReorderMobsters (Mobster.randomizeMobsters mobsterData)
+    Random.generate reorderOperation (Mobster.randomizeMobsters mobsterData)
 
 
 type Msg
@@ -38,7 +38,6 @@ type Msg
     | EnterRating Int
     | Quit
     | ComboMsg Keyboard.Combo.Msg
-    | ReorderMobsters (List String)
     | ShuffleMobsters
     | TimeElapsed Int
     | CopyActiveMobsters ()
@@ -520,9 +519,6 @@ update msg model =
         EnterRating rating ->
             update StartTimer { model | ratings = model.ratings ++ [ rating ] }
 
-        ReorderMobsters shuffledMobsters ->
-            { model | mobsterData = (model.mobsterData |> Mobster.reorder shuffledMobsters) } ! []
-
         ShuffleMobsters ->
             model ! [ shuffleMobstersCmd model.mobsterData ]
 
@@ -531,6 +527,11 @@ update msg model =
 
         CopyActiveMobsters _ ->
             model ! [ (copyActiveMobsters (String.join ", " model.mobsterData.mobsters)) ]
+
+
+reorderOperation : List String -> Msg
+reorderOperation shuffledMobsters =
+    (UpdateMobsterData (Mobster.Reorder shuffledMobsters))
 
 
 focusAddMobsterInput : Cmd Msg

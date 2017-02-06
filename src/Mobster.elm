@@ -19,6 +19,7 @@ type MobsterOperation
     | Bench Int
     | RotateIn Int
     | Add String
+    | Reorder (List String)
 
 
 type alias MobsterData =
@@ -72,6 +73,9 @@ updateMoblist moblistOperation moblist =
 
         Add mobsterName ->
             add mobsterName moblist
+
+        Reorder reorderedMobsters ->
+            reorder reorderedMobsters moblist
 
 
 reorder : List String -> MobsterData -> MobsterData
