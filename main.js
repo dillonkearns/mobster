@@ -79,6 +79,12 @@ function createWindow () {
   mainWindow.maximize()
   mainWindow.setResizable(false)
 
+  electron.screen.on('display-metrics-changed', function () {
+    mainWindow.setResizable(true)
+    mainWindow.maximize()
+    mainWindow.setResizable(false)
+  })
+
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'setup.html'),
     protocol: 'file:',
