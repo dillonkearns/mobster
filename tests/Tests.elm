@@ -5,6 +5,7 @@ import Expect
 import Timer.Main as TimerMain
 import Timer.Timer as Timer
 import Mobster exposing (MobsterOperation(..), empty)
+import BreakTests
 
 
 all : Test
@@ -27,6 +28,7 @@ all =
                     Expect.equal (TimerMain.updateTimer 10) 9
             ]
         , mobsterTests
+        , BreakTests.cases
         ]
 
 
