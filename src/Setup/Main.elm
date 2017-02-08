@@ -47,6 +47,7 @@ type Msg
     | ShuffleMobsters
     | TimeElapsed Int
     | CopyActiveMobsters ()
+    | ResetBreakData
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
@@ -271,7 +272,7 @@ breakView secondsSinceBreak intervalsSinceBreak intervalsPerBreak =
         div [] []
 
 
-viewIntervalsBeforeBreak : Model -> Html msg
+viewIntervalsBeforeBreak : Model -> Html Msg
 viewIntervalsBeforeBreak model =
     let
         remainingIntervals =
@@ -288,7 +289,7 @@ viewIntervalsBeforeBreak model =
                             span [ Attr.class "label label-info" ] [ text " " ]
                     )
     in
-        div [] intervalBadges
+        div [ onClick ResetBreakData ] intervalBadges
 
 
 continueView : Model -> Html Msg
@@ -467,6 +468,11 @@ view model =
             continueView model
 
 
+resetBreakData : Model -> Model
+resetBreakData model =
+    { model | secondsSinceBreak = 0, intervalsSinceBreak = 0 }
+
+
 resetIfAfterBreak : Model -> Model
 resetIfAfterBreak model =
     let
@@ -474,7 +480,7 @@ resetIfAfterBreak model =
             Break.breakSuggested model.intervalsSinceBreak model.intervalsPerBreak
     in
         if timeForBreak then
-            { model | secondsSinceBreak = 0, intervalsSinceBreak = 0 }
+            model |> resetBreakData
         else
             model
 
@@ -571,6 +577,9 @@ update msg model =
 
         CopyActiveMobsters _ ->
             model ! [ (copyActiveMobsters (String.join ", " model.mobsterData.mobsters)) ]
+
+        ResetBreakData ->
+            (model |> resetBreakData) ! []
 
 
 reorderOperation : List String -> Msg
