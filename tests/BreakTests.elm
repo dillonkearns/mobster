@@ -16,52 +16,56 @@ timersBeforeNextCases =
         [ test "just had a break" <|
             \() ->
                 let
-                    minutesSinceBreak =
+                    timersSinceBreak =
                         0
 
-                    timerDuration =
-                        1
-
-                    breakInterval =
+                    timersPerBreakInterval =
                         2
 
                     result =
-                        Break.timersBeforeNext minutesSinceBreak timerDuration breakInterval
+                        Break.timersBeforeNext timersSinceBreak timersPerBreakInterval
                 in
-                    Expect.equal result ( 2, 2 )
+                    Expect.equal result 2
         , test "rounds up when going the remaining time doesn't divide evenly into the break interval" <|
             \() ->
                 let
-                    minutesSinceBreak =
+                    timersSinceBreak =
                         1
 
-                    timerDuration =
-                        5
-
-                    breakInterval =
-                        20
+                    timersPerBreakInterval =
+                        4
 
                     result =
-                        Break.timersBeforeNext minutesSinceBreak timerDuration breakInterval
+                        Break.timersBeforeNext timersSinceBreak timersPerBreakInterval
 
                     expected =
-                        ( 4, 4 )
+                        3
                 in
                     Expect.equal result expected
-        , test "remaining timers is 0 when time since break is over break interval" <|
+        , test "break suggested when at least as many intervals have been done as the break interval" <|
             \() ->
                 let
-                    minutesSinceBreak =
-                        30
+                    timersSinceBreak =
+                        12
 
-                    timerDuration =
-                        5
-
-                    breakInterval =
-                        20
+                    timersPerBreakInterval =
+                        10
 
                     result =
-                        Break.timersBeforeNext minutesSinceBreak timerDuration breakInterval
+                        Break.breakSuggested timersSinceBreak timersPerBreakInterval
                 in
-                    Expect.equal result ( 0, 4 )
+                    Expect.equal result True
+        , test "break not suggested when fewer intervals have been completed than break interval" <|
+            \() ->
+                let
+                    timersSinceBreak =
+                        9
+
+                    timersPerBreakInterval =
+                        10
+
+                    result =
+                        Break.breakSuggested timersSinceBreak timersPerBreakInterval
+                in
+                    Expect.equal result False
         ]

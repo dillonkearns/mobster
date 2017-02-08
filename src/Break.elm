@@ -1,16 +1,14 @@
 module Break exposing (..)
 
 
-timersBeforeNext : Int -> Int -> Int -> ( Int, Int )
-timersBeforeNext minutesSinceBreak timerMinutes breakIntervalMinutes =
-    let
-        timersRemaining =
-            if minutesSinceBreak >= breakIntervalMinutes then
-                0
-            else
-                (toFloat (breakIntervalMinutes - minutesSinceBreak)) / (toFloat timerMinutes) |> Basics.ceiling
+timersBeforeNext : Int -> Int -> Int
+timersBeforeNext timersSinceBreak timersPerBreak =
+    if timersSinceBreak >= timersPerBreak then
+        0
+    else
+        timersPerBreak - timersSinceBreak
 
-        totalBreaksPerInterval =
-            breakIntervalMinutes // timerMinutes
-    in
-        ( timersRemaining, totalBreaksPerInterval )
+
+breakSuggested : Int -> Int -> Bool
+breakSuggested timersSinceBreak timersPerBreak =
+    timersSinceBreak >= timersPerBreak

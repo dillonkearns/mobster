@@ -16,6 +16,7 @@ import Svg
 import Update.Extra
 import Html.CssHelpers
 import Setup.Stylesheet exposing (CssClasses(..))
+import Break
 
 
 { id, class, classList } =
@@ -73,6 +74,7 @@ type alias Model =
     , newExperiment : String
     , ratings : List Int
     , secondsSinceBreak : Int
+    , intervalsSinceBreak : Int
     }
 
 
@@ -93,6 +95,7 @@ initialModel =
     , newExperiment = ""
     , ratings = []
     , secondsSinceBreak = 0
+    , intervalsSinceBreak = 0
     }
 
 
@@ -236,24 +239,25 @@ ratingsView model =
             div [] []
 
 
-breakSuggested : Int -> Bool
-breakSuggested secondsSinceBreak =
-    secondsSinceBreak >= 24 * 60
+intervalsPerBreak : Int
+intervalsPerBreak =
+    5
 
 
-breakView : Int -> Html msg
-breakView secondsSinceBreak =
-    let
-        minutesSinceBreak =
-            secondsSinceBreak // 60
-    in
-        if breakSuggested secondsSinceBreak then
-            div [ Attr.class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
-                [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
-                , text ("How about a walk? (You've been mobbing for " ++ (toString minutesSinceBreak) ++ " minutes.)")
-                ]
-        else
-            div [] []
+breakView : Int -> Int -> Html msg
+breakView secondsSinceBreak intervalsSinceBreak =
+    if Break.breakSuggested intervalsSinceBreak intervalsPerBreak then
+        div [ Attr.class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
+            [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
+            , text ("How about a walk? (You've been mobbing for " ++ (toString secondsSinceBreak) ++ " minutes.)")
+            ]
+    else
+        div [] []
+
+
+viewIntervalsBeforeBreak : Model -> Html msg
+viewIntervalsBeforeBreak model =
+    text ("Intervals before break: (" ++ (toString (Break.timersBeforeNext model.intervalsSinceBreak intervalsPerBreak)) ++ "/" ++ (toString intervalsPerBreak) ++ ")")
 
 
 continueView : Model -> Html Msg
@@ -264,7 +268,8 @@ continueView model =
             , titleTextView
             ]
         , ratingsView model
-        , breakView model.secondsSinceBreak
+        , div [] [ viewIntervalsBeforeBreak model ]
+        , breakView model.secondsSinceBreak model.intervalsSinceBreak
         , div [ Attr.class "row", style [ ( "padding-bottom", "20px" ) ] ]
             [ button
                 [ onClick StartTimer
@@ -434,13 +439,13 @@ view model =
 resetIfAfterBreak : Model -> Model
 resetIfAfterBreak model =
     let
-        updatedElapsedSeconds =
-            if breakSuggested model.secondsSinceBreak then
-                0
-            else
-                model.secondsSinceBreak
+        timeForBreak =
+            Break.breakSuggested model.intervalsSinceBreak 5
     in
-        { model | secondsSinceBreak = updatedElapsedSeconds }
+        if timeForBreak then
+            { model | secondsSinceBreak = 0, intervalsSinceBreak = 0 }
+        else
+            model
 
 
 rotateMobsters : Model -> Model
@@ -528,7 +533,7 @@ update msg model =
             model ! [ shuffleMobstersCmd model.mobsterData ]
 
         TimeElapsed elapsedSeconds ->
-            { model | secondsSinceBreak = (model.secondsSinceBreak + elapsedSeconds) } ! []
+            { model | secondsSinceBreak = (model.secondsSinceBreak + elapsedSeconds), intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
 
         CopyActiveMobsters _ ->
             model ! [ (copyActiveMobsters (String.join ", " model.mobsterData.mobsters)) ]
