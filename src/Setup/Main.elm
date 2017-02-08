@@ -34,6 +34,7 @@ type Msg
     | ClickAddMobster
     | DomFocusResult (Result Dom.Error ())
     | ChangeTimerDuration String
+    | ChangeBreakInterval String
     | SelectDurationInput
     | OpenConfigure
     | NewTip Int
@@ -157,6 +158,24 @@ timerDurationInputView duration =
         ]
 
 
+breakIntervalInputView : Int -> Int -> Html Msg
+breakIntervalInputView intervalsPerBreak timerDuration =
+    div [ Attr.class "text-primary h2" ]
+        [ input
+            [ id "break-interval"
+            , onInput ChangeBreakInterval
+            , type_ "number"
+            , Attr.min "0"
+            , Attr.max "30"
+            , value (toString intervalsPerBreak)
+            , class [ BufferRight ]
+            , style [ ( "font-size", "60px" ) ]
+            ]
+            []
+        , text ("intervals per break (" ++ (toString (intervalsPerBreak * timerDuration)) ++ " minutes" ++ ")")
+        ]
+
+
 quitButton : Html Msg
 quitButton =
     button [ onClick Quit, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Quit" ]
@@ -181,7 +200,7 @@ configureView model =
             ]
         , button [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
         , div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-4" ] [ timerDurationInputView model.timerDuration ]
+            [ div [ Attr.class "col-md-4" ] [ timerDurationInputView model.timerDuration, breakIntervalInputView model.intervalsPerBreak model.timerDuration ]
             , div [ Attr.class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterData) ]
             , div [ Attr.class "col-md-4" ] [ inactiveMobstersView model.mobsterData.inactiveMobsters ]
             ]
@@ -465,6 +484,9 @@ update msg model =
         ChangeTimerDuration newDurationAsString ->
             { model | timerDuration = (validateTimerDuration newDurationAsString model.timerDuration) } ! []
 
+        ChangeBreakInterval newIntervalAsString ->
+            { model | intervalsPerBreak = (validateBreakInterval newIntervalAsString model.intervalsPerBreak) } ! []
+
         SelectDurationInput ->
             model ! [ selectDuration "timer-duration" ]
 
@@ -556,6 +578,20 @@ validateTimerDuration newDurationAsString oldTimerDuration =
             15
         else if rawDuration < 1 then
             1
+        else
+            rawDuration
+
+
+validateBreakInterval : String -> Int -> Int
+validateBreakInterval newDurationAsString oldTimerDuration =
+    let
+        rawDuration =
+            Result.withDefault 6 (String.toInt newDurationAsString)
+    in
+        if rawDuration > 30 then
+            30
+        else if rawDuration < 0 then
+            0
         else
             rawDuration
 
