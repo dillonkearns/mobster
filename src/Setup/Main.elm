@@ -75,6 +75,7 @@ type alias Model =
     , ratings : List Int
     , secondsSinceBreak : Int
     , intervalsSinceBreak : Int
+    , intervalsPerBreak : Int
     }
 
 
@@ -96,6 +97,7 @@ initialModel =
     , ratings = []
     , secondsSinceBreak = 0
     , intervalsSinceBreak = 0
+    , intervalsPerBreak = 6
     }
 
 
@@ -239,13 +241,8 @@ ratingsView model =
             div [] []
 
 
-intervalsPerBreak : Int
-intervalsPerBreak =
-    5
-
-
-breakView : Int -> Int -> Html msg
-breakView secondsSinceBreak intervalsSinceBreak =
+breakView : Int -> Int -> Int -> Html msg
+breakView secondsSinceBreak intervalsSinceBreak intervalsPerBreak =
     if Break.breakSuggested intervalsSinceBreak intervalsPerBreak then
         div [ Attr.class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
             [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
@@ -257,7 +254,7 @@ breakView secondsSinceBreak intervalsSinceBreak =
 
 viewIntervalsBeforeBreak : Model -> Html msg
 viewIntervalsBeforeBreak model =
-    text ("Intervals before break: (" ++ (toString (Break.timersBeforeNext model.intervalsSinceBreak intervalsPerBreak)) ++ "/" ++ (toString intervalsPerBreak) ++ ")")
+    text ("Intervals before break: (" ++ (toString (Break.timersBeforeNext model.intervalsSinceBreak model.intervalsPerBreak)) ++ "/" ++ (toString model.intervalsPerBreak) ++ ")")
 
 
 continueView : Model -> Html Msg
@@ -269,7 +266,7 @@ continueView model =
             ]
         , ratingsView model
         , div [] [ viewIntervalsBeforeBreak model ]
-        , breakView model.secondsSinceBreak model.intervalsSinceBreak
+        , breakView model.secondsSinceBreak model.intervalsSinceBreak model.intervalsPerBreak
         , div [ Attr.class "row", style [ ( "padding-bottom", "20px" ) ] ]
             [ button
                 [ onClick StartTimer
@@ -440,7 +437,7 @@ resetIfAfterBreak : Model -> Model
 resetIfAfterBreak model =
     let
         timeForBreak =
-            Break.breakSuggested model.intervalsSinceBreak 5
+            Break.breakSuggested model.intervalsSinceBreak model.intervalsPerBreak
     in
         if timeForBreak then
             { model | secondsSinceBreak = 0, intervalsSinceBreak = 0 }
