@@ -1,5 +1,5 @@
 const electron = require('electron')
-const {ipcMain, globalShortcut, app, Tray, BrowserWindow} = require('electron')
+const {ipcMain, globalShortcut, app, Tray, BrowserWindow, dialog} = require('electron')
 
 const path = require('path')
 const url = require('url')
@@ -148,7 +148,18 @@ function createWindows() {
   createWindow()
   createTray()
   globalShortcut.register('CommandOrControl+Shift+K', () => {
-    if (!timerWindow) {
+    if (timerWindow) {
+      let dialogActionIndex = dialog.showMessageBox({
+        type: 'warning',
+        buttons: ['Stop timer', 'Keep it running'],
+        message: 'Stop the timer?',
+        cancelId: 1,
+      })
+      if (dialogActionIndex !== 1) {
+        closeTimer()
+        showSetupAgain(mainWindow)
+      }
+    } else {
       toggleMainWindow()
     }
   })
