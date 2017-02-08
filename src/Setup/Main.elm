@@ -273,7 +273,22 @@ breakView secondsSinceBreak intervalsSinceBreak intervalsPerBreak =
 
 viewIntervalsBeforeBreak : Model -> Html msg
 viewIntervalsBeforeBreak model =
-    text ("Intervals before break: (" ++ (toString (Break.timersBeforeNext model.intervalsSinceBreak model.intervalsPerBreak)) ++ "/" ++ (toString model.intervalsPerBreak) ++ ")")
+    let
+        remainingIntervals =
+            Break.timersBeforeNext model.intervalsSinceBreak model.intervalsPerBreak
+
+        intervalBadges =
+            List.range 1 model.intervalsPerBreak
+                |> List.map (\index -> index > model.intervalsSinceBreak)
+                |> List.map
+                    (\grayBadge ->
+                        if grayBadge then
+                            span [ Attr.class "label label-default" ] [ text " " ]
+                        else
+                            span [ Attr.class "label label-info" ] [ text " " ]
+                    )
+    in
+        div [] intervalBadges
 
 
 continueView : Model -> Html Msg
