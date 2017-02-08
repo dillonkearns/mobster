@@ -161,20 +161,27 @@ timerDurationInputView duration =
 
 breakIntervalInputView : Int -> Int -> Html Msg
 breakIntervalInputView intervalsPerBreak timerDuration =
-    div [ Attr.class "text-primary h2" ]
-        [ input
-            [ id "break-interval"
-            , onInput ChangeBreakInterval
-            , type_ "number"
-            , Attr.min "0"
-            , Attr.max "30"
-            , value (toString intervalsPerBreak)
-            , class [ BufferRight ]
-            , style [ ( "font-size", "60px" ) ]
+    let
+        theString =
+            if intervalsPerBreak > 0 then
+                "intervals per break (" ++ (toString (intervalsPerBreak * timerDuration)) ++ " minutes" ++ ")"
+            else
+                "Breaks off"
+    in
+        div [ Attr.class "text-primary h3" ]
+            [ input
+                [ id "break-interval"
+                , onInput ChangeBreakInterval
+                , type_ "number"
+                , Attr.min "0"
+                , Attr.max "30"
+                , value (toString intervalsPerBreak)
+                , class [ BufferRight ]
+                , style [ ( "font-size", "60px" ) ]
+                ]
+                []
+            , text theString
             ]
-            []
-        , text ("intervals per break (" ++ (toString (intervalsPerBreak * timerDuration)) ++ " minutes" ++ ")")
-        ]
 
 
 quitButton : Html Msg
@@ -263,7 +270,7 @@ ratingsView model =
 
 breakView : Int -> Int -> Int -> Html msg
 breakView secondsSinceBreak intervalsSinceBreak intervalsPerBreak =
-    if Break.breakSuggested intervalsSinceBreak intervalsPerBreak then
+    if intervalsPerBreak > 0 && Break.breakSuggested intervalsSinceBreak intervalsPerBreak then
         div [ Attr.class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
             [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
             , text ("How about a walk? (You've been mobbing for " ++ (toString secondsSinceBreak) ++ " minutes.)")
