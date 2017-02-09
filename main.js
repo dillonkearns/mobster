@@ -1,5 +1,5 @@
 const electron = require('electron')
-const {ipcMain, globalShortcut, app, Tray, BrowserWindow, dialog} = require('electron')
+const {ipcMain, globalShortcut, app, Tray, BrowserWindow, dialog, autoUpdater} = require('electron')
 
 const path = require('path')
 const url = require('url')
@@ -144,6 +144,13 @@ const createTray = () => {
   tray.on('click', onClickTrayIcon)
 }
 
+function showDialog(message) {
+  dialog.showMessageBox({
+        type: 'info',
+        message: message
+      })
+}
+
 function createWindows() {
   createWindow()
   createTray()
@@ -166,6 +173,24 @@ function createWindows() {
   globalShortcut.register('CommandOrControl+Shift+;', () => {
     copyActiveMobsters()
   })
+  autoUpdater.logger = log;
+  autoUpdater.on('checking-for-update', () => {
+      showDialog('checking-for-update')
+  });
+
+  autoUpdater.on('update-available', () => {
+      showDialog('update-available')
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+      showDialog('update-downloaded')
+  });
+
+  autoUpdater.on('update-not-available', () => {
+      showDialog('update-not-available')
+  });
+  showDialog('about to search for updates')
+  autoUpdater.checkForUpdates()
 }
 function copyActiveMobsters() {
   mainWindow.webContents.send('copy-active-mobsters')
