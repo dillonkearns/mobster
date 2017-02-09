@@ -273,7 +273,7 @@ breakView secondsSinceBreak intervalsSinceBreak intervalsPerBreak =
     if intervalsPerBreak > 0 && Break.breakSuggested intervalsSinceBreak intervalsPerBreak then
         div [ Attr.class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
             [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
-            , text ("How about a walk? (You've been mobbing for " ++ (toString secondsSinceBreak) ++ " minutes.)")
+            , text ("How about a walk? (You've been mobbing for " ++ (toString (secondsSinceBreak // 60)) ++ " minutes.)")
             ]
     else
         div [] []
