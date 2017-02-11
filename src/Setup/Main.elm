@@ -69,7 +69,7 @@ type ScreenState
 
 
 type alias Model =
-    { timerDuration : Int
+    { settings : Settings
     , screenState : ScreenState
     , mobsterData : Mobster.MobsterData
     , newMobster : String
@@ -80,8 +80,15 @@ type alias Model =
     , ratings : List Int
     , secondsSinceBreak : Int
     , intervalsSinceBreak : Int
-    , intervalsPerBreak : Int
     , availableUpdateVersion : Maybe String
+    }
+
+
+{-| persisted settings
+-}
+type alias Settings =
+    { timerDuration : Int
+    , intervalsPerBreak : Int
     }
 
 
@@ -92,7 +99,10 @@ changeTip =
 
 initialModel : Model
 initialModel =
-    { timerDuration = 5
+    { settings =
+        { timerDuration = 5
+        , intervalsPerBreak = 6
+        }
     , screenState = Configure
     , mobsterData = Mobster.empty
     , newMobster = ""
@@ -103,7 +113,6 @@ initialModel =
     , ratings = []
     , secondsSinceBreak = 0
     , intervalsSinceBreak = 0
-    , intervalsPerBreak = 6
     , availableUpdateVersion = Nothing
     }
 
@@ -118,7 +127,7 @@ flags model =
         driverNavigator =
             Mobster.nextDriverNavigator model.mobsterData
     in
-        { minutes = model.timerDuration
+        { minutes = model.settings.timerDuration
         , driver = driverNavigator.driver.name
         , navigator = driverNavigator.navigator.name
         }
@@ -219,7 +228,7 @@ configureView model =
             ]
         , button [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
         , div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-4" ] [ timerDurationInputView model.timerDuration, breakIntervalInputView model.intervalsPerBreak model.timerDuration ]
+            [ div [ Attr.class "col-md-4" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
             , div [ Attr.class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterData) ]
             , div [ Attr.class "col-md-4" ] [ inactiveMobstersView model.mobsterData.inactiveMobsters ]
             ]
@@ -294,10 +303,10 @@ viewIntervalsBeforeBreak : Model -> Html Msg
 viewIntervalsBeforeBreak model =
     let
         remainingIntervals =
-            Break.timersBeforeNext model.intervalsSinceBreak model.intervalsPerBreak
+            Break.timersBeforeNext model.intervalsSinceBreak model.settings.intervalsPerBreak
 
         intervalBadges =
-            List.range 1 model.intervalsPerBreak
+            List.range 1 model.settings.intervalsPerBreak
                 |> List.map (\index -> index > model.intervalsSinceBreak)
                 |> List.map
                     (\grayBadge ->
@@ -319,7 +328,7 @@ continueView model =
             ]
         , ratingsView model
         , div [] [ viewIntervalsBeforeBreak model ]
-        , breakView model.secondsSinceBreak model.intervalsSinceBreak model.intervalsPerBreak
+        , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
         , div [ Attr.class "row", style [ ( "padding-bottom", "20px" ) ] ]
             [ button
                 [ onClick StartTimer
@@ -514,7 +523,7 @@ resetIfAfterBreak : Model -> Model
 resetIfAfterBreak model =
     let
         timeForBreak =
-            Break.breakSuggested model.intervalsSinceBreak model.intervalsPerBreak
+            Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak
     in
         if timeForBreak then
             model |> resetBreakData
@@ -540,10 +549,24 @@ update msg model =
                 updatedModel ! [ (startTimer (flags model)), changeTip ]
 
         ChangeTimerDuration newDurationAsString ->
-            { model | timerDuration = (validateTimerDuration newDurationAsString model.timerDuration) } ! []
+            let
+                settings =
+                    model.settings
+
+                updatedSettings =
+                    { settings | timerDuration = (validateTimerDuration newDurationAsString settings.timerDuration) }
+            in
+                { model | settings = updatedSettings } ! []
 
         ChangeBreakInterval newIntervalAsString ->
-            { model | intervalsPerBreak = (validateBreakInterval newIntervalAsString model.intervalsPerBreak) } ! []
+            let
+                settings =
+                    model.settings
+
+                updatedSettings =
+                    { settings | intervalsPerBreak = (validateBreakInterval newIntervalAsString settings.intervalsPerBreak) }
+            in
+                { model | settings = updatedSettings } ! []
 
         SelectDurationInput ->
             model ! [ selectDuration "timer-duration" ]
