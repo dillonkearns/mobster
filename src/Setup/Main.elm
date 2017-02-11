@@ -3,6 +3,7 @@ port module Setup.Main exposing (..)
 import Html exposing (..)
 import Html.Attributes as Attr exposing (value, type_, id, style, src, title, href, target, placeholder)
 import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
+import Html.Events.Extra exposing (onEnter)
 import Json.Decode as Json
 import Task
 import Dom
@@ -684,18 +685,6 @@ subscriptions model =
         , updateDownloaded UpdateAvailable
         , onCopyMobstersShortcut CopyActiveMobsters
         ]
-
-
-onEnter : Msg -> Attribute Msg
-onEnter msg =
-    let
-        isEnter code =
-            if code == 13 then
-                Json.succeed msg
-            else
-                Json.fail "not the right keycode"
-    in
-        on "keydown" (keyCode |> Json.andThen isEnter)
 
 
 main : Program Decode.Value Model Msg
