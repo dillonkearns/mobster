@@ -5,6 +5,7 @@ require('electron-debug')({
   enabled: true // enable debug shortcuts in prod build
 })
 
+const ms = require('ms')
 const path = require('path')
 const url = require('url')
 const log = require('electron-log')
@@ -199,6 +200,7 @@ function setupAutoUpdater() {
     log.info('update-not-available')
   });
   autoUpdater.checkForUpdates()
+  setInterval(autoUpdater.checkForUpdates, ms('30m'))
 }
 
 function registerShortcuts() {
