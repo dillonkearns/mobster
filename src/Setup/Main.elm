@@ -18,6 +18,7 @@ import Update.Extra
 import Html.CssHelpers
 import Setup.Stylesheet exposing (CssClasses(..))
 import Break
+import Setup.Settings as Settings
 
 
 { id, class, classList } =
@@ -69,9 +70,8 @@ type ScreenState
 
 
 type alias Model =
-    { settings : Settings
+    { settings : Settings.Data
     , screenState : ScreenState
-    , mobsterData : Mobster.MobsterData
     , newMobster : String
     , combos : Keyboard.Combo.Model Msg
     , tip : Tip.Tip
@@ -84,27 +84,15 @@ type alias Model =
     }
 
 
-{-| persisted settings
--}
-type alias Settings =
-    { timerDuration : Int
-    , intervalsPerBreak : Int
-    }
-
-
 changeTip : Cmd Msg
 changeTip =
     Random.generate NewTip Tip.random
 
 
-initialModel : Model
-initialModel =
-    { settings =
-        { timerDuration = 5
-        , intervalsPerBreak = 6
-        }
+initialModel : Settings.Data -> Model
+initialModel settings =
+    { settings = settings
     , screenState = Configure
-    , mobsterData = Mobster.empty
     , newMobster = ""
     , combos = Keyboard.Combo.init ComboMsg keyboardCombos
     , tip = Tip.emptyTip
@@ -125,7 +113,7 @@ flags : Model -> TimerConfiguration
 flags model =
     let
         driverNavigator =
-            Mobster.nextDriverNavigator model.mobsterData
+            Mobster.nextDriverNavigator model.settings.mobsterData
     in
         { minutes = model.settings.timerDuration
         , driver = driverNavigator.driver.name
@@ -136,7 +124,7 @@ flags model =
 port startTimer : TimerConfiguration -> Cmd msg
 
 
-port saveSetup : Mobster.MobsterData -> Cmd msg
+port saveSettings : Settings.Data -> Cmd msg
 
 
 port quit : () -> Cmd msg
@@ -229,8 +217,8 @@ configureView model =
         , button [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
-            , div [ Attr.class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.mobsterData) ]
-            , div [ Attr.class "col-md-4" ] [ inactiveMobstersView model.mobsterData.inactiveMobsters ]
+            , div [ Attr.class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) ]
+            , div [ Attr.class "col-md-4" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
         , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
@@ -362,7 +350,7 @@ nextDriverNavigatorView : Model -> Html Msg
 nextDriverNavigatorView model =
     let
         driverNavigator =
-            Mobster.nextDriverNavigator model.mobsterData
+            Mobster.nextDriverNavigator model.settings.mobsterData
     in
         div [ Attr.class "row h1" ]
             [ div [ Attr.class "text-muted col-md-3" ] [ text "Next:" ]
@@ -533,7 +521,14 @@ resetIfAfterBreak model =
 
 rotateMobsters : Model -> Model
 rotateMobsters model =
-    { model | mobsterData = (Mobster.rotate model.mobsterData) }
+    let
+        settings =
+            model.settings
+
+        updatedSettings =
+            { settings | mobsterData = (Mobster.rotate settings.mobsterData) }
+    in
+        { model | settings = updatedSettings }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -556,7 +551,7 @@ update msg model =
                 updatedSettings =
                     { settings | timerDuration = (validateTimerDuration newDurationAsString settings.timerDuration) }
             in
-                { model | settings = updatedSettings } ! []
+                { model | settings = updatedSettings } ! [ saveSettings updatedSettings ]
 
         ChangeBreakInterval newIntervalAsString ->
             let
@@ -566,7 +561,7 @@ update msg model =
                 updatedSettings =
                     { settings | intervalsPerBreak = (validateBreakInterval newIntervalAsString settings.intervalsPerBreak) }
             in
-                { model | settings = updatedSettings } ! []
+                { model | settings = updatedSettings } ! [ saveSettings updatedSettings ]
 
         SelectDurationInput ->
             model ! [ selectDuration "timer-duration" ]
@@ -594,9 +589,15 @@ update msg model =
         UpdateMobsterData operation ->
             let
                 updatedMobsterData =
-                    Mobster.updateMoblist operation model.mobsterData
+                    Mobster.updateMoblist operation model.settings.mobsterData
+
+                settings =
+                    model.settings
+
+                updatedSettings =
+                    { settings | mobsterData = updatedMobsterData }
             in
-                { model | mobsterData = updatedMobsterData } ! [ saveSetup updatedMobsterData ]
+                { model | settings = updatedSettings } ! [ saveSettings updatedSettings ]
 
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []
@@ -630,13 +631,13 @@ update msg model =
             update StartTimer { model | ratings = model.ratings ++ [ rating ] }
 
         ShuffleMobsters ->
-            model ! [ shuffleMobstersCmd model.mobsterData ]
+            model ! [ shuffleMobstersCmd model.settings.mobsterData ]
 
         TimeElapsed elapsedSeconds ->
             { model | secondsSinceBreak = (model.secondsSinceBreak + elapsedSeconds), intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
 
         CopyActiveMobsters _ ->
-            model ! [ (copyActiveMobsters (String.join ", " model.mobsterData.mobsters)) ]
+            model ! [ (copyActiveMobsters (String.join ", " model.settings.mobsterData.mobsters)) ]
 
         ResetBreakData ->
             (model |> resetBreakData) ! []
@@ -689,15 +690,18 @@ validateBreakInterval newDurationAsString oldTimerDuration =
 init : Decode.Value -> ( Model, Cmd Msg )
 init flags =
     let
-        decodedMobsterData =
-            Mobster.decode flags
-    in
-        case decodedMobsterData of
-            Ok mobsterData ->
-                { initialModel | mobsterData = mobsterData } ! []
+        decodedSettings =
+            Settings.decode flags
 
-            Err errorString ->
-                initialModel ! []
+        initialSettings =
+            case decodedSettings of
+                Ok settings ->
+                    settings
+
+                Err errorString ->
+                    Settings.initial
+    in
+        initialModel initialSettings ! []
 
 
 subscriptions : Model -> Sub Msg

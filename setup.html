@@ -112,7 +112,7 @@
     const {version} = require('./package')
     console.log(`Running version ${version}`)
 
-    let settings = JSON.parse(window.localStorage.getItem('setup'))
+    let settings = JSON.parse(window.localStorage.getItem('settings'))
     let setup = Elm.Setup.Main.fullscreen(settings)
 
     setup.ports.startTimer.subscribe(function(flags) {
@@ -135,8 +135,8 @@
       clipboard.writeText(activeMobsters)
     })
 
-    setup.ports.saveSetup.subscribe(function(setup) {
-      window.localStorage.setItem('setup', JSON.stringify(setup))
+    setup.ports.saveSettings.subscribe(function(settings) {
+      window.localStorage.setItem('settings', JSON.stringify(settings))
     })
 
     ipcRenderer.on('update-downloaded', function (event, updatedVersion) {

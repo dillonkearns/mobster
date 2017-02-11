@@ -6,6 +6,7 @@ import Timer.Main as TimerMain
 import Timer.Timer as Timer
 import Mobster exposing (MobsterOperation(..), empty)
 import BreakTests
+import SettingsDecodeTests
 
 
 all : Test
@@ -29,6 +30,7 @@ all =
             ]
         , mobsterTests
         , BreakTests.cases
+        , SettingsDecodeTests.cases
         ]
 
 
