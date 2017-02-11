@@ -43,9 +43,11 @@ type Msg
     | UpdateExperimentInput String
     | EnterRating Int
     | Quit
+    | QuitAndInstall
     | ComboMsg Keyboard.Combo.Msg
     | ShuffleMobsters
     | TimeElapsed Int
+    | UpdateAvailable String
     | CopyActiveMobsters ()
     | ResetBreakData
 
@@ -78,6 +80,7 @@ type alias Model =
     , secondsSinceBreak : Int
     , intervalsSinceBreak : Int
     , intervalsPerBreak : Int
+    , availableUpdateVersion : Maybe String
     }
 
 
@@ -100,6 +103,7 @@ initialModel =
     , secondsSinceBreak = 0
     , intervalsSinceBreak = 0
     , intervalsPerBreak = 6
+    , availableUpdateVersion = Nothing
     }
 
 
@@ -128,6 +132,9 @@ port saveSetup : Mobster.MobsterData -> Cmd msg
 port quit : () -> Cmd msg
 
 
+port quitAndInstall : () -> Cmd msg
+
+
 port selectDuration : String -> Cmd msg
 
 
@@ -135,6 +142,9 @@ port copyActiveMobsters : String -> Cmd msg
 
 
 port timeElapsed : (Int -> msg) -> Sub msg
+
+
+port updateDownloaded : (String -> msg) -> Sub msg
 
 
 port onCopyMobstersShortcut : (() -> msg) -> Sub msg
@@ -465,14 +475,33 @@ reorderButtonView mobster =
             ]
 
 
+updateAvailableView : Maybe String -> Html Msg
+updateAvailableView availableUpdateVersion =
+    case availableUpdateVersion of
+        Nothing ->
+            div [] []
+
+        Just version ->
+            div [ Attr.class "alert alert-success" ]
+                [ span [ Attr.class "glyphicon glyphicon-flag", class [ BufferRight ] ] []
+                , text ("A new version is downloaded and ready to install. ")
+                , a [ onClick QuitAndInstall, Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
+                , text "."
+                ]
+
+
 view : Model -> Html Msg
 view model =
-    case model.screenState of
-        Configure ->
-            configureView model
+    let
+        mainView =
+            case model.screenState of
+                Configure ->
+                    configureView model
 
-        Continue ->
-            continueView model
+                Continue ->
+                    continueView model
+    in
+        div [] [ updateAvailableView model.availableUpdateVersion, mainView ]
 
 
 resetBreakData : Model -> Model
@@ -588,6 +617,12 @@ update msg model =
         ResetBreakData ->
             (model |> resetBreakData) ! []
 
+        UpdateAvailable availableUpdateVersion ->
+            { model | availableUpdateVersion = Just availableUpdateVersion } ! []
+
+        QuitAndInstall ->
+            model ! [ quitAndInstall () ]
+
 
 reorderOperation : List String -> Msg
 reorderOperation shuffledMobsters =
@@ -646,6 +681,7 @@ subscriptions model =
     Sub.batch
         [ Keyboard.Combo.subscriptions model.combos
         , timeElapsed TimeElapsed
+        , updateDownloaded UpdateAvailable
         , onCopyMobstersShortcut CopyActiveMobsters
         ]
 
