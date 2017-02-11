@@ -109,6 +109,8 @@
 
   <script>
     const {ipcRenderer, clipboard} = require('electron')
+    const {version} = require('./package')
+    console.log(`Running version ${version}`)
 
     let settings = JSON.parse(window.localStorage.getItem('setup'))
     let setup = Elm.Setup.Main.fullscreen(settings)
