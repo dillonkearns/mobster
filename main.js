@@ -36,6 +36,12 @@ function focusMainWindow() {
     mainWindow.focus()
 }
 
+function hideMainWindow() {
+  mainWindow.hide()
+  mainWindow.blur()
+  app.hide && app.hide()
+}
+
 function positionWindowLeft(window) {
   let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
   window.setPosition(0, height - timerHeight);
@@ -106,8 +112,7 @@ function createWindow () {
 
   ipcMain.on('start-timer', (event, flags) => {
     startTimer(flags)
-    mainWindow.hide()
-    mainWindow.blur()
+    hideMainWindow()
   })
 
   ipcMain.on('timer-done', (event, timeElapsed) => {
@@ -137,8 +142,7 @@ function createWindow () {
 
 function toggleMainWindow() {
   if (mainWindow.isVisible()) {
-    mainWindow.hide()
-    mainWindow.blur()
+    hideMainWindow()
   }
   else {
     focusMainWindow()
