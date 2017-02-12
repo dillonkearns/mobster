@@ -169,9 +169,7 @@ function onReady() {
   createWindow()
   createTray()
   registerShortcuts()
-  if (!onMac && !isDev) { // don't run autoUpdater on mac until the app is signed
-    setupAutoUpdater()
-  }
+  setupAutoUpdater()
 }
 
 // This method will be called when Electron has finished
