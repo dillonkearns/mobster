@@ -23,12 +23,15 @@ const timerHeight = 130
 const timerWidth = 150
 
 const onMac = /^darwin/.test(process.platform)
+const onWindows = /^win/.test(process.platform)
 const isDev = require('electron-is-dev')
 
 function focusMainWindow() {
     // TODO: workaround - remove once
     // https://github.com/electron/electron/issues/2867#issuecomment-264312493 has been resolved
-    mainWindow.minimize()
+    if (onWindows) {
+      mainWindow.minimize()
+    }
     mainWindow.show()
     mainWindow.focus()
 }
