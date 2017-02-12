@@ -5,7 +5,7 @@ Learn all about mobbing at the above github page, and at [mobprogramming.org](ht
 This app was created to have an easier to maintain cross-platform application (using github's [electron](electron.atom.io) framework).
 
 ## Contributors
-A big thanks to [ehei](https://github.com/ehei) for figuring out the
+A big thanks to Eric Heikkila ([ehei](https://github.com/ehei)) for figuring out the
 autoUpdater (which I couldn't for the life of me get to work)!
 
 ## Contributing
