@@ -525,15 +525,17 @@ resetIfAfterBreak model =
 
 
 rotateMobsters : Model -> Model
-rotateMobsters model =
-    let
-        settings =
-            model.settings
+rotateMobsters ({ settings } as model) =
+    { model | settings = { settings | mobsterData = (Mobster.rotate settings.mobsterData) } }
 
+
+updateSettings : (Settings.Data -> Settings.Data) -> Model -> ( Model, Cmd Msg )
+updateSettings settingsUpdater ({ settings } as model) =
+    let
         updatedSettings =
-            { settings | mobsterData = (Mobster.rotate settings.mobsterData) }
+            settingsUpdater settings
     in
-        { model | settings = updatedSettings }
+        { model | settings = updatedSettings } ! [ saveSettings updatedSettings ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -549,24 +551,18 @@ update msg model =
                 updatedModel ! [ (startTimer (flags model)), changeTip ]
 
         ChangeTimerDuration newDurationAsString ->
-            let
-                settings =
-                    model.settings
-
-                updatedSettings =
-                    { settings | timerDuration = (validateTimerDuration newDurationAsString settings.timerDuration) }
-            in
-                { model | settings = updatedSettings } ! [ saveSettings updatedSettings ]
+            model
+                |> updateSettings
+                    (\settings -> { settings | timerDuration = (validateTimerDuration newDurationAsString settings.timerDuration) })
 
         ChangeBreakInterval newIntervalAsString ->
-            let
-                settings =
-                    model.settings
-
-                updatedSettings =
-                    { settings | intervalsPerBreak = (validateBreakInterval newIntervalAsString settings.intervalsPerBreak) }
-            in
-                { model | settings = updatedSettings } ! [ saveSettings updatedSettings ]
+            model
+                |> updateSettings
+                    (\settings ->
+                        { settings
+                            | intervalsPerBreak = (validateBreakInterval newIntervalAsString settings.intervalsPerBreak)
+                        }
+                    )
 
         SelectDurationInput ->
             model ! [ selectDuration "timer-duration" ]
@@ -592,17 +588,9 @@ update msg model =
             model ! []
 
         UpdateMobsterData operation ->
-            let
-                updatedMobsterData =
-                    Mobster.updateMoblist operation model.settings.mobsterData
-
-                settings =
-                    model.settings
-
-                updatedSettings =
-                    { settings | mobsterData = updatedMobsterData }
-            in
-                { model | settings = updatedSettings } ! [ saveSettings updatedSettings ]
+            model
+                |> updateSettings
+                    (\settings -> { settings | mobsterData = Mobster.updateMoblist operation model.settings.mobsterData })
 
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []
