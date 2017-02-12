@@ -25,6 +25,14 @@ const timerWidth = 150
 const onMac = /^darwin/.test(process.platform)
 const isDev = require('electron-is-dev')
 
+function focusMainWindow() {
+    // TODO: workaround - remove once
+    // https://github.com/electron/electron/issues/2867#issuecomment-264312493 has been resolved
+    mainWindow.minimize()
+    mainWindow.show()
+    mainWindow.focus()
+}
+
 function positionWindowLeft(window) {
   let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
   window.setPosition(0, height - timerHeight);
@@ -71,10 +79,6 @@ function closeTimer() {
   }
 }
 
-function showSetupAgain(setupWindow) {
-  setupWindow.show()
-}
-
 function createWindow () {
   mainWindow = new BrowserWindow({
     transparent: true,
@@ -82,6 +86,9 @@ function createWindow () {
     alwaysOnTop: true,
     icon: `${assetsDirectory}/icon.ico`
   })
+  setTimeout(() => {
+    mainWindow.setAlwaysOnTop(true) // delay to workaround https://github.com/electron/electron/issues/8287
+  }, 1000)
   mainWindow.maximize()
 
   electron.screen.on('display-metrics-changed', function () {
@@ -97,12 +104,13 @@ function createWindow () {
   ipcMain.on('start-timer', (event, flags) => {
     startTimer(flags)
     mainWindow.hide()
+    mainWindow.blur()
   })
 
   ipcMain.on('timer-done', (event, timeElapsed) => {
     closeTimer()
     mainWindow.webContents.send('timer-done', timeElapsed)
-    showSetupAgain(mainWindow)
+    focusMainWindow()
   })
 
   ipcMain.on('quit', (event) => {
@@ -127,9 +135,10 @@ function createWindow () {
 function toggleMainWindow() {
   if (mainWindow.isVisible()) {
     mainWindow.hide()
+    mainWindow.blur()
   }
   else {
-    mainWindow.show()
+    focusMainWindow()
   }
 }
 
@@ -138,7 +147,7 @@ function onClickTrayIcon() {
     toggleMainWindow()
   } else {
     closeTimer()
-    showSetupAgain(mainWindow)
+    focusMainWindow()
   }
 }
 
@@ -214,7 +223,8 @@ function registerShortcuts() {
       })
       if (dialogActionIndex !== 1) {
         closeTimer()
-        showSetupAgain(mainWindow)
+        mainWindow.show()
+        mainWindow.focus()
       }
     } else {
       toggleMainWindow()
