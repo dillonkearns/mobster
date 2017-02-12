@@ -39,7 +39,7 @@ function focusMainWindow() {
 function hideMainWindow() {
   mainWindow.hide()
   mainWindow.blur()
-  app.hide && app.hide()
+  // app.hide && app.hide() // TODO: this focuses the previous window, but your not able to see the timer when it starts
 }
 
 function positionWindowLeft(window) {
