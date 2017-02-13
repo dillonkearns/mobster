@@ -1,6 +1,7 @@
 const electron = require('electron')
 const {ipcMain, globalShortcut, app, Tray, BrowserWindow, dialog} = require('electron')
 const autoUpdater = require('electron-updater').autoUpdater
+autoUpdater.requestHeaders = {"Cache-Control": "no-cache"}
 require('electron-debug')({
   enabled: true // enable debug shortcuts in prod build
 })
