@@ -215,7 +215,6 @@ function setupAutoUpdater() {
     log.info('update-not-available')
   });
   autoUpdater.checkForUpdates()
-  setInterval(autoUpdater.checkForUpdates, ms('30m'))
 }
 
 function registerShortcuts() {
