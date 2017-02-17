@@ -5,8 +5,10 @@ Learn all about mobbing at the above github page, and at [mobprogramming.org](ht
 This app was created to have an easier to maintain cross-platform application (using github's [electron](electron.atom.io) framework).
 
 ## Contributors
-A big thanks to Eric Heikkila ([ehei](https://github.com/ehei)) for figuring out the
+* A big thanks to Eric Heikkila ([ehei](https://github.com/ehei)) for figuring out the
 autoUpdater (which I couldn't for the life of me get to work)!
+* Thanks to Gedward Gonzalez ([gedward](https://github.com/gedward)) for stepping
+me through the Mac app signing and autoUpdater with his Apple dev expertise!
 
 ## Contributing
 To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
