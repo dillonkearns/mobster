@@ -150,7 +150,7 @@ port onCopyMobstersShortcut : (() -> msg) -> Sub msg
 
 timerDurationInputView : Int -> Html Msg
 timerDurationInputView duration =
-    div [ Attr.class "text-primary h1" ]
+    div [ Attr.class "text-primary h3" ]
         [ input
             [ id "timer-duration"
             , onClick SelectDurationInput
