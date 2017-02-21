@@ -347,7 +347,7 @@ tipView tip =
                 [ text tip.title ]
             , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", href tip.url ] [ text "Learn More" ]
             ]
-        , div [ Attr.class "row", style [ ( "font-size", "1.333em" ) ] ] [ Tip.tipView tip ]
+        , div [ Attr.class "row" ] [ Tip.tipView tip ]
         ]
 
 
@@ -358,10 +358,10 @@ nextDriverNavigatorView model =
             Mobster.nextDriverNavigator model.settings.mobsterData
     in
         div [ Attr.class "row h1" ]
-            [ div [ Attr.class "text-muted col-md-3" ] [ text "Next:" ]
+            [ div [ Attr.class "text-muted col-md-3 hidden-sm hidden-xs" ] [ text "Next:" ]
             , dnView driverNavigator.driver Mobster.Driver
             , dnView driverNavigator.navigator Mobster.Navigator
-            , buttonNoTab [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData Mobster.SkipTurn) ] [ text "Skip Turn" ]
+            , div [ Attr.class "col-md-1 col-sm-2" ] [ buttonNoTab [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData Mobster.SkipTurn) ] [ text "Skip Turn" ] ]
             ]
 
 
@@ -376,7 +376,7 @@ dnView mobster role =
                 Mobster.Navigator ->
                     "./assets/navigator-icon.png"
     in
-        div [ Attr.class "col-md-4 text-default" ]
+        div [ Attr.class "col-md-4 col-sm-5 text-default" ]
             [ iconView icon 40
             , span [ class [ BufferRight ] ] [ text mobster.name ]
             , buttonNoTab [ onClick (UpdateMobsterData (Mobster.Bench mobster.index)), Attr.class "btn btn-small btn-default" ] [ text "Not here" ]
