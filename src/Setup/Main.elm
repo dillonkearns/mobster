@@ -160,7 +160,7 @@ timerDurationInputView duration =
             , Attr.max "15"
             , value (toString duration)
             , class [ BufferRight ]
-            , style [ ( "font-size", "60px" ) ]
+            , style [ ( "font-size", "4.0rem" ) ]
             ]
             []
         , text "Minutes"
@@ -185,7 +185,7 @@ breakIntervalInputView intervalsPerBreak timerDuration =
                 , Attr.max "30"
                 , value (toString intervalsPerBreak)
                 , class [ BufferRight ]
-                , style [ ( "font-size", "60px" ) ]
+                , style [ ( "font-size", "4.0rem" ) ]
                 ]
                 []
             , text theString
@@ -400,7 +400,7 @@ addMobsterInputView : String -> Html Msg
 addMobsterInputView newMobster =
     div [ Attr.class "row", class [ BufferTop ] ]
         [ div [ Attr.class "input-group" ]
-            [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", Attr.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ ( "font-size", "30px" ) ] ] []
+            [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", Attr.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ ( "font-size", "2.0rem" ) ] ] []
             , span [ Attr.class "input-group-btn", type_ "button" ] [ buttonNoTab [ Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
             ]
         ]
