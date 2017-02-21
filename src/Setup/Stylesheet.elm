@@ -13,7 +13,18 @@ type CssClasses
 css : Stylesheet
 css =
     (stylesheet << namespace "setup")
-        [ body [ fontSize (px 15) ]
+        [ mediaQuery "screen and ( max-width: 800px )"
+            [ body
+                [ fontSize (px 7) ]
+            ]
+        , mediaQuery "screen and ( min-width: 801px ) and ( max-width: 1000px )"
+            [ body
+                [ fontSize (px 10) ]
+            ]
+        , mediaQuery "screen and ( min-width: 1001px )"
+            [ body
+                [ fontSize (px 15) ]
+            ]
         , class BufferTop
             [ Css.marginTop (px 20) ]
         , class BufferRight
