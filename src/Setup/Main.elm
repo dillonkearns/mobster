@@ -214,7 +214,7 @@ configureView model =
             [ invisibleTrigger
             , titleTextView
             ]
-        , buttonNoTab [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "2.0em" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
+        , buttonNoTab [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "2.0em" ), ( "padding", ".677em" ) ] ] [ text "Start Mobbing" ]
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) ]
@@ -279,7 +279,7 @@ ratingsView model =
 breakView : Int -> Int -> Int -> Html msg
 breakView secondsSinceBreak intervalsSinceBreak intervalsPerBreak =
     if intervalsPerBreak > 0 && Break.breakSuggested intervalsSinceBreak intervalsPerBreak then
-        div [ Attr.class "alert alert-warning alert-dismissible", style [ ( "font-size", "20px" ) ] ]
+        div [ Attr.class "alert alert-warning alert-dismissible", style [ ( "font-size", "1.2em" ) ] ]
             [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
             , text ("How about a walk? (You've been mobbing for " ++ (toString (secondsSinceBreak // 60)) ++ " minutes.)")
             ]
@@ -328,7 +328,7 @@ continueView model =
                 , Attr.class "btn btn-info btn-lg btn-block"
                 , class [ BufferTop ]
                 , title "Ctrl+Enter or ⌘+Enter"
-                , style [ ( "font-size", "2.0em" ), ( "padding", "1.333em" ) ]
+                , style [ ( "font-size", "2.0em" ), ( "padding", ".677em" ) ]
                 ]
                 (continueButtonChildren model)
             ]
