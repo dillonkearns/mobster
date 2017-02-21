@@ -172,7 +172,7 @@ breakIntervalInputView intervalsPerBreak timerDuration =
     let
         theString =
             if intervalsPerBreak > 0 then
-                "intervals per break (" ++ (toString (intervalsPerBreak * timerDuration)) ++ " minutes" ++ ")"
+                "Break every " ++ (toString (intervalsPerBreak * timerDuration)) ++ "′"
             else
                 "Breaks off"
     in
