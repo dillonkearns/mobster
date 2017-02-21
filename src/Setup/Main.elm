@@ -150,7 +150,7 @@ port onCopyMobstersShortcut : (() -> msg) -> Sub msg
 
 timerDurationInputView : Int -> Html Msg
 timerDurationInputView duration =
-    div [ Attr.class "text-primary h3" ]
+    div [ Attr.class "text-primary h3 col-md-12 col-sm-6" ]
         [ input
             [ id "timer-duration"
             , onClick SelectDurationInput
@@ -176,7 +176,7 @@ breakIntervalInputView intervalsPerBreak timerDuration =
             else
                 "Breaks off"
     in
-        div [ Attr.class "text-primary h3" ]
+        div [ Attr.class "text-primary h3 col-md-12 col-sm-6" ]
             [ input
                 [ id "break-interval"
                 , onInput ChangeBreakInterval
@@ -216,9 +216,9 @@ configureView model =
             ]
         , buttonNoTab [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "2.0em" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
         , div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-4" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
-            , div [ Attr.class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) ]
-            , div [ Attr.class "col-md-4" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters ]
+            [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
+            , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) ]
+            , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
         , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
