@@ -423,11 +423,15 @@ inactiveMobstersView inactiveMobsters =
         ]
 
 
+mobsterCellStyle : List (Attribute Msg)
+mobsterCellStyle =
+    [ style [ ( "text-align", "right" ), ( "padding-right", "0.667em" ) ] ]
+
+
 inactiveMobsterView : Int -> String -> Html Msg
 inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
-        [ td [] []
-        , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "0.667em" ) ] ]
+        [ td mobsterCellStyle
             [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , div [ Attr.class "btn-group btn-group-xs", style [ ( "margin-left", "0.667em" ) ] ]
                 [ buttonNoTab [ Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (Mobster.Remove mobsterIndex)) ] [ text "x" ]
@@ -439,8 +443,7 @@ inactiveMobsterView mobsterIndex inactiveMobster =
 mobsterView : Mobster.MobsterWithRole -> Html Msg
 mobsterView mobster =
     tr []
-        [ td [] []
-        , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "0.667em" ) ] ]
+        [ td mobsterCellStyle
             [ span [ Attr.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
                 [ text mobster.name
                 , roleView mobster.role
