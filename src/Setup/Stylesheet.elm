@@ -1,6 +1,7 @@
 module Setup.Stylesheet exposing (..)
 
 import Css exposing (..)
+import Css.Elements exposing (body, html)
 import Css.Namespace exposing (namespace)
 
 
@@ -12,7 +13,8 @@ type CssClasses
 css : Stylesheet
 css =
     (stylesheet << namespace "setup")
-        [ class BufferTop
+        [ body [ fontSize (px 15) ]
+        , class BufferTop
             [ Css.marginTop (px 20) ]
         , class BufferRight
             [ marginRight (px 10)
