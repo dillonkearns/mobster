@@ -199,12 +199,12 @@ quitButton =
 
 titleTextView : Html msg
 titleTextView =
-    h1 [ Attr.class "text-info text-center", id "mobster-title", style [ ( "font-size", "62px" ) ] ] [ text "Mobster" ]
+    h1 [ Attr.class "text-info text-center", id "mobster-title", style [ ( "font-size", "4.133em" ) ] ] [ text "Mobster" ]
 
 
 invisibleTrigger : Html msg
 invisibleTrigger =
-    img [ src "./assets/invisible.png", Attr.class "invisible-trigger pull-left", style [ ( "max-width", "35px" ) ] ] []
+    img [ src "./assets/invisible.png", Attr.class "invisible-trigger pull-left", style [ ( "max-width", "2.333em" ) ] ] []
 
 
 configureView : Model -> Html Msg
@@ -214,7 +214,7 @@ configureView model =
             [ invisibleTrigger
             , titleTextView
             ]
-        , buttonNoTab [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "30px" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
+        , buttonNoTab [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "2.0em" ), ( "padding", "20px" ) ] ] [ text "Start Mobbing" ]
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
             , div [ Attr.class "col-md-4" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) ]
@@ -322,32 +322,32 @@ continueView model =
         , ratingsView model
         , div [] [ viewIntervalsBeforeBreak model ]
         , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
-        , div [ Attr.class "row", style [ ( "padding-bottom", "20px" ) ] ]
+        , div [ Attr.class "row", style [ ( "padding-bottom", "1.333em" ) ] ]
             [ buttonNoTab
                 [ onClick StartTimer
                 , Attr.class "btn btn-info btn-lg btn-block"
                 , class [ BufferTop ]
                 , title "Ctrl+Enter or ⌘+Enter"
-                , style [ ( "font-size", "30px" ), ( "padding", "20px" ) ]
+                , style [ ( "font-size", "2.0em" ), ( "padding", "1.333em" ) ]
                 ]
                 (continueButtonChildren model)
             ]
         , nextDriverNavigatorView model
         , tipView model.tip
-        , div [ Attr.class "row", class [ BufferTop ], style [ ( "padding-bottom", "20px" ) ] ] [ buttonNoTab [ onClick OpenConfigure, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
+        , div [ Attr.class "row", class [ BufferTop ], style [ ( "padding-bottom", "1.333em" ) ] ] [ buttonNoTab [ onClick OpenConfigure, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
         , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
         ]
 
 
 tipView : Tip.Tip -> Html Msg
 tipView tip =
-    div [ Attr.class "jumbotron tip", style [ ( "margin", "0px" ), ( "padding", "25px" ) ] ]
+    div [ Attr.class "jumbotron tip", style [ ( "margin", "0px" ), ( "padding", "1.667em" ) ] ]
         [ div [ Attr.class "row" ]
-            [ h2 [ Attr.class "text-success pull-left", style [ ( "margin", "0px" ), ( "padding-bottom", "10px" ) ] ]
+            [ h2 [ Attr.class "text-success pull-left", style [ ( "margin", "0px" ), ( "padding-bottom", "0.667em" ) ] ]
                 [ text tip.title ]
             , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", href tip.url ] [ text "Learn More" ]
             ]
-        , div [ Attr.class "row", style [ ( "font-size", "20px" ) ] ] [ Tip.tipView tip ]
+        , div [ Attr.class "row", style [ ( "font-size", "1.333em" ) ] ] [ Tip.tipView tip ]
         ]
 
 
@@ -385,7 +385,7 @@ dnView mobster role =
 
 iconView : String -> Int -> Html msg
 iconView iconUrl maxWidth =
-    img [ style [ ( "max-width", (toString maxWidth) ++ "px" ), ( "margin-right", "8px" ) ], src iconUrl ] []
+    img [ style [ ( "max-width", (toString maxWidth) ++ "px" ), ( "margin-right", "0.533em" ) ], src iconUrl ] []
 
 
 nextView : String -> String -> Html msg
@@ -410,7 +410,7 @@ mobstersView : String -> List Mobster.MobsterWithRole -> Html Msg
 mobstersView newMobster mobsters =
     div [ style [ ( "padding-bottom", "35px" ) ] ]
         [ addMobsterInputView newMobster
-        , img [ onClick ShuffleMobsters, Attr.class "shuffle", class [ BufferTop ], src "./assets/dice.png", style [ ( "max-width", "25px" ) ] ] []
+        , img [ onClick ShuffleMobsters, Attr.class "shuffle", class [ BufferTop ], src "./assets/dice.png", style [ ( "max-width", "1.667em" ) ] ] []
         , table [ Attr.class "table h3" ] (List.map mobsterView mobsters)
         ]
 
@@ -427,9 +427,9 @@ inactiveMobsterView : Int -> String -> Html Msg
 inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
         [ td [] []
-        , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
+        , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "0.667em" ) ] ]
             [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
-            , div [ Attr.class "btn-group btn-group-xs", style [ ( "margin-left", "10px" ) ] ]
+            , div [ Attr.class "btn-group btn-group-xs", style [ ( "margin-left", "0.667em" ) ] ]
                 [ buttonNoTab [ Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (Mobster.Remove mobsterIndex)) ] [ text "x" ]
                 ]
             ]
@@ -440,7 +440,7 @@ mobsterView : Mobster.MobsterWithRole -> Html Msg
 mobsterView mobster =
     tr []
         [ td [] []
-        , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "10px" ) ] ]
+        , td [ style [ ( "width", "200px" ), ( "min-width", "200px" ), ( "text-align", "right" ), ( "padding-right", "0.667em" ) ] ]
             [ span [ Attr.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
                 [ text mobster.name
                 , roleView mobster.role
