@@ -17,6 +17,7 @@ import Svg
 import Update.Extra
 import Html.CssHelpers
 import Setup.Stylesheet exposing (CssClasses(..))
+import Array
 import Break
 import Setup.Settings as Settings
 
@@ -30,6 +31,8 @@ shuffleMobstersCmd mobsterData =
 
 type Msg
     = StartTimer
+    | ShowRotationScreen
+    | SkipHotkey
     | UpdateMobsterData MobsterOperation
     | UpdateMobsterInput String
     | AddMobster
@@ -52,6 +55,7 @@ type Msg
     | UpdateAvailable String
     | CopyActiveMobsters ()
     | ResetBreakData
+    | RotateInHotkey Int
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
@@ -61,12 +65,30 @@ keyboardCombos =
     , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.one ) (EnterRating 1)
     , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.two ) (EnterRating 2)
     , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.three ) (EnterRating 3)
+    , Keyboard.Combo.combo1 Keyboard.Combo.r (ShowRotationScreen)
+    , Keyboard.Combo.combo1 Keyboard.Combo.s (SkipHotkey)
+    , Keyboard.Combo.combo1 Keyboard.Combo.a (RotateInHotkey 0)
+    , Keyboard.Combo.combo1 Keyboard.Combo.b (RotateInHotkey 1)
+    , Keyboard.Combo.combo1 Keyboard.Combo.c (RotateInHotkey 2)
+    , Keyboard.Combo.combo1 Keyboard.Combo.d (RotateInHotkey 3)
+    , Keyboard.Combo.combo1 Keyboard.Combo.e (RotateInHotkey 4)
+    , Keyboard.Combo.combo1 Keyboard.Combo.f (RotateInHotkey 5)
+    , Keyboard.Combo.combo1 Keyboard.Combo.g (RotateInHotkey 6)
+    , Keyboard.Combo.combo1 Keyboard.Combo.h (RotateInHotkey 7)
+    , Keyboard.Combo.combo1 Keyboard.Combo.i (RotateInHotkey 8)
+    , Keyboard.Combo.combo1 Keyboard.Combo.j (RotateInHotkey 9)
+    , Keyboard.Combo.combo1 Keyboard.Combo.k (RotateInHotkey 10)
+    , Keyboard.Combo.combo1 Keyboard.Combo.l (RotateInHotkey 11)
+    , Keyboard.Combo.combo1 Keyboard.Combo.m (RotateInHotkey 12)
+    , Keyboard.Combo.combo1 Keyboard.Combo.n (RotateInHotkey 13)
+    , Keyboard.Combo.combo1 Keyboard.Combo.o (RotateInHotkey 14)
+    , Keyboard.Combo.combo1 Keyboard.Combo.p (RotateInHotkey 15)
     ]
 
 
 type ScreenState
     = Configure
-    | Continue
+    | Continue Bool
 
 
 type alias Model =
@@ -312,31 +334,40 @@ buttonNoTab attrs children =
     button ([ Attr.tabindex -1 ] ++ attrs) children
 
 
-continueView : Model -> Html Msg
-continueView model =
-    div [ Attr.class "container-fluid" ]
-        [ div [ Attr.class "row" ]
-            [ invisibleTrigger
-            , titleTextView
-            ]
-        , ratingsView model
-        , div [] [ viewIntervalsBeforeBreak model ]
-        , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
-        , div [ Attr.class "row", style [ ( "padding-bottom", "1.333em" ) ] ]
-            [ buttonNoTab
-                [ onClick StartTimer
-                , Attr.class "btn btn-info btn-lg btn-block"
-                , class [ BufferTop ]
-                , title "Ctrl+Enter or ⌘+Enter"
-                , style [ ( "font-size", "2.0em" ), ( "padding", ".677em" ) ]
+continueView : Bool -> Model -> Html Msg
+continueView showRotation model =
+    let
+        mainView =
+            if showRotation then
+                rotationView model
+            else
+                div []
+                    [ nextDriverNavigatorView model
+                    , tipView model.tip
+                    , div [ Attr.class "row", class [ BufferTop ], style [ ( "padding-bottom", "1.333em" ) ] ] [ buttonNoTab [ onClick OpenConfigure, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
+                    ]
+    in
+        div [ Attr.class "container-fluid" ]
+            [ div [ Attr.class "row" ]
+                [ invisibleTrigger
+                , titleTextView
                 ]
-                (continueButtonChildren model)
+            , ratingsView model
+            , div [] [ viewIntervalsBeforeBreak model ]
+            , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
+            , div [ Attr.class "row", style [ ( "padding-bottom", "1.333em" ) ] ]
+                [ buttonNoTab
+                    [ onClick StartTimer
+                    , Attr.class "btn btn-info btn-lg btn-block"
+                    , class [ BufferTop ]
+                    , title "Ctrl+Enter or ⌘+Enter"
+                    , style [ ( "font-size", "2.0em" ), ( "padding", ".677em" ) ]
+                    ]
+                    (continueButtonChildren model)
+                ]
+            , mainView
+            , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
             ]
-        , nextDriverNavigatorView model
-        , tipView model.tip
-        , div [ Attr.class "row", class [ BufferTop ], style [ ( "padding-bottom", "1.333em" ) ] ] [ buttonNoTab [ onClick OpenConfigure, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
-        , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
-        ]
 
 
 tipView : Tip.Tip -> Html Msg
@@ -358,10 +389,25 @@ nextDriverNavigatorView model =
             Mobster.nextDriverNavigator model.settings.mobsterData
     in
         div [ Attr.class "row h1" ]
-            [ div [ Attr.class "text-muted col-md-3 hidden-sm hidden-xs" ] [ text "Next:" ]
+            [ div [ Attr.class "text-muted col-md-2 hidden-sm hidden-xs" ] [ text "Next:" ]
             , dnView driverNavigator.driver Mobster.Driver
             , dnView driverNavigator.navigator Mobster.Navigator
-            , div [ Attr.class "col-md-1 col-sm-2" ] [ buttonNoTab [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData Mobster.SkipTurn) ] [ text "Skip Turn" ] ]
+            , div [ Attr.class "col-md-1 col-sm-2" ]
+                [ buttonNoTab [ class [ Orange ], Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData Mobster.SkipTurn) ]
+                    [ span [ Attr.class "glyphicon glyphicon-step-forward", class [ BufferRight ] ] []
+                    , u [] [ text "S" ]
+                    , text "kip Turn"
+                    ]
+                ]
+            , div [ Attr.class "col-md-1 col-sm-2" ]
+                [ buttonNoTab [ class [ Green ], Attr.class "btn btn-small btn-default", onClick ShowRotationScreen ]
+                    [ span [ Attr.class "fa fa-user-plus", class [ BufferRight ] ]
+                        []
+                    , text "Quick "
+                    , u [] [ text "R" ]
+                    , text "otate"
+                    ]
+                ]
             ]
 
 
@@ -376,10 +422,13 @@ dnView mobster role =
                 Mobster.Navigator ->
                     "./assets/navigator-icon.png"
     in
-        div [ Attr.class "col-md-4 col-sm-5 text-default" ]
+        div [ Attr.class "col-md-4 col-sm-4 text-default" ]
             [ iconView icon 40
             , span [ class [ BufferRight ] ] [ text mobster.name ]
-            , buttonNoTab [ onClick (UpdateMobsterData (Mobster.Bench mobster.index)), Attr.class "btn btn-small btn-default" ] [ text "Not here" ]
+            , buttonNoTab [ class [ Red ], onClick (UpdateMobsterData (Mobster.Bench mobster.index)), Attr.class "btn btn-small btn-default" ]
+                [ span [ Attr.class "fa fa-user-times", class [ BufferRight ] ] []
+                , text "Not here"
+                ]
             ]
 
 
@@ -415,6 +464,28 @@ mobstersView newMobster mobsters =
         ]
 
 
+letters : Array.Array String
+letters =
+    Array.fromList
+        [ "a"
+        , "b"
+        , "c"
+        , "d"
+        , "e"
+        , "f"
+        , "g"
+        , "h"
+        , "i"
+        , "j"
+        , "k"
+        , "l"
+        , "m"
+        , "n"
+        , "o"
+        , "p"
+        ]
+
+
 inactiveMobstersView : List String -> Html Msg
 inactiveMobstersView inactiveMobsters =
     div []
@@ -426,6 +497,25 @@ inactiveMobstersView inactiveMobsters =
 mobsterCellStyle : List (Attribute Msg)
 mobsterCellStyle =
     [ style [ ( "text-align", "right" ), ( "padding-right", "0.667em" ) ] ]
+
+
+hint : Int -> Html msg
+hint index =
+    let
+        letter =
+            Maybe.withDefault "?" (Array.get index letters)
+    in
+        span [ style [ ( "font-size", "0.7em" ) ] ] [ text (" (" ++ letter ++ ")") ]
+
+
+inactiveMobsterViewWithHints : Int -> String -> Html Msg
+inactiveMobsterViewWithHints mobsterIndex inactiveMobster =
+    tr []
+        [ td mobsterCellStyle
+            [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
+            , hint mobsterIndex
+            ]
+        ]
 
 
 inactiveMobsterView : Int -> String -> Html Msg
@@ -496,6 +586,22 @@ updateAvailableView availableUpdateVersion =
                 ]
 
 
+rotationView : Model -> Html Msg
+rotationView model =
+    let
+        mobsters =
+            Mobster.mobsters model.settings.mobsterData
+
+        inactiveMobsters =
+            -- List.indexedMap (\index name -> Mobster.Mobster name index)
+            model.settings.mobsterData.inactiveMobsters
+    in
+        div [ Attr.class "row" ]
+            [ div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.map mobsterView mobsters) ]
+            , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.indexedMap inactiveMobsterViewWithHints inactiveMobsters) ]
+            ]
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -504,8 +610,11 @@ view model =
                 Configure ->
                     configureView model
 
-                Continue ->
-                    continueView model
+                Continue showRotation ->
+                    continueView showRotation model
+
+        -- Rotation ->
+        -- rotationView model
     in
         div [] [ updateAvailableView model.availableUpdateVersion, mainView ]
 
@@ -544,10 +653,26 @@ updateSettings settingsUpdater ({ settings } as model) =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        SkipHotkey ->
+            case model.screenState of
+                Continue showRotation ->
+                    update (UpdateMobsterData Mobster.SkipTurn) model
+
+                _ ->
+                    model ! []
+
+        ShowRotationScreen ->
+            case model.screenState of
+                Continue showRotation ->
+                    { model | screenState = Continue (not showRotation) } ! []
+
+                _ ->
+                    model ! []
+
         StartTimer ->
             let
                 updatedModel =
-                    { model | screenState = Continue }
+                    { model | screenState = Continue False }
                         |> rotateMobsters
                         |> resetIfAfterBreak
             in
@@ -643,6 +768,12 @@ update msg model =
 
         QuitAndInstall ->
             model ! [ quitAndInstall () ]
+
+        RotateInHotkey index ->
+            if model.screenState == (Continue True) then
+                update (UpdateMobsterData (Mobster.RotateIn index)) model
+            else
+                model ! []
 
 
 reorderOperation : List String -> Msg

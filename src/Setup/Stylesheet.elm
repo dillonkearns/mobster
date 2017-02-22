@@ -1,13 +1,19 @@
 module Setup.Stylesheet exposing (..)
 
 import Css exposing (..)
-import Css.Elements exposing (body, html)
+import Css.Elements exposing (body, html, span)
 import Css.Namespace exposing (namespace)
+
+
+-- import Css.Colors as Colors
 
 
 type CssClasses
     = BufferTop
     | BufferRight
+    | Green
+    | Orange
+    | Red
 
 
 css : Stylesheet
@@ -30,4 +36,18 @@ css =
         , class BufferRight
             [ marginRight (px 10)
             ]
+        , class Green (hoverButton (rgba 50 250 50 0.6))
+        , class Red (hoverButton (rgba 231 76 60 0.7))
+        , class Orange (hoverButton (rgba 255 133 27 1))
         ]
+
+
+hoverButton : ColorValue compatible -> List Mixin
+hoverButton customColor =
+    [ hover
+        [ children
+            [ span [ color customColor ]
+            , selector "u" [ color customColor ]
+            ]
+        ]
+    ]
