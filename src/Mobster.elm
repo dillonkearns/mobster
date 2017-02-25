@@ -10,9 +10,7 @@ import Random
 
 
 type MobsterOperation
-    = MoveUp Int
-    | MoveDown Int
-    | Move Int Int
+    = Move Int Int
     | Remove Int
     | SetNextDriver Int
     | SkipTurn
@@ -50,25 +48,12 @@ randomizeMobsters mobsterData =
 updateMoblist : MobsterOperation -> MobsterData -> MobsterData
 updateMoblist moblistOperation moblist =
     case moblistOperation of
-        MoveUp mobsterIndex ->
-            moveUp mobsterIndex moblist
-
-        MoveDown mobsterIndex ->
-            moveDown mobsterIndex moblist
-
         Move fromIndex toIndex ->
             let
-                moveCount =
-                    toIndex - fromIndex
+                updatedMobsters =
+                    move fromIndex toIndex moblist.mobsters
             in
-                if moveCount < -1 then
-                    moveUpRecursive fromIndex (-moveCount - 1) moblist
-                else if moveCount > 0 then
-                    moblist
-                        |> moveDown fromIndex
-                        |> moveDown (fromIndex + 1)
-                else
-                    moveUp fromIndex moblist
+                { moblist | mobsters = updatedMobsters }
 
         Remove mobsterIndex ->
             remove mobsterIndex moblist
@@ -172,74 +157,51 @@ rotate mobsterData =
     { mobsterData | nextDriver = (nextIndex mobsterData.nextDriver mobsterData) }
 
 
-moveDown : Int -> MobsterData -> MobsterData
-moveDown itemIndex list =
-    moveUp (itemIndex + 1) list
-
-
-
-
-moveUpRecursive : Int -> Int -> MobsterData -> MobsterData
-moveUpRecursive itemIndex times list =
+replaceSlice : a -> Int -> Int -> Array.Array a -> Array.Array a
+replaceSlice substitution start end asArray =
     let
-        _ =
-            Debug.log "moveUpRecursive" { times = times, itemIndex = itemIndex, list = list }
+        part1 =
+            Array.slice 0 start asArray
 
-        asArray =
-            Array.fromList list.mobsters
+        part2 =
+            [ substitution ] |> Array.fromList
 
-        maybeItemToMove =
-            Array.get itemIndex asArray
-
-        maybeNeighboringItem =
-            Array.get (itemIndex - 1) asArray
-
-        updatedMobsters =
-            case ( maybeItemToMove, maybeNeighboringItem ) of
-                ( Just itemToMove, Just neighboringItem ) ->
-                    Array.toList
-                        (asArray
-                            |> Array.set itemIndex neighboringItem
-                            |> Array.set (itemIndex - 1) itemToMove
-                        )
-
-                ( _, _ ) ->
-                    list.mobsters
-
-        updatedMobsterData =
-            { list | mobsters = updatedMobsters }
+        part3 =
+            Array.slice end (Array.length asArray) asArray
     in
-        if times <= 0 then
-            updatedMobsterData
-        else
-            moveUpRecursive (itemIndex - 1) (times - 1) updatedMobsterData
+        (Array.append (Array.append part1 part2) part3)
 
 
-moveUp : Int -> MobsterData -> MobsterData
-moveUp itemIndex list =
+insertAt : a -> Int -> Array.Array a -> Array.Array a
+insertAt insert pos string =
+    replaceSlice insert pos pos string
+
+
+compact : List (Maybe a) -> List a
+compact list =
+    List.filterMap identity list
+
+
+mapToJust : List a -> List (Maybe a)
+mapToJust aList =
+    aList |> List.map (\item -> Just item)
+
+
+move : Int -> Int -> List String -> List String
+move fromIndex toIndex mobsters =
     let
-        asArray =
-            Array.fromList list.mobsters
-
-        maybeItemToMove =
-            Array.get itemIndex asArray
-
-        maybeNeighboringItem =
-            Array.get (itemIndex - 1) asArray
-
-        updatedMobsters =
-            case ( maybeItemToMove, maybeNeighboringItem ) of
-                ( Just itemToMove, Just neighboringItem ) ->
-                    Array.toList
-                        (asArray
-                            |> Array.set itemIndex neighboringItem
-                            |> Array.set (itemIndex - 1) itemToMove
-                        )
-
-                ( _, _ ) ->
-                    list.mobsters
+        mobsterToMove =
+            mobsters
+                |> Array.fromList
+                |> Array.get fromIndex
     in
-        { list | mobsters = updatedMobsters }
+        mobsters
+            |> mapToJust
+            |> Array.fromList
+            |> Array.set fromIndex Nothing
+            |> insertAt mobsterToMove toIndex
+            |> Array.toList
+            |> compact
 
 
 rotateIn : Int -> MobsterData -> MobsterData

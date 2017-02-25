@@ -144,7 +144,7 @@ mobsterTests =
                         list =
                             { empty | mobsters = [ "only item" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.updateMoblist (MoveUp 0))
+                        Expect.equal (list |> Mobster.updateMoblist (Move 0 0))
                             { empty | mobsters = [ "only item" ], nextDriver = 0 }
             , test "index not in list" <|
                 \() ->
@@ -152,7 +152,7 @@ mobsterTests =
                         list =
                             { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.updateMoblist (MoveUp 4))
+                        Expect.equal (list |> Mobster.updateMoblist (Move 4 3))
                             { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
             , test "multiple items without wrapping" <|
                 \() ->
@@ -160,7 +160,7 @@ mobsterTests =
                         list =
                             { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.updateMoblist (MoveUp 3))
+                        Expect.equal (list |> Mobster.updateMoblist (Move 3 2))
                             { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
             , test "multiple items move down without wrapping" <|
                 \() ->
@@ -168,7 +168,7 @@ mobsterTests =
                         list =
                             { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.updateMoblist (MoveDown 0))
+                        Expect.equal (list |> Mobster.updateMoblist (Move 0 2))
                             { empty | mobsters = [ "b", "a", "d", "c" ], nextDriver = 0 }
             , test "to specific position one up" <|
                 \() ->
@@ -200,7 +200,7 @@ mobsterTests =
                         list =
                             { empty | mobsters = [ "a", "b", "c", "d", "e", "f", "g" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.updateMoblist (Move 7 0))
+                        Expect.equal (list |> Mobster.updateMoblist (Move 6 0))
                             { empty | mobsters = [ "g", "a", "b", "c", "d", "e", "f" ], nextDriver = 0 }
             ]
         , describe "remove"
