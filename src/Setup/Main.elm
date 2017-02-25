@@ -20,6 +20,7 @@ import Setup.Stylesheet exposing (CssClasses(..))
 import Array
 import Break
 import Setup.Settings as Settings
+import Html5.DragDrop as DragDrop
 
 
 { id, class, classList } =
@@ -56,6 +57,15 @@ type Msg
     | CopyActiveMobsters ()
     | ResetBreakData
     | RotateInHotkey Int
+    | DragDropMsg (DragDrop.Msg DragId DropId)
+
+
+type alias DragId =
+    Int
+
+
+type alias DropId =
+    Int
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
@@ -103,6 +113,7 @@ type alias Model =
     , secondsSinceBreak : Int
     , intervalsSinceBreak : Int
     , availableUpdateVersion : Maybe String
+    , dragDrop : DragDrop.Model DragId DropId
     }
 
 
@@ -124,6 +135,7 @@ initialModel settings =
     , secondsSinceBreak = 0
     , intervalsSinceBreak = 0
     , availableUpdateVersion = Nothing
+    , dragDrop = DragDrop.init
     }
 
 
@@ -532,7 +544,8 @@ inactiveMobsterView mobsterIndex inactiveMobster =
 
 mobsterView : Mobster.MobsterWithRole -> Html Msg
 mobsterView mobster =
-    tr []
+    tr
+        (DragDrop.draggable DragDropMsg mobster.index ++ DragDrop.droppable DragDropMsg mobster.index)
         [ td mobsterCellStyle
             [ span [ Attr.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
                 [ text mobster.name
@@ -564,9 +577,7 @@ reorderButtonView mobster =
     in
         div []
             [ div [ Attr.class "btn-group btn-group-xs" ]
-                [ buttonNoTab [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.MoveUp mobsterIndex)) ] [ text "↑" ]
-                , buttonNoTab [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.MoveDown mobsterIndex)) ] [ text "↓" ]
-                , buttonNoTab [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.Bench mobsterIndex)) ] [ text "x" ]
+                [ buttonNoTab [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.Bench mobsterIndex)) ] [ text "x" ]
                 ]
             ]
 
@@ -774,6 +785,33 @@ update msg model =
                 update (UpdateMobsterData (Mobster.RotateIn index)) model
             else
                 model ! []
+
+        DragDropMsg dragDropMsg ->
+            let
+                ( updatedDragDrop, dragDropResult ) =
+                    DragDrop.update dragDropMsg model.dragDrop
+
+                updatedData =
+                    case dragDropResult of
+                        Nothing ->
+                            { dragId = -1, dropId = -1 }
+
+                        Just ( dragId, dropId ) ->
+                            { dragId = dragId, dropId = dropId }
+
+                _ =
+                    Debug.log "result: " updatedData
+
+                updatedModel =
+                    { model | dragDrop = updatedDragDrop }
+            in
+                case dragDropResult of
+                    Nothing ->
+                        updatedModel ! []
+
+                    Just ( dragId, dropId ) ->
+                        update (UpdateMobsterData (Mobster.Move dragId dropId)) updatedModel
+
 
 
 reorderOperation : List String -> Msg

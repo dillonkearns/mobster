@@ -1,7 +1,6 @@
 module Mobster exposing (MobsterOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters, reorder, decoder)
 
 import Array
-import Maybe
 import Array.Extra
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
@@ -13,6 +12,7 @@ import Random
 type MobsterOperation
     = MoveUp Int
     | MoveDown Int
+    | Move Int Int
     | Remove Int
     | SetNextDriver Int
     | SkipTurn
@@ -55,6 +55,20 @@ updateMoblist moblistOperation moblist =
 
         MoveDown mobsterIndex ->
             moveDown mobsterIndex moblist
+
+        Move fromIndex toIndex ->
+            let
+                moveCount =
+                    toIndex - fromIndex
+            in
+                if moveCount < -1 then
+                    moveUpRecursive fromIndex (-moveCount - 1) moblist
+                else if moveCount > 0 then
+                    moblist
+                        |> moveDown fromIndex
+                        |> moveDown (fromIndex + 1)
+                else
+                    moveUp fromIndex moblist
 
         Remove mobsterIndex ->
             remove mobsterIndex moblist
@@ -161,6 +175,44 @@ rotate mobsterData =
 moveDown : Int -> MobsterData -> MobsterData
 moveDown itemIndex list =
     moveUp (itemIndex + 1) list
+
+
+
+
+moveUpRecursive : Int -> Int -> MobsterData -> MobsterData
+moveUpRecursive itemIndex times list =
+    let
+        _ =
+            Debug.log "moveUpRecursive" { times = times, itemIndex = itemIndex, list = list }
+
+        asArray =
+            Array.fromList list.mobsters
+
+        maybeItemToMove =
+            Array.get itemIndex asArray
+
+        maybeNeighboringItem =
+            Array.get (itemIndex - 1) asArray
+
+        updatedMobsters =
+            case ( maybeItemToMove, maybeNeighboringItem ) of
+                ( Just itemToMove, Just neighboringItem ) ->
+                    Array.toList
+                        (asArray
+                            |> Array.set itemIndex neighboringItem
+                            |> Array.set (itemIndex - 1) itemToMove
+                        )
+
+                ( _, _ ) ->
+                    list.mobsters
+
+        updatedMobsterData =
+            { list | mobsters = updatedMobsters }
+    in
+        if times <= 0 then
+            updatedMobsterData
+        else
+            moveUpRecursive (itemIndex - 1) (times - 1) updatedMobsterData
 
 
 moveUp : Int -> MobsterData -> MobsterData

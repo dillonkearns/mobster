@@ -170,6 +170,38 @@ mobsterTests =
                     in
                         Expect.equal (list |> Mobster.updateMoblist (MoveDown 0))
                             { empty | mobsters = [ "b", "a", "d", "c" ], nextDriver = 0 }
+            , test "to specific position one up" <|
+                \() ->
+                    let
+                        list =
+                            { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobster.updateMoblist (Move 3 2))
+                            { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+            , test "to specific position two up" <|
+                \() ->
+                    let
+                        list =
+                            { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobster.updateMoblist (Move 3 1))
+                            { empty | mobsters = [ "a", "d", "b", "c" ], nextDriver = 0 }
+            , test "down to specific position" <|
+                \() ->
+                    let
+                        list =
+                            { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobster.updateMoblist (Move 0 3))
+                            { empty | mobsters = [ "b", "c", "a", "d" ], nextDriver = 0 }
+            , test "to specific position several slots away" <|
+                \() ->
+                    let
+                        list =
+                            { empty | mobsters = [ "a", "b", "c", "d", "e", "f", "g" ], nextDriver = 0 }
+                    in
+                        Expect.equal (list |> Mobster.updateMoblist (Move 7 0))
+                            { empty | mobsters = [ "g", "a", "b", "c", "d", "e", "f" ], nextDriver = 0 }
             ]
         , describe "remove"
             [ test "list with single item" <|
