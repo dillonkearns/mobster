@@ -196,8 +196,8 @@ timerDurationInputView duration =
             , onClick SelectDurationInput
             , onInput ChangeTimerDuration
             , type_ "number"
-            , Attr.min "1"
-            , Attr.max "15"
+            , Attr.min (toString minTimerMinutes)
+            , Attr.max (toString maxTimerMinutes)
             , value (toString duration)
             , class [ BufferRight ]
             , style [ ( "font-size", "4.0rem" ) ]
@@ -846,16 +846,26 @@ focusAddMobsterInput =
     Task.attempt DomFocusResult (Dom.focus "add-mobster")
 
 
+minTimerMinutes : Int
+minTimerMinutes =
+    1
+
+
+maxTimerMinutes : Int
+maxTimerMinutes =
+    120
+
+
 validateTimerDuration : String -> Int -> Int
 validateTimerDuration newDurationAsString oldTimerDuration =
     let
         rawDuration =
             Result.withDefault 5 (String.toInt newDurationAsString)
     in
-        if rawDuration > 15 then
-            15
-        else if rawDuration < 1 then
-            1
+        if rawDuration > maxTimerMinutes then
+            maxTimerMinutes
+        else if rawDuration < minTimerMinutes then
+            minTimerMinutes
         else
             rawDuration
 
