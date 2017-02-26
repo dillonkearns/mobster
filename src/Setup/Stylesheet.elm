@@ -41,7 +41,7 @@ css =
         , class Green (hoverButton (rgba 50 250 50 0.6))
         , class Red (hoverButton (rgba 231 76 60 0.7))
         , class Orange (hoverButton (rgba 255 133 27 1))
-        , class DropAreaInactive [ backgroundColor (rgba 150 150 100 0.7), borderStyle Css.dotted ]
+        , class DropAreaInactive [ borderStyle Css.dotted ]
         , class DropAreaActive [ backgroundColor (rgba 250 150 100 0.5), borderStyle Css.dotted ]
         ]
 
