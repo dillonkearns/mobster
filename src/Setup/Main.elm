@@ -221,8 +221,8 @@ breakIntervalInputView intervalsPerBreak timerDuration =
                 [ id "break-interval"
                 , onInput ChangeBreakInterval
                 , type_ "number"
-                , Attr.min "0"
-                , Attr.max "30"
+                , Attr.min (toString minBreakInterval)
+                , Attr.max (toString maxBreakInterval)
                 , value (toString intervalsPerBreak)
                 , class [ BufferRight ]
                 , style [ ( "font-size", "4.0rem" ) ]
@@ -876,12 +876,22 @@ validateBreakInterval newDurationAsString oldTimerDuration =
         rawDuration =
             Result.withDefault 6 (String.toInt newDurationAsString)
     in
-        if rawDuration > 30 then
-            30
-        else if rawDuration < 0 then
-            0
+        if rawDuration > maxBreakInterval then
+            maxBreakInterval
+        else if rawDuration < minBreakInterval then
+            minBreakInterval
         else
             rawDuration
+
+
+maxBreakInterval : Int
+maxBreakInterval =
+    120
+
+
+minBreakInterval : Int
+minBreakInterval =
+    0
 
 
 init : Decode.Value -> ( Model, Cmd Msg )
