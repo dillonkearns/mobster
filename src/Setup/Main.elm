@@ -248,7 +248,7 @@ configureView model =
         [ div [ Attr.class "row" ]
             [ invisibleTrigger
             ]
-        , buttonNoTab [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "2.85em" ), ( "padding", "0.3em" ) ] ] [ text "Start Mobbing" ]
+        , buttonNoTab [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", class [ LargeButtonText ] ] [ text "Start Mobbing" ]
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) model.dragDrop ]
@@ -280,8 +280,7 @@ continueButtonChildren model =
             , div
                 [ Attr.class "col-md-8"
                 , style
-                    [ ( "font-size", "22px" )
-                    , ( "font-style", "italic" )
+                    [ ( "font-style", "italic" )
                     , ( "text-align", "left" )
                     ]
                 ]
@@ -372,7 +371,7 @@ continueView showRotation model =
                     , Attr.class "btn btn-info btn-lg btn-block"
                     , class [ BufferTop ]
                     , title "Ctrl+Enter or ⌘+Enter"
-                    , style [ ( "font-size", "2.0em" ), ( "padding", ".677em" ) ]
+                    , class [ LargeButtonText ]
                     ]
                     (continueButtonChildren model)
                 ]
