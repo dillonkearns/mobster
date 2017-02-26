@@ -257,7 +257,7 @@ configureView model =
         , buttonNoTab [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "2.0em" ), ( "padding", ".677em" ) ] ] [ text "Start Mobbing" ]
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
-            , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) ]
+            , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) model.dragDrop ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters model.dragDrop ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
@@ -473,12 +473,12 @@ addMobsterInputView newMobster =
         ]
 
 
-mobstersView : String -> List Mobster.MobsterWithRole -> Html Msg
-mobstersView newMobster mobsters =
+mobstersView : String -> List Mobster.MobsterWithRole -> DragDropModel -> Html Msg
+mobstersView newMobster mobsters dragDrop =
     div [ style [ ( "padding-bottom", "35px" ) ] ]
         [ addMobsterInputView newMobster
         , img [ onClick ShuffleMobsters, Attr.class "shuffle", class [ BufferTop ], src "./assets/dice.png", style [ ( "max-width", "1.667em" ) ] ] []
-        , table [ Attr.class "table h3" ] (List.map mobsterView mobsters)
+        , table [ Attr.class "table h3" ] (List.map (mobsterView dragDrop) mobsters)
         ]
 
 
@@ -561,18 +561,34 @@ inactiveMobsterView mobsterIndex inactiveMobster =
         ]
 
 
-mobsterView : Mobster.MobsterWithRole -> Html Msg
-mobsterView mobster =
-    tr
-        (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
-        [ td mobsterCellStyle
-            [ span [ Attr.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
-                [ text mobster.name
-                , roleView mobster.role
+mobsterView : DragDropModel -> Mobster.MobsterWithRole -> Html Msg
+mobsterView dragDrop mobster =
+    let
+        isBeingDraggedOver =
+            case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
+                ( _, Just (DropActiveMobster id) ) ->
+                    id == mobster.index
+
+                _ ->
+                    False
+
+        hoverText =
+            if isBeingDraggedOver then
+                ">"
+            else
+                " "
+    in
+        tr
+            (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
+            [ td [ Attr.class "active-hover" ] [ span [ style [ ( "color", "green" ) ] ] [ text hoverText ] ]
+            , td mobsterCellStyle
+                [ span [ Attr.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
+                    [ text mobster.name
+                    , roleView mobster.role
+                    ]
                 ]
+            , td [] [ reorderButtonView mobster ]
             ]
-        , td [] [ reorderButtonView mobster ]
-        ]
 
 
 roleView : Maybe Mobster.Role -> Html Msg
@@ -627,7 +643,7 @@ rotationView model =
             model.settings.mobsterData.inactiveMobsters
     in
         div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.map mobsterView mobsters) ]
+            [ div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop) mobsters) ]
             , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.indexedMap inactiveMobsterViewWithHints inactiveMobsters) ]
             ]
 
