@@ -214,7 +214,9 @@ function setupAutoUpdater() {
   autoUpdater.on('update-not-available', () => {
     log.info('update-not-available')
   });
-  autoUpdater.checkForUpdates()
+  if (!isDev) {
+    autoUpdater.checkForUpdates()
+  }
 }
 
 function registerShortcuts() {
