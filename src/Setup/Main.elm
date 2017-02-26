@@ -514,7 +514,6 @@ inactiveMobstersView inactiveMobsters dragDrop =
         div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle ])
             [ h2 [ Attr.class "text-center text-primary" ] [ text "Bench" ]
             , table [ Attr.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
-            , div [] [ text (toString dragDrop) ]
             ]
 
 
@@ -818,17 +817,6 @@ update msg model =
             let
                 ( updatedDragDrop, dragDropResult ) =
                     DragDrop.update dragDropMsg model.dragDrop
-
-                _ =
-                    Debug.log "updatedDragDrop" updatedDragDrop
-
-                _ =
-                    case dragDropResult of
-                        Nothing ->
-                            Nothing
-
-                        Just ( dragId, dropId ) ->
-                            Debug.log "result: " (Just { dragId = dragId, dropId = dropId })
 
                 updatedModel =
                     { model | dragDrop = updatedDragDrop }
