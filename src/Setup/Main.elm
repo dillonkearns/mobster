@@ -57,15 +57,17 @@ type Msg
     | CopyActiveMobsters ()
     | ResetBreakData
     | RotateInHotkey Int
-    | DragDropMsg (DragDrop.Msg DragId DropId)
+    | DragDropMsg (DragDrop.Msg DragId DropArea)
 
 
-type alias DragId =
-    Int
+type DragId
+    = ActiveMobster Int
+    | InactiveMobster Int
 
 
-type alias DropId =
-    Int
+type DropArea
+    = DropBench
+    | DropActiveMobster Int
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
@@ -113,8 +115,12 @@ type alias Model =
     , secondsSinceBreak : Int
     , intervalsSinceBreak : Int
     , availableUpdateVersion : Maybe String
-    , dragDrop : DragDrop.Model DragId DropId
+    , dragDrop : DragDropModel
     }
+
+
+type alias DragDropModel =
+    DragDrop.Model DragId DropArea
 
 
 changeTip : Cmd Msg
@@ -252,7 +258,7 @@ configureView model =
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) ]
-            , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters ]
+            , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters model.dragDrop ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
         , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
@@ -498,12 +504,25 @@ letters =
         ]
 
 
-inactiveMobstersView : List String -> Html Msg
-inactiveMobstersView inactiveMobsters =
-    div []
-        [ h2 [ Attr.class "text-center text-primary" ] [ text "Bench" ]
-        , table [ Attr.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
-        ]
+inactiveMobstersView : List String -> DragDropModel -> Html Msg
+inactiveMobstersView inactiveMobsters dragDrop =
+    let
+        benchStyle =
+            case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
+                ( Just _, Just DropBench ) ->
+                    class [ DropAreaActive ]
+
+                ( Just _, _ ) ->
+                    class [ DropAreaInactive ]
+
+                ( _, _ ) ->
+                    class []
+    in
+        div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle ])
+            [ h2 [ Attr.class "text-center text-primary" ] [ text "Bench" ]
+            , table [ Attr.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
+            , div [] [ text (toString dragDrop) ]
+            ]
 
 
 mobsterCellStyle : List (Attribute Msg)
@@ -545,7 +564,7 @@ inactiveMobsterView mobsterIndex inactiveMobster =
 mobsterView : Mobster.MobsterWithRole -> Html Msg
 mobsterView mobster =
     tr
-        (DragDrop.draggable DragDropMsg mobster.index ++ DragDrop.droppable DragDropMsg mobster.index)
+        (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
         [ td mobsterCellStyle
             [ span [ Attr.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
                 [ text mobster.name
@@ -791,16 +810,16 @@ update msg model =
                 ( updatedDragDrop, dragDropResult ) =
                     DragDrop.update dragDropMsg model.dragDrop
 
-                updatedData =
-                    case dragDropResult of
-                        Nothing ->
-                            { dragId = -1, dropId = -1 }
-
-                        Just ( dragId, dropId ) ->
-                            { dragId = dragId, dropId = dropId }
+                _ =
+                    Debug.log "updatedDragDrop" updatedDragDrop
 
                 _ =
-                    Debug.log "result: " updatedData
+                    case dragDropResult of
+                        Nothing ->
+                            Nothing
+
+                        Just ( dragId, dropId ) ->
+                            Debug.log "result: " (Just { dragId = dragId, dropId = dropId })
 
                 updatedModel =
                     { model | dragDrop = updatedDragDrop }
@@ -810,8 +829,15 @@ update msg model =
                         updatedModel ! []
 
                     Just ( dragId, dropId ) ->
-                        update (UpdateMobsterData (Mobster.Move dragId dropId)) updatedModel
+                        case ( dragId, dropId ) of
+                            ( ActiveMobster id, DropActiveMobster actualDropid ) ->
+                                update (UpdateMobsterData (Mobster.Move id actualDropid)) updatedModel
 
+                            ( ActiveMobster id, DropBench ) ->
+                                update (UpdateMobsterData (Mobster.Bench id)) updatedModel
+
+                            _ ->
+                                model ! []
 
 
 reorderOperation : List String -> Msg
