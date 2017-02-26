@@ -237,11 +237,6 @@ quitButton =
     buttonNoTab [ onClick Quit, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Quit" ]
 
 
-titleTextView : Html msg
-titleTextView =
-    h1 [ Attr.class "text-info text-center", id "mobster-title", style [ ( "font-size", "4.133em" ) ] ] [ text "Mobster" ]
-
-
 invisibleTrigger : Html msg
 invisibleTrigger =
     img [ src "./assets/invisible.png", Attr.class "invisible-trigger pull-left", style [ ( "max-width", "2.333em" ) ] ] []
@@ -252,7 +247,6 @@ configureView model =
     div [ Attr.class "container-fluid" ]
         [ div [ Attr.class "row" ]
             [ invisibleTrigger
-            , titleTextView
             ]
         , buttonNoTab [ onClick StartTimer, Attr.class "btn btn-info btn-lg btn-block", class [ BufferTop ], title "Ctrl+Enter or ⌘+Enter", style [ ( "font-size", "2.0em" ), ( "padding", ".677em" ) ] ] [ text "Start Mobbing" ]
         , div [ Attr.class "row" ]
@@ -368,7 +362,6 @@ continueView showRotation model =
         div [ Attr.class "container-fluid" ]
             [ div [ Attr.class "row" ]
                 [ invisibleTrigger
-                , titleTextView
                 ]
             , ratingsView model
             , div [] [ viewIntervalsBeforeBreak model ]
