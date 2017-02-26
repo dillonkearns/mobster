@@ -571,9 +571,9 @@ mobsterView dragDrop mobster =
     in
         tr
             (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
-            [ td [ Attr.class "active-hover" ] [ span [ style [ ( "color", "green" ) ] ] [ text hoverText ] ]
+            [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success" ] [ text hoverText ] ]
             , td mobsterCellStyle
-                [ span [ Attr.classList [ ( "text-primary", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
+                [ span [ Attr.classList [ ( "text-info", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
                     [ text mobster.name
                     , roleView mobster.role
                     ]
