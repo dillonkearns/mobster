@@ -162,14 +162,14 @@ mobsterTests =
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Move 3 2))
                             { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
-            , test "multiple items move down without wrapping" <|
+            , test "placing it below hovered slot when moving from higher to lower" <|
                 \() ->
                     let
                         list =
-                            { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+                            { empty | mobsters = [ "a", "b", "c" ], nextDriver = 0 }
                     in
-                        Expect.equal (list |> Mobster.updateMoblist (Move 0 2))
-                            { empty | mobsters = [ "b", "a", "d", "c" ], nextDriver = 0 }
+                        Expect.equal (list |> Mobster.updateMoblist (Move 0 1))
+                            { empty | mobsters = [ "b", "a", "c" ], nextDriver = 0 }
             , test "to specific position one up" <|
                 \() ->
                     let
@@ -186,14 +186,14 @@ mobsterTests =
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Move 3 1))
                             { empty | mobsters = [ "a", "d", "b", "c" ], nextDriver = 0 }
-            , test "down to specific position" <|
+            , test "down below the last item in list" <|
                 \() ->
                     let
                         list =
                             { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
                     in
                         Expect.equal (list |> Mobster.updateMoblist (Move 0 3))
-                            { empty | mobsters = [ "b", "c", "a", "d" ], nextDriver = 0 }
+                            { empty | mobsters = [ "b", "c", "d", "a" ], nextDriver = 0 }
             , test "to specific position several slots away" <|
                 \() ->
                     let

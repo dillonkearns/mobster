@@ -172,9 +172,22 @@ replaceSlice substitution start end asArray =
         (Array.append (Array.append part1 part2) part3)
 
 
-insertAt : a -> Int -> Array.Array a -> Array.Array a
-insertAt insert pos string =
+insertBelow : a -> Int -> Array.Array a -> Array.Array a
+insertBelow insert pos string =
+    insertAbove insert (pos + 1) string
+
+
+insertAbove : a -> Int -> Array.Array a -> Array.Array a
+insertAbove insert pos string =
     replaceSlice insert pos pos string
+
+
+insertAt : a -> Int -> Bool -> Array.Array a -> Array.Array a
+insertAt insert pos above string =
+    if above then
+        insertAbove insert pos string
+    else
+        insertBelow insert pos string
 
 
 compact : List (Maybe a) -> List a
@@ -199,7 +212,7 @@ move fromIndex toIndex mobsters =
             |> mapToJust
             |> Array.fromList
             |> Array.set fromIndex Nothing
-            |> insertAt mobsterToMove toIndex
+            |> insertAt mobsterToMove toIndex (fromIndex > toIndex)
             |> Array.toList
             |> compact
 
