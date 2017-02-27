@@ -548,7 +548,7 @@ inactiveMobsterViewWithHints mobsterIndex inactiveMobster =
 inactiveMobsterView : Int -> String -> Html Msg
 inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
-        [ td mobsterCellStyle
+        [ td (mobsterCellStyle ++ (DragDrop.draggable DragDropMsg (InactiveMobster mobsterIndex)))
             [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , div [ Attr.class "btn-group btn-group-xs", style [ ( "margin-left", "0.667em" ) ] ]
                 [ buttonNoTab [ Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (Mobster.Remove mobsterIndex)) ] [ text "x" ]
@@ -836,6 +836,9 @@ update msg model =
 
                             ( ActiveMobster id, DropBench ) ->
                                 update (UpdateMobsterData (Mobster.Bench id)) updatedModel
+
+                            ( InactiveMobster inactiveMobsterId, DropActiveMobster activeMobsterId ) ->
+                                update (UpdateMobsterData (Mobster.RotateIn inactiveMobsterId)) updatedModel
 
                             _ ->
                                 model ! []
