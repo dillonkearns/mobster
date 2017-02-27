@@ -510,10 +510,15 @@ inactiveMobstersView inactiveMobsters dragDrop =
                 ( _, _ ) ->
                     class []
     in
-        div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle ])
-            [ h2 [ Attr.class "text-center text-primary" ] [ text "Bench" ]
-            , table [ Attr.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
-            ]
+        case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
+            ( Just _, _ ) ->
+                div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle, style [ ( "height", "150px" ) ] ]) [ text "Move to bench" ]
+
+            ( _, _ ) ->
+                div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle ])
+                    [ h2 [ Attr.class "text-center text-primary" ] [ text "Bench" ]
+                    , table [ Attr.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
+                    ]
 
 
 mobsterCellStyle : List (Attribute Msg)
