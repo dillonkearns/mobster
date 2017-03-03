@@ -112,6 +112,73 @@
         -webkit-user-select: none;
         user-select: none;
       }
+
+      /* Tooltip CSS  - help from https://jsfiddle.net/greypants/zgCb7/ */
+      .my-tooltip-outer {
+        -webkit-transform: translateZ(0);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .my-tooltip-outer .my-tooltip-inner {
+        left: 50% !important;
+        right: auto !important;
+        text-align: center !important;
+        transform: translate(-50%, 0) !important;
+
+
+        font-size: 2.5rem;
+        background: rgba(14, 255, 125, 1);
+        bottom: 100%;
+        color: #fff;
+        display: block;
+        /*left: -25px;*/
+        left: 0px;
+        margin-bottom: 15px;
+        opacity: 0;
+        padding: 20px;
+        pointer-events: none;
+        position: absolute;
+        -webkit-transform: translateY(10px);
+        transform: translateY(10px);
+        -webkit-transition: all .15s ease-out;
+        transition: all .15s ease-out;
+        -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+      }
+
+
+      /* This bridges the gap so you can mouse into the tooltip without it disappearing */
+      .my-tooltip-outer .my-tooltip-inner:before {
+        bottom: -20px;
+        content: " ";
+        display: block;
+        height: 20px;
+        left: 0;
+        position: absolute;
+        width: 100%;
+      }
+
+
+      /* CSS Triangle */
+      .my-tooltip-outer .my-tooltip-inner:after {
+        border-left: solid transparent 10px;
+        border-right: solid transparent 10px;
+        border-top: solid rgba(14, 255, 125, 1) 10px;
+        bottom: -10px;
+        content: " ";
+        height: 0;
+        left: 50%;
+        margin-left: -13px;
+        position: absolute;
+        width: 0;
+      }
+
+      .my-tooltip-outer:hover .my-tooltip-inner {
+        opacity: 1;
+        pointer-events: auto;
+        -webkit-transform: translateY(0px);
+        transform: translateY(0px);
+      }
       </style>
   </head>
   <body id="setup-window">
