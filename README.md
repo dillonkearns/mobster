@@ -33,6 +33,7 @@ Date:   Fri Mar 3 21:00:25 2017 -0500
 autoUpdater (which I couldn't for the life of me get to work)!
 * Thanks to Gedward Gonzalez ([gedward](https://github.com/gedward)) for stepping
 me through the Mac app signing and autoUpdater with his Apple dev expertise!
+* Thanks for contributing some sweet quotes Nayan Hajratwala ([nhajratw](https://github.com/nhajratw))
 
 ## Contributing
 To clone and run this repository you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
