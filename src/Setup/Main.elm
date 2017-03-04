@@ -48,6 +48,7 @@ type Msg
     | ChangeExperiment
     | UpdateExperimentInput String
     | EnterRating Int
+    | Hide
     | Quit
     | QuitAndInstall
     | ComboMsg Keyboard.Combo.Msg
@@ -140,8 +141,11 @@ initialModel settings onMac =
     , newExperiment = ""
     , ratings = []
     , secondsSinceBreak = 0
-    , intervalsSinceBreak = 0
-    , availableUpdateVersion = Nothing
+    , intervalsSinceBreak =
+        0
+    , availableUpdateVersion =
+        Nothing
+        -- , availableUpdateVersion = Just "update!"
     , dragDrop = DragDrop.init
     , onMac = onMac
     }
@@ -170,6 +174,9 @@ port saveSettings : Settings.Data -> Cmd msg
 
 
 port saveMobstersFile : String -> Cmd msg
+
+
+port hide : () -> Cmd msg
 
 
 port quit : () -> Cmd msg
@@ -237,11 +244,6 @@ breakIntervalInputView intervalsPerBreak timerDuration =
             ]
 
 
-quitButton : Html Msg
-quitButton =
-    button [ noTab, onClick Quit, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Quit" ]
-
-
 invisibleTrigger : Html msg
 invisibleTrigger =
     img [ src "./assets/invisible.png", Attr.class "invisible-trigger pull-left", style [ ( "max-width", "2.333em" ) ] ] []
@@ -253,6 +255,28 @@ ctrlKey onMac =
         "⌘"
     else
         "Ctrl"
+
+
+navbar : Html Msg
+navbar =
+    nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ ( "background-color", "rgba(0, 0, 0, 0.2)" ) ] ]
+        [ div [ Attr.class "container-fluid" ]
+            [ div [ Attr.class "navbar-header" ]
+                [ a [ Attr.class "navbar-brand", href "#" ]
+                    [ text "Mobster" ]
+                ]
+            , div [ Attr.class "nav navbar-nav navbar-right" ]
+                [ button [ noTab, onClick Hide, Attr.class "btn btn-sm navbar-btn btn-warning", class [ BufferRight ] ]
+                    [ text "Hide "
+                    , span [ Attr.class "fa fa-minus-square-o" ] []
+                    ]
+                , button [ noTab, onClick Quit, Attr.class "btn btn-sm navbar-btn btn-danger", class [ BufferRight ] ]
+                    [ text "Quit "
+                    , span [ Attr.class "fa fa-times-circle-o" ] []
+                    ]
+                ]
+            ]
+        ]
 
 
 startMobbingShortcut : Bool -> String
@@ -281,7 +305,6 @@ configureView model =
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters model.dragDrop ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
-        , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
         ]
 
 
@@ -402,7 +425,6 @@ continueView showRotation model =
                     ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
                 ]
             , mainView
-            , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
             ]
 
 
@@ -684,7 +706,7 @@ view model =
         -- Rotation ->
         -- rotationView model
     in
-        div [] [ updateAvailableView model.availableUpdateVersion, mainView ]
+        div [] [ navbar, updateAvailableView model.availableUpdateVersion, mainView ]
 
 
 resetBreakData : Model -> Model
@@ -805,6 +827,9 @@ update msg model =
 
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []
+
+        Hide ->
+            model ! [ hide () ]
 
         Quit ->
             model ! [ quit () ]

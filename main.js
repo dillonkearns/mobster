@@ -144,6 +144,10 @@ function createWindow () {
     app.quit()
   })
 
+  ipcMain.on('hide', (event) => {
+    toggleMainWindow()
+  })
+
   ipcMain.on('quit-and-install', () => {
     autoUpdater.quitAndInstall()
   })

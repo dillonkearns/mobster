@@ -130,6 +130,8 @@
       ipcRenderer.send('start-timer', flags)
     })
 
+    setup.ports.hide.subscribe(function() { ipcRenderer.send('hide') })
+
     setup.ports.quit.subscribe(function() {
       ipcRenderer.send('quit')
     })
