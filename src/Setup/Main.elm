@@ -266,7 +266,10 @@ navbar =
                     [ text "Mobster" ]
                 ]
             , div [ Attr.class "nav navbar-nav navbar-right" ]
-                [ button [ noTab, onClick Hide, Attr.class "btn btn-sm navbar-btn btn-warning", class [ BufferRight ] ]
+                [ button [ noTab, onClick OpenConfigure, Attr.class "btn btn-primary btn-sm", class [ BufferRight ] ]
+                    [ span [ Attr.class "fa fa-cog" ] []
+                    ]
+                , button [ noTab, onClick Hide, Attr.class "btn btn-sm navbar-btn btn-warning", class [ BufferRight ] ]
                     [ text "Hide "
                     , span [ Attr.class "fa fa-minus-square-o" ] []
                     ]
@@ -404,7 +407,6 @@ continueView showRotation model =
                 div []
                     [ nextDriverNavigatorView model
                     , tipView model.tip
-                    , div [ Attr.class "row", class [ BufferTop ], style [ ( "padding-bottom", "1.333em" ) ] ] [ button [ noTab, onClick OpenConfigure, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
                     ]
     in
         div [ Attr.class "container-fluid" ]
