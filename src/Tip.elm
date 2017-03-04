@@ -56,6 +56,18 @@ tips =
             "Arguing about solutions? Try going with the least experienced navigator and have the more experienced team members course correct only as needed."
       , author = "The Hunter Mob"
       }
+    , { url = "https://www.infoq.com/news/2016/06/mob-programming-zuill"
+      , title = "Lean Thinking"
+      , body =
+            "The goal is not to be productive but effective. To draw a line with Lean Practices, being productive and not effective is usually a good way to produce waste quickly."
+      , author = "Woody Zuill"
+      }
+    , { url = "https://www.infoq.com/news/2016/06/mob-programming-zuill"
+      , title = "Mob Programming"
+      , body =
+            "It's not about Mob Programming"
+      , author = "Woody Zuill"
+      }
     ]
 
 
