@@ -244,9 +244,9 @@ breakIntervalInputView intervalsPerBreak timerDuration =
             ]
 
 
-invisibleTrigger : Html msg
-invisibleTrigger =
-    img [ src "./assets/invisible.png", Attr.class "invisible-trigger pull-left", style [ ( "max-width", "2.333em" ) ] ] []
+invisibleTrigger : List (Attribute Msg) -> List (Html Msg) -> Html Msg
+invisibleTrigger additionalStyles children =
+    img ([ src "./assets/invisible.png", Attr.class "invisible-trigger navbar-btn", style [ ( "max-width", "2.333em" ) ] ] ++ additionalStyles) children
 
 
 ctrlKey : Bool -> String
@@ -259,7 +259,7 @@ ctrlKey onMac =
 
 navbar : Html Msg
 navbar =
-    nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ ( "background-color", "rgba(0, 0, 0, 0.2)" ) ] ]
+    nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ ( "background-color", "rgba(0, 0, 0, 0.2)" ), ( "z-index", "0" ) ] ]
         [ div [ Attr.class "container-fluid" ]
             [ div [ Attr.class "navbar-header" ]
                 [ a [ Attr.class "navbar-brand", href "#" ]
@@ -269,6 +269,7 @@ navbar =
                 [ button [ noTab, onClick OpenConfigure, Attr.class "btn btn-primary btn-sm", class [ BufferRight ] ]
                     [ span [ Attr.class "fa fa-cog" ] []
                     ]
+                , invisibleTrigger [ Attr.class "navbar-btn", class [ BufferRight ] ] []
                 , button [ noTab, onClick Hide, Attr.class "btn btn-sm navbar-btn btn-warning", class [ BufferRight ] ]
                     [ text "Hide "
                     , span [ Attr.class "fa fa-minus-square-o" ] []
@@ -290,8 +291,7 @@ startMobbingShortcut onMac =
 configureView : Model -> Html Msg
 configureView model =
     div [ Attr.class "container-fluid" ]
-        [ div [ Attr.class "row" ] [ invisibleTrigger ]
-        , button
+        [ button
             [ noTab
             , onClick StartTimer
             , Attr.class "btn btn-info btn-lg btn-block"
@@ -404,18 +404,13 @@ continueView showRotation model =
             if showRotation then
                 rotationView model
             else
-                div []
-                    [ nextDriverNavigatorView model
-                    , tipView model.tip
-                    ]
+                tipView model.tip
     in
         div [ Attr.class "container-fluid" ]
-            [ div [ Attr.class "row" ]
-                [ invisibleTrigger
-                ]
-            , ratingsView model
-            , div [] [ viewIntervalsBeforeBreak model ]
+            [ ratingsView model
+              -- , div [] [ viewIntervalsBeforeBreak model ]
             , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
+            , nextDriverNavigatorView model
             , div [ Attr.class "row", style [ ( "padding-bottom", "1.333em" ) ] ]
                 [ button
                     [ noTab
@@ -448,26 +443,9 @@ nextDriverNavigatorView model =
         driverNavigator =
             Mobster.nextDriverNavigator model.settings.mobsterData
     in
-        div [ Attr.class "row h1" ]
-            [ div [ Attr.class "text-muted col-md-2 hidden-sm hidden-xs" ] [ text "Next:" ]
-            , dnView driverNavigator.driver Mobster.Driver
+        div [ Attr.class "row h1 text-center" ]
+            [ dnView driverNavigator.driver Mobster.Driver
             , dnView driverNavigator.navigator Mobster.Navigator
-            , div [ Attr.class "col-md-1 col-sm-2" ]
-                [ button [ noTab, class [ Orange ], Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData Mobster.SkipTurn) ]
-                    [ span [ Attr.class "glyphicon glyphicon-step-forward", class [ BufferRight ] ] []
-                    , u [] [ text "S" ]
-                    , text "kip Turn"
-                    ]
-                ]
-            , div [ Attr.class "col-md-1 col-sm-2" ]
-                [ button [ noTab, class [ Green ], Attr.class "btn btn-small btn-default", onClick ShowRotationScreen ]
-                    [ span [ Attr.class "fa fa-user-plus", class [ BufferRight ] ]
-                        []
-                    , text "Quick "
-                    , u [] [ text "R" ]
-                    , text "otate"
-                    ]
-                ]
             ]
 
 
@@ -482,12 +460,16 @@ dnView mobster role =
                 Mobster.Navigator ->
                     "./assets/navigator-icon.png"
     in
-        div [ Attr.class "col-md-4 col-sm-4 text-default" ]
-            [ iconView icon 40
+        div [ Attr.class "col-md-6 col-sm-6 text-default", class [ ShowOnParentHoverParent ] ]
+            [ iconView icon 60
             , span [ class [ BufferRight ] ] [ text mobster.name ]
-            , button [ noTab, class [ Red ], onClick (UpdateMobsterData (Mobster.Bench mobster.index)), Attr.class "btn btn-small btn-default" ]
-                [ span [ Attr.class "fa fa-user-times", class [ BufferRight ] ] []
-                , text "Not here"
+            , span [ class [ ShowOnParentHover ] ]
+                [ span
+                    [ Attr.class "fa fa-user-times text-danger"
+                    , style [ ( "font-size", "20px" ) ]
+                    , onClick (UpdateMobsterData (Mobster.Bench mobster.index))
+                    ]
+                    [ text "Away" ]
                 ]
             ]
 

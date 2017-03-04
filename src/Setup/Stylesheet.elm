@@ -16,6 +16,8 @@ type CssClasses
     | LargeButtonText
     | TooltipContainer
     | Tooltip
+    | ShowOnParentHover
+    | ShowOnParentHoverParent
 
 
 css : Stylesheet
@@ -45,6 +47,17 @@ css =
         , class DropAreaActive [ backgroundColor (rgba 250 150 100 0.5), borderStyle Css.dotted ]
         , class LargeButtonText [ fontSize (em 2.85), padding (em 0.3) ]
         , tooltipStyle
+        , class ShowOnParentHoverParent
+            [ children [ class ShowOnParentHover [ opacity (int 0) ] ]
+            , hover
+                [ children
+                    [ class ShowOnParentHover
+                        [ opacity (num 0.4)
+                        , hover [ opacity (num 0.9) ]
+                        ]
+                    ]
+                ]
+            ]
         ]
 
 
