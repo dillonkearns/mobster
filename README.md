@@ -11,11 +11,11 @@ The location of this file for the different platforms is:
 - `$XDG_CONFIG_HOME/mobster/active-mobsters` or `~/.config/mobster/active-mobsters` on Linux
 - `~/Library/Application Support/mobster/active-mobsters` on macOS
 
-(As described in the [`appData` section of the Electron docs](https://electron.atom.io/docs/api/app/#appgetpathname))
+(As described in `appData` section of the Electron docs](https://electron.atom.io/docs/api/app/#appgetpathname)).
 
-The names in the `active-mobsters` file are separated by `,`s with spaces like so: `Jim Kirk, Spock, McCoy`
+The names in the `active-mobsters` file are separated by `,`s with spaces like so: `Jim Kirk, Spock, McCoy`.
 
-You can set the author field in a commit to the list of active mobsters. See the  [mobster-commit.sh](https://github.com/dillonkearns/mobster/blob/master/mobster-commit.sh) for a working example. The output of `git log` looks like
+You can set the author field in a commit to the list of active mobsters. See  [mobster-commit.sh](https://github.com/dillonkearns/mobster/blob/master/mobster-commit.sh) for a working example. After committing with this script, your `git log` will look something like:
 ```shell
 $ git log
 commit 39d59e7e4c9acb021988b3040f9b7ace5f539b78
