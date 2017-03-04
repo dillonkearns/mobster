@@ -443,7 +443,7 @@ nextDriverNavigatorView model =
         driverNavigator =
             Mobster.nextDriverNavigator model.settings.mobsterData
     in
-        div [ Attr.class "row h1 text-center" ]
+        div [ Attr.class "row h1 text-center", class [ ShowOnParentHoverParent ] ]
             [ dnView driverNavigator.driver Mobster.Driver
             , dnView driverNavigator.navigator Mobster.Navigator
             ]
@@ -459,26 +459,37 @@ dnView mobster role =
 
                 Mobster.Navigator ->
                     "./assets/navigator-icon.png"
+
+        awayButton =
+            span
+                [ Attr.class "fa fa-user-times text-danger"
+                , style [ ( "font-size", "23px" ) ]
+                , class [ BufferRight, ShowOnParentHover ]
+                , onClick <| UpdateMobsterData (Mobster.Bench mobster.index)
+                ]
+                [ text " Away" ]
+
+        skipButton =
+            span
+                [ Attr.class "fa fa-fast-forward text-warning"
+                , style [ ( "font-size", "23px" ) ]
+                , class [ ShowOnParentHover ]
+                , onClick <| UpdateMobsterData Mobster.SkipTurn
+                ]
+                [ text " Skip" ]
+
+        hoverButtons =
+            case role of
+                Mobster.Driver ->
+                    [ awayButton, skipButton ]
+
+                Mobster.Navigator ->
+                    [ awayButton ]
     in
-        div [ Attr.class "col-md-6 col-sm-6 text-default", class [ ShowOnParentHoverParent ] ]
+        div [ Attr.class "col-md-6 col-sm-6 text-default" ]
             [ iconView icon 60
             , span [ class [ BufferRight ] ] [ text mobster.name ]
-            , span []
-                [ span
-                    [ Attr.class "fa fa-user-times text-danger"
-                    , style [ ( "font-size", "23px" ) ]
-                    , class [ BufferRight, ShowOnParentHover ]
-                    , onClick <| UpdateMobsterData (Mobster.Bench mobster.index)
-                    ]
-                    [ text " Away" ]
-                , span
-                    [ Attr.class "fa fa-fast-forward text-warning"
-                    , style [ ( "font-size", "23px" ) ]
-                    , class [ ShowOnParentHover ]
-                    , onClick <| UpdateMobsterData Mobster.SkipTurn
-                    ]
-                    [ text " Skip" ]
-                ]
+            , span [] hoverButtons
             ]
 
 
