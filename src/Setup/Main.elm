@@ -248,11 +248,14 @@ configureView model =
         [ div [ Attr.class "row" ] [ invisibleTrigger ]
         , buttonNoTab
             [ onClick StartTimer
-            , Attr.class "btn btn-info btn-lg btn-block my-tooltip-outer"
-            , class [ BufferTop ]
-            , class [ LargeButtonText ]
+            , Attr.class "btn btn-info btn-lg btn-block"
+            , class
+                [ BufferTop
+                , LargeButtonText
+                , TooltipContainer
+                ]
             ]
-            [ text "Start Mobbing", div [ Attr.class "my-tooltip-inner" ] [ text "Ctrl/⌘+Enter" ] ]
+            [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text "Ctrl/⌘+Enter" ] ]
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) model.dragDrop ]
