@@ -144,6 +144,10 @@
       ipcRenderer.send('quit')
     })
 
+    setup.ports.showFeedbackForm.subscribe(function() {
+      ipcRenderer.send('showFeedbackForm')
+    })
+
     setup.ports.selectDuration.subscribe(function(id) {
       document.getElementById(id).select()
     })

@@ -49,6 +49,7 @@ type Msg
     | UpdateExperimentInput String
     | EnterRating Int
     | Hide
+    | ShowFeedbackForm
     | Quit
     | QuitAndInstall
     | ComboMsg Keyboard.Combo.Msg
@@ -180,6 +181,9 @@ port hide : () -> Cmd msg
 
 
 port quit : () -> Cmd msg
+
+
+port showFeedbackForm : () -> Cmd msg
 
 
 port quitAndInstall : () -> Cmd msg
@@ -686,7 +690,6 @@ rotationView model =
             Mobster.mobsters model.settings.mobsterData
 
         inactiveMobsters =
-            -- List.indexedMap (\index name -> Mobster.Mobster name index)
             model.settings.mobsterData.inactiveMobsters
     in
         div [ Attr.class "row" ]
@@ -698,7 +701,7 @@ rotationView model =
 feedbackButton : Html Msg
 feedbackButton =
     div []
-        [ a [ style [ ( "text-transform", "uppercase" ), ( "transform", "rotate(-90deg)" ) ], Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-default pull-right", href "https://dillonkearns.typeform.com/to/k9P6iV", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ]
+        [ a [ onClick ShowFeedbackForm, style [ ( "text-transform", "uppercase" ), ( "transform", "rotate(-90deg)" ) ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ]
         ]
 
 
@@ -712,9 +715,6 @@ view model =
 
                 Continue showRotation ->
                     continueView showRotation model
-
-        -- Rotation ->
-        -- rotationView model
     in
         div [] [ navbar, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
 
@@ -918,6 +918,9 @@ update msg model =
 
                             _ ->
                                 model ! []
+
+        ShowFeedbackForm ->
+            model ! [ showFeedbackForm () ]
 
 
 reorderOperation : List String -> Msg

@@ -144,6 +144,10 @@ function createWindow () {
     app.quit()
   })
 
+  ipcMain.on('showFeedbackForm', (event) => {
+    new BrowserWindow({show: true, frame: true, alwaysOnTop: true}).loadURL('https://dillonkearns.typeform.com/to/k9P6iV')
+  })
+
   ipcMain.on('hide', (event) => {
     toggleMainWindow()
   })
