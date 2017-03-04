@@ -109,22 +109,13 @@ tooltipStyle =
                     , position absolute
                     , width zero
                     ]
-                , before
-                    -- /* This bridges the gap so you can mouse into the tooltip without it disappearing */
-                    [ bottom (px -20)
-                    , property "content" "' '"
-                    , display block
-                    , height (px 20)
-                    , left zero
-                    , position absolute
-                    , width (pct 100)
-                    ]
                 ]
             ]
         , hover
             [ children
                 [ class Tooltip
                     [ opacity (Css.int 1)
+                    , property "transition-delay" "0.5s"
                     , transform (translateY zero)
                     , property "pointer-events" "auto"
                     ]
