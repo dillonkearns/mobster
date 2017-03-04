@@ -3,7 +3,7 @@
 
 A mob/pair programming timer, inspired by the [MobProgramming/MobTimer.Python](https://github.com/MobProgramming/MobTimer.Python). Runs great on Mac, Windows, and Linux. Learn all about mobbing at the MobTimer.Python github page, and at [mobprogramming.org](http://mobprogramming.org/).
 
-Mobster was built with delight in Elm and Electron <a href="elm-lang.org"><img src="https://avatars0.githubusercontent.com/u/4359353?v=3&s=280" height="35" /></a> <a href="http://electron.atom.io"><img src="https://camo.githubusercontent.com/79904b8ba0d1bce43022bbd5710f0ea1db33f54f/68747470733a2f2f7261776769742e636f6d2f73696e647265736f726875732f617765736f6d652d656c656374726f6e2f6d61737465722f656c656374726f6e2d6c6f676f2e737667" height="35"></img></a>
+Mobster was built with delight in Elm and Electron <a href="http://elm-lang.org"><img src="https://avatars0.githubusercontent.com/u/4359353?v=3&s=280" height="35" /></a> <a href="http://electron.atom.io"><img src="https://camo.githubusercontent.com/79904b8ba0d1bce43022bbd5710f0ea1db33f54f/68747470733a2f2f7261776769742e636f6d2f73696e647265736f726875732f617765736f6d652d656c656374726f6e2f6d61737465722f656c656374726f6e2d6c6f676f2e737667" height="35"></img></a>
 
 ## Using Active Mobsters for Git Commit Authors/Shell Scripts
 The active mobsters will always be up-to-date in the `active-mobsters` file.
