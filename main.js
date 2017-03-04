@@ -12,9 +12,23 @@ const url = require('url')
 const log = require('electron-log')
 const assetsDirectory = path.join(__dirname, 'assets')
 const {version} = require('./package')
+const fs = require('fs')
+const appDataPath = app.getPath('userData')
+currentMobstersFilePath = path.join(appDataPath, 'active-mobsters')
 
 log.info(`Running version ${version}`)
 
+function writeToFile(filePath, fileContents) {
+  fs.writeFile(filePath, fileContents, function(err) {
+    if (err) {
+      console.log(err)
+    }
+  })
+}
+
+function updateMobsterNamesFile(currentMobsterNames) {
+    writeToFile(currentMobstersFilePath, currentMobsterNames)
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -114,6 +128,10 @@ function createWindow () {
   ipcMain.on('start-timer', (event, flags) => {
     startTimer(flags)
     hideMainWindow()
+  })
+
+  ipcMain.on('save-mobsters-file', (event, currentMobsterNames) => {
+    updateMobsterNamesFile(currentMobsterNames)
   })
 
   ipcMain.on('timer-done', (event, timeElapsed) => {

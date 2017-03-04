@@ -1,4 +1,4 @@
-module Mobster exposing (MobsterOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters, reorder, decoder)
+module Mobster exposing (MobsterOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters, reorder, decoder, currentMobsterNames)
 
 import Array
 import Array.Extra
@@ -43,6 +43,11 @@ decode data =
 randomizeMobsters : MobsterData -> Random.Generator (List String)
 randomizeMobsters mobsterData =
     Random.List.shuffle mobsterData.mobsters
+
+
+currentMobsterNames : MobsterData -> String
+currentMobsterNames mobsterData =
+    String.join ", " mobsterData.mobsters
 
 
 updateMoblist : MobsterOperation -> MobsterData -> MobsterData

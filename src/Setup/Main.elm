@@ -167,6 +167,9 @@ port startTimer : TimerConfiguration -> Cmd msg
 port saveSettings : Settings.Data -> Cmd msg
 
 
+port saveMobstersFile : String -> Cmd msg
+
+
 port quit : () -> Cmd msg
 
 
@@ -691,6 +694,20 @@ rotateMobsters ({ settings } as model) =
     { model | settings = { settings | mobsterData = (Mobster.rotate settings.mobsterData) } }
 
 
+saveActiveMobstersCmd : Model -> Cmd msg
+saveActiveMobstersCmd model =
+    saveMobstersFile (Mobster.currentMobsterNames model.settings.mobsterData)
+
+
+saveActiveMobsters : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+saveActiveMobsters ( model, cmd ) =
+    let
+        updatedCmd =
+            Cmd.batch [ cmd, saveActiveMobstersCmd model ]
+    in
+        ( model, updatedCmd )
+
+
 updateSettings : (Settings.Data -> Settings.Data) -> Model -> ( Model, Cmd Msg )
 updateSettings settingsUpdater ({ settings } as model) =
     let
@@ -769,6 +786,7 @@ update msg model =
             model
                 |> updateSettings
                     (\settings -> { settings | mobsterData = Mobster.updateMoblist operation model.settings.mobsterData })
+                |> saveActiveMobsters
 
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []
@@ -924,7 +942,7 @@ init flags =
                 Err errorString ->
                     Settings.initial
     in
-        initialModel initialSettings ! []
+        initialModel initialSettings ! [] |> saveActiveMobsters
 
 
 subscriptions : Model -> Sub Msg

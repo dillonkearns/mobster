@@ -1,7 +1,22 @@
-###**[Download latest release](https://github.com/dillonkearns/mobster/releases/latest)** [![GitHub release](https://img.shields.io/github/release/dillonkearns/mobster.svg)](https://github.com/dillonkearns/mobster/releases/latest)
+### **[Download latest release](https://github.com/dillonkearns/mobster/releases/latest)** [![GitHub release](https://img.shields.io/github/release/dillonkearns/mobster.svg)](https://github.com/dillonkearns/mobster/releases/latest)
 # Mobster [![Stories in Ready](https://badge.waffle.io/dillonkearns/mobster.png?label=ready&title=Ready)](https://waffle.io/dillonkearns/mobster) [![Build Status](https://travis-ci.org/dillonkearns/mobster.svg?branch=master)](https://travis-ci.org/dillonkearns/mobster)
-A mob programming timer, inspired by the [MobProgramming/MobTimer.Python](https://github.com/MobProgramming/MobTimer.Python). Runs great on Mac, Windows, and Linux. Learn all about mobbing at the MobTimer.Python github page, and at [mobprogramming.org](http://mobprogramming.org/).
+A mob/pair programming timer, inspired by the [MobProgramming/MobTimer.Python](https://github.com/MobProgramming/MobTimer.Python). Runs great on Mac, Windows, and Linux. Learn all about mobbing at the MobTimer.Python github page, and at [mobprogramming.org](http://mobprogramming.org/).
 This app was created to have an easier to maintain cross-platform application (using github's [electron](electron.atom.io) framework).
+
+## Using Current Mobsters for Git Commit Authors/Shell Scripts
+The active mobsters will always be up-to-date in the `active-mobsters` file.
+
+The location of this file for the different platforms is:
+- `%APPDATA%\mobster\active-mobsters` on Windows
+- `$XDG_CONFIG_HOME/mobster/active-mobsters` or `~/.config/mobster/active-mobsters` on Linux
+- `~/Library/Application Support/mobster/active-mobsters` on macOS
+
+(As described in the [`appData` section of the Electron docs](https://electron.atom.io/docs/api/app/#appgetpathname))
+
+The names in the `active-mobsters` file are separated by `,`s with spaces like so: `Jim Kirk, Spock, McCoy`
+
+You can set the author to the list of active mobsters. See the  [mobster-commit.sh](https://github.com/dillonkearns/mobster/blob/master/mobster-commit.sh) for a working example.
+
 
 ## Contributors
 * A big thanks to Eric Heikkila ([ehei](https://github.com/ehei)) for figuring out the
