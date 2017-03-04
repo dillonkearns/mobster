@@ -116,6 +116,7 @@ type alias Model =
     , intervalsSinceBreak : Int
     , availableUpdateVersion : Maybe String
     , dragDrop : DragDropModel
+    , onMac : Bool
     }
 
 
@@ -128,8 +129,8 @@ changeTip =
     Random.generate NewTip Tip.random
 
 
-initialModel : Settings.Data -> Model
-initialModel settings =
+initialModel : Settings.Data -> Bool -> Model
+initialModel settings onMac =
     { settings = settings
     , screenState = Configure
     , newMobster = ""
@@ -142,6 +143,7 @@ initialModel settings =
     , intervalsSinceBreak = 0
     , availableUpdateVersion = Nothing
     , dragDrop = DragDrop.init
+    , onMac = onMac
     }
 
 
@@ -245,6 +247,19 @@ invisibleTrigger =
     img [ src "./assets/invisible.png", Attr.class "invisible-trigger pull-left", style [ ( "max-width", "2.333em" ) ] ] []
 
 
+ctrlKey : Bool -> String
+ctrlKey onMac =
+    if onMac then
+        "⌘"
+    else
+        "Ctrl"
+
+
+startMobbingShortcut : Bool -> String
+startMobbingShortcut onMac =
+    ((ctrlKey onMac) ++ "+Enter")
+
+
 configureView : Model -> Html Msg
 configureView model =
     div [ Attr.class "container-fluid" ]
@@ -259,7 +274,7 @@ configureView model =
                 , TooltipContainer
                 ]
             ]
-            [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text "Ctrl/⌘+Enter" ] ]
+            [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) model.dragDrop ]
@@ -384,7 +399,7 @@ continueView showRotation model =
                     , class [ BufferTop, TooltipContainer ]
                     , class [ LargeButtonText ]
                     ]
-                    ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text "Ctrl/⌘+Enter" ] ])
+                    ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
                 ]
             , mainView
             , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
@@ -928,11 +943,11 @@ minBreakInterval =
     0
 
 
-init : Decode.Value -> ( Model, Cmd Msg )
-init flags =
+init : { onMac : Bool, settings : Decode.Value } -> ( Model, Cmd Msg )
+init { onMac, settings } =
     let
         decodedSettings =
-            Settings.decode flags
+            Settings.decode settings
 
         initialSettings =
             case decodedSettings of
@@ -942,7 +957,7 @@ init flags =
                 Err errorString ->
                     Settings.initial
     in
-        initialModel initialSettings ! [] |> saveActiveMobsters
+        initialModel initialSettings onMac ! [] |> saveActiveMobsters
 
 
 subscriptions : Model -> Sub Msg
@@ -955,7 +970,7 @@ subscriptions model =
         ]
 
 
-main : Program Decode.Value Model Msg
+main : Program { onMac : Bool, settings : Decode.Value } Model Msg
 main =
     Html.programWithFlags
         { init = init

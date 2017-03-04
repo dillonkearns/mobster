@@ -123,7 +123,8 @@
     console.log(`Running version ${version}`)
 
     let settings = JSON.parse(window.localStorage.getItem('settings'))
-    let setup = Elm.Setup.Main.fullscreen(settings)
+    let onMac = /Mac/.test(navigator.platform)
+    let setup = Elm.Setup.Main.fullscreen({settings, onMac})
 
     setup.ports.startTimer.subscribe(function(flags) {
       ipcRenderer.send('start-timer', flags)
