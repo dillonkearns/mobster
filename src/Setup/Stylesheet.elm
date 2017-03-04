@@ -48,11 +48,11 @@ css =
         , class LargeButtonText [ fontSize (em 2.85), padding (em 0.3) ]
         , tooltipStyle
         , class ShowOnParentHoverParent
-            [ children [ class ShowOnParentHover [ opacity (int 0) ] ]
+            [ descendants [ class ShowOnParentHover [ opacity (int 0) ] ]
             , hover
-                [ children
+                [ descendants
                     [ class ShowOnParentHover
-                        [ opacity (num 0.4)
+                        [ opacity (num 0.5)
                         , hover [ opacity (num 0.9) ]
                         ]
                     ]

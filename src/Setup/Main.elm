@@ -463,13 +463,21 @@ dnView mobster role =
         div [ Attr.class "col-md-6 col-sm-6 text-default", class [ ShowOnParentHoverParent ] ]
             [ iconView icon 60
             , span [ class [ BufferRight ] ] [ text mobster.name ]
-            , span [ class [ ShowOnParentHover ] ]
+            , span []
                 [ span
                     [ Attr.class "fa fa-user-times text-danger"
-                    , style [ ( "font-size", "20px" ) ]
-                    , onClick (UpdateMobsterData (Mobster.Bench mobster.index))
+                    , style [ ( "font-size", "23px" ) ]
+                    , class [ BufferRight, ShowOnParentHover ]
+                    , onClick <| UpdateMobsterData (Mobster.Bench mobster.index)
                     ]
-                    [ text "Away" ]
+                    [ text " Away" ]
+                , span
+                    [ Attr.class "fa fa-fast-forward text-warning"
+                    , style [ ( "font-size", "23px" ) ]
+                    , class [ ShowOnParentHover ]
+                    , onClick <| UpdateMobsterData Mobster.SkipTurn
+                    ]
+                    [ text " Skip" ]
                 ]
             ]
 
