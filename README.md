@@ -15,7 +15,15 @@ The location of this file for the different platforms is:
 
 The names in the `active-mobsters` file are separated by `,`s with spaces like so: `Jim Kirk, Spock, McCoy`
 
-You can set the author to the list of active mobsters. See the  [mobster-commit.sh](https://github.com/dillonkearns/mobster/blob/master/mobster-commit.sh) for a working example.
+You can set the author field in a commit to the list of active mobsters. See the  [mobster-commit.sh](https://github.com/dillonkearns/mobster/blob/master/mobster-commit.sh) for a working example. The output of `git log` looks like
+```shell
+$ git log
+commit 39d59e7e4c9acb021988b3040f9b7ace5f539b78
+Author: James Kirk, Leonard McCoy, Spock <example@example.com>
+Date:   Fri Mar 3 21:00:25 2017 -0500
+
+    Set phasers to stun.
+```
 
 
 ## Contributors
