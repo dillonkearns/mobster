@@ -3,7 +3,7 @@
 A mob/pair programming timer, inspired by the [MobProgramming/MobTimer.Python](https://github.com/MobProgramming/MobTimer.Python). Runs great on Mac, Windows, and Linux. Learn all about mobbing at the MobTimer.Python github page, and at [mobprogramming.org](http://mobprogramming.org/).
 This app was created to have an easier to maintain cross-platform application (using github's [electron](electron.atom.io) framework).
 
-## Using Current Mobsters for Git Commit Authors/Shell Scripts
+## Using Active Mobsters for Git Commit Authors/Shell Scripts
 The active mobsters will always be up-to-date in the `active-mobsters` file.
 
 The location of this file for the different platforms is:
