@@ -695,6 +695,13 @@ rotationView model =
             ]
 
 
+feedbackButton : Html Msg
+feedbackButton =
+    div []
+        [ a [ style [ ( "text-transform", "uppercase" ), ( "transform", "rotate(-90deg)" ) ], Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-default pull-right", href "https://dillonkearns.typeform.com/to/k9P6iV", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ]
+        ]
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -709,7 +716,7 @@ view model =
         -- Rotation ->
         -- rotationView model
     in
-        div [] [ navbar, updateAvailableView model.availableUpdateVersion, mainView ]
+        div [] [ navbar, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
 
 
 resetBreakData : Model -> Model
