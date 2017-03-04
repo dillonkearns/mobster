@@ -378,11 +378,10 @@ continueView showRotation model =
                     [ noTab
                     , onClick StartTimer
                     , Attr.class "btn btn-info btn-lg btn-block"
-                    , class [ BufferTop ]
-                    , title "Ctrl+Enter or ⌘+Enter"
+                    , class [ BufferTop, TooltipContainer ]
                     , class [ LargeButtonText ]
                     ]
-                    (continueButtonChildren model)
+                    ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text "Ctrl/⌘+Enter" ] ])
                 ]
             , mainView
             , div [ Attr.class "row", class [ BufferTop ] ] [ quitButton ]
