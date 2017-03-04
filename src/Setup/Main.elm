@@ -234,7 +234,7 @@ breakIntervalInputView intervalsPerBreak timerDuration =
 
 quitButton : Html Msg
 quitButton =
-    buttonNoTab [ onClick Quit, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Quit" ]
+    button [ noTab, onClick Quit, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Quit" ]
 
 
 invisibleTrigger : Html msg
@@ -246,8 +246,9 @@ configureView : Model -> Html Msg
 configureView model =
     div [ Attr.class "container-fluid" ]
         [ div [ Attr.class "row" ] [ invisibleTrigger ]
-        , buttonNoTab
-            [ onClick StartTimer
+        , button
+            [ noTab
+            , onClick StartTimer
             , Attr.class "btn btn-info btn-lg btn-block"
             , class
                 [ BufferTop
@@ -270,12 +271,12 @@ experimentView : String -> Maybe String -> Html Msg
 experimentView newExperiment maybeExperiment =
     case maybeExperiment of
         Just experiment ->
-            div [] [ text experiment, buttonNoTab [ onClick ChangeExperiment, Attr.class "btn btn-sm btn-primary" ] [ text "Edit experiment" ] ]
+            div [] [ text experiment, button [ noTab, onClick ChangeExperiment, Attr.class "btn btn-sm btn-primary" ] [ text "Edit experiment" ] ]
 
         Nothing ->
             div [ Attr.class "input-group" ]
                 [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput UpdateExperimentInput, onEnter SetExperiment, style [ ( "font-size", "30px" ) ] ] []
-                , span [ Attr.class "input-group-btn", type_ "button" ] [ buttonNoTab [ Attr.class "btn btn-primary", onClick SetExperiment ] [ text "Set" ] ]
+                , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick SetExperiment ] [ text "Set" ] ]
                 ]
 
 
@@ -347,9 +348,9 @@ viewIntervalsBeforeBreak model =
         div [ onClick ResetBreakData ] intervalBadges
 
 
-buttonNoTab : List (Attribute Msg) -> List (Html Msg) -> Html Msg
-buttonNoTab attrs children =
-    button ([ Attr.tabindex -1 ] ++ attrs) children
+noTab : Attribute Msg
+noTab =
+    Attr.tabindex -1
 
 
 continueView : Bool -> Model -> Html Msg
@@ -362,7 +363,7 @@ continueView showRotation model =
                 div []
                     [ nextDriverNavigatorView model
                     , tipView model.tip
-                    , div [ Attr.class "row", class [ BufferTop ], style [ ( "padding-bottom", "1.333em" ) ] ] [ buttonNoTab [ onClick OpenConfigure, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
+                    , div [ Attr.class "row", class [ BufferTop ], style [ ( "padding-bottom", "1.333em" ) ] ] [ button [ noTab, onClick OpenConfigure, Attr.class "btn btn-primary btn-md btn-block" ] [ text "Configure" ] ]
                     ]
     in
         div [ Attr.class "container-fluid" ]
@@ -373,8 +374,9 @@ continueView showRotation model =
             , div [] [ viewIntervalsBeforeBreak model ]
             , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
             , div [ Attr.class "row", style [ ( "padding-bottom", "1.333em" ) ] ]
-                [ buttonNoTab
-                    [ onClick StartTimer
+                [ button
+                    [ noTab
+                    , onClick StartTimer
                     , Attr.class "btn btn-info btn-lg btn-block"
                     , class [ BufferTop ]
                     , title "Ctrl+Enter or ⌘+Enter"
@@ -410,14 +412,14 @@ nextDriverNavigatorView model =
             , dnView driverNavigator.driver Mobster.Driver
             , dnView driverNavigator.navigator Mobster.Navigator
             , div [ Attr.class "col-md-1 col-sm-2" ]
-                [ buttonNoTab [ class [ Orange ], Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData Mobster.SkipTurn) ]
+                [ button [ noTab, class [ Orange ], Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData Mobster.SkipTurn) ]
                     [ span [ Attr.class "glyphicon glyphicon-step-forward", class [ BufferRight ] ] []
                     , u [] [ text "S" ]
                     , text "kip Turn"
                     ]
                 ]
             , div [ Attr.class "col-md-1 col-sm-2" ]
-                [ buttonNoTab [ class [ Green ], Attr.class "btn btn-small btn-default", onClick ShowRotationScreen ]
+                [ button [ noTab, class [ Green ], Attr.class "btn btn-small btn-default", onClick ShowRotationScreen ]
                     [ span [ Attr.class "fa fa-user-plus", class [ BufferRight ] ]
                         []
                     , text "Quick "
@@ -442,7 +444,7 @@ dnView mobster role =
         div [ Attr.class "col-md-4 col-sm-4 text-default" ]
             [ iconView icon 40
             , span [ class [ BufferRight ] ] [ text mobster.name ]
-            , buttonNoTab [ class [ Red ], onClick (UpdateMobsterData (Mobster.Bench mobster.index)), Attr.class "btn btn-small btn-default" ]
+            , button [ noTab, class [ Red ], onClick (UpdateMobsterData (Mobster.Bench mobster.index)), Attr.class "btn btn-small btn-default" ]
                 [ span [ Attr.class "fa fa-user-times", class [ BufferRight ] ] []
                 , text "Not here"
                 ]
@@ -467,7 +469,7 @@ addMobsterInputView newMobster =
     div [ Attr.class "row", class [ BufferTop ] ]
         [ div [ Attr.class "input-group" ]
             [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", Attr.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ ( "font-size", "2.0rem" ) ] ] []
-            , span [ Attr.class "input-group-btn", type_ "button" ] [ buttonNoTab [ Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
+            , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
             ]
         ]
 
@@ -558,7 +560,7 @@ inactiveMobsterView mobsterIndex inactiveMobster =
         [ td (mobsterCellStyle ++ (DragDrop.draggable DragDropMsg (InactiveMobster mobsterIndex)))
             [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , div [ Attr.class "btn-group btn-group-xs", style [ ( "margin-left", "0.667em" ) ] ]
-                [ buttonNoTab [ Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (Mobster.Remove mobsterIndex)) ] [ text "x" ]
+                [ button [ noTab, Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (Mobster.Remove mobsterIndex)) ] [ text "x" ]
                 ]
             ]
         ]
@@ -615,7 +617,7 @@ reorderButtonView mobster =
     in
         div []
             [ div [ Attr.class "btn-group btn-group-xs" ]
-                [ buttonNoTab [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.Bench mobsterIndex)) ] [ text "x" ]
+                [ button [ noTab, Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.Bench mobsterIndex)) ] [ text "x" ]
                 ]
             ]
 
