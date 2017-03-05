@@ -47,6 +47,7 @@
     "electron-updater": "^1.6.0",
     "fs": "^0.0.1-security",
     "jquery": "^3.1.1",
-    "ms": "^0.7.2"
+    "ms": "^0.7.2",
+    "node-osascript": "^2.0.0"
   }
 }

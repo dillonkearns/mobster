@@ -14,13 +14,28 @@ const log = require('electron-log')
 const assetsDirectory = path.join(__dirname, 'assets')
 const {version} = require('./package')
 const fs = require('fs')
+const osascript = require('node-osascript')
 const appDataPath = app.getPath('userData')
 currentMobstersFilePath = path.join(appDataPath, 'active-mobsters')
 
 log.info(`Running version ${version}`)
 
+const returnFocusOsascript = `tell application "System Events"
+	set activeApp to name of application processes whose frontmost is true
+	if (activeApp = {"Mobster"} or activeApp = {"Electron"}) then
+		tell application "System Events"
+			key down command
+			keystroke tab
+			key up command
+		end tell
+	end if
+end tell`
+
 function returnFocusMac() {
-  child_process.exec('osascript ./return-focus.scpt')
+  osascript.execute(returnFocusOsascript, function(err, result, raw){
+  if (err) { return console.error(err) }
+  console.log(result, raw)
+});
 }
 
 function writeToFile(filePath, fileContents) {
