@@ -6,6 +6,7 @@ require('electron-debug')({
   enabled: true // enable debug shortcuts in prod build
 })
 
+const child_process = require('child_process')
 const ms = require('ms')
 const path = require('path')
 const url = require('url')
@@ -17,6 +18,10 @@ const appDataPath = app.getPath('userData')
 currentMobstersFilePath = path.join(appDataPath, 'active-mobsters')
 
 log.info(`Running version ${version}`)
+
+function returnFocusMac() {
+  child_process.exec('osascript ./return-focus.scpt')
+}
 
 function writeToFile(filePath, fileContents) {
   fs.writeFile(filePath, fileContents, function(err) {
@@ -67,9 +72,16 @@ function positionWindowRight(window) {
   window.setPosition(width - timerWidth, height - timerHeight);
 }
 
+function returnFocus() {
+    if (onMac) {
+      returnFocusMac()
+    }
+}
+
 function startTimer(flags) {
   timerWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
     width: timerWidth, height: timerHeight, focusable: false})
+  timerWindow.once('show', returnFocus)
 
   positionWindowRight(timerWindow)
 
