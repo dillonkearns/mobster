@@ -272,6 +272,7 @@ function setupAutoUpdater() {
 function registerShortcuts() {
   globalShortcut.register('CommandOrControl+Shift+K', () => {
     if (timerWindow) {
+      app.focus() // ensure that app is focused so dialog appears in foreground
       let dialogActionIndex = dialog.showMessageBox({
         type: 'warning',
         buttons: ['Stop timer', 'Keep it running'],
