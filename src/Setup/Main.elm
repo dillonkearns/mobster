@@ -261,30 +261,39 @@ ctrlKey onMac =
         "Ctrl"
 
 
-navbar : Html Msg
-navbar =
-    nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ ( "background-color", "rgba(0, 0, 0, 0.2)" ), ( "z-index", "0" ) ] ]
-        [ div [ Attr.class "container-fluid" ]
-            [ div [ Attr.class "navbar-header" ]
-                [ a [ Attr.class "navbar-brand", href "#" ]
-                    [ text "Mobster" ]
-                ]
-            , div [ Attr.class "nav navbar-nav navbar-right" ]
-                [ button [ noTab, onClick OpenConfigure, Attr.class "btn btn-primary btn-sm", class [ BufferRight ] ]
-                    [ span [ Attr.class "fa fa-cog" ] []
+navbar : ScreenState -> Html Msg
+navbar screen =
+    let
+        configureScreenButton =
+            case screen of
+                Configure ->
+                    text ""
+
+                Continue _ ->
+                    button [ noTab, onClick OpenConfigure, Attr.class "btn btn-primary btn-sm", class [ BufferRight ] ]
+                        [ span [ Attr.class "fa fa-cog" ] []
+                        ]
+    in
+        nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ ( "background-color", "rgba(0, 0, 0, 0.2)" ), ( "z-index", "0" ) ] ]
+            [ div [ Attr.class "container-fluid" ]
+                [ div [ Attr.class "navbar-header" ]
+                    [ a [ Attr.class "navbar-brand", href "#" ]
+                        [ text "Mobster" ]
                     ]
-                , invisibleTrigger [ Attr.class "navbar-btn", class [ BufferRight ] ] []
-                , button [ noTab, onClick Hide, Attr.class "btn btn-sm navbar-btn btn-warning", class [ BufferRight ] ]
-                    [ text "Hide "
-                    , span [ Attr.class "fa fa-minus-square-o" ] []
-                    ]
-                , button [ noTab, onClick Quit, Attr.class "btn btn-sm navbar-btn btn-danger", class [ BufferRight ] ]
-                    [ text "Quit "
-                    , span [ Attr.class "fa fa-times-circle-o" ] []
+                , div [ Attr.class "nav navbar-nav navbar-right" ]
+                    [ configureScreenButton
+                    , invisibleTrigger [ Attr.class "navbar-btn", class [ BufferRight ] ] []
+                    , button [ noTab, onClick Hide, Attr.class "btn btn-sm navbar-btn btn-warning", class [ BufferRight ] ]
+                        [ text "Hide "
+                        , span [ Attr.class "fa fa-minus-square-o" ] []
+                        ]
+                    , button [ noTab, onClick Quit, Attr.class "btn btn-sm navbar-btn btn-danger", class [ BufferRight ] ]
+                        [ text "Quit "
+                        , span [ Attr.class "fa fa-times-circle-o" ] []
+                        ]
                     ]
                 ]
             ]
-        ]
 
 
 startMobbingShortcut : Bool -> String
@@ -716,7 +725,7 @@ view model =
                 Continue showRotation ->
                     continueView showRotation model
     in
-        div [] [ navbar, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
+        div [] [ navbar model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
 
 
 resetBreakData : Model -> Model
