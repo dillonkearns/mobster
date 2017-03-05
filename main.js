@@ -24,9 +24,8 @@ const returnFocusOsascript = `tell application "System Events"
 	set activeApp to name of application processes whose frontmost is true
 	if (activeApp = {"Mobster"} or activeApp = {"Electron"}) then
 		tell application "System Events"
-			key down command
-			keystroke tab
-			key up command
+      delay 0.25 -- prevent issues when user is still holding down Command for a fraction of a second pressing Cmd+Shift+K shortcut
+			key code 48 using {command down}
 		end tell
 	end if
 end tell`
@@ -73,8 +72,7 @@ function focusMainWindow() {
 
 function hideMainWindow() {
   mainWindow.hide()
-  mainWindow.blur()
-  // app.hide && app.hide() // TODO: this focuses the previous window, but your not able to see the timer when it starts
+  returnFocus()
 }
 
 function positionWindowLeft(window) {
@@ -96,7 +94,6 @@ function returnFocus() {
 function startTimer(flags) {
   timerWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
     width: timerWidth, height: timerHeight, focusable: false})
-  timerWindow.once('show', returnFocus)
 
   positionWindowRight(timerWindow)
 
