@@ -475,21 +475,20 @@ dnView mobster role =
 
         awayButton =
             span
-                [ Attr.class "fa fa-user-times text-danger"
+                [ Attr.class "text-danger"
                 , style [ ( "font-size", "23px" ) ]
-                , class [ BufferRight, ShowOnParentHover ]
+                , class [ ShowOnParentHover, BufferRight ]
                 , onClick <| UpdateMobsterData (Mobster.Bench mobster.index)
                 ]
-                [ text " Away" ]
+                [ span [ Attr.class "fa fa-user-times" ] []
+                , text " Away"
+                ]
 
         skipButton =
-            span
-                [ Attr.class "fa fa-fast-forward text-warning"
-                , style [ ( "font-size", "23px" ) ]
-                , class [ ShowOnParentHover ]
-                , onClick <| UpdateMobsterData Mobster.SkipTurn
+            span [ Attr.class "text-warning", style [ ( "font-size", "23px" ) ], class [ ShowOnParentHover ], onClick <| UpdateMobsterData Mobster.SkipTurn ]
+                [ span [ Attr.class "fa fa-fast-forward" ] []
+                , text " Skip"
                 ]
-                [ text " Skip" ]
 
         hoverButtons =
             case role of
