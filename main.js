@@ -17,8 +17,12 @@ const fs = require('fs')
 const osascript = require('node-osascript')
 const appDataPath = app.getPath('userData')
 currentMobstersFilePath = path.join(appDataPath, 'active-mobsters')
-
+const bugsnag = require('bugsnag')
+const isDev = require('electron-is-dev')
 log.info(`Running version ${version}`)
+
+let releaseStage = isDev ? 'development' : 'production'
+bugsnag.register('032040bba551785c7846442332cc067f', {autoNotify: true, appVersion: version, releaseStage: releaseStage})
 
 const returnFocusOsascript = `tell application "System Events"
 	set activeApp to name of application processes whose frontmost is true
@@ -58,7 +62,6 @@ const timerWidth = 150
 
 const onMac = /^darwin/.test(process.platform)
 const onWindows = /^win/.test(process.platform)
-const isDev = require('electron-is-dev')
 
 function focusMainWindow() {
     // TODO: workaround - remove once
