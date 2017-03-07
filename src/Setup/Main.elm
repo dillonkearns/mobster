@@ -142,11 +142,8 @@ initialModel settings onMac =
     , newExperiment = ""
     , ratings = []
     , secondsSinceBreak = 0
-    , intervalsSinceBreak =
-        0
-    , availableUpdateVersion =
-        Nothing
-        -- , availableUpdateVersion = Just "update!"
+    , intervalsSinceBreak = 0
+    , availableUpdateVersion = Nothing
     , dragDrop = DragDrop.init
     , onMac = onMac
     }
