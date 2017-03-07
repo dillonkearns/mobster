@@ -24,6 +24,18 @@ log.info(`Running version ${version}`)
 let releaseStage = isDev ? 'development' : 'production'
 bugsnag.register('032040bba551785c7846442332cc067f', {autoNotify: true, appVersion: version, releaseStage: releaseStage})
 
+
+const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+  // Someone tried to run a second instance, we should focus our window.
+  if (mainWindow) {
+    focusMainWindow()
+  }
+})
+if (shouldQuit) {
+  app.quit()
+}
+
+
 const returnFocusOsascript = `tell application "System Events"
 	set activeApp to name of application processes whose frontmost is true
 	if (activeApp = {"Mobster"} or activeApp = {"Electron"}) then
