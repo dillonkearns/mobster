@@ -60,6 +60,7 @@ type Msg
     | ResetBreakData
     | RotateInHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
+    | OpenExternalUrl String
 
 
 type DragId
@@ -190,6 +191,9 @@ port selectDuration : String -> Cmd msg
 
 
 port copyActiveMobsters : String -> Cmd msg
+
+
+port openExternalUrl : String -> Cmd msg
 
 
 port timeElapsed : (Int -> msg) -> Sub msg
@@ -441,7 +445,7 @@ tipView tip =
         [ div [ Attr.class "row" ]
             [ h2 [ Attr.class "text-success pull-left", style [ ( "margin", "0px" ), ( "padding-bottom", "0.667em" ) ] ]
                 [ text tip.title ]
-            , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", href tip.url ] [ text "Learn More" ]
+            , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", onClick (OpenExternalUrl tip.url) ] [ text "Learn More" ]
             ]
         , div [ Attr.class "row" ] [ Tip.tipView tip ]
         ]
@@ -926,6 +930,9 @@ update msg model =
 
         ShowFeedbackForm ->
             model ! [ showFeedbackForm () ]
+
+        OpenExternalUrl url ->
+            model ! [ openExternalUrl url, hide () ]
 
 
 reorderOperation : List String -> Msg

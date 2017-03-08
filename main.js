@@ -1,5 +1,5 @@
 const electron = require('electron')
-const {ipcMain, globalShortcut, app, Tray, BrowserWindow, dialog} = require('electron')
+const {ipcMain, globalShortcut, app, Tray, BrowserWindow, dialog, shell} = require('electron')
 const autoUpdater = require('electron-updater').autoUpdater
 autoUpdater.requestHeaders = {"Cache-Control": "no-cache"}
 require('electron-debug')({
@@ -173,6 +173,10 @@ function createWindow () {
 
   ipcMain.on('save-mobsters-file', (event, currentMobsterNames) => {
     updateMobsterNamesFile(currentMobsterNames)
+  })
+
+  ipcMain.on('open-external-url', (event, url) => {
+    shell.openExternal(url)
   })
 
   ipcMain.on('timer-done', (event, timeElapsed) => {
