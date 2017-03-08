@@ -21,6 +21,8 @@ const bugsnag = require('bugsnag')
 const isDev = require('electron-is-dev')
 log.info(`Running version ${version}`)
 
+let checkForUpdates = true
+
 let releaseStage = isDev ? 'development' : 'production'
 bugsnag.register('032040bba551785c7846442332cc067f', {autoNotify: true, appVersion: version, releaseStage: releaseStage})
 
@@ -263,24 +265,38 @@ app.on('activate', function () {
 function setupAutoUpdater() {
   autoUpdater.logger = log;
   autoUpdater.on('checking-for-update', () => {
-      log.info('checking-for-update')
-  });
+    log.info('checking-for-update')
+  })
+
+  autoUpdater.on('error', (ev, err) => {
+    checkForUpdates = true
+  })
 
   autoUpdater.on('update-available', () => {
-      log.info('update-available')
-  });
+    log.info('update-available')
+    checkForUpdates = false
+  })
 
   autoUpdater.on('update-downloaded', (versionInfo) => {
-    log.info('update-downloaded... Imma let you finish... but first, Imma install it once you push okay ;-)')
-    log.info('update-available: ', versionInfo)
+    log.info('update-downloaded: ', versionInfo)
     mainWindow.webContents.send('update-downloaded', versionInfo)
-  });
+  })
 
   autoUpdater.on('update-not-available', () => {
     log.info('update-not-available')
-  });
+  })
+
   if (!isDev) {
     autoUpdater.checkForUpdates()
+    log.info("About to set up interval")
+    function myCheckForUpdates() {
+      log.info("About to check for updates on interval")
+
+      if (checkForUpdates) {
+        autoUpdater.checkForUpdates()
+      }
+    }
+    setInterval(myCheckForUpdates, 120 * 1000);
   }
 }
 
