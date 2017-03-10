@@ -9,7 +9,7 @@ type MobsterOperation
     = Move Int Int
     | Remove Int
     | SetNextDriver Int
-    | SkipTurn
+    | NextTurn
     | Bench Int
     | RotateIn Int
     | Add String
@@ -32,7 +32,7 @@ updateMoblist moblistOperation moblist =
         SetNextDriver index ->
             setNextDriver index moblist
 
-        SkipTurn ->
+        NextTurn ->
             setNextDriver (nextIndex moblist.nextDriver moblist) moblist
 
         Bench mobsterIndex ->

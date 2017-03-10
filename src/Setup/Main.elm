@@ -487,7 +487,7 @@ dnView mobster role =
                 ]
 
         skipButton =
-            span [ Attr.class "text-warning", style [ ( "font-size", "23px" ) ], class [ ShowOnParentHover ], onClick <| UpdateMobsterData MobsterOperation.SkipTurn ]
+            span [ Attr.class "text-warning", style [ ( "font-size", "23px" ) ], class [ ShowOnParentHover ], onClick <| UpdateMobsterData MobsterOperation.NextTurn ]
                 [ span [ Attr.class "fa fa-fast-forward" ] []
                 , text " Skip"
                 ]
@@ -792,7 +792,7 @@ update msg model =
         SkipHotkey ->
             case model.screenState of
                 Continue showRotation ->
-                    update (UpdateMobsterData MobsterOperation.SkipTurn) model
+                    update (UpdateMobsterData MobsterOperation.NextTurn) model
 
                 _ ->
                     model ! []
@@ -813,7 +813,7 @@ update msg model =
             in
                 updatedModel
                     ! [ (startTimer (flags model)), changeTip ]
-                    |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.SkipTurn)
+                    |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.NextTurn)
 
         ChangeTimerDuration newDurationAsString ->
             model

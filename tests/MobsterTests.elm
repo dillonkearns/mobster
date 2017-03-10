@@ -124,7 +124,7 @@ all =
                     let
                         list =
                             { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
-                                |> updateMoblist SkipTurn
+                                |> updateMoblist NextTurn
                     in
                         Expect.equal list.nextDriver 1
             , test "with wrapping" <|
@@ -132,7 +132,7 @@ all =
                     let
                         updatedList =
                             { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 1 }
-                                |> updateMoblist SkipTurn
+                                |> updateMoblist NextTurn
                     in
                         Expect.equal updatedList.nextDriver 0
             ]
