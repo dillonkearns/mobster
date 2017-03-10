@@ -237,17 +237,19 @@ move fromIndex toIndex mobsters =
             |> compact
 
 
-removeAndGet : Int -> List String -> ( Maybe String, List String )
+removeAndGet : Int -> List a -> ( Maybe a, List a )
 removeAndGet index list =
     let
-        removedMobster =
+        listAsArray =
             list
                 |> Array.fromList
+
+        removedMobster =
+            listAsArray
                 |> Array.get index
 
         listWithoutMobster =
-            list
-                |> Array.fromList
+            listAsArray
                 |> Array.Extra.removeAt index
                 |> Array.toList
     in
@@ -296,14 +298,15 @@ bench index list =
 
 remove : Int -> MobsterData -> MobsterData
 remove index list =
-    let
-        updatedBench =
-            list.inactiveMobsters
-                |> Array.fromList
-                |> Array.Extra.removeAt index
-                |> Array.toList
-    in
-        { list | inactiveMobsters = updatedBench }
+    { list | inactiveMobsters = removeFromListAt index list.inactiveMobsters }
+
+
+removeFromListAt : Int -> List a -> List a
+removeFromListAt index list =
+    list
+        |> Array.fromList
+        |> Array.Extra.removeAt index
+        |> Array.toList
 
 
 type Role
