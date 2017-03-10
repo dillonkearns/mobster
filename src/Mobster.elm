@@ -260,25 +260,17 @@ rotateIn index list =
 bench : Int -> MobsterData -> MobsterData
 bench index list =
     let
-        activeAsArray =
-            (Array.fromList list.mobsters)
-
-        maybeMobster =
-            Array.get index activeAsArray
+        ( maybeMobsterToBench, activeWithoutBenchedMobster ) =
+            removeAndGet index list.mobsters
     in
-        case maybeMobster of
+        case maybeMobsterToBench of
             Just mobsterToBench ->
                 let
-                    updatedActive =
-                        activeAsArray
-                            |> Array.Extra.removeAt index
-                            |> Array.toList
-
                     updatedInactive =
                         List.append list.inactiveMobsters [ mobsterToBench ]
 
                     maxIndex =
-                        (List.length updatedActive) - 1
+                        (List.length activeWithoutBenchedMobster) - 1
 
                     nextDriverInBounds =
                         if list.nextDriver > maxIndex && list.nextDriver > 0 then
@@ -286,7 +278,7 @@ bench index list =
                         else
                             list.nextDriver
                 in
-                    { list | mobsters = updatedActive, inactiveMobsters = updatedInactive, nextDriver = nextDriverInBounds }
+                    { list | mobsters = activeWithoutBenchedMobster, inactiveMobsters = updatedInactive, nextDriver = nextDriverInBounds }
 
             Nothing ->
                 list
