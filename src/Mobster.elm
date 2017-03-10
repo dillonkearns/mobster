@@ -140,59 +140,6 @@ setNextDriverInBounds mobsterData =
         { mobsterData | nextDriver = indexInBounds }
 
 
-rotate : MobsterData -> MobsterData
-rotate mobsterData =
-    { mobsterData | nextDriver = (nextIndex mobsterData.nextDriver mobsterData) }
-
-
-rotateIn : Int -> MobsterData -> MobsterData
-rotateIn index list =
-    let
-        ( maybeMobsterToMove, inactiveWithoutNewlyActive ) =
-            removeAndGet index list.inactiveMobsters
-    in
-        case maybeMobsterToMove of
-            Just mobsterToMove ->
-                let
-                    activeWithNewlyActive =
-                        list.mobsters
-                            |> Array.fromList
-                            |> insertAt mobsterToMove list.nextDriver False
-                            |> Array.toList
-                in
-                    { list | mobsters = activeWithNewlyActive, inactiveMobsters = inactiveWithoutNewlyActive }
-
-            Nothing ->
-                list
-
-
-bench : Int -> MobsterData -> MobsterData
-bench index list =
-    let
-        ( maybeMobsterToBench, activeWithoutBenchedMobster ) =
-            removeAndGet index list.mobsters
-    in
-        case maybeMobsterToBench of
-            Just mobsterToBench ->
-                let
-                    updatedInactive =
-                        List.append list.inactiveMobsters [ mobsterToBench ]
-                in
-                    { list
-                        | mobsters = activeWithoutBenchedMobster
-                        , inactiveMobsters = updatedInactive
-                    }
-                        |> setNextDriverInBounds
-
-            Nothing ->
-                list
-
-
-remove : Int -> MobsterData -> MobsterData
-remove index list =
-    { list | inactiveMobsters = removeFromListAt index list.inactiveMobsters }
-
-
 type Role
     = Driver
     | Navigator

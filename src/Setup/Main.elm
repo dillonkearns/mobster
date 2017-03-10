@@ -765,7 +765,7 @@ resetIfAfterBreak model =
 
 rotateMobsters : Model -> Model
 rotateMobsters ({ settings } as model) =
-    { model | settings = { settings | mobsterData = (Mobster.rotate settings.mobsterData) } }
+    { model | settings = { settings | mobsterData = (MobsterOperation.rotate settings.mobsterData) } }
 
 
 saveActiveMobstersCmd : Model -> Cmd msg
