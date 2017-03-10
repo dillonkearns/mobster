@@ -3,25 +3,13 @@ module MobsterTests exposing (..)
 import Test exposing (..)
 import Expect
 import Mobster exposing (empty)
-import MobsterOperation exposing (MobsterOperation(..), updateMoblist)
+import MobsterOperation
 
 
 all : Test
 all =
     describe "mobster list"
-        [ test "add to empty" <|
-            \() ->
-                Expect.equal (Mobster.empty |> MobsterOperation.add "John Doe")
-                    { empty | mobsters = [ "John Doe" ] }
-        , test "add" <|
-            \() ->
-                Expect.equal
-                    (Mobster.empty
-                        |> MobsterOperation.add "Jane Doe"
-                        |> MobsterOperation.add "John Smith"
-                    )
-                    { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
-        , describe "containsName"
+        [ describe "containsName"
             [ test "catches exact matches" <|
                 \() ->
                     Mobster.empty

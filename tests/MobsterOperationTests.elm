@@ -8,7 +8,7 @@ import MobsterOperation exposing (MobsterOperation(..), updateMoblist)
 
 all : Test
 all =
-    describe "mobster operation" [ benchCases, benchCases2, removeCases, rotateCases, moveCases ]
+    describe "mobster operation" [ benchCases, benchCases2, removeCases, rotateCases, moveCases, addCases ]
 
 
 benchCases : Test
@@ -135,6 +135,24 @@ moveCases =
             { empty | mobsters = [ "a", "b", "c", "d", "e", "f", "g" ], nextDriver = 0 }
             (Move 6 0)
             { empty | mobsters = [ "g", "a", "b", "c", "d", "e", "f" ], nextDriver = 0 }
+        ]
+
+
+addCases : Test
+addCases =
+    describe "add"
+        [ mobsterOperationTest "add to empty"
+            Mobster.empty
+            (Add "John Doe")
+            { empty | mobsters = [ "John Doe" ] }
+        , test "add" <|
+            \() ->
+                Expect.equal
+                    (Mobster.empty
+                        |> MobsterOperation.add "Jane Doe"
+                        |> MobsterOperation.add "John Smith"
+                    )
+                    { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
         ]
 
 
