@@ -222,27 +222,36 @@ move fromIndex toIndex mobsters =
             |> compact
 
 
+removeAndGet : Int -> List String -> ( Maybe String, List String )
+removeAndGet index list =
+    let
+        removedMobster =
+            list
+                |> Array.fromList
+                |> Array.get index
+
+        listWithoutMobster =
+            list
+                |> Array.fromList
+                |> Array.Extra.removeAt index
+                |> Array.toList
+    in
+        ( removedMobster, listWithoutMobster )
+
+
 rotateIn : Int -> MobsterData -> MobsterData
 rotateIn index list =
     let
-        maybeMobster =
-            list.inactiveMobsters
-                |> Array.fromList
-                |> Array.get index
+        ( maybeMobsterToMove, inactiveWithoutNewlyActive ) =
+            removeAndGet index list.inactiveMobsters
     in
-        case maybeMobster of
-            Just nowActiveMobster ->
+        case maybeMobsterToMove of
+            Just mobsterToMove ->
                 let
-                    updatedBench =
-                        list.inactiveMobsters
-                            |> Array.fromList
-                            |> Array.Extra.removeAt index
-                            |> Array.toList
-
-                    updatedActive =
-                        List.append list.mobsters [ nowActiveMobster ]
+                    activeWithNewlyActive =
+                        List.append list.mobsters [ mobsterToMove ]
                 in
-                    { list | mobsters = updatedActive, inactiveMobsters = updatedBench }
+                    { list | mobsters = activeWithNewlyActive, inactiveMobsters = inactiveWithoutNewlyActive }
 
             Nothing ->
                 list
@@ -258,7 +267,7 @@ bench index list =
             Array.get index activeAsArray
     in
         case maybeMobster of
-            Just nowBenchedMobster ->
+            Just mobsterToBench ->
                 let
                     updatedActive =
                         activeAsArray
@@ -266,7 +275,7 @@ bench index list =
                             |> Array.toList
 
                     updatedInactive =
-                        List.append list.inactiveMobsters [ nowBenchedMobster ]
+                        List.append list.inactiveMobsters [ mobsterToBench ]
 
                     maxIndex =
                         (List.length updatedActive) - 1
