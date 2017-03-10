@@ -318,7 +318,7 @@ configureView model =
             [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
-            , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) model.dragDrop ]
+            , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters model.dragDrop ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
@@ -519,20 +519,24 @@ nextView thing name =
         ]
 
 
-addMobsterInputView : String -> Html Msg
-addMobsterInputView newMobster =
-    div [ Attr.class "row", class [ BufferTop ] ]
-        [ div [ Attr.class "input-group" ]
-            [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", Attr.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ ( "font-size", "2.0rem" ) ] ] []
-            , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
+addMobsterInputView : String -> Mobster.MobsterData -> Html Msg
+addMobsterInputView newMobster mobsterData =
+    let
+        hasError =
+            Mobster.containsName newMobster mobsterData
+    in
+        div [ Attr.class "row", class [ BufferTop ] ]
+            [ div [ Attr.class "input-group" ]
+                [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", classList [ ( HasError, hasError ) ], Attr.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ ( "font-size", "2.0rem" ) ] ] []
+                , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
+                ]
             ]
-        ]
 
 
-mobstersView : String -> List Mobster.MobsterWithRole -> DragDropModel -> Html Msg
-mobstersView newMobster mobsters dragDrop =
+mobstersView : String -> List Mobster.MobsterWithRole -> Mobster.MobsterData -> DragDropModel -> Html Msg
+mobstersView newMobster mobsters mobsterData dragDrop =
     div [ style [ ( "padding-bottom", "35px" ) ] ]
-        [ addMobsterInputView newMobster
+        [ addMobsterInputView newMobster mobsterData
         , img [ onClick ShuffleMobsters, Attr.class "shuffle", class [ BufferTop ], src "./assets/dice.png", style [ ( "max-width", "1.667em" ) ] ] []
         , table [ Attr.class "table h3" ] (List.map (mobsterView dragDrop) mobsters)
         ]
@@ -835,7 +839,7 @@ update msg model =
             { model | screenState = Configure } ! []
 
         AddMobster ->
-            if model.newMobster == "" then
+            if model.newMobster == "" || Mobster.containsName model.newMobster model.settings.mobsterData then
                 model ! []
             else
                 update (UpdateMobsterData (Mobster.Add model.newMobster)) { model | newMobster = "" }

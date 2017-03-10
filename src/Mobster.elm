@@ -1,4 +1,4 @@
-module Mobster exposing (MobsterOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters, reorder, decoder, currentMobsterNames)
+module Mobster exposing (MobsterOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters, reorder, decoder, currentMobsterNames, containsName)
 
 import Array
 import Json.Decode as Decode exposing (Decoder)
@@ -90,6 +90,19 @@ reorder shuffledMobsters mobsterData =
 empty : MobsterData
 empty =
     { mobsters = [], inactiveMobsters = [], nextDriver = 0 }
+
+
+nameExists : String -> List String -> Bool
+nameExists mobster list =
+    list
+        |> List.map (\mobsterName -> String.toLower mobsterName)
+        |> List.member (String.toLower mobster)
+
+
+containsName : String -> MobsterData -> Bool
+containsName string mobsterData =
+    nameExists string mobsterData.mobsters
+        || nameExists string mobsterData.inactiveMobsters
 
 
 add : String -> MobsterData -> MobsterData

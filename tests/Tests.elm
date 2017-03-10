@@ -49,6 +49,31 @@ mobsterTests =
                         |> Mobster.add "John Smith"
                     )
                     { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+        , describe "containsName"
+            [ test "catches exact matches" <|
+                \() ->
+                    Mobster.empty
+                        |> Mobster.add "Jane"
+                        |> Mobster.containsName "Jane"
+                        |> Expect.equal True
+            , test "catches matches with different casing" <|
+                \() ->
+                    Mobster.empty
+                        |> Mobster.add "jane"
+                        |> Mobster.containsName "Jane"
+                        |> Expect.equal True
+            , test "finds matches on bench" <|
+                \() ->
+                    { empty | inactiveMobsters = [ "Jane" ] }
+                        |> Mobster.containsName "Jane"
+                        |> Expect.equal True
+            , test "doesn't find false matches" <|
+                \() ->
+                    Mobster.empty
+                        |> Mobster.add "Joe"
+                        |> Mobster.containsName "Jane"
+                        |> Expect.equal False
+            ]
         , describe "get driver and navigator"
             [ test "with two mobsters" <|
                 \() ->

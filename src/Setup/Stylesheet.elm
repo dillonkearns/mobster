@@ -19,6 +19,7 @@ type CssClasses
     | ShowOnParentHover
     | ShowOnParentHoverParent
     | DragBelow
+    | HasError
 
 
 css : Stylesheet
@@ -60,6 +61,7 @@ css =
                     ]
                 ]
             ]
+        , class HasError [ border3 (px 3) (solid) (rgba 231 76 60 0.7) |> important ]
         ]
 
 
