@@ -186,32 +186,6 @@ all =
                         |> Expect.equal
                             { empty | mobsters = [ "g", "a", "b", "c", "d", "e", "f" ], nextDriver = 0 }
             ]
-        , describe "remove"
-            [ test "list with single item" <|
-                \() ->
-                    { empty | mobsters = [ "only item" ] }
-                        |> updateMoblist (Bench 0)
-                        |> Expect.equal
-                            { empty | inactiveMobsters = [ "only item" ], nextDriver = 0 }
-            , test "with multiple items" <|
-                \() ->
-                    { empty | mobsters = [ "first", "second" ] }
-                        |> updateMoblist (Bench 0)
-                        |> Expect.equal
-                            { empty | mobsters = [ "second" ], inactiveMobsters = [ "first" ], nextDriver = 0 }
-            , test "driver doesn't change when navigator is removed" <|
-                \() ->
-                    { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
-                        |> updateMoblist (Bench 1)
-                        |> Expect.equal
-                            { empty | mobsters = [ "Kirk", "McCoy" ], inactiveMobsters = [ "Spock" ], nextDriver = 0 }
-            , test "wraps around list for next driver when nextDriver is removed and was at end of list" <|
-                \() ->
-                    { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], nextDriver = 2 }
-                        |> updateMoblist (Bench 2)
-                        |> Expect.equal
-                            { empty | mobsters = [ "Kirk", "Spock" ], inactiveMobsters = [ "McCoy" ], nextDriver = 0 }
-            ]
         , describe "move to inactive"
             [ test "moves a single mobster to an empty bench" <|
                 \() ->
