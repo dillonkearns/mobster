@@ -763,11 +763,6 @@ resetIfAfterBreak model =
             model
 
 
-rotateMobsters : Model -> Model
-rotateMobsters ({ settings } as model) =
-    { model | settings = { settings | mobsterData = (MobsterOperation.rotate settings.mobsterData) } }
-
-
 saveActiveMobstersCmd : Model -> Cmd msg
 saveActiveMobstersCmd model =
     saveMobstersFile (Mobster.currentMobsterNames model.settings.mobsterData)
@@ -814,10 +809,11 @@ update msg model =
             let
                 updatedModel =
                     { model | screenState = Continue False }
-                        |> rotateMobsters
                         |> resetIfAfterBreak
             in
-                updatedModel ! [ (startTimer (flags model)), changeTip ]
+                updatedModel
+                    ! [ (startTimer (flags model)), changeTip ]
+                    |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.SkipTurn)
 
         ChangeTimerDuration newDurationAsString ->
             model

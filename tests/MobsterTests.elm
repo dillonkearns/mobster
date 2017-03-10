@@ -124,15 +124,17 @@ all =
                     let
                         list =
                             { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+                                |> updateMoblist SkipTurn
                     in
-                        Expect.equal (MobsterOperation.rotate list).nextDriver 1
+                        Expect.equal list.nextDriver 1
             , test "with wrapping" <|
                 \() ->
                     let
-                        list =
+                        updatedList =
                             { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 1 }
+                                |> updateMoblist SkipTurn
                     in
-                        Expect.equal (MobsterOperation.rotate list).nextDriver 0
+                        Expect.equal updatedList.nextDriver 0
             ]
         , describe "move"
             [ test "single item list" <|

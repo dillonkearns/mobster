@@ -53,11 +53,6 @@ add mobster list =
     { list | mobsters = (List.append list.mobsters [ mobster ]) }
 
 
-rotate : MobsterData -> MobsterData
-rotate mobsterData =
-    { mobsterData | nextDriver = (nextIndex mobsterData.nextDriver mobsterData) }
-
-
 rotateIn : Int -> MobsterData -> MobsterData
 rotateIn index list =
     let
