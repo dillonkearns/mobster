@@ -8,7 +8,7 @@ import MobsterOperation exposing (MobsterOperation(..), updateMoblist)
 
 all : Test
 all =
-    describe "mobster operation" [ benchCases, removeCases, rotateCases ]
+    describe "mobster operation" [ benchCases, removeCases, rotateCases, moveCases ]
 
 
 benchCases : Test
@@ -70,6 +70,44 @@ rotateCase2 =
 rotateCases : Test
 rotateCases =
     describe "rotate" [ rotateCase1, rotateCase2 ]
+
+
+moveCases : Test
+moveCases =
+    describe "move"
+        [ mobsterOperationTest "single item list"
+            { empty | mobsters = [ "only item" ], nextDriver = 0 }
+            (Move 0 0)
+            { empty | mobsters = [ "only item" ], nextDriver = 0 }
+        , mobsterOperationTest "index not in list"
+            { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+            (Move 4 3)
+            { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+        , mobsterOperationTest "multiple items without wrapping"
+            { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+            (Move 3 2)
+            { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
+        , mobsterOperationTest "placing it below hovered slot when moving from higher to lower"
+            { empty | mobsters = [ "a", "b", "c" ], nextDriver = 0 }
+            (Move 0 1)
+            { empty | mobsters = [ "b", "a", "c" ], nextDriver = 0 }
+        , mobsterOperationTest "to specific position one up"
+            { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
+            (Move 3 2)
+            { empty | mobsters = [ "a", "b", "d", "c" ], nextDriver = 0 }
+        , mobsterOperationTest "to specific position two up"
+            { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
+            (Move 3 1)
+            { empty | mobsters = [ "a", "d", "b", "c" ], nextDriver = 0 }
+        , mobsterOperationTest "down below the last item in list"
+            { empty | mobsters = [ "a", "b", "c", "d" ], nextDriver = 0 }
+            (Move 0 3)
+            { empty | mobsters = [ "b", "c", "d", "a" ], nextDriver = 0 }
+        , mobsterOperationTest "to specific position several slots away"
+            { empty | mobsters = [ "a", "b", "c", "d", "e", "f", "g" ], nextDriver = 0 }
+            (Move 6 0)
+            { empty | mobsters = [ "g", "a", "b", "c", "d", "e", "f" ], nextDriver = 0 }
+        ]
 
 
 mobsterOperationTest : String -> MobsterData -> MobsterOperation -> MobsterData -> Test
