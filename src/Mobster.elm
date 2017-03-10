@@ -269,11 +269,11 @@ bench index list =
                     updatedInactive =
                         List.append list.inactiveMobsters [ mobsterToBench ]
 
-                    maxIndex =
+                    maxDriverIndex =
                         (List.length activeWithoutBenchedMobster) - 1
 
                     nextDriverInBounds =
-                        if list.nextDriver > maxIndex && list.nextDriver > 0 then
+                        if list.nextDriver > maxDriverIndex && list.nextDriver > 0 then
                             0
                         else
                             list.nextDriver
