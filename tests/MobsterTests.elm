@@ -118,31 +118,4 @@ all =
                         Expect.equal (Mobster.nextDriverNavigator startingList)
                             { driver = expectedDriver, navigator = expectedNavigator }
             ]
-        , describe "move to inactive"
-            [ test "moves a single mobster to an empty bench" <|
-                \() ->
-                    { empty | mobsters = [ "Spock" ] }
-                        |> updateMoblist (Bench 0)
-                        |> Expect.equal { empty | inactiveMobsters = [ "Spock" ] }
-            , test "puts mobsters on bench in order they are added" <|
-                \() ->
-                    { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
-                        |> updateMoblist (Bench 1)
-                        |> updateMoblist (Bench 1)
-                        |> Expect.equal { empty | mobsters = [ "Kirk" ], inactiveMobsters = [ "Spock", "McCoy" ] }
-            ]
-        , describe "active"
-            [ test "puts mobster back in rotation" <|
-                \() ->
-                    { empty | inactiveMobsters = [ "Kirk", "Spock", "McCoy" ] }
-                        |> updateMoblist (RotateIn 2)
-                        |> Expect.equal
-                            { empty | inactiveMobsters = [ "Kirk", "Spock" ], mobsters = [ "McCoy" ] }
-            , test "adds mobsters back in rotation below the next driver" <|
-                \() ->
-                    { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], inactiveMobsters = [ "Sulu" ], nextDriver = 1 }
-                        |> updateMoblist (RotateIn 0)
-                        |> Expect.equal
-                            { empty | mobsters = [ "Kirk", "Spock", "Sulu", "McCoy" ], nextDriver = 1 }
-            ]
         ]

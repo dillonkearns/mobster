@@ -8,7 +8,7 @@ import MobsterOperation exposing (MobsterOperation(..), updateMoblist)
 
 all : Test
 all =
-    describe "mobster operation" [ benchCases, removeCases, rotateCases, moveCases ]
+    describe "mobster operation" [ benchCases, benchCases2, removeCases, rotateCases, moveCases ]
 
 
 benchCases : Test
@@ -30,6 +30,34 @@ benchCases =
             { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], nextDriver = 2 }
             (Bench 2)
             { empty | mobsters = [ "Kirk", "Spock" ], inactiveMobsters = [ "McCoy" ], nextDriver = 0 }
+        ]
+
+
+benchCases2 : Test
+benchCases2 =
+    describe "move"
+        [ describe "move to inactive"
+            [ mobsterOperationTest "moves a single mobster to an empty bench"
+                { empty | mobsters = [ "Spock" ] }
+                (Bench 0)
+                { empty | inactiveMobsters = [ "Spock" ] }
+            , test "puts mobsters on bench in order they are added" <|
+                \() ->
+                    { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
+                        |> updateMoblist (Bench 1)
+                        |> updateMoblist (Bench 1)
+                        |> Expect.equal { empty | mobsters = [ "Kirk" ], inactiveMobsters = [ "Spock", "McCoy" ] }
+            ]
+        , describe "active"
+            [ mobsterOperationTest "puts mobster back in rotation"
+                { empty | inactiveMobsters = [ "Kirk", "Spock", "McCoy" ] }
+                (RotateIn 2)
+                { empty | inactiveMobsters = [ "Kirk", "Spock" ], mobsters = [ "McCoy" ] }
+            , mobsterOperationTest "adds mobsters back in rotation below the next driver"
+                { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], inactiveMobsters = [ "Sulu" ], nextDriver = 1 }
+                (RotateIn 0)
+                { empty | mobsters = [ "Kirk", "Spock", "Sulu", "McCoy" ], nextDriver = 1 }
+            ]
         ]
 
 
