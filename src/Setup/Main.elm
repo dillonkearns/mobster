@@ -7,7 +7,8 @@ import Html.Events.Extra exposing (onEnter)
 import Json.Decode as Json
 import Task
 import Dom
-import Mobster exposing (MobsterOperation)
+import Mobster
+import MobsterOperation exposing (MobsterOperation)
 import Json.Decode as Decode
 import Keyboard.Combo
 import Random
@@ -479,14 +480,14 @@ dnView mobster role =
                 [ Attr.class "text-danger"
                 , style [ ( "font-size", "23px" ) ]
                 , class [ ShowOnParentHover, BufferRight ]
-                , onClick <| UpdateMobsterData (Mobster.Bench mobster.index)
+                , onClick <| UpdateMobsterData (MobsterOperation.Bench mobster.index)
                 ]
                 [ span [ Attr.class "fa fa-user-times" ] []
                 , text " Away"
                 ]
 
         skipButton =
-            span [ Attr.class "text-warning", style [ ( "font-size", "23px" ) ], class [ ShowOnParentHover ], onClick <| UpdateMobsterData Mobster.SkipTurn ]
+            span [ Attr.class "text-warning", style [ ( "font-size", "23px" ) ], class [ ShowOnParentHover ], onClick <| UpdateMobsterData MobsterOperation.SkipTurn ]
                 [ span [ Attr.class "fa fa-fast-forward" ] []
                 , text " Skip"
                 ]
@@ -607,7 +608,7 @@ inactiveMobsterViewWithHints : Int -> String -> Html Msg
 inactiveMobsterViewWithHints mobsterIndex inactiveMobster =
     tr []
         [ td mobsterCellStyle
-            [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
+            [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , hint mobsterIndex
             ]
         ]
@@ -617,9 +618,9 @@ inactiveMobsterView : Int -> String -> Html Msg
 inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
         [ td (mobsterCellStyle ++ (DragDrop.draggable DragDropMsg (InactiveMobster mobsterIndex)))
-            [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (Mobster.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
+            [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , div [ Attr.class "btn-group btn-group-xs", style [ ( "margin-left", "0.667em" ) ] ]
-                [ button [ noTab, Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (Mobster.Remove mobsterIndex)) ] [ text "x" ]
+                [ button [ noTab, Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (MobsterOperation.Remove mobsterIndex)) ] [ text "x" ]
                 ]
             ]
         ]
@@ -659,7 +660,7 @@ mobsterView dragDrop mobster =
             (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
             [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success" ] [ text hoverText ] ]
             , td mobsterCellStyle
-                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ ( "text-info", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
+                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ ( "text-info", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
                     [ text mobster.name
                     , roleView mobster.role
                     ]
@@ -689,7 +690,7 @@ reorderButtonView mobster =
     in
         div []
             [ div [ Attr.class "btn-group btn-group-xs" ]
-                [ button [ noTab, Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (Mobster.Bench mobsterIndex)) ] [ text "x" ]
+                [ button [ noTab, Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (MobsterOperation.Bench mobsterIndex)) ] [ text "x" ]
                 ]
             ]
 
@@ -796,7 +797,7 @@ update msg model =
         SkipHotkey ->
             case model.screenState of
                 Continue showRotation ->
-                    update (UpdateMobsterData Mobster.SkipTurn) model
+                    update (UpdateMobsterData MobsterOperation.SkipTurn) model
 
                 _ ->
                     model ! []
@@ -842,7 +843,7 @@ update msg model =
             if model.newMobster == "" || Mobster.containsName model.newMobster model.settings.mobsterData then
                 model ! []
             else
-                update (UpdateMobsterData (Mobster.Add model.newMobster)) { model | newMobster = "" }
+                update (UpdateMobsterData (MobsterOperation.Add model.newMobster)) { model | newMobster = "" }
 
         ClickAddMobster ->
             if model.newMobster == "" then
@@ -850,7 +851,7 @@ update msg model =
             else
                 { model | newMobster = "" }
                     ! [ focusAddMobsterInput ]
-                    |> Update.Extra.andThen update (UpdateMobsterData (Mobster.Add model.newMobster))
+                    |> Update.Extra.andThen update (UpdateMobsterData (MobsterOperation.Add model.newMobster))
 
         DomFocusResult _ ->
             model ! []
@@ -858,7 +859,7 @@ update msg model =
         UpdateMobsterData operation ->
             model
                 |> updateSettings
-                    (\settings -> { settings | mobsterData = Mobster.updateMoblist operation model.settings.mobsterData })
+                    (\settings -> { settings | mobsterData = MobsterOperation.updateMoblist operation model.settings.mobsterData })
                 |> saveActiveMobsters
 
         UpdateMobsterInput text ->
@@ -915,7 +916,7 @@ update msg model =
 
         RotateInHotkey index ->
             if model.screenState == (Continue True) then
-                update (UpdateMobsterData (Mobster.RotateIn index)) model
+                update (UpdateMobsterData (MobsterOperation.RotateIn index)) model
             else
                 model ! []
 
@@ -934,13 +935,13 @@ update msg model =
                     Just ( dragId, dropId ) ->
                         case ( dragId, dropId ) of
                             ( ActiveMobster id, DropActiveMobster actualDropid ) ->
-                                update (UpdateMobsterData (Mobster.Move id actualDropid)) updatedModel
+                                update (UpdateMobsterData (MobsterOperation.Move id actualDropid)) updatedModel
 
                             ( ActiveMobster id, DropBench ) ->
-                                update (UpdateMobsterData (Mobster.Bench id)) updatedModel
+                                update (UpdateMobsterData (MobsterOperation.Bench id)) updatedModel
 
                             ( InactiveMobster inactiveMobsterId, DropActiveMobster activeMobsterId ) ->
-                                update (UpdateMobsterData (Mobster.RotateIn inactiveMobsterId)) updatedModel
+                                update (UpdateMobsterData (MobsterOperation.RotateIn inactiveMobsterId)) updatedModel
 
                             _ ->
                                 model ! []
@@ -954,7 +955,7 @@ update msg model =
 
 reorderOperation : List String -> Msg
 reorderOperation shuffledMobsters =
-    (UpdateMobsterData (Mobster.Reorder shuffledMobsters))
+    (UpdateMobsterData (MobsterOperation.Reorder shuffledMobsters))
 
 
 focusAddMobsterInput : Cmd Msg

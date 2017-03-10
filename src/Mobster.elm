@@ -1,4 +1,7 @@
-module Mobster exposing (MobsterOperation(..), MobsterData, updateMoblist, empty, nextDriverNavigator, Role(..), mobsters, Mobster, add, rotate, decode, MobsterWithRole, randomizeMobsters, reorder, decoder, currentMobsterNames, containsName)
+-- module Mobster exposing (MobsterData, empty, nextDriverNavigator, Role(..), mobsters, Mobster, rotate, decode, MobsterWithRole, randomizeMobsters, reorder, decoder, currentMobsterNames, containsName)
+
+
+module Mobster exposing (..)
 
 import Array
 import Json.Decode as Decode exposing (Decoder)
@@ -7,17 +10,6 @@ import Json.Decode.Pipeline as Pipeline exposing (required, optional, hardcoded)
 import Random.List
 import Random
 import ListHelpers exposing (..)
-
-
-type MobsterOperation
-    = Move Int Int
-    | Remove Int
-    | SetNextDriver Int
-    | SkipTurn
-    | Bench Int
-    | RotateIn Int
-    | Add String
-    | Reorder (List String)
 
 
 type alias MobsterData =
@@ -50,38 +42,6 @@ currentMobsterNames mobsterData =
     String.join ", " mobsterData.mobsters
 
 
-updateMoblist : MobsterOperation -> MobsterData -> MobsterData
-updateMoblist moblistOperation moblist =
-    case moblistOperation of
-        Move fromIndex toIndex ->
-            let
-                updatedMobsters =
-                    move fromIndex toIndex moblist.mobsters
-            in
-                { moblist | mobsters = updatedMobsters }
-
-        Remove mobsterIndex ->
-            remove mobsterIndex moblist
-
-        SetNextDriver index ->
-            setNextDriver index moblist
-
-        SkipTurn ->
-            setNextDriver (nextIndex moblist.nextDriver moblist) moblist
-
-        Bench mobsterIndex ->
-            bench mobsterIndex moblist
-
-        RotateIn mobsterIndex ->
-            rotateIn mobsterIndex moblist
-
-        Add mobsterName ->
-            add mobsterName moblist
-
-        Reorder reorderedMobsters ->
-            reorder reorderedMobsters moblist
-
-
 reorder : List String -> MobsterData -> MobsterData
 reorder shuffledMobsters mobsterData =
     { mobsterData | mobsters = shuffledMobsters, nextDriver = 0 }
@@ -103,11 +63,6 @@ containsName : String -> MobsterData -> Bool
 containsName string mobsterData =
     nameExists string mobsterData.mobsters
         || nameExists string mobsterData.inactiveMobsters
-
-
-add : String -> MobsterData -> MobsterData
-add mobster list =
-    { list | mobsters = (List.append list.mobsters [ mobster ]) }
 
 
 type alias DriverNavigator =
