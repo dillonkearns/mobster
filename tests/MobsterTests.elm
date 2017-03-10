@@ -1,4 +1,4 @@
-module MobsterTests exposing (..)
+module MobsterTests exposing (all)
 
 import Test exposing (..)
 import Expect

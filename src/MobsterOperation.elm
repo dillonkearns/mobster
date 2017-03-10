@@ -1,4 +1,4 @@
-module MobsterOperation exposing (..)
+module MobsterOperation exposing (MobsterOperation(..), updateMoblist, add)
 
 import Mobster exposing (..)
 import Array
