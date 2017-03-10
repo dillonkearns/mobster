@@ -565,17 +565,17 @@ inactiveMobstersView inactiveMobsters dragDrop =
     let
         benchStyle =
             case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
-                ( Just _, Just DropBench ) ->
+                ( Just (ActiveMobster _), Just DropBench ) ->
                     class [ DropAreaActive ]
 
-                ( Just _, _ ) ->
+                ( Just (ActiveMobster _), _ ) ->
                     class [ DropAreaInactive ]
 
                 ( _, _ ) ->
                     class []
     in
         case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
-            ( Just _, _ ) ->
+            ( Just (ActiveMobster _), _ ) ->
                 div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle, style [ ( "height", "150px" ) ] ]) [ text "Move to bench" ]
 
             ( _, _ ) ->
