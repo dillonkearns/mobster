@@ -157,6 +157,21 @@ nextIndex currentIndex mobsterData =
         index
 
 
+setNextDriverInBounds : MobsterData -> MobsterData
+setNextDriverInBounds mobsterData =
+    let
+        maxDriverIndex =
+            (List.length mobsterData.mobsters) - 1
+
+        indexInBounds =
+            if mobsterData.nextDriver > maxDriverIndex && mobsterData.nextDriver > 0 then
+                0
+            else
+                mobsterData.nextDriver
+    in
+        { mobsterData | nextDriver = indexInBounds }
+
+
 rotate : MobsterData -> MobsterData
 rotate mobsterData =
     { mobsterData | nextDriver = (nextIndex mobsterData.nextDriver mobsterData) }
@@ -268,17 +283,12 @@ bench index list =
                 let
                     updatedInactive =
                         List.append list.inactiveMobsters [ mobsterToBench ]
-
-                    maxDriverIndex =
-                        (List.length activeWithoutBenchedMobster) - 1
-
-                    nextDriverInBounds =
-                        if list.nextDriver > maxDriverIndex && list.nextDriver > 0 then
-                            0
-                        else
-                            list.nextDriver
                 in
-                    { list | mobsters = activeWithoutBenchedMobster, inactiveMobsters = updatedInactive, nextDriver = nextDriverInBounds }
+                    { list
+                        | mobsters = activeWithoutBenchedMobster
+                        , inactiveMobsters = updatedInactive
+                    }
+                        |> setNextDriverInBounds
 
             Nothing ->
                 list
