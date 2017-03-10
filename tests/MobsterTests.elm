@@ -199,13 +199,6 @@ all =
                         |> updateMoblist (Bench 1)
                         |> Expect.equal { empty | mobsters = [ "Kirk" ], inactiveMobsters = [ "Spock", "McCoy" ] }
             ]
-        , describe "remove"
-            [ test "removes an item from bench with no active mobsters" <|
-                \() ->
-                    { empty | inactiveMobsters = [ "Kirk", "Spock", "McCoy" ] }
-                        |> updateMoblist (Remove 1)
-                        |> Expect.equal { empty | inactiveMobsters = [ "Kirk", "McCoy" ] }
-            ]
         , describe "active"
             [ test "puts mobster back in rotation" <|
                 \() ->

@@ -8,7 +8,7 @@ import MobsterOperation exposing (MobsterOperation(..), updateMoblist)
 
 all : Test
 all =
-    describe "mobster operation" [ benchCases ]
+    describe "mobster operation" [ benchCases, removeCases ]
 
 
 benchCases : Test
@@ -30,6 +30,16 @@ benchCases =
             { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], nextDriver = 2 }
             (Bench 2)
             { empty | mobsters = [ "Kirk", "Spock" ], inactiveMobsters = [ "McCoy" ], nextDriver = 0 }
+        ]
+
+
+removeCases : Test
+removeCases =
+    describe "remove"
+        [ mobsterOperationTest "removes an item from bench with no active mobsters"
+            { empty | inactiveMobsters = [ "Kirk", "Spock", "McCoy" ] }
+            (Remove 1)
+            { empty | inactiveMobsters = [ "Kirk", "McCoy" ] }
         ]
 
 
