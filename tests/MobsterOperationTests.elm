@@ -8,7 +8,7 @@ import MobsterOperation exposing (MobsterOperation(..), updateMoblist)
 
 all : Test
 all =
-    describe "mobster operation" [ benchCases, removeCases ]
+    describe "mobster operation" [ benchCases, removeCases, rotateCases ]
 
 
 benchCases : Test
@@ -41,6 +41,35 @@ removeCases =
             (Remove 1)
             { empty | inactiveMobsters = [ "Kirk", "McCoy" ] }
         ]
+
+
+rotateCase1 : Test
+rotateCase1 =
+    let
+        startList =
+            { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+    in
+        mobsterOperationTest "without wrapping"
+            startList
+            NextTurn
+            { startList | nextDriver = 1 }
+
+
+rotateCase2 : Test
+rotateCase2 =
+    let
+        startList =
+            { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 1 }
+    in
+        mobsterOperationTest "with wrapping"
+            startList
+            NextTurn
+            { startList | nextDriver = 0 }
+
+
+rotateCases : Test
+rotateCases =
+    describe "rotate" [ rotateCase1, rotateCase2 ]
 
 
 mobsterOperationTest : String -> MobsterData -> MobsterOperation -> MobsterData -> Test

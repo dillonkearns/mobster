@@ -118,24 +118,6 @@ all =
                         Expect.equal (Mobster.nextDriverNavigator startingList)
                             { driver = expectedDriver, navigator = expectedNavigator }
             ]
-        , describe "rotate"
-            [ test "without wrapping" <|
-                \() ->
-                    let
-                        list =
-                            { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
-                                |> updateMoblist NextTurn
-                    in
-                        Expect.equal list.nextDriver 1
-            , test "with wrapping" <|
-                \() ->
-                    let
-                        updatedList =
-                            { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 1 }
-                                |> updateMoblist NextTurn
-                    in
-                        Expect.equal updatedList.nextDriver 0
-            ]
         , describe "move"
             [ test "single item list" <|
                 \() ->
