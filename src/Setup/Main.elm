@@ -624,9 +624,22 @@ inactiveMobsterView mobsterIndex inactiveMobster =
 mobsterView : DragDropModel -> Mobster.MobsterWithRole -> Html Msg
 mobsterView dragDrop mobster =
     let
+        inactiveOverActiveStyle =
+            case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
+                ( Just (InactiveMobster _), Just (DropActiveMobster _) ) ->
+                    case mobster.role of
+                        Just (Mobster.Driver) ->
+                            True
+
+                        _ ->
+                            False
+
+                _ ->
+                    False
+
         isBeingDraggedOver =
             case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
-                ( _, Just (DropActiveMobster id) ) ->
+                ( Just (ActiveMobster _), Just (DropActiveMobster id) ) ->
                     id == mobster.index
 
                 _ ->
@@ -642,7 +655,7 @@ mobsterView dragDrop mobster =
             (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
             [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success" ] [ text hoverText ] ]
             , td mobsterCellStyle
-                [ span [ Attr.classList [ ( "text-info", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
+                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ ( "text-info", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (Mobster.SetNextDriver mobster.index)) ]
                     [ text mobster.name
                     , roleView mobster.role
                     ]

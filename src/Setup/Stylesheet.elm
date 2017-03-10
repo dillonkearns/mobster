@@ -18,6 +18,7 @@ type CssClasses
     | Tooltip
     | ShowOnParentHover
     | ShowOnParentHoverParent
+    | DragBelow
 
 
 css : Stylesheet
@@ -35,6 +36,7 @@ css =
             [ body
                 [ fontSize (px 15) ]
             ]
+        , class DragBelow [ borderBottom3 (px 2) (solid) (rgba 14 255 125 1) ]
         , class BufferTop
             [ Css.marginTop (px 20) ]
         , class BufferRight
