@@ -187,7 +187,10 @@ rotateIn index list =
             Just mobsterToMove ->
                 let
                     activeWithNewlyActive =
-                        List.append list.mobsters [ mobsterToMove ]
+                        list.mobsters
+                            |> Array.fromList
+                            |> insertAt mobsterToMove list.nextDriver False
+                            |> Array.toList
                 in
                     { list | mobsters = activeWithNewlyActive, inactiveMobsters = inactiveWithoutNewlyActive }
 

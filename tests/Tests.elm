@@ -240,5 +240,11 @@ mobsterTests =
                         |> Mobster.updateMoblist (RotateIn 2)
                         |> Expect.equal
                             { empty | inactiveMobsters = [ "Kirk", "Spock" ], mobsters = [ "McCoy" ] }
+            , test "adds mobsters back in rotation below the next driver" <|
+                \() ->
+                    { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], inactiveMobsters = [ "Sulu" ], nextDriver = 1 }
+                        |> Mobster.updateMoblist (RotateIn 0)
+                        |> Expect.equal
+                            { empty | mobsters = [ "Kirk", "Spock", "Sulu", "McCoy" ], nextDriver = 1 }
             ]
         ]
