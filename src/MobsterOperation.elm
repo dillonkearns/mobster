@@ -1,6 +1,6 @@
 module MobsterOperation exposing (MobsterOperation(..), updateMoblist, add)
 
-import Mobster exposing (..)
+import Mobster exposing (nextIndex, MobsterData)
 import Array
 import ListHelpers exposing (..)
 
@@ -99,3 +99,28 @@ bench index list =
 remove : Int -> MobsterData -> MobsterData
 remove index list =
     { list | inactiveMobsters = removeFromListAt index list.inactiveMobsters }
+
+
+setNextDriver : Int -> MobsterData -> MobsterData
+setNextDriver newDriver mobsterData =
+    { mobsterData | nextDriver = newDriver }
+
+
+reorder : List String -> MobsterData -> MobsterData
+reorder shuffledMobsters mobsterData =
+    { mobsterData | mobsters = shuffledMobsters, nextDriver = 0 }
+
+
+setNextDriverInBounds : MobsterData -> MobsterData
+setNextDriverInBounds mobsterData =
+    let
+        maxDriverIndex =
+            (List.length mobsterData.mobsters) - 1
+
+        indexInBounds =
+            if mobsterData.nextDriver > maxDriverIndex && mobsterData.nextDriver > 0 then
+                0
+            else
+                mobsterData.nextDriver
+    in
+        { mobsterData | nextDriver = indexInBounds }

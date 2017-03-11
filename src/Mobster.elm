@@ -1,7 +1,4 @@
--- module Mobster exposing (MobsterData, empty, nextDriverNavigator, Role(..), mobsters, Mobster, rotate, decode, MobsterWithRole, randomizeMobsters, reorder, decoder, currentMobsterNames, containsName)
-
-
-module Mobster exposing (..)
+module Mobster exposing (MobsterData, empty, nextDriverNavigator, Role(..), mobsters, Mobster, decode, MobsterWithRole, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex)
 
 import Array
 import Json.Decode as Decode exposing (Decoder)
@@ -9,7 +6,6 @@ import Json.Encode as Encode
 import Json.Decode.Pipeline as Pipeline exposing (required, optional, hardcoded)
 import Random.List
 import Random
-import ListHelpers exposing (..)
 
 
 type alias MobsterData =
@@ -40,11 +36,6 @@ randomizeMobsters mobsterData =
 currentMobsterNames : MobsterData -> String
 currentMobsterNames mobsterData =
     String.join ", " mobsterData.mobsters
-
-
-reorder : List String -> MobsterData -> MobsterData
-reorder shuffledMobsters mobsterData =
-    { mobsterData | mobsters = shuffledMobsters, nextDriver = 0 }
 
 
 empty : MobsterData
@@ -125,21 +116,6 @@ nextIndex currentIndex mobsterData =
         index
 
 
-setNextDriverInBounds : MobsterData -> MobsterData
-setNextDriverInBounds mobsterData =
-    let
-        maxDriverIndex =
-            (List.length mobsterData.mobsters) - 1
-
-        indexInBounds =
-            if mobsterData.nextDriver > maxDriverIndex && mobsterData.nextDriver > 0 then
-                0
-            else
-                mobsterData.nextDriver
-    in
-        { mobsterData | nextDriver = indexInBounds }
-
-
 type Role
     = Driver
     | Navigator
@@ -179,8 +155,3 @@ asMobsterList mobsterData =
 mobsters : MobsterData -> Mobsters
 mobsters mobsterData =
     List.indexedMap (mobsterListItemToMobster (nextDriverNavigator mobsterData)) mobsterData.mobsters
-
-
-setNextDriver : Int -> MobsterData -> MobsterData
-setNextDriver newDriver mobsterData =
-    { mobsterData | nextDriver = newDriver }
