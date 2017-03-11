@@ -41,12 +41,10 @@ benchCases2 =
                 { empty | mobsters = [ "Spock" ] }
                 (Bench 0)
                 { empty | inactiveMobsters = [ "Spock" ] }
-            , test "puts mobsters on bench in order they are added" <|
-                \() ->
-                    { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
-                        |> updateMoblist (Bench 1)
-                        |> updateMoblist (Bench 1)
-                        |> Expect.equal { empty | mobsters = [ "Kirk" ], inactiveMobsters = [ "Spock", "McCoy" ] }
+            , mobsterOperationsTest "puts mobsters on bench in order they are added"
+                { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
+                [ (Bench 1), (Bench 1) ]
+                { empty | mobsters = [ "Kirk" ], inactiveMobsters = [ "Spock", "McCoy" ] }
             ]
         , describe "active"
             [ mobsterOperationTest "puts mobster back in rotation"
@@ -145,14 +143,10 @@ addCases =
             Mobster.empty
             (Add "John Doe")
             { empty | mobsters = [ "John Doe" ] }
-        , test "add" <|
-            \() ->
-                Expect.equal
-                    (Mobster.empty
-                        |> MobsterOperation.add "Jane Doe"
-                        |> MobsterOperation.add "John Smith"
-                    )
-                    { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
+        , mobsterOperationsTest "add two things"
+            Mobster.empty
+            [ (Add "Jane Doe"), (Add "John Smith") ]
+            { empty | mobsters = [ "Jane Doe", "John Smith" ], nextDriver = 0 }
         ]
 
 
@@ -162,4 +156,12 @@ mobsterOperationTest description startList operation expectedResult =
         \() ->
             startList
                 |> updateMoblist operation
+                |> Expect.equal expectedResult
+
+
+mobsterOperationsTest : String -> MobsterData -> List MobsterOperation -> MobsterData -> Test
+mobsterOperationsTest description startList operations expectedResult =
+    test description <|
+        \() ->
+            List.foldl updateMoblist startList operations
                 |> Expect.equal expectedResult
