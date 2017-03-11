@@ -17,35 +17,35 @@ type MobsterOperation
 
 
 updateMoblist : MobsterOperation -> MobsterData -> MobsterData
-updateMoblist moblistOperation moblist =
-    case moblistOperation of
+updateMoblist mobsterOperation mobsterData =
+    case mobsterOperation of
         Move fromIndex toIndex ->
             let
                 updatedMobsters =
-                    move fromIndex toIndex moblist.mobsters
+                    move fromIndex toIndex mobsterData.mobsters
             in
-                { moblist | mobsters = updatedMobsters }
+                { mobsterData | mobsters = updatedMobsters }
 
         Remove mobsterIndex ->
-            remove mobsterIndex moblist
+            remove mobsterIndex mobsterData
 
         SetNextDriver index ->
-            setNextDriver index moblist
+            setNextDriver index mobsterData
 
         NextTurn ->
-            setNextDriver (nextIndex moblist.nextDriver moblist) moblist
+            setNextDriver (nextIndex mobsterData.nextDriver mobsterData) mobsterData
 
         Bench mobsterIndex ->
-            bench mobsterIndex moblist
+            bench mobsterIndex mobsterData
 
         RotateIn mobsterIndex ->
-            rotateIn mobsterIndex moblist
+            rotateIn mobsterIndex mobsterData
 
         Add mobsterName ->
-            add mobsterName moblist
+            add mobsterName mobsterData
 
         Reorder reorderedMobsters ->
-            reorder reorderedMobsters moblist
+            reorder reorderedMobsters mobsterData
 
 
 add : String -> MobsterData -> MobsterData
