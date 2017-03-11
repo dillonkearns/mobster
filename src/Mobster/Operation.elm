@@ -1,6 +1,6 @@
-module MobsterOperation exposing (MobsterOperation(..), updateMoblist, add)
+module Mobster.Operation exposing (MobsterOperation(..), updateMoblist, add)
 
-import Mobster exposing (nextIndex, MobsterData)
+import Mobster.Data exposing (nextIndex, MobsterData)
 import Array
 import ListHelpers exposing (..)
 

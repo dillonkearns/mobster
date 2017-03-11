@@ -7,8 +7,8 @@ import Html.Events.Extra exposing (onEnter)
 import Json.Decode as Json
 import Task
 import Dom
-import Mobster
-import MobsterOperation exposing (MobsterOperation)
+import Mobster.Data as Mobster
+import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Json.Decode as Decode
 import Keyboard.Combo
 import Random

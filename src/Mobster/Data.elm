@@ -1,4 +1,4 @@
-module Mobster exposing (MobsterData, empty, nextDriverNavigator, Role(..), mobsters, Mobster, decode, MobsterWithRole, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex)
+module Mobster.Data exposing (MobsterData, empty, nextDriverNavigator, Role(..), mobsters, Mobster, decode, MobsterWithRole, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex)
 
 import Array
 import Json.Decode as Decode exposing (Decoder)

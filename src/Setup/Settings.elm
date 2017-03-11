@@ -3,13 +3,13 @@ module Setup.Settings exposing (..)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Json.Decode.Pipeline exposing (..)
-import Mobster
+import Mobster.Data exposing (MobsterData)
 
 
 type alias Data =
     { timerDuration : Int
     , intervalsPerBreak : Int
-    , mobsterData : Mobster.MobsterData
+    , mobsterData : MobsterData
     }
 
 
@@ -18,7 +18,7 @@ decoder =
     Json.Decode.Pipeline.decode Data
         |> required "timerDuration" (Decode.int)
         |> required "intervalsPerBreak" (Decode.int)
-        |> required "mobsterData" (Mobster.decoder)
+        |> required "mobsterData" (Mobster.Data.decoder)
 
 
 decode : Encode.Value -> Result String Data
@@ -30,5 +30,5 @@ initial : Data
 initial =
     { timerDuration = 5
     , intervalsPerBreak = 5
-    , mobsterData = Mobster.empty
+    , mobsterData = Mobster.Data.empty
     }

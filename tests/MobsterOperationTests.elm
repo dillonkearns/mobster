@@ -2,8 +2,8 @@ module MobsterOperationTests exposing (all)
 
 import Test exposing (..)
 import Expect
-import Mobster exposing (MobsterData, empty)
-import MobsterOperation exposing (MobsterOperation(..), updateMoblist)
+import Mobster.Data as Mobster exposing (MobsterData, empty)
+import Mobster.Operation exposing (MobsterOperation(..), updateMoblist)
 
 
 all : Test

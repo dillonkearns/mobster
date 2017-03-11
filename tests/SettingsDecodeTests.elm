@@ -2,7 +2,7 @@ module SettingsDecodeTests exposing (all)
 
 import Test exposing (..)
 import Test.Extra exposing (..)
-import Mobster
+import Mobster.Data
 import Setup.Settings
 
 
@@ -10,13 +10,13 @@ all : Test
 all =
     describe "decoders"
         [ describeDecoder "MobsterData"
-            Mobster.decoder
+            Mobster.Data.decoder
             [ ( "", FailsToDecode )
             , ( """{
                      "mobsters": [],
                      "inactiveMobsters": [],
                      "nextDriver": 0
-                   }""", DecodesTo Mobster.empty )
+                   }""", DecodesTo Mobster.Data.empty )
             ]
         , describeDecoder "Settings"
             Setup.Settings.decoder
@@ -28,6 +28,6 @@ all =
                       },
                       "timerDuration": 5,
                       "intervalsPerBreak": 6
-                    }""", DecodesTo (Setup.Settings.Data 5 6 Mobster.empty) )
+                    }""", DecodesTo (Setup.Settings.Data 5 6 Mobster.Data.empty) )
             ]
         ]

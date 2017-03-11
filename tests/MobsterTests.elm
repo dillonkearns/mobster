@@ -2,8 +2,7 @@ module MobsterTests exposing (all)
 
 import Test exposing (..)
 import Expect
-import Mobster exposing (empty)
-import MobsterOperation
+import Mobster.Data as Mobster exposing (empty)
 
 
 all : Test
@@ -12,14 +11,12 @@ all =
         [ describe "containsName"
             [ test "catches exact matches" <|
                 \() ->
-                    Mobster.empty
-                        |> MobsterOperation.add "Jane"
+                    { empty | mobsters = [ "Jane" ] }
                         |> Mobster.containsName "Jane"
                         |> Expect.equal True
             , test "catches matches with different casing" <|
                 \() ->
-                    Mobster.empty
-                        |> MobsterOperation.add "jane"
+                    { empty | mobsters = [ "jane" ] }
                         |> Mobster.containsName "Jane"
                         |> Expect.equal True
             , test "finds matches on bench" <|
@@ -29,8 +26,7 @@ all =
                         |> Expect.equal True
             , test "doesn't find false matches" <|
                 \() ->
-                    Mobster.empty
-                        |> MobsterOperation.add "Joe"
+                    { empty | inactiveMobsters = [ "Joe" ] }
                         |> Mobster.containsName "Jane"
                         |> Expect.equal False
             ]
