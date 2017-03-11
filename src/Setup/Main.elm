@@ -9,6 +9,7 @@ import Task
 import Dom
 import Mobster.Data as Mobster
 import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
+import Mobster.Presenter as Presenter
 import Json.Decode as Decode
 import Keyboard.Combo
 import Random
@@ -159,7 +160,7 @@ flags : Model -> TimerConfiguration
 flags model =
     let
         driverNavigator =
-            Mobster.nextDriverNavigator model.settings.mobsterData
+            Presenter.nextDriverNavigator model.settings.mobsterData
     in
         { minutes = model.settings.timerDuration
         , driver = driverNavigator.driver.name
@@ -319,7 +320,7 @@ configureView model =
             [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
-            , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Mobster.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
+            , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters model.dragDrop ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
@@ -456,23 +457,23 @@ nextDriverNavigatorView : Model -> Html Msg
 nextDriverNavigatorView model =
     let
         driverNavigator =
-            Mobster.nextDriverNavigator model.settings.mobsterData
+            Presenter.nextDriverNavigator model.settings.mobsterData
     in
         div [ Attr.class "row h1 text-center", class [ ShowOnParentHoverParent ] ]
-            [ dnView driverNavigator.driver Mobster.Driver
-            , dnView driverNavigator.navigator Mobster.Navigator
+            [ dnView driverNavigator.driver Presenter.Driver
+            , dnView driverNavigator.navigator Presenter.Navigator
             ]
 
 
-dnView : Mobster.Mobster -> Mobster.Role -> Html Msg
+dnView : Presenter.Mobster -> Presenter.Role -> Html Msg
 dnView mobster role =
     let
         icon =
             case role of
-                Mobster.Driver ->
+                Presenter.Driver ->
                     "./assets/driver-icon.png"
 
-                Mobster.Navigator ->
+                Presenter.Navigator ->
                     "./assets/navigator-icon.png"
 
         awayButton =
@@ -494,10 +495,10 @@ dnView mobster role =
 
         hoverButtons =
             case role of
-                Mobster.Driver ->
+                Presenter.Driver ->
                     [ awayButton, skipButton ]
 
-                Mobster.Navigator ->
+                Presenter.Navigator ->
                     [ awayButton ]
     in
         div [ Attr.class "col-md-6 col-sm-6 text-default" ]
@@ -534,7 +535,7 @@ addMobsterInputView newMobster mobsterData =
             ]
 
 
-mobstersView : String -> List Mobster.MobsterWithRole -> Mobster.MobsterData -> DragDropModel -> Html Msg
+mobstersView : String -> List Presenter.MobsterWithRole -> Mobster.MobsterData -> DragDropModel -> Html Msg
 mobstersView newMobster mobsters mobsterData dragDrop =
     div [ style [ ( "padding-bottom", "35px" ) ] ]
         [ addMobsterInputView newMobster mobsterData
@@ -626,14 +627,14 @@ inactiveMobsterView mobsterIndex inactiveMobster =
         ]
 
 
-mobsterView : DragDropModel -> Mobster.MobsterWithRole -> Html Msg
+mobsterView : DragDropModel -> Presenter.MobsterWithRole -> Html Msg
 mobsterView dragDrop mobster =
     let
         inactiveOverActiveStyle =
             case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
                 ( Just (InactiveMobster _), Just (DropActiveMobster _) ) ->
                     case mobster.role of
-                        Just (Mobster.Driver) ->
+                        Just (Presenter.Driver) ->
                             True
 
                         _ ->
@@ -660,7 +661,7 @@ mobsterView dragDrop mobster =
             (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
             [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success" ] [ text hoverText ] ]
             , td mobsterCellStyle
-                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ ( "text-info", mobster.role == Just Mobster.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
+                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ ( "text-info", mobster.role == Just Presenter.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
                     [ text mobster.name
                     , roleView mobster.role
                     ]
@@ -669,20 +670,20 @@ mobsterView dragDrop mobster =
             ]
 
 
-roleView : Maybe Mobster.Role -> Html Msg
+roleView : Maybe Presenter.Role -> Html Msg
 roleView role =
     case role of
-        Just (Mobster.Driver) ->
+        Just (Presenter.Driver) ->
             span [ Attr.class "role-icon driver-icon" ] []
 
-        Just (Mobster.Navigator) ->
+        Just (Presenter.Navigator) ->
             span [ Attr.class "role-icon navigator-icon" ] []
 
         Nothing ->
             span [ Attr.class "role-icon no-role-icon" ] []
 
 
-reorderButtonView : Mobster.MobsterWithRole -> Html Msg
+reorderButtonView : Presenter.MobsterWithRole -> Html Msg
 reorderButtonView mobster =
     let
         mobsterIndex =
@@ -714,7 +715,7 @@ rotationView : Model -> Html Msg
 rotationView model =
     let
         mobsters =
-            Mobster.mobsters model.settings.mobsterData
+            Presenter.mobsters model.settings.mobsterData
 
         inactiveMobsters =
             model.settings.mobsterData.inactiveMobsters
