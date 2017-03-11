@@ -1,6 +1,5 @@
 module Mobster.Data exposing (MobsterData, empty, decode, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex)
 
-import Array
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
 import Json.Decode.Pipeline as Pipeline exposing (required, optional, hardcoded)
@@ -13,6 +12,11 @@ type alias MobsterData =
     , inactiveMobsters : List String
     , nextDriver : Int
     }
+
+
+empty : MobsterData
+empty =
+    { mobsters = [], inactiveMobsters = [], nextDriver = 0 }
 
 
 decoder : Decoder MobsterData
@@ -36,11 +40,6 @@ randomizeMobsters mobsterData =
 currentMobsterNames : MobsterData -> String
 currentMobsterNames mobsterData =
     String.join ", " mobsterData.mobsters
-
-
-empty : MobsterData
-empty =
-    { mobsters = [], inactiveMobsters = [], nextDriver = 0 }
 
 
 nameExists : String -> List String -> Bool
