@@ -9,16 +9,7 @@ import Setup.Settings
 all : Test
 all =
     describe "decoders"
-        [ describeDecoder "MobsterData"
-            Mobster.Data.decoder
-            [ ( "", FailsToDecode )
-            , ( """{
-                     "mobsters": [],
-                     "inactiveMobsters": [],
-                     "nextDriver": 0
-                   }""", DecodesTo Mobster.Data.empty )
-            ]
-        , describeDecoder "Settings"
+        [ describeDecoder "Settings"
             Setup.Settings.decoder
             [ ( """{
                       "mobsterData": {

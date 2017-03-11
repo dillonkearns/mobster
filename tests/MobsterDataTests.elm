@@ -2,7 +2,9 @@ module MobsterDataTests exposing (all)
 
 import Test exposing (..)
 import Expect
-import Mobster.Data as Mobster exposing (empty)
+import Mobster.Data exposing (empty)
+import Test exposing (..)
+import Test.Extra exposing (..)
 
 
 all : Test
@@ -12,22 +14,31 @@ all =
             [ test "catches exact matches" <|
                 \() ->
                     { empty | mobsters = [ "Jane" ] }
-                        |> Mobster.containsName "Jane"
+                        |> Mobster.Data.containsName "Jane"
                         |> Expect.equal True
             , test "catches matches with different casing" <|
                 \() ->
                     { empty | mobsters = [ "jane" ] }
-                        |> Mobster.containsName "Jane"
+                        |> Mobster.Data.containsName "Jane"
                         |> Expect.equal True
             , test "finds matches on bench" <|
                 \() ->
                     { empty | inactiveMobsters = [ "Jane" ] }
-                        |> Mobster.containsName "Jane"
+                        |> Mobster.Data.containsName "Jane"
                         |> Expect.equal True
             , test "doesn't find false matches" <|
                 \() ->
                     { empty | inactiveMobsters = [ "Joe" ] }
-                        |> Mobster.containsName "Jane"
+                        |> Mobster.Data.containsName "Jane"
                         |> Expect.equal False
+            ]
+        , describeDecoder "MobsterData"
+            Mobster.Data.decoder
+            [ ( "", FailsToDecode )
+            , ( """{
+                     "mobsters": [],
+                     "inactiveMobsters": [],
+                     "nextDriver": 0
+                   }""", DecodesTo Mobster.Data.empty )
             ]
         ]
