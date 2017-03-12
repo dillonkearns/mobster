@@ -13,15 +13,7 @@ all =
                 let
                     rpgData =
                         Rpg.init
-
-                    maybeExperience =
-                        Rpg.getExperience (L1Role Driver) rpgData
                 in
-                    case maybeExperience of
-                        Just experience ->
-                            Expect.true (toString experience)
-                                (List.all (not << .complete) experience)
-
-                        Nothing ->
-                            Expect.fail "No experience found"
+                    Expect.true (toString rpgData)
+                        (List.all (not << .complete) rpgData.driver)
         ]
