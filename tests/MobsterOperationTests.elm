@@ -8,21 +8,13 @@ import Mobster.Operation exposing (MobsterOperation(..), updateMoblist)
 
 all : Test
 all =
-    describe "mobster operation" [ benchCases, benchCases2, removeCases, rotateCases, moveCases, addCases ]
+    describe "mobster operation" [ benchCases, rotateInCases, removeCases, rotateCases, moveCases, addCases ]
 
 
 benchCases : Test
 benchCases =
     describe "bench"
-        [ testOperation "list with single item"
-            { empty | mobsters = [ "only item" ] }
-            (Bench 0)
-            { empty | inactiveMobsters = [ "only item" ], nextDriver = 0 }
-        , testOperation "with multiple items"
-            { empty | mobsters = [ "first", "second" ] }
-            (Bench 0)
-            { empty | mobsters = [ "second" ], inactiveMobsters = [ "first" ], nextDriver = 0 }
-        , testOperation "driver doesn't change when navigator is removed"
+        [ testOperation "driver doesn't change when navigator is removed"
             { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
             (Bench 1)
             { empty | mobsters = [ "Kirk", "McCoy" ], inactiveMobsters = [ "Spock" ], nextDriver = 0 }
@@ -30,32 +22,32 @@ benchCases =
             { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], nextDriver = 2 }
             (Bench 2)
             { empty | mobsters = [ "Kirk", "Spock" ], inactiveMobsters = [ "McCoy" ], nextDriver = 0 }
+        , testOperation "moves a single mobster to an empty bench"
+            { empty | mobsters = [ "Spock" ] }
+            (Bench 0)
+            { empty | inactiveMobsters = [ "Spock" ] }
+        , testOperation "moves the mobster with the correct index"
+            { empty | mobsters = [ "Spock", "Sulu" ] }
+            (Bench 0)
+            { empty | mobsters = [ "Sulu" ], inactiveMobsters = [ "Spock" ] }
+        , testOperations "puts mobsters on bench in order they are added"
+            { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
+            [ (Bench 1), (Bench 1) ]
+            { empty | mobsters = [ "Kirk" ], inactiveMobsters = [ "Spock", "McCoy" ] }
         ]
 
 
-benchCases2 : Test
-benchCases2 =
-    describe "move"
-        [ describe "move to inactive"
-            [ testOperation "moves a single mobster to an empty bench"
-                { empty | mobsters = [ "Spock" ] }
-                (Bench 0)
-                { empty | inactiveMobsters = [ "Spock" ] }
-            , testOperations "puts mobsters on bench in order they are added"
-                { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] }
-                [ (Bench 1), (Bench 1) ]
-                { empty | mobsters = [ "Kirk" ], inactiveMobsters = [ "Spock", "McCoy" ] }
-            ]
-        , describe "active"
-            [ testOperation "puts mobster back in rotation"
-                { empty | inactiveMobsters = [ "Kirk", "Spock", "McCoy" ] }
-                (RotateIn 2)
-                { empty | inactiveMobsters = [ "Kirk", "Spock" ], mobsters = [ "McCoy" ] }
-            , testOperation "adds mobsters back in rotation below the next driver"
-                { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], inactiveMobsters = [ "Sulu" ], nextDriver = 1 }
-                (RotateIn 0)
-                { empty | mobsters = [ "Kirk", "Spock", "Sulu", "McCoy" ], nextDriver = 1 }
-            ]
+rotateInCases : Test
+rotateInCases =
+    describe "rotate in"
+        [ testOperation "puts mobster back in rotation"
+            { empty | inactiveMobsters = [ "Kirk", "Spock", "McCoy" ] }
+            (RotateIn 2)
+            { empty | inactiveMobsters = [ "Kirk", "Spock" ], mobsters = [ "McCoy" ] }
+        , testOperation "adds mobsters back in rotation below the next driver"
+            { empty | mobsters = [ "Kirk", "Spock", "McCoy" ], inactiveMobsters = [ "Sulu" ], nextDriver = 1 }
+            (RotateIn 0)
+            { empty | mobsters = [ "Kirk", "Spock", "Sulu", "McCoy" ], nextDriver = 1 }
         ]
 
 
