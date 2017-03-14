@@ -489,13 +489,25 @@ tipView tip =
 
 rpgCardView : String -> List { complete : Bool, description : String } -> Html Msg
 rpgCardView roleName experience =
-    div [] [ h1 [] [ text roleName ], experienceView experience ]
+    div [] [ h1 [] [ text roleName ], experienceView roleName experience ]
 
 
-experienceView : List { complete : Bool, description : String } -> Html Msg
-experienceView experience =
+goalView : String -> Int -> { a | description : String, complete : Bool } -> Html msg
+goalView roleName index goal =
+    let
+        labelId =
+            roleName ++ toString index
+    in
+        li [ Attr.class "checkbox checkbox-success" ]
+            [ input [ Attr.id labelId, type_ "checkbox", Attr.checked goal.complete ] []
+            , label [ Attr.for labelId ] [ text goal.description ]
+            ]
+
+
+experienceView : String -> List { complete : Bool, description : String } -> Html Msg
+experienceView roleName experience =
     div []
-        [ ul [] (List.map (\goal -> li [] [ input [ type_ "checkbox" ] [], span [] [ text goal.description ] ]) experience)
+        [ ul [] (List.indexedMap (goalView roleName) experience)
         ]
 
 
