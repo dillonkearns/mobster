@@ -36,6 +36,7 @@ type Msg
     = StartTimer
     | ShowRotationScreen
     | SkipHotkey
+    | StartRpgMode
     | UpdateMobsterData MobsterOperation
     | UpdateMobsterInput String
     | AddMobster
@@ -106,6 +107,7 @@ keyboardCombos =
 type ScreenState
     = Configure
     | Continue Bool
+    | Rpg
 
 
 type alias Model =
@@ -276,6 +278,9 @@ navbar screen =
                     button [ noTab, onClick OpenConfigure, Attr.class "btn btn-primary btn-sm", class [ BufferRight ] ]
                         [ span [ Attr.class "fa fa-cog" ] []
                         ]
+
+                Rpg ->
+                    text ""
     in
         nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ ( "background-color", "rgba(0, 0, 0, 0.2)" ), ( "z-index", "0" ) ] ]
             [ div [ Attr.class "container-fluid" ]
@@ -324,6 +329,17 @@ configureView model =
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters model.dragDrop ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
+          -- , button
+          --     [ noTab
+          --     , onClick StartRpgMode
+          --     , Attr.class "btn btn-info btn-lg btn-block"
+          --     , class
+          --         [ BufferTop
+          --         , LargeButtonText
+          --         , TooltipContainer
+          --         ]
+          --     ]
+          --     [ text "Start Game Mode", div [] [] ]
         ]
 
 
@@ -413,6 +429,24 @@ noTab =
     Attr.tabindex -1
 
 
+rpgView : Model -> Html Msg
+rpgView model =
+    div [ Attr.class "container-fluid" ]
+        [ breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
+        , rpgRolesView model
+        , div [ Attr.class "row", style [ ( "padding-bottom", "1.333em" ) ] ]
+            [ button
+                [ noTab
+                , onClick StartTimer
+                , Attr.class "btn btn-info btn-lg btn-block"
+                , class [ BufferTop, TooltipContainer ]
+                , class [ LargeButtonText ]
+                ]
+                ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
+            ]
+        ]
+
+
 continueView : Bool -> Model -> Html Msg
 continueView showRotation model =
     let
@@ -450,6 +484,32 @@ tipView tip =
             , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", onClick (OpenExternalUrl tip.url) ] [ text "Learn More" ]
             ]
         , div [ Attr.class "row" ] [ Tip.tipView tip ]
+        ]
+
+
+rpgCardView : String -> List { complete : Bool, description : String } -> Html Msg
+rpgCardView roleName experience =
+    div [] [ h1 [] [ text roleName ], experienceView experience ]
+
+
+experienceView : List { complete : Bool, description : String } -> Html Msg
+experienceView experience =
+    div []
+        [ ul [] (List.map (\goal -> li [] [ input [ type_ "checkbox" ] [], span [] [ text goal.description ] ]) experience)
+        ]
+
+
+rpgRolesView : Model -> Html Msg
+rpgRolesView model =
+    div []
+        [ div [ Attr.class "row" ]
+            [ div [ Attr.class "col-md-6" ] [ rpgCardView "Driver" model.settings.mobsterData.rpgData.driver ]
+            , div [ Attr.class "col-md-6" ] [ rpgCardView "Navigator" model.settings.mobsterData.rpgData.navigator ]
+            ]
+        , div [ Attr.class "row" ]
+            [ div [ Attr.class "col-md-6" ] [ rpgCardView "Researcher" model.settings.mobsterData.rpgData.researcher ]
+            , div [ Attr.class "col-md-6" ] [ rpgCardView "Sponsor" model.settings.mobsterData.rpgData.sponsor ]
+            ]
         ]
 
 
@@ -743,6 +803,9 @@ view model =
 
                 Continue showRotation ->
                     continueView showRotation model
+
+                Rpg ->
+                    rpgView model
     in
         div [] [ navbar model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
 
@@ -797,6 +860,9 @@ update msg model =
 
                 _ ->
                     model ! []
+
+        StartRpgMode ->
+            { model | screenState = Rpg } ! []
 
         ShowRotationScreen ->
             case model.screenState of

@@ -1,4 +1,4 @@
-module Mobster.Rpg exposing (..)
+module Mobster.Rpg exposing (Experience, RpgData, init)
 
 
 type alias Experience =
@@ -12,6 +12,8 @@ type alias Goal =
 type alias RpgData =
     { driver : Experience
     , navigator : Experience
+    , researcher : Experience
+    , sponsor : Experience
     }
 
 
@@ -31,6 +33,18 @@ init =
             , "Filter the mob's ideas then tell the Driver exactly what to type"
             , "Tell the Driver only your high-level intent and have them implement the details"
             , "Create a failing test. Make it pass. Refactor."
+            ]
+    , researcher =
+        experienceThings
+            [ "Find and share relevant information from documentation"
+            , "Find and share relevant information from a blog"
+            , "Find and share relevant information from a coding forum"
+            ]
+    , sponsor =
+        experienceThings
+            [ "Amplify the unheard voice"
+            , "Pick the mobber with the least privilege (gender/race/class/seniority/etc) and support their contributions"
+            , "Celebrate moments of excellence"
             ]
     }
 
