@@ -21,9 +21,16 @@ type alias RpgMobster =
 
 present : MobsterData -> List RpgMobster
 present mobsterData =
-    mobsterData.mobsters
-        |> List.take 4
-        |> List.indexedMap toRpgMobster
+    if List.length mobsterData.mobsters >= 4 then
+        mobsterData.mobsters
+            ++ mobsterData.mobsters
+            |> List.drop mobsterData.nextDriver
+            |> List.take 4
+            |> List.indexedMap toRpgMobster
+    else
+        mobsterData.mobsters
+            |> List.take 4
+            |> List.indexedMap toRpgMobster
 
 
 experienceForRole : RpgRole -> Mobster.Rpg.RpgData -> Mobster.Rpg.Experience

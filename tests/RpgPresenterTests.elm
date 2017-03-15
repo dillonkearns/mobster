@@ -39,7 +39,7 @@ withoutExperience =
                         [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Sulu" 0
                         , RpgPresenter.RpgMobster RpgPresenter.Navigator [] "Kirk" 1
                         ]
-        , test "four mobsters in list" <|
+        , test "takes the first four mobsters in list" <|
             \() ->
                 { empty | mobsters = [ "Sulu", "Kirk", "Spock", "Uhura", "McCoy" ] |> toMobstersNoExperience }
                     |> RpgPresenter.present
@@ -48,6 +48,16 @@ withoutExperience =
                         , RpgPresenter.RpgMobster RpgPresenter.Navigator [] "Kirk" 1
                         , RpgPresenter.RpgMobster RpgPresenter.Researcher [] "Spock" 2
                         , RpgPresenter.RpgMobster RpgPresenter.Sponsor [] "Uhura" 3
+                        ]
+        , test "wraps around" <|
+            \() ->
+                { empty | nextDriver = 3, mobsters = [ "Sulu", "Kirk", "Spock", "Uhura", "McCoy" ] |> toMobstersNoExperience }
+                    |> RpgPresenter.present
+                    |> Expect.equal
+                        [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Uhura" 0
+                        , RpgPresenter.RpgMobster RpgPresenter.Navigator [] "McCoy" 1
+                        , RpgPresenter.RpgMobster RpgPresenter.Researcher [] "Sulu" 2
+                        , RpgPresenter.RpgMobster RpgPresenter.Sponsor [] "Kirk" 3
                         ]
         ]
 
