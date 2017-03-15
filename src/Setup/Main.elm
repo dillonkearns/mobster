@@ -23,6 +23,7 @@ import Array
 import Break
 import Setup.Settings as Settings
 import Html5.DragDrop as DragDrop
+import Mobster.Rpg as Rpg exposing (RpgData)
 
 
 { id, class, classList } =
@@ -511,16 +512,21 @@ experienceView roleName experience =
         ]
 
 
+rpgData : RpgData
+rpgData =
+    Rpg.init
+
+
 rpgRolesView : Model -> Html Msg
 rpgRolesView model =
     div []
         [ div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-6" ] [ rpgCardView "Driver" model.settings.mobsterData.rpgData.driver ]
-            , div [ Attr.class "col-md-6" ] [ rpgCardView "Navigator" model.settings.mobsterData.rpgData.navigator ]
+            [ div [ Attr.class "col-md-6" ] [ rpgCardView "Driver" rpgData.driver ]
+            , div [ Attr.class "col-md-6" ] [ rpgCardView "Navigator" rpgData.navigator ]
             ]
         , div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-6" ] [ rpgCardView "Researcher" model.settings.mobsterData.rpgData.researcher ]
-            , div [ Attr.class "col-md-6" ] [ rpgCardView "Sponsor" model.settings.mobsterData.rpgData.sponsor ]
+            [ div [ Attr.class "col-md-6" ] [ rpgCardView "Researcher" rpgData.researcher ]
+            , div [ Attr.class "col-md-6" ] [ rpgCardView "Sponsor" rpgData.sponsor ]
             ]
         ]
 

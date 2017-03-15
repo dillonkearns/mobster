@@ -12,13 +12,12 @@ type alias MobsterData =
     { mobsters : List String
     , inactiveMobsters : List String
     , nextDriver : Int
-    , rpgData : RpgData
     }
 
 
 empty : MobsterData
 empty =
-    { mobsters = [], inactiveMobsters = [], nextDriver = 0, rpgData = Mobster.Rpg.init }
+    { mobsters = [], inactiveMobsters = [], nextDriver = 0 }
 
 
 decoder : Decoder MobsterData
@@ -27,7 +26,6 @@ decoder =
         |> required "mobsters" (Decode.list Decode.string)
         |> optional "inactiveMobsters" (Decode.list Decode.string) []
         |> required "nextDriver" (Decode.int)
-        |> hardcoded Mobster.Rpg.init
 
 
 decode : Encode.Value -> Result String MobsterData
