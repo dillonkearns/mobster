@@ -23,12 +23,27 @@ present : MobsterData -> List RpgMobster
 present mobsterData =
     mobsterData.mobsters
         |> List.take 4
-        |> List.map .name
         |> List.indexedMap toRpgMobster
 
 
-toRpgMobster index mobsterName =
-    RpgMobster (getRoleForIndex index) [] mobsterName index
+experienceForRole : RpgRole -> Mobster.Rpg.RpgData -> Mobster.Rpg.Experience
+experienceForRole role rpgData =
+    case role of
+        Driver ->
+            rpgData.driver
+
+        Navigator ->
+            rpgData.navigator
+
+        Researcher ->
+            rpgData.researcher
+
+        Sponsor ->
+            rpgData.sponsor
+
+
+toRpgMobster index mobster =
+    RpgMobster (getRoleForIndex index) (experienceForRole (getRoleForIndex index) mobster.rpgData) mobster.name index
 
 
 getRoleForIndex index =
