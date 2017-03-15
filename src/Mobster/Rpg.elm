@@ -1,4 +1,4 @@
-module Mobster.Rpg exposing (Experience, RpgData, init)
+module Mobster.Rpg exposing (Experience, RpgData, Goal, init)
 
 
 type alias Experience =

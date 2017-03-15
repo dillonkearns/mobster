@@ -66,6 +66,7 @@ type Msg
     | RotateInHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
     | OpenExternalUrl String
+    | CompleteGoal Int Mobster.RpgPresenter.RpgRole Rpg.Goal
 
 
 type DragId
@@ -439,7 +440,7 @@ rpgView model =
         , div [ Attr.class "row", style [ ( "padding-bottom", "1.333em" ) ] ]
             [ button
                 [ noTab
-                , onClick StartTimer
+                , onClick (UpdateMobsterData MobsterOperation.NextTurn)
                 , Attr.class "btn btn-info btn-lg btn-block"
                 , class [ BufferTop, TooltipContainer ]
                 , class [ LargeButtonText ]
@@ -495,25 +496,25 @@ rpgCardView mobster =
         roleName =
             toString mobster.role
     in
-        div [] [ h1 [] [ text (roleName ++ " ( " ++ mobster.name ++ ")") ], experienceView roleName mobster.experience ]
+        div [] [ h1 [] [ text (roleName ++ " ( " ++ mobster.name ++ ")") ], experienceView mobster ]
 
 
-goalView : String -> Int -> { a | description : String, complete : Bool } -> Html msg
-goalView roleName index goal =
+goalView : Mobster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> Html Msg
+goalView mobster index goal =
     let
         labelId =
-            roleName ++ toString index
+            (toString mobster.role) ++ toString index
     in
-        li [ Attr.class "checkbox checkbox-success" ]
+        li [ Attr.class "checkbox checkbox-success", onClick (CompleteGoal index mobster.role goal) ]
             [ input [ Attr.id labelId, type_ "checkbox", Attr.checked goal.complete ] []
             , label [ Attr.for labelId ] [ text goal.description ]
             ]
 
 
-experienceView : String -> List { complete : Bool, description : String } -> Html Msg
-experienceView roleName experience =
+experienceView : Mobster.RpgPresenter.RpgMobster -> Html Msg
+experienceView mobster =
     div []
-        [ ul [] (List.indexedMap (goalView roleName) experience)
+        [ ul [] (List.indexedMap (goalView mobster) mobster.experience)
         ]
 
 
@@ -1033,6 +1034,16 @@ update msg model =
 
         OpenExternalUrl url ->
             model ! [ openExternalUrl url, hide () ]
+
+        CompleteGoal mobsterIndex role goal ->
+            -- Rpg.completeGoal mobsterIndex role goal model.mobsterData
+            let
+                _ =
+                    Debug.log
+                        "CompleteGoal"
+                        ( mobsterIndex, role, goal )
+            in
+                model ! []
 
 
 reorderOperation : List Mobster.Mobster -> Msg
