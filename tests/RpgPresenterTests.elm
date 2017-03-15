@@ -4,6 +4,7 @@ import Test exposing (..)
 import Expect
 import Mobster.RpgPresenter as RpgPresenter
 import Mobster.Data as MobsterData exposing (empty)
+import TestHelpers exposing (toMobsters)
 
 
 all : Test
@@ -22,12 +23,12 @@ withoutExperience =
                     |> Expect.equal []
         , test "single mobster in list" <|
             \() ->
-                { empty | mobsters = [ "Spock" ] }
+                { empty | mobsters = [ "Spock" ] |> toMobsters }
                     |> RpgPresenter.present
                     |> Expect.equal [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Spock" 0 ]
         , test "two mobsters in list" <|
             \() ->
-                { empty | mobsters = [ "Sulu", "Kirk" ] }
+                { empty | mobsters = [ "Sulu", "Kirk" ] |> toMobsters }
                     |> RpgPresenter.present
                     |> Expect.equal
                         [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Sulu" 0
@@ -35,7 +36,7 @@ withoutExperience =
                         ]
         , test "four mobsters in list" <|
             \() ->
-                { empty | mobsters = [ "Sulu", "Kirk", "Spock", "Uhura", "McCoy" ] }
+                { empty | mobsters = [ "Sulu", "Kirk", "Spock", "Uhura", "McCoy" ] |> toMobsters }
                     |> RpgPresenter.present
                     |> Expect.equal
                         [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Sulu" 0

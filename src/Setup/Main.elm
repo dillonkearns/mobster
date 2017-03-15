@@ -327,7 +327,7 @@ configureView model =
         , div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
-            , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView model.settings.mobsterData.inactiveMobsters model.dragDrop ]
+            , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
           -- , button
@@ -800,7 +800,7 @@ rotationView model =
     in
         div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop) mobsters) ]
-            , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.indexedMap inactiveMobsterViewWithHints inactiveMobsters) ]
+            , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.indexedMap inactiveMobsterViewWithHints (inactiveMobsters |> List.map .name)) ]
             ]
 
 
@@ -984,7 +984,7 @@ update msg model =
             { model | secondsSinceBreak = (model.secondsSinceBreak + elapsedSeconds), intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
 
         CopyActiveMobsters _ ->
-            model ! [ (copyActiveMobsters (String.join ", " model.settings.mobsterData.mobsters)) ]
+            model ! [ (copyActiveMobsters (String.join ", " (model.settings.mobsterData.mobsters |> List.map .name))) ]
 
         ResetBreakData ->
             (model |> resetBreakData) ! []
@@ -1034,7 +1034,7 @@ update msg model =
             model ! [ openExternalUrl url, hide () ]
 
 
-reorderOperation : List String -> Msg
+reorderOperation : List Mobster.Mobster -> Msg
 reorderOperation shuffledMobsters =
     (UpdateMobsterData (MobsterOperation.Reorder shuffledMobsters))
 

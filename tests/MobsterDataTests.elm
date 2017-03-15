@@ -5,6 +5,7 @@ import Expect
 import Mobster.Data exposing (empty)
 import Test exposing (..)
 import Test.Extra exposing (..)
+import TestHelpers exposing (toMobsters)
 
 
 all : Test
@@ -13,22 +14,22 @@ all =
         [ describe "containsName"
             [ test "catches exact matches" <|
                 \() ->
-                    { empty | mobsters = [ "Jane" ] }
+                    { empty | mobsters = [ "Jane" ] |> toMobsters }
                         |> Mobster.Data.containsName "Jane"
                         |> Expect.equal True
             , test "catches matches with different casing" <|
                 \() ->
-                    { empty | mobsters = [ "jane" ] }
+                    { empty | mobsters = [ "jane" ] |> toMobsters }
                         |> Mobster.Data.containsName "Jane"
                         |> Expect.equal True
             , test "finds matches on bench" <|
                 \() ->
-                    { empty | inactiveMobsters = [ "Jane" ] }
+                    { empty | inactiveMobsters = [ "Jane" ] |> toMobsters }
                         |> Mobster.Data.containsName "Jane"
                         |> Expect.equal True
             , test "doesn't find false matches" <|
                 \() ->
-                    { empty | inactiveMobsters = [ "Joe" ] }
+                    { empty | inactiveMobsters = [ "Joe" ] |> toMobsters }
                         |> Mobster.Data.containsName "Jane"
                         |> Expect.equal False
             ]

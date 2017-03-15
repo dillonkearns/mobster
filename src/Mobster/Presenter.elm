@@ -66,8 +66,8 @@ nextDriverNavigator mobsterData =
         }
 
 
-mobsterListItemToMobster : DriverNavigator -> Int -> String -> MobsterWithRole
-mobsterListItemToMobster driverNavigator index mobsterName =
+mobsterListItemToMobster : DriverNavigator -> Int -> Mobster.Data.Mobster -> MobsterWithRole
+mobsterListItemToMobster driverNavigator index mobster =
     let
         role =
             if index == driverNavigator.driver.index then
@@ -77,12 +77,12 @@ mobsterListItemToMobster driverNavigator index mobsterName =
             else
                 Nothing
     in
-        { name = mobsterName, role = role, index = index }
+        { name = mobster.name, role = role, index = index }
 
 
 asMobsterList : MobsterData -> List Mobster
 asMobsterList mobsterData =
-    List.indexedMap (\index mobsterName -> { name = mobsterName, index = index }) mobsterData.mobsters
+    List.indexedMap (\index mobster -> { name = mobster.name, index = index }) mobsterData.mobsters
 
 
 mobsters : MobsterData -> Mobsters

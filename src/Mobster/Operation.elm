@@ -1,8 +1,9 @@
 module Mobster.Operation exposing (MobsterOperation(..), updateMoblist, add)
 
-import Mobster.Data exposing (nextIndex, MobsterData)
+import Mobster.Data exposing (nextIndex, MobsterData, Mobster)
 import Array
 import ListHelpers exposing (..)
+import Mobster.Rpg as Rpg exposing (RpgData)
 
 
 type MobsterOperation
@@ -13,7 +14,7 @@ type MobsterOperation
     | Bench Int
     | RotateIn Int
     | Add String
-    | Reorder (List String)
+    | Reorder (List Mobster)
 
 
 updateMoblist : MobsterOperation -> MobsterData -> MobsterData
@@ -50,7 +51,7 @@ updateMoblist mobsterOperation mobsterData =
 
 add : String -> MobsterData -> MobsterData
 add mobster list =
-    { list | mobsters = (List.append list.mobsters [ mobster ]) }
+    { list | mobsters = (List.append list.mobsters [ { name = mobster, rpgData = Rpg.init } ]) }
 
 
 rotateIn : Int -> MobsterData -> MobsterData
@@ -106,7 +107,7 @@ setNextDriver newDriver mobsterData =
     { mobsterData | nextDriver = newDriver }
 
 
-reorder : List String -> MobsterData -> MobsterData
+reorder : List Mobster.Data.Mobster -> MobsterData -> MobsterData
 reorder shuffledMobsters mobsterData =
     { mobsterData | mobsters = shuffledMobsters, nextDriver = 0 }
 

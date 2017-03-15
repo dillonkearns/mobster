@@ -23,6 +23,7 @@ present : MobsterData -> List RpgMobster
 present mobsterData =
     mobsterData.mobsters
         |> List.take 4
+        |> List.map .name
         |> List.indexedMap toRpgMobster
 
 

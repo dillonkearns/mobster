@@ -4,6 +4,7 @@ import Test exposing (..)
 import Expect
 import Mobster.Presenter
 import Mobster.Data as Mobster exposing (empty)
+import TestHelpers exposing (toMobsters)
 
 
 all : Test
@@ -13,7 +14,7 @@ all =
             \() ->
                 let
                     startingList =
-                        { empty | mobsters = [ "Jane Doe", "John Smith" ] }
+                        { empty | mobsters = [ "Jane Doe", "John Smith" ] |> toMobsters }
 
                     expectedDriver =
                         { name = "Jane Doe", index = 0 }
@@ -27,7 +28,7 @@ all =
             \() ->
                 let
                     list =
-                        { empty | mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 1 }
+                        { empty | mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ] |> toMobsters, nextDriver = 1 }
 
                     expectedDriver =
                         { name = "John Smith", index = 1 }
@@ -41,7 +42,7 @@ all =
             \() ->
                 let
                     list =
-                        { empty | mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ], nextDriver = 2 }
+                        { empty | mobsters = [ "Jane Doe", "John Smith", "Bob Jones" ] |> toMobsters, nextDriver = 2 }
 
                     expectedDriver =
                         { name = "Bob Jones", index = 2 }
@@ -55,7 +56,7 @@ all =
             \() ->
                 let
                     startingList =
-                        { empty | mobsters = [ "Jane Doe" ], nextDriver = 0 }
+                        { empty | mobsters = [ "Jane Doe" ] |> toMobsters, nextDriver = 0 }
 
                     expectedDriver =
                         { name = "Jane Doe", index = 0 }

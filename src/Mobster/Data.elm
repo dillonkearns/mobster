@@ -1,4 +1,4 @@
-module Mobster.Data exposing (MobsterData, empty, decode, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex)
+module Mobster.Data exposing (MobsterData, Mobster, empty, decode, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex)
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
@@ -8,9 +8,15 @@ import Random
 import Mobster.Rpg exposing (RpgData)
 
 
+type alias Mobster =
+    { name : String
+    , rpgData : RpgData
+    }
+
+
 type alias MobsterData =
-    { mobsters : List String
-    , inactiveMobsters : List String
+    { mobsters : List Mobster
+    , inactiveMobsters : List Mobster
     , nextDriver : Int
     }
 
@@ -23,8 +29,11 @@ empty =
 decoder : Decoder MobsterData
 decoder =
     Pipeline.decode MobsterData
-        |> required "mobsters" (Decode.list Decode.string)
-        |> optional "inactiveMobsters" (Decode.list Decode.string) []
+        -- |> required "mobsters" (Decode.list Decode.string)
+        -- |> optional "inactiveMobsters" (Decode.list Decode.string) []
+        |>
+            hardcoded []
+        |> hardcoded []
         |> required "nextDriver" (Decode.int)
 
 
@@ -33,27 +42,29 @@ decode data =
     Decode.decodeValue decoder data
 
 
-randomizeMobsters : MobsterData -> Random.Generator (List String)
+randomizeMobsters : MobsterData -> Random.Generator (List Mobster)
 randomizeMobsters mobsterData =
     Random.List.shuffle mobsterData.mobsters
 
 
 currentMobsterNames : MobsterData -> String
 currentMobsterNames mobsterData =
-    String.join ", " mobsterData.mobsters
+    mobsterData.mobsters
+        |> List.map .name
+        |> String.join ", "
 
 
-nameExists : String -> List String -> Bool
+nameExists : String -> List Mobster -> Bool
 nameExists mobster list =
     list
+        |> List.map .name
         |> List.map (\mobsterName -> String.toLower mobsterName)
         |> List.member (String.toLower mobster)
 
 
 containsName : String -> MobsterData -> Bool
 containsName string mobsterData =
-    nameExists string mobsterData.mobsters
-        || nameExists string mobsterData.inactiveMobsters
+    nameExists string mobsterData.mobsters || nameExists string mobsterData.inactiveMobsters
 
 
 nextIndex : Int -> MobsterData -> Int
