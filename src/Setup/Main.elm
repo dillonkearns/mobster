@@ -24,6 +24,7 @@ import Break
 import Setup.Settings as Settings
 import Html5.DragDrop as DragDrop
 import Mobster.Rpg as Rpg exposing (RpgData)
+import Mobster.RpgPresenter
 
 
 { id, class, classList } =
@@ -488,9 +489,13 @@ tipView tip =
         ]
 
 
-rpgCardView : String -> List { complete : Bool, description : String } -> Html Msg
-rpgCardView roleName experience =
-    div [] [ h1 [] [ text roleName ], experienceView roleName experience ]
+rpgCardView : Mobster.RpgPresenter.RpgMobster -> Html Msg
+rpgCardView mobster =
+    let
+        roleName =
+            toString mobster.role
+    in
+        div [] [ h1 [] [ text (roleName ++ " ( " ++ mobster.name ++ ")") ], experienceView roleName mobster.experience ]
 
 
 goalView : String -> Int -> { a | description : String, complete : Bool } -> Html msg
@@ -519,16 +524,12 @@ rpgData =
 
 rpgRolesView : Model -> Html Msg
 rpgRolesView model =
-    div []
-        [ div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-6" ] [ rpgCardView "Driver" rpgData.driver ]
-            , div [ Attr.class "col-md-6" ] [ rpgCardView "Navigator" rpgData.navigator ]
-            ]
-        , div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-6" ] [ rpgCardView "Researcher" rpgData.researcher ]
-            , div [ Attr.class "col-md-6" ] [ rpgCardView "Sponsor" rpgData.sponsor ]
-            ]
-        ]
+    div [ Attr.class "row" ] (List.map rpgRoleView (model.settings.mobsterData |> Mobster.RpgPresenter.present))
+
+
+rpgRoleView : Mobster.RpgPresenter.RpgMobster -> Html Msg
+rpgRoleView mobster =
+    div [ Attr.class "col-md-6" ] [ rpgCardView mobster ]
 
 
 nextDriverNavigatorView : Model -> Html Msg
