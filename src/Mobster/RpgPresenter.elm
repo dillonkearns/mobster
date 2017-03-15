@@ -21,7 +21,9 @@ type alias RpgMobster =
 
 present : MobsterData -> List RpgMobster
 present mobsterData =
-    List.indexedMap toRpgMobster mobsterData.mobsters
+    mobsterData.mobsters
+        |> List.take 4
+        |> List.indexedMap toRpgMobster
 
 
 toRpgMobster index mobsterName =
@@ -29,7 +31,18 @@ toRpgMobster index mobsterName =
 
 
 getRoleForIndex index =
-    if index == 0 then
-        Driver
-    else
-        Navigator
+    case index of
+        0 ->
+            Driver
+
+        1 ->
+            Navigator
+
+        2 ->
+            Researcher
+
+        3 ->
+            Sponsor
+
+        _ ->
+            Sponsor
