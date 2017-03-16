@@ -500,14 +500,14 @@ rpgCardView mobster =
 
 
 goalView : Mobster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> Html Msg
-goalView mobster index goal =
+goalView mobster goalIndex goal =
     let
         labelId =
-            (toString mobster.role) ++ toString index
+            (toString mobster.role) ++ toString goalIndex
     in
-        li [ Attr.class "checkbox checkbox-success", onClick (CompleteGoal index mobster.role goal) ]
+        li [ Attr.class "checkbox checkbox-success", onClick (UpdateMobsterData (MobsterOperation.CompleteGoal goalIndex mobster.role goalIndex)) ]
             [ input [ Attr.id labelId, type_ "checkbox", Attr.checked goal.complete ] []
-            , label [ Attr.for labelId ] [ text goal.description ]
+            , label [ Attr.for labelId ] [ text (goal.description ++ " " ++ (toString goal.complete)) ]
             ]
 
 

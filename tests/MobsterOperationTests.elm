@@ -5,11 +5,52 @@ import Expect
 import Mobster.Data as Mobster exposing (MobsterData, empty)
 import Mobster.Operation exposing (MobsterOperation(..), updateMoblist)
 import TestHelpers exposing (toMobsters)
+import Mobster.RpgPresenter
+
+
+fakeExperience =
+    { driver = [ { complete = False, description = "driver goal" } ]
+    , navigator = [ { complete = False, description = "navigator goal" } ]
+    , researcher = [ { complete = False, description = "researcher goal" } ]
+    , sponsor = [ { complete = False, description = "sponsor goal" } ]
+    }
+
+
+fakeExperience2 =
+    { driver = [ { complete = True, description = "driver goal" } ]
+    , navigator = [ { complete = False, description = "navigator goal" } ]
+    , researcher = [ { complete = False, description = "researcher goal" } ]
+    , sponsor = [ { complete = False, description = "sponsor goal" } ]
+    }
+
+
+createMobster : String -> Mobster.Mobster
+createMobster name =
+    Mobster.Mobster name fakeExperience
 
 
 all : Test
 all =
-    describe "mobster operation" [ benchCases, rotateInCases, removeCases, rotateCases, moveCases, addCases ]
+    describe "mobster operation" [ benchCases, rotateInCases, removeCases, rotateCases, moveCases, addCases, completeGoalCases ]
+
+
+completeGoalCases : Test
+completeGoalCases =
+    describe "complete goal"
+        [ testOperation "driver doesn't change when navigator is removed"
+            { empty
+                | mobsters = [ createMobster "Sulu", createMobster "Kirk", createMobster "Spock", createMobster "McCoy" ]
+            }
+            (CompleteGoal 0 Mobster.RpgPresenter.Driver 0)
+            { empty
+                | mobsters =
+                    [ Mobster.Mobster "Sulu" fakeExperience2
+                    , createMobster "Kirk"
+                    , createMobster "Spock"
+                    , createMobster "McCoy"
+                    ]
+            }
+        ]
 
 
 benchCases : Test

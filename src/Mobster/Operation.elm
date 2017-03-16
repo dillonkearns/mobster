@@ -4,6 +4,7 @@ import Mobster.Data exposing (nextIndex, MobsterData, Mobster)
 import Array
 import ListHelpers exposing (..)
 import Mobster.Rpg as Rpg exposing (RpgData)
+import Mobster.RpgPresenter exposing (RpgRole)
 
 
 type MobsterOperation
@@ -15,6 +16,7 @@ type MobsterOperation
     | RotateIn Int
     | Add String
     | Reorder (List Mobster)
+    | CompleteGoal Int RpgRole Int
 
 
 updateMoblist : MobsterOperation -> MobsterData -> MobsterData
@@ -47,6 +49,67 @@ updateMoblist mobsterOperation mobsterData =
 
         Reorder reorderedMobsters ->
             reorder reorderedMobsters mobsterData
+
+        CompleteGoal mobsterIndex role goalIndex ->
+            mobsterData
+                |> completeGoal mobsterIndex role goalIndex
+
+
+mobsterWithCompletedGoal : Int -> List Mobster -> Maybe Mobster
+mobsterWithCompletedGoal mobsterIndex mobsterData =
+    let
+        maybeMobster =
+            mobsterData
+                |> Array.fromList
+                |> Array.get mobsterIndex
+    in
+        case maybeMobster of
+            Just mobster ->
+                Just (updateMobsterGoal 0 mobster)
+
+            Nothing ->
+                Nothing
+
+
+updateMobsterGoal : Int -> Mobster -> Mobster
+updateMobsterGoal goalIndex mobster =
+    let
+        changedGoal =
+            { complete = True, description = "driver goal" }
+
+        updatedExperience =
+            mobster.rpgData.driver
+                |> Array.fromList
+                |> Array.set goalIndex changedGoal
+                |> Array.toList
+
+        rpgData =
+            mobster.rpgData
+
+        updatedRpgData =
+            { rpgData | driver = updatedExperience }
+    in
+        { mobster | rpgData = updatedRpgData }
+
+
+completeGoal : Int -> Mobster.RpgPresenter.RpgRole -> Int -> Mobster.Data.MobsterData -> MobsterData
+completeGoal mobsterIndex role goalIndex mobsterData =
+    let
+        withGoal =
+            mobsterWithCompletedGoal mobsterIndex mobsterData.mobsters
+
+        updatedMobsters =
+            case withGoal of
+                Just mobsterWithGoal ->
+                    mobsterData.mobsters
+                        |> Array.fromList
+                        |> Array.set mobsterIndex mobsterWithGoal
+                        |> Array.toList
+
+                Nothing ->
+                    mobsterData.mobsters
+    in
+        { mobsterData | mobsters = updatedMobsters }
 
 
 add : String -> MobsterData -> MobsterData
