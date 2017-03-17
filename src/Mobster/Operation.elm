@@ -1,10 +1,10 @@
-module Mobster.Operation exposing (MobsterOperation(..), updateMoblist, add)
+module Mobster.Operation exposing (MobsterOperation(..), updateMoblist, add, completeGoalInRpgData)
 
-import Mobster.Data exposing (nextIndex, MobsterData, Mobster)
 import Array
 import ListHelpers exposing (..)
+import Mobster.Data exposing (Mobster, MobsterData, nextIndex)
 import Mobster.Rpg as Rpg exposing (RpgData)
-import Mobster.RpgPresenter exposing (RpgRole)
+import Mobster.RpgPresenter exposing (RpgRole, RpgRole(..))
 
 
 type MobsterOperation
@@ -55,8 +55,8 @@ updateMoblist mobsterOperation mobsterData =
                 |> completeGoal mobsterIndex role goalIndex
 
 
-mobsterWithCompletedGoal : Int -> List Mobster -> Maybe Mobster
-mobsterWithCompletedGoal mobsterIndex mobsterData =
+mobsterWithCompletedGoal : Int -> Mobster.RpgPresenter.RpgRole -> Int -> List Mobster -> Maybe Mobster
+mobsterWithCompletedGoal mobsterIndex role goalIndex mobsterData =
     let
         maybeMobster =
             mobsterData
@@ -65,38 +65,21 @@ mobsterWithCompletedGoal mobsterIndex mobsterData =
     in
         case maybeMobster of
             Just mobster ->
-                Just (updateMobsterGoal 0 mobster)
+                let
+                    updatedRpgData =
+                        completeGoalInRpgData role goalIndex mobster.rpgData
+                in
+                    Just { mobster | rpgData = updatedRpgData }
 
             Nothing ->
                 Nothing
-
-
-updateMobsterGoal : Int -> Mobster -> Mobster
-updateMobsterGoal goalIndex mobster =
-    let
-        changedGoal =
-            { complete = True, description = "driver goal" }
-
-        updatedExperience =
-            mobster.rpgData.driver
-                |> Array.fromList
-                |> Array.set goalIndex changedGoal
-                |> Array.toList
-
-        rpgData =
-            mobster.rpgData
-
-        updatedRpgData =
-            { rpgData | driver = updatedExperience }
-    in
-        { mobster | rpgData = updatedRpgData }
 
 
 completeGoal : Int -> Mobster.RpgPresenter.RpgRole -> Int -> Mobster.Data.MobsterData -> MobsterData
 completeGoal mobsterIndex role goalIndex mobsterData =
     let
         withGoal =
-            mobsterWithCompletedGoal mobsterIndex mobsterData.mobsters
+            mobsterWithCompletedGoal mobsterIndex role goalIndex mobsterData.mobsters
 
         updatedMobsters =
             case withGoal of
@@ -188,3 +171,84 @@ setNextDriverInBounds mobsterData =
                 mobsterData.nextDriver
     in
         { mobsterData | nextDriver = indexInBounds }
+
+
+completeGoalInRpgData : Mobster.RpgPresenter.RpgRole -> Int -> RpgData -> RpgData
+completeGoalInRpgData role goalIndex rpgData =
+    let
+        experience =
+            case role of
+                Driver ->
+                    rpgData.driver
+
+                Navigator ->
+                    rpgData.navigator
+
+                Researcher ->
+                    rpgData.researcher
+
+                Sponsor ->
+                    rpgData.sponsor
+
+        goal =
+            goalFromIndex goalIndex experience
+
+        updatedExperience =
+            experience
+                |> Array.fromList
+                |> Array.set goalIndex (completeGoal2 goal)
+                |> Array.toList
+
+        updatedRpgData =
+            case role of
+                Driver ->
+                    { rpgData | driver = updatedExperience }
+
+                Navigator ->
+                    { rpgData | navigator = updatedExperience }
+
+                Researcher ->
+                    { rpgData | researcher = updatedExperience }
+
+                Sponsor ->
+                    { rpgData | sponsor = updatedExperience }
+    in
+        updatedRpgData
+
+
+completeGoal2 goal =
+    { goal | complete = True }
+
+
+goalFromIndex goalIndex experience =
+    experience
+        |> Array.fromList
+        |> Array.get goalIndex
+        |> Maybe.withDefault { description = "", complete = True }
+
+
+updateMobsterGoal : Int -> Mobster -> Mobster
+updateMobsterGoal goalIndex mobster =
+    let
+        goal =
+            mobster.rpgData.driver
+                |> Array.fromList
+                |> Array.get goalIndex
+                |> Maybe.withDefault { description = "", complete = True }
+
+        completeGoal =
+            { goal | complete = True }
+
+        updatedExperience =
+            mobster.rpgData.driver
+                |> Array.fromList
+                |> Array.set goalIndex completeGoal
+                |> Array.toList
+
+        rpgData =
+            mobster.rpgData
+
+        updatedRpgData =
+            { rpgData | driver = updatedExperience }
+    in
+        { mobster | rpgData = updatedRpgData }
