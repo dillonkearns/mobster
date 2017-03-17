@@ -66,7 +66,6 @@ type Msg
     | RotateInHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
     | OpenExternalUrl String
-    | CompleteGoal Int Mobster.RpgPresenter.RpgRole Rpg.Goal
 
 
 type DragId
@@ -503,9 +502,9 @@ goalView : Mobster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> Html Msg
 goalView mobster goalIndex goal =
     let
         labelId =
-            (toString mobster.role) ++ toString goalIndex
+            mobster.name ++ (toString mobster.role) ++ toString goalIndex
     in
-        li [ Attr.class "checkbox checkbox-success", onClick (UpdateMobsterData (MobsterOperation.CompleteGoal goalIndex mobster.role goalIndex)) ]
+        li [ Attr.class "checkbox checkbox-success", onClick (UpdateMobsterData (MobsterOperation.CompleteGoal mobster.index mobster.role goalIndex)) ]
             [ input [ Attr.id labelId, type_ "checkbox", Attr.checked goal.complete ] []
             , label [ Attr.for labelId ] [ text (goal.description ++ " " ++ (toString goal.complete)) ]
             ]
@@ -1034,16 +1033,6 @@ update msg model =
 
         OpenExternalUrl url ->
             model ! [ openExternalUrl url, hide () ]
-
-        CompleteGoal mobsterIndex role goal ->
-            -- Rpg.completeGoal mobsterIndex role goal model.mobsterData
-            let
-                _ =
-                    Debug.log
-                        "CompleteGoal"
-                        ( mobsterIndex, role, goal )
-            in
-                model ! []
 
 
 reorderOperation : List Mobster.Mobster -> Msg
