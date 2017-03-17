@@ -54,10 +54,10 @@ withoutExperience =
                 { empty | nextDriver = 3, mobsters = [ "Sulu", "Kirk", "Spock", "Uhura", "McCoy" ] |> toMobstersNoExperience }
                     |> RpgPresenter.present
                     |> Expect.equal
-                        [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Uhura" 0
-                        , RpgPresenter.RpgMobster RpgPresenter.Navigator [] "McCoy" 1
-                        , RpgPresenter.RpgMobster RpgPresenter.Researcher [] "Sulu" 2
-                        , RpgPresenter.RpgMobster RpgPresenter.Sponsor [] "Kirk" 3
+                        [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Uhura" 3
+                        , RpgPresenter.RpgMobster RpgPresenter.Navigator [] "McCoy" 4
+                        , RpgPresenter.RpgMobster RpgPresenter.Researcher [] "Sulu" 0
+                        , RpgPresenter.RpgMobster RpgPresenter.Sponsor [] "Kirk" 1
                         ]
         ]
 

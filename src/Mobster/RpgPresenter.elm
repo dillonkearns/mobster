@@ -21,16 +21,20 @@ type alias RpgMobster =
 
 present : MobsterData -> List RpgMobster
 present mobsterData =
-    if List.length mobsterData.mobsters >= 4 then
-        mobsterData.mobsters
-            ++ mobsterData.mobsters
-            |> List.drop mobsterData.nextDriver
-            |> List.take 4
-            |> List.indexedMap toRpgMobster
-    else
-        mobsterData.mobsters
-            |> List.take 4
-            |> List.indexedMap toRpgMobster
+    let
+        mobstersWithIndex =
+            List.indexedMap (,) mobsterData.mobsters
+    in
+        if List.length mobsterData.mobsters >= 4 then
+            mobstersWithIndex
+                ++ mobstersWithIndex
+                |> List.drop mobsterData.nextDriver
+                |> List.take 4
+                |> List.indexedMap toRpgMobster
+        else
+            mobstersWithIndex
+                |> List.take 4
+                |> List.indexedMap toRpgMobster
 
 
 experienceForRole : RpgRole -> Mobster.Rpg.RpgData -> Mobster.Rpg.Experience
@@ -49,8 +53,8 @@ experienceForRole role rpgData =
             rpgData.sponsor
 
 
-toRpgMobster index mobster =
-    RpgMobster (getRoleForIndex index) (experienceForRole (getRoleForIndex index) mobster.rpgData) mobster.name index
+toRpgMobster roleIndex ( mobsterIndex, mobster ) =
+    RpgMobster (getRoleForIndex roleIndex) (experienceForRole (getRoleForIndex roleIndex) mobster.rpgData) mobster.name mobsterIndex
 
 
 getRoleForIndex index =
