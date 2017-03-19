@@ -1,30 +1,30 @@
 port module Setup.Main exposing (..)
 
-import Html exposing (..)
-import Html.Attributes as Attr exposing (value, type_, id, style, src, title, href, target, placeholder)
-import Html.Events exposing (on, keyCode, onClick, onInput, onSubmit)
-import Html.Events.Extra exposing (onEnter)
-import Json.Decode as Json
-import Task
+import Array
+import Break
 import Dom
+import Html exposing (..)
+import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
+import Html.CssHelpers
+import Html.Events exposing (keyCode, on, onClick, onInput, onSubmit)
+import Html.Events.Extra exposing (onEnter)
+import Html5.DragDrop as DragDrop
+import Json.Decode as Decode
+import Json.Encode as Encode
+import Keyboard.Combo
 import Mobster.Data as Mobster
 import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
-import Json.Decode as Decode
-import Keyboard.Combo
-import Random
-import Tip
-import Setup.PlotScatter
-import Svg
-import Update.Extra
-import Html.CssHelpers
-import Setup.Stylesheet exposing (CssClasses(..))
-import Array
-import Break
-import Setup.Settings as Settings
-import Html5.DragDrop as DragDrop
 import Mobster.Rpg as Rpg exposing (RpgData)
 import Mobster.RpgPresenter
+import Random
+import Setup.PlotScatter
+import Setup.Settings as Settings
+import Setup.Stylesheet exposing (CssClasses(..))
+import Svg
+import Task
+import Tip
+import Update.Extra
 
 
 { id, class, classList } =
@@ -175,7 +175,7 @@ flags model =
 port startTimer : TimerConfiguration -> Cmd msg
 
 
-port saveSettings : Settings.Data -> Cmd msg
+port saveSettings : Encode.Value -> Cmd msg
 
 
 port saveMobstersFile : String -> Cmd msg
@@ -866,7 +866,7 @@ updateSettings settingsUpdater ({ settings } as model) =
         updatedSettings =
             settingsUpdater settings
     in
-        { model | settings = updatedSettings } ! [ saveSettings updatedSettings ]
+        { model | settings = updatedSettings } ! [ saveSettings (updatedSettings |> Settings.encoder) ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -1105,7 +1105,11 @@ init { onMac, settings } =
                     settings
 
                 Err errorString ->
-                    Settings.initial
+                    let
+                        _ =
+                            Debug.log "init failed to decode settings" errorString
+                    in
+                        Settings.initial
     in
         initialModel initialSettings onMac ! [] |> saveActiveMobsters
 

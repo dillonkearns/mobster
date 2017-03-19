@@ -1,4 +1,4 @@
-module Mobster.Data exposing (MobsterData, Mobster, empty, decode, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex)
+module Mobster.Data exposing (MobsterData, Mobster, empty, decode, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex, encoder)
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
@@ -6,6 +6,7 @@ import Json.Decode.Pipeline as Pipeline exposing (required, optional, hardcoded)
 import Random.List
 import Random
 import Mobster.Rpg as Rpg exposing (RpgData)
+import Basics.Extra exposing ((=>))
 
 
 type alias Mobster =
@@ -19,6 +20,20 @@ type alias MobsterData =
     , inactiveMobsters : List Mobster
     , nextDriver : Int
     }
+
+
+encoder : MobsterData -> Encode.Value
+encoder mobsterData =
+    Encode.object
+        [ "mobsters" => Encode.list (List.map encodeMobster mobsterData.mobsters)
+        , "inactiveMobsters" => Encode.list (List.map encodeMobster mobsterData.inactiveMobsters)
+        , "nextDriver" => Encode.int mobsterData.nextDriver
+        ]
+
+
+encodeMobster : Mobster -> Encode.Value
+encodeMobster mobster =
+    Encode.string mobster.name
 
 
 empty : MobsterData
