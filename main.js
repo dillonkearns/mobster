@@ -185,7 +185,7 @@ function createWindow () {
     focusMainWindow()
   })
 
-  ipcMain.on('quit', (event) => {
+  ipcMain.on('Quit', (event) => {
     app.quit()
   })
 
@@ -193,11 +193,11 @@ function createWindow () {
     new BrowserWindow({show: true, frame: true, alwaysOnTop: true}).loadURL('https://dillonkearns.typeform.com/to/k9P6iV')
   })
 
-  ipcMain.on('hide', (event) => {
+  ipcMain.on('Hide', (event) => {
     toggleMainWindow()
   })
 
-  ipcMain.on('quit-and-install', () => {
+  ipcMain.on('QuitAndInstall', () => {
     autoUpdater.quitAndInstall()
   })
 

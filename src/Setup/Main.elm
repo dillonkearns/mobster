@@ -54,9 +54,6 @@ type Msg
     | ChangeExperiment
     | UpdateExperimentInput String
     | EnterRating Int
-    | Hide
-    | Quit
-    | QuitAndInstall
     | ComboMsg Keyboard.Combo.Msg
     | ShuffleMobsters
     | TimeElapsed Int
@@ -71,6 +68,9 @@ type Msg
 
 type IpcMessage
     = ShowFeedbackForm
+    | Hide
+    | Quit
+    | QuitAndInstall
 
 
 type DragId
@@ -186,16 +186,7 @@ port saveSettings : Encode.Value -> Cmd msg
 port saveMobstersFile : String -> Cmd msg
 
 
-port hide : () -> Cmd msg
-
-
-port quit : () -> Cmd msg
-
-
 port sendIpcMessage : String -> Cmd msg
-
-
-port quitAndInstall : () -> Cmd msg
 
 
 port selectDuration : String -> Cmd msg
@@ -298,11 +289,11 @@ navbar screen =
                 , div [ Attr.class "nav navbar-nav navbar-right" ]
                     [ configureScreenButton
                     , invisibleTrigger [ Attr.class "navbar-btn", class [ BufferRight ] ] []
-                    , button [ noTab, onClick Hide, Attr.class "btn btn-sm navbar-btn btn-warning", class [ BufferRight ] ]
+                    , button [ noTab, onClick (SendIpcMessage Hide), Attr.class "btn btn-sm navbar-btn btn-warning", class [ BufferRight ] ]
                         [ text "Hide "
                         , span [ Attr.class "fa fa-minus-square-o" ] []
                         ]
-                    , button [ noTab, onClick Quit, Attr.class "btn btn-sm navbar-btn btn-danger", class [ BufferRight ] ]
+                    , button [ noTab, onClick (SendIpcMessage Quit), Attr.class "btn btn-sm navbar-btn btn-danger", class [ BufferRight ] ]
                         [ text "Quit "
                         , span [ Attr.class "fa fa-times-circle-o" ] []
                         ]
@@ -779,7 +770,7 @@ updateAvailableView availableUpdateVersion =
             div [ Attr.class "alert alert-success" ]
                 [ span [ Attr.class "glyphicon glyphicon-flag", class [ BufferRight ] ] []
                 , text ("A new version is downloaded and ready to install. ")
-                , a [ onClick QuitAndInstall, Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
+                , a [ onClick (SendIpcMessage QuitAndInstall), Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
                 , text "."
                 ]
 
@@ -936,12 +927,6 @@ update msg model =
         UpdateMobsterInput text ->
             { model | newMobster = text } ! []
 
-        Hide ->
-            model ! [ hide () ]
-
-        Quit ->
-            model ! [ quit () ]
-
         ComboMsg msg ->
             let
                 updatedCombos =
@@ -982,9 +967,6 @@ update msg model =
         UpdateAvailable availableUpdateVersion ->
             { model | availableUpdateVersion = Just availableUpdateVersion } ! []
 
-        QuitAndInstall ->
-            model ! [ quitAndInstall () ]
-
         RotateInHotkey index ->
             if model.screenState == (Continue True) then
                 update (UpdateMobsterData (MobsterOperation.RotateIn index)) model
@@ -1021,7 +1003,9 @@ update msg model =
             model ! [ sendIpcMessage (toString ipcMessage) ]
 
         OpenExternalUrl url ->
-            model ! [ openExternalUrl url, hide () ]
+            model
+                ! [ openExternalUrl url ]
+                |> Update.Extra.andThen update (SendIpcMessage Hide)
 
 
 reorderOperation : List Mobster.Mobster -> Msg

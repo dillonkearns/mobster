@@ -424,18 +424,8 @@
       ipcRenderer.send('start-timer', flags)
     })
 
-    setup.ports.hide.subscribe(function() { ipcRenderer.send('hide') })
-
-    setup.ports.quit.subscribe(function() {
-      ipcRenderer.send('quit')
-    })
-
     setup.ports.selectDuration.subscribe(function(id) {
       document.getElementById(id).select()
-    })
-
-    setup.ports.quitAndInstall.subscribe(function() {
-      ipcRenderer.send('quit-and-install')
     })
 
     setup.ports.sendIpcMessage.subscribe(function(message) {
