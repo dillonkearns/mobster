@@ -25,6 +25,7 @@ import Svg
 import Task
 import Tip
 import Update.Extra
+import Basics.Extra exposing ((=>))
 
 
 { id, class, classList } =
@@ -223,7 +224,7 @@ timerDurationInputView duration =
             , Attr.max (toString maxTimerMinutes)
             , value (toString duration)
             , class [ BufferRight ]
-            , style [ ( "font-size", "4.0rem" ) ]
+            , style [ "font-size" => "4.0rem" ]
             ]
             []
         , text "Minutes"
@@ -248,7 +249,7 @@ breakIntervalInputView intervalsPerBreak timerDuration =
                 , Attr.max (toString maxBreakInterval)
                 , value (toString intervalsPerBreak)
                 , class [ BufferRight ]
-                , style [ ( "font-size", "4.0rem" ) ]
+                , style [ "font-size" => "4.0rem" ]
                 ]
                 []
             , text theString
@@ -257,7 +258,7 @@ breakIntervalInputView intervalsPerBreak timerDuration =
 
 invisibleTrigger : List (Attribute Msg) -> List (Html Msg) -> Html Msg
 invisibleTrigger additionalStyles children =
-    img ([ src "./assets/invisible.png", Attr.class "invisible-trigger navbar-btn", style [ ( "max-width", "2.333em" ) ] ] ++ additionalStyles) children
+    img ([ src "./assets/invisible.png", Attr.class "invisible-trigger navbar-btn", style [ "max-width" => "2.333em" ] ] ++ additionalStyles) children
 
 
 ctrlKey : Bool -> String
@@ -284,7 +285,7 @@ navbar screen =
                 Rpg ->
                     text ""
     in
-        nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ ( "background-color", "rgba(0, 0, 0, 0.2)" ), ( "z-index", "0" ) ] ]
+        nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ "background-color" => "rgba(0, 0, 0, 0.2)", "z-index" => "0" ] ]
             [ div [ Attr.class "container-fluid" ]
                 [ div [ Attr.class "navbar-header" ]
                     [ a [ Attr.class "navbar-brand", href "#" ]
@@ -353,7 +354,7 @@ experimentView newExperiment maybeExperiment =
 
         Nothing ->
             div [ Attr.class "input-group" ]
-                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput UpdateExperimentInput, onEnter SetExperiment, style [ ( "font-size", "30px" ) ] ] []
+                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput UpdateExperimentInput, onEnter SetExperiment, style [ "font-size" => "30px" ] ] []
                 , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick SetExperiment ] [ text "Set" ] ]
                 ]
 
@@ -366,8 +367,8 @@ continueButtonChildren model =
             , div
                 [ Attr.class "col-md-8"
                 , style
-                    [ ( "font-style", "italic" )
-                    , ( "text-align", "left" )
+                    [ "font-style" => "italic"
+                    , "text-align" => "left"
                     ]
                 ]
                 [ text experimentText ]
@@ -398,7 +399,7 @@ ratingsView model =
 breakView : Int -> Int -> Int -> Html msg
 breakView secondsSinceBreak intervalsSinceBreak intervalsPerBreak =
     if intervalsPerBreak > 0 && Break.breakSuggested intervalsSinceBreak intervalsPerBreak then
-        div [ Attr.class "alert alert-warning alert-dismissible", style [ ( "font-size", "1.2em" ) ] ]
+        div [ Attr.class "alert alert-warning alert-dismissible", style [ "font-size" => "1.2em" ] ]
             [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
             , text ("How about a walk? (You've been mobbing for " ++ (toString (secondsSinceBreak // 60)) ++ " minutes.)")
             ]
@@ -436,7 +437,7 @@ rpgView model =
     div [ Attr.class "container-fluid" ]
         [ breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
         , rpgRolesView model
-        , div [ Attr.class "row", style [ ( "padding-bottom", "1.333em" ) ] ]
+        , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
             [ button
                 [ noTab
                 , onClick (UpdateMobsterData MobsterOperation.NextTurn)
@@ -463,7 +464,7 @@ continueView showRotation model =
               -- , div [] [ viewIntervalsBeforeBreak model ]
             , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
             , nextDriverNavigatorView model
-            , div [ Attr.class "row", style [ ( "padding-bottom", "1.333em" ) ] ]
+            , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
                 [ button
                     [ noTab
                     , onClick StartTimer
@@ -479,9 +480,9 @@ continueView showRotation model =
 
 tipView : Tip.Tip -> Html Msg
 tipView tip =
-    div [ Attr.class "jumbotron tip", style [ ( "margin", "0px" ), ( "padding", "1.667em" ) ] ]
+    div [ Attr.class "jumbotron tip", style [ "margin" => "0px", "padding" => "1.667em" ] ]
         [ div [ Attr.class "row" ]
-            [ h2 [ Attr.class "text-success pull-left", style [ ( "margin", "0px" ), ( "padding-bottom", "0.667em" ) ] ]
+            [ h2 [ Attr.class "text-success pull-left", style [ "margin" => "0px", "padding-bottom" => "0.667em" ] ]
                 [ text tip.title ]
             , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", onClick (OpenExternalUrl tip.url) ] [ text "Learn More" ]
             ]
@@ -558,16 +559,16 @@ dnView mobster role =
         awayButton =
             span
                 [ Attr.class "btn btn-sm btn-default"
-                , style [ ( "font-size", "23px" ) ]
+                , style [ "font-size" => "23px" ]
                 , class [ ShowOnParentHover, BufferRight ]
                 , onClick <| UpdateMobsterData (MobsterOperation.Bench mobster.index)
                 ]
-                [ span [ Attr.class "fa fa-user-times text-danger", style [ ( "padding-right", "4px" ) ] ] []
+                [ span [ Attr.class "fa fa-user-times text-danger", style [ "padding-right" => "4px" ] ] []
                 , text " Away"
                 ]
 
         skipButton =
-            span [ Attr.class "btn btn-sm btn-default", style [ ( "font-size", "23px" ), ( "padding-right", "4px" ) ], class [ ShowOnParentHover ], onClick <| UpdateMobsterData MobsterOperation.NextTurn ]
+            span [ Attr.class "btn btn-sm btn-default", style [ "font-size" => "23px", "padding-right" => "4px" ], class [ ShowOnParentHover ], onClick <| UpdateMobsterData MobsterOperation.NextTurn ]
                 [ span [ Attr.class "fa fa-fast-forward text-warning" ] []
                 , text " Skip"
                 ]
@@ -589,7 +590,7 @@ dnView mobster role =
 
 iconView : String -> Int -> Html msg
 iconView iconUrl maxWidth =
-    img [ style [ ( "max-width", (toString maxWidth) ++ "px" ), ( "margin-right", "0.533em" ) ], src iconUrl ] []
+    img [ style [ "max-width" => (toString maxWidth ++ "px"), "margin-right" => "0.533em" ], src iconUrl ] []
 
 
 nextView : String -> String -> Html msg
@@ -608,7 +609,7 @@ addMobsterInputView newMobster mobsterData =
     in
         div [ Attr.class "row", class [ BufferTop ] ]
             [ div [ Attr.class "input-group" ]
-                [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", classList [ ( HasError, hasError ) ], Attr.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ ( "font-size", "2.0rem" ) ] ] []
+                [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", classList [ HasError => hasError ], Attr.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ "font-size" => "2.0rem" ] ] []
                 , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
                 ]
             ]
@@ -616,9 +617,9 @@ addMobsterInputView newMobster mobsterData =
 
 mobstersView : String -> List Presenter.MobsterWithRole -> Mobster.MobsterData -> DragDropModel -> Html Msg
 mobstersView newMobster mobsters mobsterData dragDrop =
-    div [ style [ ( "padding-bottom", "35px" ) ] ]
+    div [ style [ "padding-bottom" => "35px" ] ]
         [ addMobsterInputView newMobster mobsterData
-        , img [ onClick ShuffleMobsters, Attr.class "shuffle", class [ BufferTop ], src "./assets/dice.png", style [ ( "max-width", "1.667em" ) ] ] []
+        , img [ onClick ShuffleMobsters, Attr.class "shuffle", class [ BufferTop ], src "./assets/dice.png", style [ "max-width" => "1.667em" ] ] []
         , table [ Attr.class "table h3" ] (List.map (mobsterView dragDrop) mobsters)
         ]
 
@@ -661,7 +662,7 @@ inactiveMobstersView inactiveMobsters dragDrop =
     in
         case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
             ( Just (ActiveMobster _), _ ) ->
-                div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle, style [ ( "height", "150px" ) ] ]) [ text "Move to bench" ]
+                div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle, style [ "height" => "150px" ] ]) [ text "Move to bench" ]
 
             ( _, _ ) ->
                 div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle ])
@@ -672,7 +673,7 @@ inactiveMobstersView inactiveMobsters dragDrop =
 
 mobsterCellStyle : List (Attribute Msg)
 mobsterCellStyle =
-    [ style [ ( "text-align", "right" ), ( "padding-right", "0.667em" ) ] ]
+    [ style [ "text-align" => "right", "padding-right" => "0.667em" ] ]
 
 
 hint : Int -> Html msg
@@ -681,7 +682,7 @@ hint index =
         letter =
             Maybe.withDefault "?" (Array.get index letters)
     in
-        span [ style [ ( "font-size", "0.7em" ) ] ] [ text (" (" ++ letter ++ ")") ]
+        span [ style [ "font-size" => "0.7em" ] ] [ text (" (" ++ letter ++ ")") ]
 
 
 inactiveMobsterViewWithHints : Int -> String -> Html Msg
@@ -699,7 +700,7 @@ inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
         [ td (mobsterCellStyle ++ (DragDrop.draggable DragDropMsg (InactiveMobster mobsterIndex)))
             [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
-            , div [ Attr.class "btn-group btn-group-xs", style [ ( "margin-left", "0.667em" ) ] ]
+            , div [ Attr.class "btn-group btn-group-xs", style [ "margin-left" => "0.667em" ] ]
                 [ button [ noTab, Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (MobsterOperation.Remove mobsterIndex)) ] [ text "x" ]
                 ]
             ]
@@ -740,7 +741,7 @@ mobsterView dragDrop mobster =
             (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
             [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success" ] [ text hoverText ] ]
             , td mobsterCellStyle
-                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ ( "text-info", mobster.role == Just Presenter.Driver ) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
+                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
                     [ text mobster.name
                     , roleView mobster.role
                     ]
@@ -808,8 +809,7 @@ rotationView model =
 feedbackButton : Html Msg
 feedbackButton =
     div []
-        [ a [ onClick ShowFeedbackForm, style [ ( "text-transform", "uppercase" ), ( "transform", "rotate(-90deg)" ) ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ]
-        ]
+        [ a [ onClick ShowFeedbackForm, style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
 
 
 view : Model -> Html Msg
@@ -853,11 +853,7 @@ saveActiveMobstersCmd model =
 
 saveActiveMobsters : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 saveActiveMobsters ( model, cmd ) =
-    let
-        updatedCmd =
-            Cmd.batch [ cmd, saveActiveMobstersCmd model ]
-    in
-        ( model, updatedCmd )
+    model ! [ cmd, saveActiveMobstersCmd model ]
 
 
 updateSettings : (Settings.Data -> Settings.Data) -> Model -> ( Model, Cmd Msg )
