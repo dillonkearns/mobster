@@ -58,7 +58,6 @@ type Msg
     | ShuffleMobsters
     | TimeElapsed Int
     | UpdateAvailable String
-    | CopyActiveMobsters ()
     | ResetBreakData
     | RotateInHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
@@ -190,9 +189,6 @@ port sendIpcMessage : String -> Cmd msg
 
 
 port selectDuration : String -> Cmd msg
-
-
-port copyActiveMobsters : String -> Cmd msg
 
 
 port openExternalUrl : String -> Cmd msg
@@ -958,9 +954,6 @@ update msg model =
         TimeElapsed elapsedSeconds ->
             { model | secondsSinceBreak = (model.secondsSinceBreak + elapsedSeconds), intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
 
-        CopyActiveMobsters _ ->
-            model ! [ (copyActiveMobsters (String.join ", " (model.settings.mobsterData.mobsters |> List.map .name))) ]
-
         ResetBreakData ->
             (model |> resetBreakData) ! []
 
@@ -1093,7 +1086,6 @@ subscriptions model =
         [ Keyboard.Combo.subscriptions model.combos
         , timeElapsed TimeElapsed
         , updateDownloaded UpdateAvailable
-        , onCopyMobstersShortcut CopyActiveMobsters
         ]
 
 

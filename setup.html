@@ -432,10 +432,6 @@
       ipcRenderer.send(message)
     })
 
-    setup.ports.copyActiveMobsters.subscribe(function(activeMobsters) {
-      clipboard.writeText(activeMobsters)
-    })
-
     setup.ports.saveSettings.subscribe(function(settings) {
       window.localStorage.setItem('settings', JSON.stringify(settings))
     })
@@ -455,10 +451,6 @@
 
     ipcRenderer.on('timer-done', function (event, elapsedSeconds) {
       setup.ports.timeElapsed.send(elapsedSeconds)
-    })
-
-    ipcRenderer.on('copy-active-mobsters', function (event) {
-      setup.ports.onCopyMobstersShortcut.send(null)
     })
 
     $(() => {

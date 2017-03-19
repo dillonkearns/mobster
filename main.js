@@ -323,9 +323,4 @@ function registerShortcuts() {
       toggleMainWindow()
     }
   })
-  globalShortcut.register('CommandOrControl+Shift+;', copyActiveMobsters)
-}
-
-function copyActiveMobsters() {
-  mainWindow.webContents.send('copy-active-mobsters')
 }
