@@ -5,7 +5,7 @@ import Json.Encode as Encode
 import Json.Decode.Pipeline as Pipeline exposing (required, optional, hardcoded)
 import Random.List
 import Random
-import Mobster.Rpg exposing (RpgData)
+import Mobster.Rpg as Rpg exposing (RpgData)
 
 
 type alias Mobster =
@@ -29,12 +29,19 @@ empty =
 decoder : Decoder MobsterData
 decoder =
     Pipeline.decode MobsterData
-        -- |> required "mobsters" (Decode.list Decode.string)
-        -- |> optional "inactiveMobsters" (Decode.list Decode.string) []
-        |>
-            hardcoded []
-        |> hardcoded []
+        |> required "mobsters" (Decode.list Decode.string |> Decode.map mobsterNamesToMobsters)
+        |> optional "inactiveMobsters" (Decode.list Decode.string |> Decode.map mobsterNamesToMobsters) []
         |> required "nextDriver" (Decode.int)
+
+
+mobsterNamesToMobsters : List String -> List Mobster
+mobsterNamesToMobsters mobsterNames =
+    List.map stringToMobster mobsterNames
+
+
+stringToMobster : String -> Mobster
+stringToMobster name =
+    Mobster name Rpg.init
 
 
 decode : Encode.Value -> Result String MobsterData
