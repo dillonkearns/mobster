@@ -55,8 +55,8 @@ css =
             , hover
                 [ descendants
                     [ class ShowOnParentHover
-                        [ opacity (num 0.5)
-                        , hover [ opacity (num 0.9) ]
+                        [ opacity (num 1.0)
+                        , hover [ opacity (num 1.0) ]
                         ]
                     ]
                 ]
