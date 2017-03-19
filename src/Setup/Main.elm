@@ -55,7 +55,6 @@ type Msg
     | UpdateExperimentInput String
     | EnterRating Int
     | Hide
-    | ShowFeedbackForm
     | Quit
     | QuitAndInstall
     | ComboMsg Keyboard.Combo.Msg
@@ -67,6 +66,11 @@ type Msg
     | RotateInHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
     | OpenExternalUrl String
+    | SendIpcMessage IpcMessage
+
+
+type IpcMessage
+    = ShowFeedbackForm
 
 
 type DragId
@@ -188,7 +192,7 @@ port hide : () -> Cmd msg
 port quit : () -> Cmd msg
 
 
-port showFeedbackForm : () -> Cmd msg
+port sendIpcMessage : String -> Cmd msg
 
 
 port quitAndInstall : () -> Cmd msg
@@ -798,7 +802,7 @@ rotationView model =
 feedbackButton : Html Msg
 feedbackButton =
     div []
-        [ a [ onClick ShowFeedbackForm, style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
+        [ a [ onClick (SendIpcMessage ShowFeedbackForm), style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
 
 
 view : Model -> Html Msg
@@ -1013,8 +1017,8 @@ update msg model =
                             _ ->
                                 model ! []
 
-        ShowFeedbackForm ->
-            model ! [ showFeedbackForm () ]
+        SendIpcMessage ipcMessage ->
+            model ! [ sendIpcMessage (toString ipcMessage) ]
 
         OpenExternalUrl url ->
             model ! [ openExternalUrl url, hide () ]

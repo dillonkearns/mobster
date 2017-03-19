@@ -430,16 +430,16 @@
       ipcRenderer.send('quit')
     })
 
-    setup.ports.showFeedbackForm.subscribe(function() {
-      ipcRenderer.send('showFeedbackForm')
-    })
-
     setup.ports.selectDuration.subscribe(function(id) {
       document.getElementById(id).select()
     })
 
     setup.ports.quitAndInstall.subscribe(function() {
       ipcRenderer.send('quit-and-install')
+    })
+
+    setup.ports.sendIpcMessage.subscribe(function(message) {
+      ipcRenderer.send(message)
     })
 
     setup.ports.copyActiveMobsters.subscribe(function(activeMobsters) {
