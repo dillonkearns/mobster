@@ -487,7 +487,7 @@ goalView mobster goalIndex goal =
     in
         li [ Attr.class "checkbox checkbox-success", onClick (UpdateMobsterData (MobsterOperation.CompleteGoal mobster.index mobster.role goalIndex)) ]
             [ input [ Attr.id labelId, type_ "checkbox", Attr.checked goal.complete ] []
-            , label [ Attr.for labelId ] [ text (goal.description ++ " " ++ (toString goal.complete)) ]
+            , label [ Attr.for labelId ] [ text goal.description ]
             ]
 
 
