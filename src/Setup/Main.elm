@@ -21,6 +21,7 @@ import Random
 import Setup.PlotScatter
 import Setup.Settings as Settings
 import Setup.Stylesheet exposing (CssClasses(..))
+import Setup.RpgIcons
 import Svg
 import Task
 import Tip
@@ -475,8 +476,14 @@ rpgCardView mobster =
     let
         roleName =
             toString mobster.role
+
+        rpgIcon =
+            img [ src "./assets/rpg-driver.png", style [ "max-width" => "50px" ] ] []
+
+        header =
+            div [ Attr.class "h1" ] [ Setup.RpgIcons.researcherIcon, text (roleName ++ " ( " ++ mobster.name ++ ")") ]
     in
-        div [] [ h1 [] [ text (roleName ++ " ( " ++ mobster.name ++ ")") ], experienceView mobster ]
+        div [] [ header, experienceView mobster ]
 
 
 goalView : Mobster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> Html Msg
