@@ -480,8 +480,28 @@ rpgCardView mobster =
         rpgIcon =
             img [ src "./assets/rpg-driver.png", style [ "max-width" => "50px" ] ] []
 
+        role =
+            mobster.role
+
+        mobsterIcon =
+            case mobster.role of
+                Mobster.RpgPresenter.Driver ->
+                    Setup.RpgIcons.driverIcon
+
+                Mobster.RpgPresenter.Navigator ->
+                    Setup.RpgIcons.navigatorIcon
+
+                Mobster.RpgPresenter.Researcher ->
+                    Setup.RpgIcons.researcherIcon
+
+                Mobster.RpgPresenter.Sponsor ->
+                    Setup.RpgIcons.sponsorIcon
+
+        iconDiv =
+            span [ class [ BufferRight ] ] [ mobsterIcon ]
+
         header =
-            div [ Attr.class "h1" ] [ Setup.RpgIcons.researcherIcon, text (roleName ++ " ( " ++ mobster.name ++ ")") ]
+            div [ Attr.class "h1" ] [ iconDiv, text (roleName ++ " ( " ++ mobster.name ++ ")") ]
     in
         div [] [ header, experienceView mobster ]
 
