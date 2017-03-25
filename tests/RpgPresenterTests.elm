@@ -47,8 +47,8 @@ withoutExperience =
                     |> Expect.equal
                         [ RpgPresenter.RpgMobster Driver [] "Sulu" 0
                         , RpgPresenter.RpgMobster Navigator [] "Kirk" 1
-                        , RpgPresenter.RpgMobster Researcher [] "Spock" 2
-                        , RpgPresenter.RpgMobster Sponsor [] "Uhura" 3
+                        , RpgPresenter.RpgMobster Mobber [] "Spock" 2
+                        , RpgPresenter.RpgMobster Mobber [] "Uhura" 3
                         ]
         , test "wraps around" <|
             \() ->
@@ -57,8 +57,8 @@ withoutExperience =
                     |> Expect.equal
                         [ RpgPresenter.RpgMobster Driver [] "Uhura" 3
                         , RpgPresenter.RpgMobster Navigator [] "McCoy" 4
-                        , RpgPresenter.RpgMobster Researcher [] "Sulu" 0
-                        , RpgPresenter.RpgMobster Sponsor [] "Kirk" 1
+                        , RpgPresenter.RpgMobster Mobber [] "Sulu" 0
+                        , RpgPresenter.RpgMobster Mobber [] "Kirk" 1
                         ]
         ]
 
@@ -106,7 +106,7 @@ withExperience =
                         |> Expect.equal
                             [ RpgPresenter.RpgMobster Driver fakeExperience.driver "Sulu" 0
                             , RpgPresenter.RpgMobster Navigator fakeExperience.navigator "Kirk" 1
-                            , RpgPresenter.RpgMobster Researcher fakeExperience.researcher "Spock" 2
-                            , RpgPresenter.RpgMobster Sponsor fakeExperience.sponsor "Uhura" 3
+                            , RpgPresenter.RpgMobster Mobber fakeExperience.mobber "Spock" 2
+                            , RpgPresenter.RpgMobster Mobber fakeExperience.mobber "Uhura" 3
                             ]
         ]

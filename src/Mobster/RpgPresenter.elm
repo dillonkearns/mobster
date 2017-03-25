@@ -62,11 +62,7 @@ getRoleForIndex index =
         1 ->
             Navigator
 
-        2 ->
-            Researcher
-
-        3 ->
-            Sponsor
-
         _ ->
-            Sponsor
+            Mobber
+
+
