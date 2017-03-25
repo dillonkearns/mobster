@@ -40,6 +40,9 @@ experienceForRole role rpgData =
         Navigator ->
             rpgData.navigator
 
+        Mobber ->
+            rpgData.mobber
+
         Researcher ->
             rpgData.researcher
 

@@ -190,6 +190,9 @@ completeGoalInRpgData role goalIndex rpgData =
                 Sponsor ->
                     rpgData.sponsor
 
+                Mobster.RpgRole.Mobber ->
+                    rpgData.mobber
+
         goal =
             goalFromIndex goalIndex experience
 
@@ -206,6 +209,9 @@ completeGoalInRpgData role goalIndex rpgData =
 
                 Navigator ->
                     { rpgData | navigator = updatedExperience }
+
+                Mobber ->
+                    { rpgData | mobber = updatedExperience }
 
                 Researcher ->
                     { rpgData | researcher = updatedExperience }

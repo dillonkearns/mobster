@@ -21,6 +21,9 @@ mobsterIcon role =
         Sponsor ->
             sponsorIcon
 
+        Mobster.RpgRole.Mobber ->
+            mobberIcon
+
 
 researcherIcon : Svg msg
 researcherIcon =

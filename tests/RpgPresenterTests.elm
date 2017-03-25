@@ -85,6 +85,7 @@ withExperience =
                     fakeExperience =
                         { driver = [ { complete = False, description = "driver goal" } ]
                         , navigator = [ { complete = False, description = "navigator goal" } ]
+                        , mobber = [ { complete = False, description = "mobber goal" } ]
                         , researcher = [ { complete = False, description = "researcher goal" } ]
                         , sponsor = [ { complete = False, description = "sponsor goal" } ]
                         }

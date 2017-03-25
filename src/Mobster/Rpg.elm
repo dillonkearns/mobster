@@ -15,6 +15,7 @@ type alias Goal =
 type alias RpgData =
     { driver : Experience
     , navigator : Experience
+    , mobber : Experience
     , researcher : Experience
     , sponsor : Experience
     }
@@ -76,6 +77,13 @@ init =
             , "Filter the mob's ideas then tell the Driver exactly what to type"
             , "Tell the Driver only your high-level intent and have them implement the details"
             , "Create a failing test. Make it pass. Refactor."
+            ]
+    , mobber =
+        experienceThings
+            [ "Yield to the less privileged voice"
+            , "Contribute an idea"
+            , "Ask questions till you understand"
+            , "Listen on the edge of your seat"
             ]
     , researcher =
         experienceThings

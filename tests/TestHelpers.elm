@@ -11,4 +11,4 @@ toMobsters stringList =
 
 toMobstersNoExperience : List String -> List MobsterData.Mobster
 toMobstersNoExperience stringList =
-    List.map (\name -> MobsterData.Mobster name (Rpg.RpgData [] [] [] [])) stringList
+    List.map (\name -> MobsterData.Mobster name (Rpg.RpgData [] [] [] [] [])) stringList

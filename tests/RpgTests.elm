@@ -2,7 +2,6 @@ module RpgTests exposing (all)
 
 import Expect
 import Mobster.Rpg as Rpg exposing (..)
-import Mobster.RpgPresenter
 import Mobster.RpgRole exposing (..)
 import Mobster.Rpg
 import Test exposing (..)
@@ -26,6 +25,7 @@ all =
                     rpgData =
                         { driver = [ { complete = False, description = "driver goal" } ]
                         , navigator = [ { complete = False, description = "navigator goal" } ]
+                        , mobber = [ { complete = False, description = "mobber goal" } ]
                         , researcher = [ { complete = False, description = "researcher goal" } ]
                         , sponsor = [ { complete = False, description = "sponsor goal" } ]
                         }
@@ -33,6 +33,7 @@ all =
                     expectedRpgData =
                         { driver = [ { complete = False, description = "driver goal" } ]
                         , navigator = [ { complete = True, description = "navigator goal" } ]
+                        , mobber = [ { complete = False, description = "mobber goal" } ]
                         , researcher = [ { complete = False, description = "researcher goal" } ]
                         , sponsor = [ { complete = False, description = "sponsor goal" } ]
                         }
@@ -48,6 +49,7 @@ all =
                     rpgData =
                         { driver = [ { complete = False, description = "driver goal" } ]
                         , navigator = [ { complete = False, description = "navigator goal" } ]
+                        , mobber = [ { complete = False, description = "mobber goal" } ]
                         , researcher = [ { complete = False, description = "researcher goal" } ]
                         , sponsor = [ { complete = False, description = "sponsor goal" } ]
                         }
@@ -55,6 +57,7 @@ all =
                     expectedRpgData =
                         { driver = [ { complete = False, description = "driver goal" } ]
                         , navigator = [ { complete = False, description = "navigator goal" } ]
+                        , mobber = [ { complete = False, description = "mobber goal" } ]
                         , researcher = [ { complete = False, description = "researcher goal" } ]
                         , sponsor = [ { complete = True, description = "sponsor goal" } ]
                         }
@@ -71,6 +74,7 @@ all =
                         rpgData =
                             { driver = [ { complete = False, description = "driver goal" } ]
                             , navigator = [ { complete = False, description = "navigator goal" } ]
+                            , mobber = [ { complete = False, description = "mobber goal" } ]
                             , researcher = [ { complete = False, description = "researcher goal" } ]
                             , sponsor = [ { complete = False, description = "sponsor goal" } ]
                             }
@@ -86,6 +90,7 @@ all =
                                 , { complete = True, description = "driver goal 3" }
                                 ]
                             , navigator = [ { complete = False, description = "navigator goal" } ]
+                            , mobber = [ { complete = False, description = "mobber goal" } ]
                             , researcher = [ { complete = False, description = "researcher goal" } ]
                             , sponsor = [ { complete = False, description = "sponsor goal" } ]
                             }
@@ -105,6 +110,7 @@ all =
                                 , { complete = True, description = "nav goal 2" }
                                 , { complete = True, description = "nav goal 3" }
                                 ]
+                            , mobber = [ { complete = False, description = "mobber goal" } ]
                             , researcher = [ { complete = False, description = "researcher goal" } ]
                             , sponsor = [ { complete = False, description = "sponsor goal" } ]
                             }

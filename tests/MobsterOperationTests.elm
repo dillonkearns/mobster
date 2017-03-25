@@ -5,13 +5,13 @@ import Expect
 import Mobster.Data as Mobster exposing (MobsterData, empty)
 import Mobster.Operation exposing (MobsterOperation(..), updateMoblist)
 import TestHelpers exposing (toMobsters)
-import Mobster.RpgPresenter
 import Mobster.RpgRole exposing (..)
 
 
 fakeExperience =
     { driver = [ { complete = False, description = "driver goal" } ]
     , navigator = [ { complete = False, description = "navigator goal" } ]
+    , mobber = [ { complete = False, description = "mobber goal" } ]
     , researcher = [ { complete = False, description = "researcher goal" } ]
     , sponsor = [ { complete = False, description = "sponsor goal" } ]
     }
@@ -20,6 +20,7 @@ fakeExperience =
 fakeExperience2 =
     { driver = [ { complete = True, description = "driver goal" } ]
     , navigator = [ { complete = False, description = "navigator goal" } ]
+    , mobber = [ { complete = False, description = "mobber goal" } ]
     , researcher = [ { complete = False, description = "researcher goal" } ]
     , sponsor = [ { complete = False, description = "sponsor goal" } ]
     }
