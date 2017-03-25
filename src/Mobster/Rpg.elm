@@ -1,5 +1,6 @@
-module Mobster.Rpg exposing (Experience, RpgData, Goal, init)
+module Mobster.Rpg exposing (Experience, RpgData, Goal, init, badges)
 
+import ListHelpers exposing (compact)
 import Mobster.RpgRole exposing (..)
 
 
@@ -17,6 +18,46 @@ type alias RpgData =
     , researcher : Experience
     , sponsor : Experience
     }
+
+
+something : RpgData -> List ( RpgRole, Experience )
+something rpgData =
+    [ ( Driver, rpgData.driver )
+    , ( Navigator, rpgData.navigator )
+    , ( Researcher, rpgData.researcher )
+    , ( Sponsor, rpgData.sponsor )
+    ]
+
+
+badges : RpgData -> List RpgRole
+badges rpgData =
+    let
+        driverGoalCount =
+            rpgData.driver
+                |> List.filter .complete
+                |> List.length
+
+        completeBadges =
+            rpgData
+                |> something
+                |> List.map somethingToBadge
+                |> compact
+    in
+        completeBadges
+
+
+somethingToBadge : ( RpgRole, Experience ) -> Maybe RpgRole
+somethingToBadge ( role, experience ) =
+    let
+        goalCount =
+            experience
+                |> List.filter .complete
+                |> List.length
+    in
+        if goalCount > 2 then
+            Just role
+        else
+            Nothing
 
 
 init : RpgData
