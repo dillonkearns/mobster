@@ -27,6 +27,7 @@ import Task
 import Tip
 import Update.Extra
 import Basics.Extra exposing ((=>))
+import Mobster.RpgRole exposing (RpgRole)
 
 
 { id, class, classList } =
@@ -428,7 +429,27 @@ rpgView model =
                 ]
                 ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
             ]
+        , div [] [ allBadgesView model ]
         ]
+
+
+allBadgesView : Model -> Html Msg
+allBadgesView model =
+    div [] (List.map mobsterBadgesView (model.settings.mobsterData.mobsters |> List.map .rpgData))
+
+
+mobsterBadgesView : RpgData -> Html Msg
+mobsterBadgesView rpgData =
+    span []
+        (rpgData
+            |> Rpg.badges
+            |> List.map badgeView
+        )
+
+
+badgeView : RpgRole -> Html Msg
+badgeView rpgRole =
+    Setup.RpgIcons.mobsterIcon rpgRole
 
 
 continueView : Bool -> Model -> Html Msg
