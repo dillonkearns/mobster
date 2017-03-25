@@ -8,6 +8,7 @@ import Mobster.Rpg as Rpg exposing (init)
 import TestHelpers exposing (toMobstersNoExperience)
 import Mobster.Rpg as Rpg
 import Mobster.Data as MobsterData
+import Mobster.RpgRole exposing (..)
 
 
 all : Test
@@ -30,34 +31,34 @@ withoutExperience =
             \() ->
                 { empty | mobsters = [ "Spock" ] |> toMobstersNoExperience }
                     |> RpgPresenter.present
-                    |> Expect.equal [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Spock" 0 ]
+                    |> Expect.equal [ RpgPresenter.RpgMobster Driver [] "Spock" 0 ]
         , test "two mobsters in list" <|
             \() ->
                 { empty | mobsters = [ "Sulu", "Kirk" ] |> toMobstersNoExperience }
                     |> RpgPresenter.present
                     |> Expect.equal
-                        [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Sulu" 0
-                        , RpgPresenter.RpgMobster RpgPresenter.Navigator [] "Kirk" 1
+                        [ RpgPresenter.RpgMobster Driver [] "Sulu" 0
+                        , RpgPresenter.RpgMobster Navigator [] "Kirk" 1
                         ]
         , test "takes the first four mobsters in list" <|
             \() ->
                 { empty | mobsters = [ "Sulu", "Kirk", "Spock", "Uhura", "McCoy" ] |> toMobstersNoExperience }
                     |> RpgPresenter.present
                     |> Expect.equal
-                        [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Sulu" 0
-                        , RpgPresenter.RpgMobster RpgPresenter.Navigator [] "Kirk" 1
-                        , RpgPresenter.RpgMobster RpgPresenter.Researcher [] "Spock" 2
-                        , RpgPresenter.RpgMobster RpgPresenter.Sponsor [] "Uhura" 3
+                        [ RpgPresenter.RpgMobster Driver [] "Sulu" 0
+                        , RpgPresenter.RpgMobster Navigator [] "Kirk" 1
+                        , RpgPresenter.RpgMobster Researcher [] "Spock" 2
+                        , RpgPresenter.RpgMobster Sponsor [] "Uhura" 3
                         ]
         , test "wraps around" <|
             \() ->
                 { empty | nextDriver = 3, mobsters = [ "Sulu", "Kirk", "Spock", "Uhura", "McCoy" ] |> toMobstersNoExperience }
                     |> RpgPresenter.present
                     |> Expect.equal
-                        [ RpgPresenter.RpgMobster RpgPresenter.Driver [] "Uhura" 3
-                        , RpgPresenter.RpgMobster RpgPresenter.Navigator [] "McCoy" 4
-                        , RpgPresenter.RpgMobster RpgPresenter.Researcher [] "Sulu" 0
-                        , RpgPresenter.RpgMobster RpgPresenter.Sponsor [] "Kirk" 1
+                        [ RpgPresenter.RpgMobster Driver [] "Uhura" 3
+                        , RpgPresenter.RpgMobster Navigator [] "McCoy" 4
+                        , RpgPresenter.RpgMobster Researcher [] "Sulu" 0
+                        , RpgPresenter.RpgMobster Sponsor [] "Kirk" 1
                         ]
         ]
 
@@ -77,7 +78,7 @@ withExperience =
                     { empty | mobsters = [ MobsterData.Mobster "Sulu" rpgData ] }
                         |> RpgPresenter.present
                         |> Expect.equal
-                            [ RpgPresenter.RpgMobster RpgPresenter.Driver driverGoals "Sulu" 0 ]
+                            [ RpgPresenter.RpgMobster Driver driverGoals "Sulu" 0 ]
         , test "takes the experience from the proper roles" <|
             \() ->
                 let
@@ -102,9 +103,9 @@ withExperience =
                     }
                         |> RpgPresenter.present
                         |> Expect.equal
-                            [ RpgPresenter.RpgMobster RpgPresenter.Driver fakeExperience.driver "Sulu" 0
-                            , RpgPresenter.RpgMobster RpgPresenter.Navigator fakeExperience.navigator "Kirk" 1
-                            , RpgPresenter.RpgMobster RpgPresenter.Researcher fakeExperience.researcher "Spock" 2
-                            , RpgPresenter.RpgMobster RpgPresenter.Sponsor fakeExperience.sponsor "Uhura" 3
+                            [ RpgPresenter.RpgMobster Driver fakeExperience.driver "Sulu" 0
+                            , RpgPresenter.RpgMobster Navigator fakeExperience.navigator "Kirk" 1
+                            , RpgPresenter.RpgMobster Researcher fakeExperience.researcher "Spock" 2
+                            , RpgPresenter.RpgMobster Sponsor fakeExperience.sponsor "Uhura" 3
                             ]
         ]

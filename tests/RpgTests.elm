@@ -2,7 +2,9 @@ module RpgTests exposing (all)
 
 import Expect
 import Mobster.Rpg as Rpg exposing (..)
-import Mobster.RpgPresenter exposing (RpgRole(..))
+import Mobster.RpgPresenter
+import Mobster.RpgRole exposing (..)
+import Mobster.Rpg
 import Test exposing (..)
 import Mobster.Operation
 

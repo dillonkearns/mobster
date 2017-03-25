@@ -6,6 +6,7 @@ import Mobster.Data as Mobster exposing (MobsterData, empty)
 import Mobster.Operation exposing (MobsterOperation(..), updateMoblist)
 import TestHelpers exposing (toMobsters)
 import Mobster.RpgPresenter
+import Mobster.RpgRole exposing (..)
 
 
 fakeExperience =
@@ -41,7 +42,7 @@ completeGoalCases =
             { empty
                 | mobsters = [ createMobster "Sulu", createMobster "Kirk", createMobster "Spock", createMobster "McCoy" ]
             }
-            (CompleteGoal 0 Mobster.RpgPresenter.Driver 0)
+            (CompleteGoal 0 Driver 0)
             { empty
                 | mobsters =
                     [ Mobster.Mobster "Sulu" fakeExperience2

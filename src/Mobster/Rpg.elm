@@ -1,5 +1,7 @@
 module Mobster.Rpg exposing (Experience, RpgData, Goal, init)
 
+import Mobster.RpgRole exposing (..)
+
 
 type alias Experience =
     List Goal

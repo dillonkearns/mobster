@@ -3,22 +3,22 @@ module Setup.RpgIcons exposing (mobsterIcon)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Html.Attributes exposing (attribute)
-import Mobster.RpgPresenter
+import Mobster.RpgRole exposing (..)
 
 
-mobsterIcon : Mobster.RpgPresenter.RpgRole -> Svg msg
+mobsterIcon : RpgRole -> Svg msg
 mobsterIcon role =
     case role of
-        Mobster.RpgPresenter.Driver ->
+        Driver ->
             driverIcon
 
-        Mobster.RpgPresenter.Navigator ->
+        Navigator ->
             navigatorIcon
 
-        Mobster.RpgPresenter.Researcher ->
+        Researcher ->
             researcherIcon
 
-        Mobster.RpgPresenter.Sponsor ->
+        Sponsor ->
             sponsorIcon
 
 

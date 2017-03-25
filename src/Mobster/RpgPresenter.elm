@@ -2,13 +2,7 @@ module Mobster.RpgPresenter exposing (..)
 
 import Mobster.Data exposing (MobsterData)
 import Mobster.Rpg exposing (Experience)
-
-
-type RpgRole
-    = Driver
-    | Navigator
-    | Researcher
-    | Sponsor
+import Mobster.RpgRole exposing (..)
 
 
 type alias RpgMobster =

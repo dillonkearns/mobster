@@ -4,7 +4,7 @@ import Array
 import ListHelpers exposing (..)
 import Mobster.Data exposing (Mobster, MobsterData, nextIndex)
 import Mobster.Rpg as Rpg exposing (RpgData)
-import Mobster.RpgPresenter exposing (RpgRole, RpgRole(..))
+import Mobster.RpgRole exposing (..)
 
 
 type MobsterOperation
@@ -55,7 +55,7 @@ updateMoblist mobsterOperation mobsterData =
                 |> completeGoal mobsterIndex role goalIndex
 
 
-mobsterWithCompletedGoal : Int -> Mobster.RpgPresenter.RpgRole -> Int -> List Mobster -> Maybe Mobster
+mobsterWithCompletedGoal : Int -> RpgRole -> Int -> List Mobster -> Maybe Mobster
 mobsterWithCompletedGoal mobsterIndex role goalIndex mobsterData =
     let
         maybeMobster =
@@ -75,7 +75,7 @@ mobsterWithCompletedGoal mobsterIndex role goalIndex mobsterData =
                 Nothing
 
 
-completeGoal : Int -> Mobster.RpgPresenter.RpgRole -> Int -> Mobster.Data.MobsterData -> MobsterData
+completeGoal : Int -> RpgRole -> Int -> Mobster.Data.MobsterData -> MobsterData
 completeGoal mobsterIndex role goalIndex mobsterData =
     let
         withGoal =
@@ -173,7 +173,7 @@ setNextDriverInBounds mobsterData =
         { mobsterData | nextDriver = indexInBounds }
 
 
-completeGoalInRpgData : Mobster.RpgPresenter.RpgRole -> Int -> RpgData -> RpgData
+completeGoalInRpgData : RpgRole -> Int -> RpgData -> RpgData
 completeGoalInRpgData role goalIndex rpgData =
     let
         experience =
