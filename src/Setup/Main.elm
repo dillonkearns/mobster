@@ -1,33 +1,34 @@
 port module Setup.Main exposing (..)
 
 import Array
+import Basics.Extra exposing ((=>))
 import Break
 import Dom
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
-import Html.Events exposing (keyCode, on, onClick, onInput, onSubmit, onDoubleClick)
+import Html.Events exposing (keyCode, on, onClick, onDoubleClick, onInput, onSubmit)
 import Html.Events.Extra exposing (onEnter)
 import Html5.DragDrop as DragDrop
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard.Combo
+import List.Extra
 import Mobster.Data as Mobster
 import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
 import Mobster.Rpg as Rpg exposing (RpgData)
 import Mobster.RpgPresenter
+import Mobster.RpgRole exposing (RpgRole)
 import Random
 import Setup.PlotScatter
+import Setup.RpgIcons
 import Setup.Settings as Settings
 import Setup.Stylesheet exposing (CssClasses(..))
-import Setup.RpgIcons
 import Svg
 import Task
 import Tip
 import Update.Extra
-import Basics.Extra exposing ((=>))
-import Mobster.RpgRole exposing (RpgRole)
 
 
 { id, class, classList } =
@@ -533,7 +534,16 @@ rpgData =
 
 rpgRolesView : Model -> Html Msg
 rpgRolesView model =
-    div [ Attr.class "row" ] (List.map rpgRoleView (model.settings.mobsterData |> Mobster.RpgPresenter.present))
+    let
+        ( row1, row2 ) =
+            List.Extra.splitAt 2 (model.settings.mobsterData |> Mobster.RpgPresenter.present)
+    in
+        div [] [ rpgRolesRow row1, rpgRolesRow row2 ]
+
+
+rpgRolesRow : List Mobster.RpgPresenter.RpgMobster -> Html Msg
+rpgRolesRow rpgMobsters =
+    div [ Attr.class "row" ] (List.map rpgRoleView rpgMobsters)
 
 
 rpgRoleView : Mobster.RpgPresenter.RpgMobster -> Html Msg
