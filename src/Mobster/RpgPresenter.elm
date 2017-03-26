@@ -1,7 +1,7 @@
 module Mobster.RpgPresenter exposing (..)
 
 import Mobster.Data exposing (MobsterData)
-import Mobster.Rpg exposing (Experience)
+import Mobster.Rpg exposing (Experience, badges)
 import Mobster.RpgRole exposing (..)
 
 
@@ -51,10 +51,21 @@ experienceForRole role rpgData =
 
 
 toRpgMobster roleIndex ( mobsterIndex, mobster ) =
-    RpgMobster (getRoleForIndex roleIndex) (experienceForRole (getRoleForIndex roleIndex) mobster.rpgData) mobster.name mobsterIndex
+    let
+        badgeCount =
+            List.length (badges mobster.rpgData)
+
+        level =
+            if badgeCount < 1 then
+                Level1
+            else
+                Level2
+    in
+        RpgMobster (getRoleForIndex level roleIndex) (experienceForRole (getRoleForIndex level roleIndex) mobster.rpgData) mobster.name mobsterIndex
 
 
-getRoleForIndex index =
+getRoleForIndex : Level -> Int -> RpgRole
+getRoleForIndex level index =
     case index of
         0 ->
             Driver
@@ -62,7 +73,13 @@ getRoleForIndex index =
         1 ->
             Navigator
 
-        _ ->
-            Mobber
+        n ->
+            case level of
+                Level1 ->
+                    Mobber
 
-
+                Level2 ->
+                    if index == 2 then
+                        Researcher
+                    else
+                        Sponsor

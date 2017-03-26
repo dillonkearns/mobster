@@ -109,4 +109,37 @@ withExperience =
                             , RpgPresenter.RpgMobster Mobber fakeExperience.mobber "Spock" 2
                             , RpgPresenter.RpgMobster Mobber fakeExperience.mobber "Uhura" 3
                             ]
+        , test "uses level 2 roles once you've leveled up" <|
+            \() ->
+                let
+                    completeGoal =
+                        { complete = True, description = "driver goal" }
+
+                    fakeExperience =
+                        { driver = List.repeat 3 completeGoal
+                        , navigator = [ { complete = False, description = "navigator goal" } ]
+                        , mobber = [ { complete = False, description = "mobber goal" } ]
+                        , researcher = [ { complete = False, description = "researcher goal" } ]
+                        , sponsor = [ { complete = False, description = "sponsor goal" } ]
+                        }
+
+                    rpgData =
+                        { init | driver = [] }
+                in
+                    { empty
+                        | mobsters =
+                            [ MobsterData.Mobster "Sulu" fakeExperience
+                            , MobsterData.Mobster "Kirk" fakeExperience
+                            , MobsterData.Mobster "Spock" fakeExperience
+                            , MobsterData.Mobster "Uhura" fakeExperience
+                            , MobsterData.Mobster "Bones" fakeExperience
+                            ]
+                    }
+                        |> RpgPresenter.present
+                        |> Expect.equal
+                            [ RpgPresenter.RpgMobster Driver fakeExperience.driver "Sulu" 0
+                            , RpgPresenter.RpgMobster Navigator fakeExperience.navigator "Kirk" 1
+                            , RpgPresenter.RpgMobster Researcher fakeExperience.researcher "Spock" 2
+                            , RpgPresenter.RpgMobster Sponsor fakeExperience.sponsor "Uhura" 3
+                            ]
         ]
