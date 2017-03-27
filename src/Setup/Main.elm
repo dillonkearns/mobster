@@ -437,16 +437,23 @@ rpgView model =
 
 allBadgesView : Model -> Html Msg
 allBadgesView model =
-    div [] (List.map mobsterBadgesView (model.settings.mobsterData.mobsters |> List.map .rpgData))
+    div [] (List.map mobsterBadgesView model.settings.mobsterData.mobsters)
 
 
-mobsterBadgesView : RpgData -> Html Msg
-mobsterBadgesView rpgData =
-    span []
-        (rpgData
-            |> Rpg.badges
-            |> List.map (Setup.RpgIcons.mobsterIcon [ class [ RpgIcon ] ])
-        )
+mobsterBadgesView : Mobster.Mobster -> Html Msg
+mobsterBadgesView mobster =
+    let
+        badges =
+            mobster.rpgData
+                |> Rpg.badges
+    in
+        if List.length badges == 0 then
+            span [] []
+        else
+            span []
+                ([ span [] [ text mobster.name ] ]
+                    ++ (badges |> List.map (Setup.RpgIcons.mobsterIcon [ class [ RpgIcon ] ]))
+                )
 
 
 continueView : Bool -> Model -> Html Msg
@@ -523,9 +530,7 @@ goalView mobster goalIndex goal =
 
 experienceView : Mobster.RpgPresenter.RpgMobster -> Html Msg
 experienceView mobster =
-    div []
-        [ Html.Keyed.ul [] (List.indexedMap (goalView mobster) mobster.experience)
-        ]
+    div [] [ Html.Keyed.ul [] (List.indexedMap (goalView mobster) mobster.experience) ]
 
 
 rpgData : RpgData
