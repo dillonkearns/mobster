@@ -25,6 +25,7 @@ something : RpgData -> List ( RpgRole, Experience )
 something rpgData =
     [ ( Driver, rpgData.driver )
     , ( Navigator, rpgData.navigator )
+    , ( Mobber, rpgData.mobber )
     , ( Researcher, rpgData.researcher )
     , ( Sponsor, rpgData.sponsor )
     ]

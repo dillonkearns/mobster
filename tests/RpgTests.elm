@@ -110,11 +110,11 @@ all =
                                 , { complete = True, description = "nav goal 2" }
                                 , { complete = True, description = "nav goal 3" }
                                 ]
-                            , mobber = [ { complete = False, description = "mobber goal" } ]
+                            , mobber = (List.repeat 3 { complete = True, description = "mobber goal" })
                             , researcher = [ { complete = False, description = "researcher goal" } ]
                             , sponsor = [ { complete = False, description = "sponsor goal" } ]
                             }
                     in
-                        Expect.equal (Mobster.Rpg.badges rpgData) [ Driver, Navigator ]
+                        Expect.equal (Mobster.Rpg.badges rpgData) [ Driver, Navigator, Mobber ]
             ]
         ]

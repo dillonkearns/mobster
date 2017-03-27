@@ -19,7 +19,6 @@ import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
 import Mobster.Rpg as Rpg exposing (RpgData)
 import Mobster.RpgPresenter
-import Mobster.RpgRole exposing (RpgRole)
 import Random
 import Setup.PlotScatter
 import Setup.RpgIcons
