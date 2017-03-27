@@ -444,13 +444,8 @@ mobsterBadgesView rpgData =
     span []
         (rpgData
             |> Rpg.badges
-            |> List.map badgeView
+            |> List.map (Setup.RpgIcons.mobsterIcon [ class [ RpgIcon ] ])
         )
-
-
-badgeView : RpgRole -> Html Msg
-badgeView rpgRole =
-    Setup.RpgIcons.mobsterIcon rpgRole
 
 
 continueView : Bool -> Model -> Html Msg
@@ -500,7 +495,7 @@ rpgCardView mobster =
             toString mobster.role
 
         iconDiv =
-            span [ class [ BufferRight ] ] [ Setup.RpgIcons.mobsterIcon mobster.role ]
+            span [ class [ BufferRight ] ] [ Setup.RpgIcons.mobsterIcon [ class [ RpgIcon ] ] mobster.role ]
 
         header =
             div [ Attr.class "h1" ] [ iconDiv, text (roleName ++ " ( " ++ mobster.name ++ ")") ]

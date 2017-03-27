@@ -20,6 +20,7 @@ type CssClasses
     | ShowOnParentHoverParent
     | DragBelow
     | HasError
+    | RpgIcon
 
 
 css : Stylesheet
@@ -62,6 +63,7 @@ css =
                 ]
             ]
         , class HasError [ border3 (px 3) (solid) (rgba 231 76 60 0.7) |> important ]
+        , class RpgIcon [ descendants [ selector "g" [ fill (rgb 8 133 236) ] ] ]
         ]
 
 
