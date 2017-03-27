@@ -7,8 +7,9 @@ import Dom
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
-import Html.Events exposing (keyCode, on, onClick, onDoubleClick, onInput, onSubmit)
+import Html.Events exposing (keyCode, on, onCheck, onClick, onDoubleClick, onInput, onSubmit)
 import Html.Events.Extra exposing (onEnter)
+import Html.Keyed
 import Html5.DragDrop as DragDrop
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -43,6 +44,7 @@ type Msg
     | SkipHotkey
     | StartRpgMode
     | UpdateMobsterData MobsterOperation
+    | CheckRpgBox Msg Bool
     | UpdateMobsterInput String
     | AddMobster
     | ClickAddMobster
@@ -502,22 +504,27 @@ rpgCardView mobster =
         div [] [ header, experienceView mobster ]
 
 
-goalView : Mobster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> Html Msg
+goalView : Mobster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> ( String, Html Msg )
 goalView mobster goalIndex goal =
     let
-        labelId =
-            mobster.name ++ (toString mobster.role) ++ toString goalIndex
+        nameWithoutWhitespace =
+            mobster.name |> String.words |> String.join ""
+
+        uniqueId =
+            nameWithoutWhitespace ++ toString mobster.role ++ toString goalIndex
     in
-        li [ Attr.class "checkbox checkbox-success", onClick (UpdateMobsterData (MobsterOperation.CompleteGoal mobster.index mobster.role goalIndex)) ]
-            [ input [ Attr.id labelId, type_ "checkbox", Attr.checked goal.complete ] []
-            , label [ Attr.for labelId ] [ text goal.description ]
+        ( uniqueId
+        , li [ Attr.class "checkbox checkbox-success", onCheck (CheckRpgBox (UpdateMobsterData (MobsterOperation.CompleteGoal mobster.index mobster.role goalIndex))) ]
+            [ input [ Attr.id uniqueId, type_ "checkbox", Attr.checked goal.complete ] []
+            , label [ Attr.for uniqueId ] [ text goal.description ]
             ]
+        )
 
 
 experienceView : Mobster.RpgPresenter.RpgMobster -> Html Msg
 experienceView mobster =
     div []
-        [ ul [] (List.indexedMap (goalView mobster) mobster.experience)
+        [ Html.Keyed.ul [] (List.indexedMap (goalView mobster) mobster.experience)
         ]
 
 
@@ -1031,6 +1038,9 @@ update msg model =
             model
                 ! [ openExternalUrl url ]
                 |> Update.Extra.andThen update (SendIpcMessage Hide)
+
+        CheckRpgBox msg checkedValue ->
+            update msg model
 
 
 reorderOperation : List Mobster.Mobster -> Msg
