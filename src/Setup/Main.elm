@@ -95,8 +95,10 @@ keyboardCombos =
     , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.one ) (EnterRating 1)
     , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.two ) (EnterRating 2)
     , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.three ) (EnterRating 3)
-    , Keyboard.Combo.combo1 Keyboard.Combo.r (ShowRotationScreen)
-    , Keyboard.Combo.combo1 Keyboard.Combo.s (SkipHotkey)
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.option, Keyboard.Combo.r ) ShowRotationScreen
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.r ) ShowRotationScreen
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.option, Keyboard.Combo.s ) SkipHotkey
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.s ) SkipHotkey
     , Keyboard.Combo.combo1 Keyboard.Combo.a (RotateInHotkey 0)
     , Keyboard.Combo.combo1 Keyboard.Combo.b (RotateInHotkey 1)
     , Keyboard.Combo.combo1 Keyboard.Combo.c (RotateInHotkey 2)
