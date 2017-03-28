@@ -1,33 +1,37 @@
 module Setup.RpgIcons exposing (mobsterIcon)
 
+import Html.CssHelpers
+import Setup.Stylesheet exposing (CssClasses(..))
+import Html
+import Html.Attributes exposing (attribute)
+import Mobster.RpgRole exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Html.Attributes exposing (attribute)
-import Html
-import Mobster.RpgRole exposing (..)
 
 
-mobsterIcon : List (Html.Attribute msg) -> RpgRole -> Html.Html msg
-mobsterIcon attributes role =
+{ id, class, classList } =
+    Html.CssHelpers.withNamespace "setup"
+mobsterIcon : RpgRole -> Html.Html msg
+mobsterIcon role =
     let
-        something =
+        ( cssClass, icon ) =
             case role of
                 Driver ->
-                    driverIcon
+                    ( RpgIcon1, driverIcon )
 
                 Navigator ->
-                    navigatorIcon
+                    ( RpgIcon1, navigatorIcon )
 
                 Researcher ->
-                    researcherIcon
+                    ( RpgIcon2, researcherIcon )
 
                 Sponsor ->
-                    sponsorIcon
+                    ( RpgIcon2, sponsorIcon )
 
                 Mobster.RpgRole.Mobber ->
-                    mobberIcon
+                    ( RpgIcon1, mobberIcon )
     in
-        Html.span attributes [ something ]
+        Html.span [ class [ cssClass ] ] [ icon ]
 
 
 researcherIcon : Svg msg

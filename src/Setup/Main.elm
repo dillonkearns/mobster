@@ -40,6 +40,7 @@ shuffleMobstersCmd mobsterData =
 
 type Msg
     = StartTimer
+    | ViewRpgNextUp
     | ShowRotationScreen
     | SkipHotkey
     | StartRpgMode
@@ -117,7 +118,12 @@ keyboardCombos =
 type ScreenState
     = Configure
     | Continue Bool
-    | Rpg
+    | Rpg RpgState
+
+
+type RpgState
+    = Checklist
+    | NextUp
 
 
 type alias Model =
@@ -277,7 +283,7 @@ navbar screen =
                         [ span [ Attr.class "fa fa-cog" ] []
                         ]
 
-                Rpg ->
+                Rpg _ ->
                     text ""
     in
         nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ "background-color" => "rgba(0, 0, 0, 0.2)", "z-index" => "0" ] ]
@@ -416,23 +422,47 @@ noTab =
     Attr.tabindex -1
 
 
-rpgView : Model -> Html Msg
-rpgView model =
-    div [ Attr.class "container-fluid" ]
-        [ breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
-        , rpgRolesView model
-        , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
-            [ button
-                [ noTab
-                , onClick (UpdateMobsterData MobsterOperation.NextTurn)
-                , Attr.class "btn btn-info btn-lg btn-block"
-                , class [ BufferTop, TooltipContainer ]
-                , class [ LargeButtonText ]
-                ]
-                ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
+rpgView : RpgState -> Model -> Html Msg
+rpgView rpgState model =
+    let
+        rpgButton =
+            case rpgState of
+                Checklist ->
+                    button
+                        [ noTab
+                        , onClick ViewRpgNextUp
+                        , Attr.class "btn btn-info btn-lg btn-block"
+                        , class [ BufferTop, TooltipContainer ]
+                        , class [ LargeButtonText ]
+                        ]
+                        [ text "See Next Up", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
+
+                NextUp ->
+                    button
+                        [ noTab
+                        , onClick StartTimer
+                        , Attr.class "btn btn-info btn-lg btn-block"
+                        , class [ BufferTop, TooltipContainer ]
+                        , class [ LargeButtonText ]
+                        ]
+                        [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
+
+        stateString =
+            case rpgState of
+                Checklist ->
+                    "Checklist"
+
+                NextUp ->
+                    "NextUp"
+    in
+        div [ Attr.class "container-fluid" ]
+            [ breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
+            , text stateString
+            , rpgRolesView model
+            , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
+                [ rpgButton ]
+            , div [] [ allBadgesView model ]
             ]
-        , div [] [ allBadgesView model ]
-        ]
 
 
 allBadgesView : Model -> Html Msg
@@ -452,7 +482,7 @@ mobsterBadgesView mobster =
         else
             span []
                 ([ span [] [ text mobster.name ] ]
-                    ++ (badges |> List.map (Setup.RpgIcons.mobsterIcon [ class [ RpgIcon ] ]))
+                    ++ (badges |> List.map (Setup.RpgIcons.mobsterIcon))
                 )
 
 
@@ -503,7 +533,7 @@ rpgCardView mobster =
             toString mobster.role
 
         iconDiv =
-            span [ class [ BufferRight ] ] [ Setup.RpgIcons.mobsterIcon [ class [ RpgIcon ] ] mobster.role ]
+            span [ class [ BufferRight ] ] [ Setup.RpgIcons.mobsterIcon mobster.role ]
 
         header =
             div [ Attr.class "h1" ] [ iconDiv, text (roleName ++ " ( " ++ mobster.name ++ ")") ]
@@ -847,8 +877,8 @@ view model =
                 Continue showRotation ->
                     continueView showRotation model
 
-                Rpg ->
-                    rpgView model
+                Rpg rpgState ->
+                    rpgView rpgState model
     in
         div [] [ navbar model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
 
@@ -901,7 +931,7 @@ update msg model =
                     model ! []
 
         StartRpgMode ->
-            { model | screenState = Rpg } ! []
+            { model | screenState = Rpg NextUp } ! []
 
         ShowRotationScreen ->
             case model.screenState of
@@ -913,8 +943,16 @@ update msg model =
 
         StartTimer ->
             let
+                nextScreenState =
+                    case model.screenState of
+                        Rpg rpgState ->
+                            Rpg Checklist
+
+                        _ ->
+                            Continue False
+
                 updatedModel =
-                    { model | screenState = Continue False }
+                    { model | screenState = nextScreenState }
                         |> resetIfAfterBreak
             in
                 updatedModel
@@ -1046,6 +1084,12 @@ update msg model =
 
         CheckRpgBox msg checkedValue ->
             update msg model
+
+        ViewRpgNextUp ->
+            { model | screenState = Rpg NextUp }
+                ! []
+                |> Update.Extra.andThen update
+                    (UpdateMobsterData MobsterOperation.NextTurn)
 
 
 reorderOperation : List Mobster.Mobster -> Msg

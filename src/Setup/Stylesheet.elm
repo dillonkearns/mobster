@@ -20,7 +20,8 @@ type CssClasses
     | ShowOnParentHoverParent
     | DragBelow
     | HasError
-    | RpgIcon
+    | RpgIcon1
+    | RpgIcon2
 
 
 css : Stylesheet
@@ -63,8 +64,14 @@ css =
                 ]
             ]
         , class HasError [ border3 (px 3) (solid) (rgba 231 76 60 0.7) |> important ]
-        , class RpgIcon [ descendants [ selector "g" [ fill (rgb 8 133 236) ] ] ]
+        , class RpgIcon1 (rpgIconCss (rgb 8 133 236))
+        , class RpgIcon2 (rpgIconCss (rgb 144 7 179))
         ]
+
+
+rpgIconCss : ColorValue compatible -> List Mixin
+rpgIconCss color =
+    [ descendants [ selector "g" [ fill color ] ] ]
 
 
 hoverButton : ColorValue compatible -> List Mixin
