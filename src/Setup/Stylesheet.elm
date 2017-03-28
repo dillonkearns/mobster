@@ -1,7 +1,7 @@
 module Setup.Stylesheet exposing (..)
 
 import Css exposing (..)
-import Css.Elements exposing (body, html, span)
+import Css.Elements exposing (body, button, html, span, a)
 import Css.Namespace exposing (namespace)
 
 
@@ -39,6 +39,9 @@ css =
             [ body
                 [ fontSize (px 15) ]
             ]
+        , button [ cursor default |> important ]
+        , a [ cursor default |> important ]
+        , selector ".btn" [ cursor default |> important ]
         , class DragBelow [ borderBottom3 (px 2) (solid) (rgba 14 255 125 1) ]
         , class BufferTop
             [ Css.marginTop (px 20) ]
