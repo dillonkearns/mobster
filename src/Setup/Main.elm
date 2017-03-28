@@ -65,6 +65,7 @@ type Msg
     | UpdateAvailable String
     | ResetBreakData
     | RotateInHotkey Int
+    | RotateOutHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
     | OpenExternalUrl String
     | SendIpcMessage IpcMessage
@@ -112,6 +113,16 @@ keyboardCombos =
     , Keyboard.Combo.combo1 Keyboard.Combo.n (RotateInHotkey 13)
     , Keyboard.Combo.combo1 Keyboard.Combo.o (RotateInHotkey 14)
     , Keyboard.Combo.combo1 Keyboard.Combo.p (RotateInHotkey 15)
+    , Keyboard.Combo.combo1 Keyboard.Combo.one (RotateOutHotkey 0)
+    , Keyboard.Combo.combo1 Keyboard.Combo.two (RotateOutHotkey 1)
+    , Keyboard.Combo.combo1 Keyboard.Combo.three (RotateOutHotkey 2)
+    , Keyboard.Combo.combo1 Keyboard.Combo.four (RotateOutHotkey 3)
+    , Keyboard.Combo.combo1 Keyboard.Combo.five (RotateOutHotkey 4)
+    , Keyboard.Combo.combo1 Keyboard.Combo.six (RotateOutHotkey 5)
+    , Keyboard.Combo.combo1 Keyboard.Combo.seven (RotateOutHotkey 6)
+    , Keyboard.Combo.combo1 Keyboard.Combo.eight (RotateOutHotkey 7)
+    , Keyboard.Combo.combo1 Keyboard.Combo.nine (RotateOutHotkey 8)
+    , Keyboard.Combo.combo1 Keyboard.Combo.zero (RotateOutHotkey 9)
     ]
 
 
@@ -665,7 +676,7 @@ mobstersView newMobster mobsters mobsterData dragDrop =
     div [ style [ "padding-bottom" => "35px" ] ]
         [ addMobsterInputView newMobster mobsterData
         , img [ onClick ShuffleMobsters, Attr.class "shuffle", class [ BufferTop ], src "./assets/dice.png", style [ "max-width" => "1.667em" ] ] []
-        , table [ Attr.class "table h3" ] (List.map (mobsterView dragDrop) mobsters)
+        , table [ Attr.class "table h3" ] (List.map (mobsterView dragDrop False) mobsters)
         ]
 
 
@@ -730,6 +741,25 @@ hint index =
         span [ style [ "font-size" => "0.7em" ] ] [ text (" (" ++ letter ++ ")") ]
 
 
+numberHint : Int -> Html msg
+numberHint index =
+    let
+        maybeHint =
+            if index == 9 then
+                Just 0
+            else if index < 9 then
+                Just (index + 1)
+            else
+                Nothing
+    in
+        case maybeHint of
+            Just hintText ->
+                span [ style [ "font-size" => "0.7em", "color" => "grey" ] ] [ text (" (" ++ toString hintText ++ ")") ]
+
+            Nothing ->
+                span [] []
+
+
 inactiveMobsterViewWithHints : Int -> String -> Html Msg
 inactiveMobsterViewWithHints mobsterIndex inactiveMobster =
     tr []
@@ -752,8 +782,8 @@ inactiveMobsterView mobsterIndex inactiveMobster =
         ]
 
 
-mobsterView : DragDropModel -> Presenter.MobsterWithRole -> Html Msg
-mobsterView dragDrop mobster =
+mobsterView : DragDropModel -> Bool -> Presenter.MobsterWithRole -> Html Msg
+mobsterView dragDrop showHint mobster =
     let
         inactiveOverActiveStyle =
             case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
@@ -781,6 +811,12 @@ mobsterView dragDrop mobster =
                 ">"
             else
                 " "
+
+        hint =
+            if showHint then
+                numberHint mobster.index
+            else
+                span [] []
     in
         tr
             (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
@@ -788,6 +824,7 @@ mobsterView dragDrop mobster =
             , td mobsterCellStyle
                 [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
                     [ text mobster.name
+                    , hint
                     , roleView mobster.role
                     ]
                 ]
@@ -846,7 +883,7 @@ rotationView model =
             model.settings.mobsterData.inactiveMobsters
     in
         div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop) mobsters) ]
+            [ div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ]
             , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.indexedMap inactiveMobsterViewWithHints (inactiveMobsters |> List.map .name)) ]
             ]
 
@@ -1032,6 +1069,12 @@ update msg model =
 
         UpdateAvailable availableUpdateVersion ->
             { model | availableUpdateVersion = Just availableUpdateVersion } ! []
+
+        RotateOutHotkey index ->
+            if model.screenState == (Continue True) then
+                update (UpdateMobsterData (MobsterOperation.Bench index)) model
+            else
+                model ! []
 
         RotateInHotkey index ->
             if model.screenState == (Continue True) then
