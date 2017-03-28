@@ -446,18 +446,9 @@ rpgView rpgState model =
                         , class [ LargeButtonText ]
                         ]
                         [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
-
-        stateString =
-            case rpgState of
-                Checklist ->
-                    "Checklist"
-
-                NextUp ->
-                    "NextUp"
     in
         div [ Attr.class "container-fluid" ]
             [ breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
-            , text stateString
             , rpgRolesView model
             , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
                 [ rpgButton ]
