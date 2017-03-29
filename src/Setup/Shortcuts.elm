@@ -22,6 +22,25 @@ hint index =
         span [ style [ "font-size" => "0.7em" ] ] [ text (" (" ++ letter ++ ")") ]
 
 
+numberHint : Int -> Html msg
+numberHint index =
+    let
+        maybeHint =
+            if index == 9 then
+                Just 0
+            else if index < 9 then
+                Just (index + 1)
+            else
+                Nothing
+    in
+        case maybeHint of
+            Just hintText ->
+                span [ style [ "font-size" => "0.7em", "color" => "grey" ] ] [ text (" (" ++ toString hintText ++ ")") ]
+
+            Nothing ->
+                span [] []
+
+
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
 keyboardCombos =
     [ Keyboard.Combo.combo2 ( Keyboard.Combo.control, Keyboard.Combo.enter ) StartTimer

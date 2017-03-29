@@ -20,16 +20,16 @@ import Mobster.Presenter as Presenter
 import Mobster.Rpg as Rpg exposing (RpgData)
 import Mobster.RpgPresenter
 import Random
+import Setup.Msg exposing (..)
 import Setup.PlotScatter
 import Setup.RpgIcons
 import Setup.Settings as Settings
-import Setup.Shortcuts as Shortcuts exposing (hint)
+import Setup.Shortcuts as Shortcuts
 import Setup.Stylesheet exposing (CssClasses(..))
 import Svg
 import Task
 import Tip
 import Update.Extra
-import Setup.Msg exposing (..)
 
 
 { id, class, classList } =
@@ -623,25 +623,6 @@ mobsterCellStyle =
     [ style [ "text-align" => "right", "padding-right" => "0.667em" ] ]
 
 
-numberHint : Int -> Html msg
-numberHint index =
-    let
-        maybeHint =
-            if index == 9 then
-                Just 0
-            else if index < 9 then
-                Just (index + 1)
-            else
-                Nothing
-    in
-        case maybeHint of
-            Just hintText ->
-                span [ style [ "font-size" => "0.7em", "color" => "grey" ] ] [ text (" (" ++ toString hintText ++ ")") ]
-
-            Nothing ->
-                span [] []
-
-
 inactiveMobsterViewWithHints : Int -> String -> Html Msg
 inactiveMobsterViewWithHints mobsterIndex inactiveMobster =
     tr []
@@ -696,7 +677,7 @@ mobsterView dragDrop showHint mobster =
 
         hint =
             if showHint then
-                numberHint mobster.index
+                Shortcuts.numberHint mobster.index
             else
                 span [] []
     in
