@@ -30,6 +30,8 @@ import Svg
 import Task
 import Tip
 import Update.Extra
+import Setup.Rpg.View exposing (..)
+import Setup.View exposing (..)
 
 
 { id, class, classList } =
@@ -37,17 +39,6 @@ import Update.Extra
 shuffleMobstersCmd : Mobster.MobsterData -> Cmd Msg
 shuffleMobstersCmd mobsterData =
     Random.generate reorderOperation (Mobster.randomizeMobsters mobsterData)
-
-
-type ScreenState
-    = Configure
-    | Continue Bool
-    | Rpg RpgState
-
-
-type RpgState
-    = Checklist
-    | NextUp
 
 
 type alias Model =
