@@ -1,6 +1,5 @@
 port module Setup.Main exposing (..)
 
-import Array
 import Basics.Extra exposing ((=>))
 import Break
 import Dom
@@ -24,6 +23,7 @@ import Random
 import Setup.PlotScatter
 import Setup.RpgIcons
 import Setup.Settings as Settings
+import Setup.Shortcuts as Shortcuts exposing (hint)
 import Setup.Stylesheet exposing (CssClasses(..))
 import Svg
 import Task
@@ -682,28 +682,6 @@ mobstersView newMobster mobsters mobsterData dragDrop =
         ]
 
 
-letters : Array.Array String
-letters =
-    Array.fromList
-        [ "a"
-        , "b"
-        , "c"
-        , "d"
-        , "e"
-        , "f"
-        , "g"
-        , "h"
-        , "i"
-        , "j"
-        , "k"
-        , "l"
-        , "m"
-        , "n"
-        , "o"
-        , "p"
-        ]
-
-
 inactiveMobstersView : List String -> DragDropModel -> Html Msg
 inactiveMobstersView inactiveMobsters dragDrop =
     let
@@ -734,15 +712,6 @@ mobsterCellStyle =
     [ style [ "text-align" => "right", "padding-right" => "0.667em" ] ]
 
 
-hint : Int -> Html msg
-hint index =
-    let
-        letter =
-            Maybe.withDefault "?" (Array.get index letters)
-    in
-        span [ style [ "font-size" => "0.7em" ] ] [ text (" (" ++ letter ++ ")") ]
-
-
 numberHint : Int -> Html msg
 numberHint index =
     let
@@ -767,7 +736,7 @@ inactiveMobsterViewWithHints mobsterIndex inactiveMobster =
     tr []
         [ td mobsterCellStyle
             [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
-            , hint mobsterIndex
+            , Shortcuts.hint mobsterIndex
             ]
         ]
 
