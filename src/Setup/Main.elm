@@ -338,7 +338,7 @@ noTab =
 
 
 rpgView : RpgState -> Model -> Html Msg
-rpgView rpgState model =
+rpgView rpgState ({ onMac, secondsSinceBreak, intervalsSinceBreak, settings } as model) =
     let
         rpgButton =
             case rpgState of
@@ -350,7 +350,7 @@ rpgView rpgState model =
                         , class [ BufferTop, TooltipContainer ]
                         , class [ LargeButtonText ]
                         ]
-                        [ text "See Next Up", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
+                        [ text "See Next Up", div [ class [ Tooltip ] ] [ text (startMobbingShortcut onMac) ] ]
 
                 NextUp ->
                     button
@@ -360,20 +360,20 @@ rpgView rpgState model =
                         , class [ BufferTop, TooltipContainer ]
                         , class [ LargeButtonText ]
                         ]
-                        [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
+                        [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut onMac) ] ]
     in
         div [ Attr.class "container-fluid" ]
-            [ breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
-            , rpgRolesView model
+            [ breakView secondsSinceBreak intervalsSinceBreak settings.intervalsPerBreak
+            , rpgRolesView settings.mobsterData
             , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
                 [ rpgButton ]
-            , div [] [ allBadgesView model ]
+            , div [] [ allBadgesView settings.mobsterData ]
             ]
 
 
-allBadgesView : Model -> Html Msg
-allBadgesView model =
-    div [] (List.map mobsterBadgesView model.settings.mobsterData.mobsters)
+allBadgesView : Mobster.MobsterData -> Html Msg
+allBadgesView mobsterData =
+    div [] (List.map mobsterBadgesView mobsterData.mobsters)
 
 
 mobsterBadgesView : Mobster.Mobster -> Html Msg
@@ -474,11 +474,11 @@ rpgData =
     Rpg.init
 
 
-rpgRolesView : Model -> Html Msg
-rpgRolesView model =
+rpgRolesView : Mobster.MobsterData -> Html Msg
+rpgRolesView mobsterData =
     let
         ( row1, row2 ) =
-            List.Extra.splitAt 2 (model.settings.mobsterData |> Mobster.RpgPresenter.present)
+            List.Extra.splitAt 2 (mobsterData |> Mobster.RpgPresenter.present)
     in
         div [] [ rpgRolesRow row1, rpgRolesRow row2 ]
 
