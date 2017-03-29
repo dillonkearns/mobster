@@ -29,6 +29,7 @@ import Svg
 import Task
 import Tip
 import Update.Extra
+import Setup.Msg exposing (..)
 
 
 { id, class, classList } =
@@ -36,96 +37,6 @@ import Update.Extra
 shuffleMobstersCmd : Mobster.MobsterData -> Cmd Msg
 shuffleMobstersCmd mobsterData =
     Random.generate reorderOperation (Mobster.randomizeMobsters mobsterData)
-
-
-type Msg
-    = StartTimer
-    | ViewRpgNextUp
-    | ShowRotationScreen
-    | SkipHotkey
-    | StartRpgMode
-    | UpdateMobsterData MobsterOperation
-    | CheckRpgBox Msg Bool
-    | UpdateMobsterInput String
-    | AddMobster
-    | ClickAddMobster
-    | DomFocusResult (Result Dom.Error ())
-    | ChangeTimerDuration String
-    | ChangeBreakInterval String
-    | SelectDurationInput
-    | OpenConfigure
-    | NewTip Int
-    | SetExperiment
-    | ChangeExperiment
-    | UpdateExperimentInput String
-    | EnterRating Int
-    | ComboMsg Keyboard.Combo.Msg
-    | ShuffleMobsters
-    | TimeElapsed Int
-    | UpdateAvailable String
-    | ResetBreakData
-    | RotateInHotkey Int
-    | RotateOutHotkey Int
-    | DragDropMsg (DragDrop.Msg DragId DropArea)
-    | OpenExternalUrl String
-    | SendIpcMessage IpcMessage
-
-
-type IpcMessage
-    = ShowFeedbackForm
-    | Hide
-    | Quit
-    | QuitAndInstall
-
-
-type DragId
-    = ActiveMobster Int
-    | InactiveMobster Int
-
-
-type DropArea
-    = DropBench
-    | DropActiveMobster Int
-
-
-keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
-keyboardCombos =
-    [ Keyboard.Combo.combo2 ( Keyboard.Combo.control, Keyboard.Combo.enter ) StartTimer
-    , Keyboard.Combo.combo2 ( Keyboard.Combo.command, Keyboard.Combo.enter ) StartTimer
-    , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.one ) (EnterRating 1)
-    , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.two ) (EnterRating 2)
-    , Keyboard.Combo.combo2 ( Keyboard.Combo.shift, Keyboard.Combo.three ) (EnterRating 3)
-    , Keyboard.Combo.combo2 ( Keyboard.Combo.option, Keyboard.Combo.r ) ShowRotationScreen
-    , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.r ) ShowRotationScreen
-    , Keyboard.Combo.combo2 ( Keyboard.Combo.option, Keyboard.Combo.s ) SkipHotkey
-    , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.s ) SkipHotkey
-    , Keyboard.Combo.combo1 Keyboard.Combo.a (RotateInHotkey 0)
-    , Keyboard.Combo.combo1 Keyboard.Combo.b (RotateInHotkey 1)
-    , Keyboard.Combo.combo1 Keyboard.Combo.c (RotateInHotkey 2)
-    , Keyboard.Combo.combo1 Keyboard.Combo.d (RotateInHotkey 3)
-    , Keyboard.Combo.combo1 Keyboard.Combo.e (RotateInHotkey 4)
-    , Keyboard.Combo.combo1 Keyboard.Combo.f (RotateInHotkey 5)
-    , Keyboard.Combo.combo1 Keyboard.Combo.g (RotateInHotkey 6)
-    , Keyboard.Combo.combo1 Keyboard.Combo.h (RotateInHotkey 7)
-    , Keyboard.Combo.combo1 Keyboard.Combo.i (RotateInHotkey 8)
-    , Keyboard.Combo.combo1 Keyboard.Combo.j (RotateInHotkey 9)
-    , Keyboard.Combo.combo1 Keyboard.Combo.k (RotateInHotkey 10)
-    , Keyboard.Combo.combo1 Keyboard.Combo.l (RotateInHotkey 11)
-    , Keyboard.Combo.combo1 Keyboard.Combo.m (RotateInHotkey 12)
-    , Keyboard.Combo.combo1 Keyboard.Combo.n (RotateInHotkey 13)
-    , Keyboard.Combo.combo1 Keyboard.Combo.o (RotateInHotkey 14)
-    , Keyboard.Combo.combo1 Keyboard.Combo.p (RotateInHotkey 15)
-    , Keyboard.Combo.combo1 Keyboard.Combo.one (RotateOutHotkey 0)
-    , Keyboard.Combo.combo1 Keyboard.Combo.two (RotateOutHotkey 1)
-    , Keyboard.Combo.combo1 Keyboard.Combo.three (RotateOutHotkey 2)
-    , Keyboard.Combo.combo1 Keyboard.Combo.four (RotateOutHotkey 3)
-    , Keyboard.Combo.combo1 Keyboard.Combo.five (RotateOutHotkey 4)
-    , Keyboard.Combo.combo1 Keyboard.Combo.six (RotateOutHotkey 5)
-    , Keyboard.Combo.combo1 Keyboard.Combo.seven (RotateOutHotkey 6)
-    , Keyboard.Combo.combo1 Keyboard.Combo.eight (RotateOutHotkey 7)
-    , Keyboard.Combo.combo1 Keyboard.Combo.nine (RotateOutHotkey 8)
-    , Keyboard.Combo.combo1 Keyboard.Combo.zero (RotateOutHotkey 9)
-    ]
 
 
 type ScreenState
@@ -170,7 +81,7 @@ initialModel settings onMac =
     { settings = settings
     , screenState = Configure
     , newMobster = ""
-    , combos = Keyboard.Combo.init ComboMsg keyboardCombos
+    , combos = Keyboard.Combo.init ComboMsg Shortcuts.keyboardCombos
     , tip = Tip.emptyTip
     , experiment = Nothing
     , newExperiment = ""
