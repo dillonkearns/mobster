@@ -212,13 +212,10 @@ navbar screen =
                 Configure ->
                     text ""
 
-                Continue _ ->
+                _ ->
                     button [ noTab, onClick OpenConfigure, Attr.class "btn btn-primary btn-sm", class [ BufferRight ] ]
                         [ span [ Attr.class "fa fa-cog" ] []
                         ]
-
-                Rpg _ ->
-                    text ""
     in
         nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ "background-color" => "rgba(0, 0, 0, 0.2)", "z-index" => "0" ] ]
             [ div [ Attr.class "container-fluid" ]
