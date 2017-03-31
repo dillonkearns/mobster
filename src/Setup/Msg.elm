@@ -51,6 +51,7 @@ type DropArea
 
 type IpcMessage
     = ShowFeedbackForm
+    | ShowScriptInstallInstructions
     | Hide
     | Quit
     | QuitAndInstall

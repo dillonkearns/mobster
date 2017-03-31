@@ -197,6 +197,10 @@ function createWindow () {
     new BrowserWindow({show: true, frame: true, alwaysOnTop: true}).loadURL('https://dillonkearns.typeform.com/to/k9P6iV')
   })
 
+  ipcMain.on('ShowScriptInstallInstructions', (event) => {
+    showScripts()
+  })
+
   ipcMain.on('Hide', (event) => {
     toggleMainWindow()
   })
@@ -241,10 +245,11 @@ const createTray = () => {
   tray.on('click', onClickTrayIcon)
 }
 
-
-
 function showScripts() {
+  mainWindow.hide()
   let scriptsWindow = new BrowserWindow({
+    width: 1000,
+    height: 800,
     frame: true,
     icon: `${assetsDirectory}/icon.ico`
   })
@@ -253,6 +258,10 @@ function showScripts() {
     protocol: 'file:',
     slashes: true
   }))
+  scriptsWindow.on('closed', () => {
+    scriptsWindow = null
+    toggleMainWindow()
+  })
 }
 
 function onReady() {

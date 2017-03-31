@@ -15,16 +15,46 @@
   </script>
 </head>
 <body>
-  <pre id="copy" class="bash"><code>#!/usr/bin/env bash
+  <div class="container-fluid">
+    <h1>Installing Mob Commit Script</h1>
+    <pre id="copy" class="bash"><code>#!/usr/bin/env bash
 USER_EMAIL=`git config --get user.email`
 MOBSTERS=`cat '<span class="active-mobsters-path"></span>'`
 # NOTE: authors must have an email to be valid
-# so they need to be in the form "Some name, another name, ... <email@address.com>"
+# so they need to be in the form "Some name, another name, ... &lt;email@address.com&gt;"
 git commit -v --author="$MOBSTERS <$USER_EMAIL>"</code></pre>
 
-  <button class="clipboard btn btn-info" data-clipboard-target="#copy">
-    Copy this
-  </button>
+    <div style="font-size: 2.0em">
+      <ol>
+        <li>
+        <a class="clipboard" data-clipboard-target="#copy">
+          Copy this script
+        </a>
+          into a file anywhere on your path.
+        </li>
+        <li>
+          Name it anything you like (<code>mob-commit</code>, for example).
+        </li>
+        <li>
+           Make sure it's executable with <code>chmod +x mob-commit</code> (or whatever you named your script).
+        </li>
+        <li>
+           Instead of <code>git commit</code>, now run <code>mob-commit</code>!
+        </li>
+      </ol>
+
+           Now your commit messages will look like this:
+           <pre>
+             <code>$ git log
+commit 39d59e7e4c9acb021988b3040f9b7ace5f539b78
+Author: James Kirk, Leonard McCoy, Spock <example@example.com>
+Date:   Fri Mar 3 21:00:25 2017 -0500
+
+    Set phasers to stun.</code>
+           </pre>
+
+    </div>
+  </div>
 </body>
 
 <script>

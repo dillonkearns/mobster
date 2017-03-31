@@ -181,6 +181,17 @@ ctrlKey onMac =
         "Ctrl"
 
 
+installScriptButton =
+    a
+        [ onClick (SendIpcMessage ShowScriptInstallInstructions)
+        , Attr.tabindex -1
+        , Attr.class "btn btn-sm btn-primary"
+        ]
+        [ span [ class [ BufferRight ] ] [ text "Install Mob Git Commit Script" ]
+        , span [ Attr.class "fa fa-github-alt" ] []
+        ]
+
+
 navbar : ScreenState -> Html Msg
 navbar screen =
     let
@@ -244,6 +255,7 @@ configureView model =
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
+        , installScriptButton
         ]
 
 
