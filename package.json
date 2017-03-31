@@ -6,9 +6,8 @@
   "scripts": {
     "start": "npm test && npm run build && electron .",
     "build": "elm make src/timer/Main.elm src/setup/Main.elm --output elm.js && elm css src/Stylesheets.elm",
-    "test-watch": "elm-test --watch",
-    "test": "clear && echo 'running tests' && elm-test",
     "test-watch": "yarn test; fswatch -0 src tests -e '.*' -i \\.elm$ | xargs -0 -n1 -I{} yarn test",
+    "test": "clear && echo 'running tests' && elm-test",
     "pack": "build --dir",
     "dist-mac": "build --mac",
     "dist-win": "build --win",
@@ -43,11 +42,13 @@
   },
   "dependencies": {
     "bugsnag": "^1.9.1",
+    "clipboard": "^1.6.1",
     "electron-debug": "^1.1.0",
     "electron-is-dev": "^0.1.2",
     "electron-log": "^1.3.0",
     "electron-updater": "^1.6.0",
     "fs": "^0.0.1-security",
+    "highlight.js": "^9.10.0",
     "jquery": "^3.1.1",
     "ms": "^0.7.2",
     "node-osascript": "^2.0.0"

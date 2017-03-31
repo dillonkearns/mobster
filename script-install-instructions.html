@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Mobster</title>
+  <link rel="stylesheet" href="./assets/js/highlight/styles/github.css">
+  <script src="./assets/js/highlight/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad()</script>
+  <link rel="stylesheet" href="./assets/css/bootstrap337.min.css" />
+  <link rel="stylesheet" href="./assets/css/bootstrap-darkly-theme.min.css" />
+  <link rel="stylesheet" href="./assets/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="./index.css" />
+  <script type="text/javascript">
+  const $ = jQuery = require('jquery')
+  </script>
+</head>
+<body>
+  <pre id="copy" class="bash"><code>#!/usr/bin/env bash
+USER_EMAIL=`git config --get user.email`
+MOBSTERS=`cat '<span class="active-mobsters-path"></span>'`
+# NOTE: authors must have an email to be valid
+# so they need to be in the form "Some name, another name, ... <email@address.com>"
+git commit -v --author="$MOBSTERS <$USER_EMAIL>"</code></pre>
+
+  <button class="clipboard btn btn-info" data-clipboard-target="#copy">
+    Copy this
+  </button>
+</body>
+
+<script>
+  const {app, ipcRenderer} = require('electron')
+
+  let onMac = /Mac/.test(navigator.platform)
+  const Clipboard = require('clipboard')
+
+  $(document).ready(function() {
+    let activeMobstersPath = ipcRenderer.sendSync('get-active-mobsters-path')
+    $('.active-mobsters-path').text(activeMobstersPath)
+    var clipboard = new Clipboard('.clipboard');
+  });
+
+</script>
+<script src="./assets/js/bootstrap337.min.js" crossorigin="anonymous"></script>
+</html>

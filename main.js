@@ -137,6 +137,10 @@ ipcMain.on('timer-mouse-hover', (event) => {
   }
 })
 
+ipcMain.on('get-active-mobsters-path', (event) => {
+  event.returnValue = currentMobstersFilePath
+})
+
 function closeTimer() {
   if (timerWindow) {
     timerWindow.close()
@@ -235,6 +239,20 @@ const createTray = () => {
   tray.on('right-click', onClickTrayIcon)
   tray.on('double-click', onClickTrayIcon)
   tray.on('click', onClickTrayIcon)
+}
+
+
+
+function showScripts() {
+  let scriptsWindow = new BrowserWindow({
+    frame: true,
+    icon: `${assetsDirectory}/icon.ico`
+  })
+  scriptsWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'script-install-instructions.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
 }
 
 function onReady() {
