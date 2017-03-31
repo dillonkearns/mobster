@@ -6,7 +6,7 @@ import Dom
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
-import Html.Events exposing (keyCode, on, onCheck, onClick, onDoubleClick, onInput, onSubmit)
+import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit)
 import Html.Events.Extra exposing (onEnter)
 import Html5.DragDrop as DragDrop
 import Json.Decode as Decode
@@ -186,9 +186,21 @@ installScriptButton =
         [ onClick (SendIpcMessage ShowScriptInstallInstructions)
         , Attr.tabindex -1
         , Attr.class "btn btn-sm btn-primary"
+        , class [ BufferRight ]
         ]
         [ span [ class [ BufferRight ] ] [ text "Install Mob Git Commit Script" ]
         , span [ Attr.class "fa fa-github-alt" ] []
+        ]
+
+
+startRpgButton =
+    a
+        [ onClick StartRpgMode
+        , Attr.tabindex -1
+        , Attr.class "btn btn-sm btn-success"
+        ]
+        [ span [ class [ BufferRight ] ] [ text "Learn to Mob Game" ]
+        , span [ Attr.class "fa fa-gamepad" ] []
         ]
 
 
@@ -211,7 +223,7 @@ navbar screen =
         nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ "background-color" => "rgba(0, 0, 0, 0.2)", "z-index" => "0" ] ]
             [ div [ Attr.class "container-fluid" ]
                 [ div [ Attr.class "navbar-header" ]
-                    [ a [ Attr.class "navbar-brand", href "#", onDoubleClick StartRpgMode ]
+                    [ a [ Attr.class "navbar-brand", href "#" ]
                         [ text "Mobster" ]
                     ]
                 , div [ Attr.class "nav navbar-nav navbar-right" ]
@@ -255,7 +267,11 @@ configureView model =
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
             ]
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
-        , installScriptButton
+        , div []
+            [ h3 [] [ text "Getting Strated" ]
+            , installScriptButton
+            , startRpgButton
+            ]
         ]
 
 
