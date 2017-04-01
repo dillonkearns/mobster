@@ -15,7 +15,6 @@ import Keyboard.Combo
 import Mobster.Data as Mobster
 import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
-import Mobster.Rpg as Rpg exposing (RpgData)
 import Random
 import Setup.Msg exposing (..)
 import Setup.PlotScatter
@@ -37,23 +36,6 @@ shuffleMobstersCmd mobsterData =
     Random.generate reorderOperation (Mobster.randomizeMobsters mobsterData)
 
 
-type alias Model =
-    { settings : Settings.Data
-    , screenState : ScreenState
-    , newMobster : String
-    , combos : Keyboard.Combo.Model Msg
-    , tip : Tip.Tip
-    , experiment : Maybe String
-    , newExperiment : String
-    , ratings : List Int
-    , secondsSinceBreak : Int
-    , intervalsSinceBreak : Int
-    , availableUpdateVersion : Maybe String
-    , dragDrop : DragDropModel
-    , onMac : Bool
-    }
-
-
 type alias DragDropModel =
     DragDrop.Model DragId DropArea
 
@@ -61,24 +43,6 @@ type alias DragDropModel =
 changeTip : Cmd Msg
 changeTip =
     Random.generate NewTip Tip.random
-
-
-initialModel : Settings.Data -> Bool -> Model
-initialModel settings onMac =
-    { settings = settings
-    , screenState = Configure
-    , newMobster = ""
-    , combos = Keyboard.Combo.init ComboMsg Shortcuts.keyboardCombos
-    , tip = Tip.emptyTip
-    , experiment = Nothing
-    , newExperiment = ""
-    , ratings = []
-    , secondsSinceBreak = 0
-    , intervalsSinceBreak = 0
-    , availableUpdateVersion = Nothing
-    , dragDrop = DragDrop.init
-    , onMac = onMac
-    }
 
 
 type alias TimerConfiguration =
@@ -97,88 +61,8 @@ flags model =
         }
 
 
-port startTimer : TimerConfiguration -> Cmd msg
 
-
-port saveSettings : Encode.Value -> Cmd msg
-
-
-port saveMobstersFile : String -> Cmd msg
-
-
-port sendIpcMessage : String -> Cmd msg
-
-
-port selectDuration : String -> Cmd msg
-
-
-port openExternalUrl : String -> Cmd msg
-
-
-port timeElapsed : (Int -> msg) -> Sub msg
-
-
-port updateDownloaded : (String -> msg) -> Sub msg
-
-
-port onCopyMobstersShortcut : (() -> msg) -> Sub msg
-
-
-timerDurationInputView : Int -> Html Msg
-timerDurationInputView duration =
-    div [ Attr.class "text-primary h3 col-md-12 col-sm-6" ]
-        [ input
-            [ id "timer-duration"
-            , onClick SelectDurationInput
-            , onInput ChangeTimerDuration
-            , type_ "number"
-            , Attr.min (toString minTimerMinutes)
-            , Attr.max (toString maxTimerMinutes)
-            , value (toString duration)
-            , class [ BufferRight ]
-            , style [ "font-size" => "4.0rem" ]
-            ]
-            []
-        , text "Minutes"
-        ]
-
-
-breakIntervalInputView : Int -> Int -> Html Msg
-breakIntervalInputView intervalsPerBreak timerDuration =
-    let
-        theString =
-            if intervalsPerBreak > 0 then
-                "Break every " ++ (toString (intervalsPerBreak * timerDuration)) ++ "′"
-            else
-                "Breaks off"
-    in
-        div [ Attr.class "text-primary h3 col-md-12 col-sm-6" ]
-            [ input
-                [ id "break-interval"
-                , onInput ChangeBreakInterval
-                , type_ "number"
-                , Attr.min (toString minBreakInterval)
-                , Attr.max (toString maxBreakInterval)
-                , value (toString intervalsPerBreak)
-                , class [ BufferRight ]
-                , style [ "font-size" => "4.0rem" ]
-                ]
-                []
-            , text theString
-            ]
-
-
-invisibleTrigger : List (Attribute Msg) -> List (Html Msg) -> Html Msg
-invisibleTrigger additionalStyles children =
-    img ([ src "./assets/invisible.png", Attr.class "invisible-trigger navbar-btn", style [ "max-width" => "2.333em" ] ] ++ additionalStyles) children
-
-
-ctrlKey : Bool -> String
-ctrlKey onMac =
-    if onMac then
-        "⌘"
-    else
-        "Ctrl"
+-- getting started view @@@@
 
 
 installScriptButton : Html Msg
@@ -204,6 +88,19 @@ startRpgButton =
         [ span [ class [ BufferRight ] ] [ text "Learn to Mob Game" ]
         , span [ Attr.class "fa fa-gamepad" ] []
         ]
+
+
+invisibleTrigger : List (Attribute Msg) -> List (Html Msg) -> Html Msg
+invisibleTrigger additionalStyles children =
+    img ([ src "./assets/invisible.png", Attr.class "invisible-trigger navbar-btn", style [ "max-width" => "2.333em" ] ] ++ additionalStyles) children
+
+
+ctrlKey : Bool -> String
+ctrlKey onMac =
+    if onMac then
+        "⌘"
+    else
+        "Ctrl"
 
 
 navbar : ScreenState -> Html Msg
@@ -241,50 +138,17 @@ navbar screen =
             ]
 
 
+
+-- shortcuts
+
+
 startMobbingShortcut : Bool -> String
 startMobbingShortcut onMac =
     ((ctrlKey onMac) ++ "+Enter")
 
 
-configureView : Model -> Html Msg
-configureView model =
-    div [ Attr.class "container-fluid" ]
-        [ button
-            [ noTab
-            , onClick StartTimer
-            , Attr.class "btn btn-info btn-lg btn-block"
-            , class
-                [ BufferTop
-                , LargeButtonText
-                , TooltipContainer
-                ]
-            ]
-            [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
-        , div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
-            , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
-            , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
-            ]
-        , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
-        , div []
-            [ h3 [] [ text "Getting Strated" ]
-            , installScriptButton
-            , startRpgButton
-            ]
-        ]
 
-
-experimentView : String -> Maybe String -> Html Msg
-experimentView newExperiment maybeExperiment =
-    case maybeExperiment of
-        Just experiment ->
-            div [] [ text experiment, button [ noTab, onClick ChangeExperiment, Attr.class "btn btn-sm btn-primary" ] [ text "Edit experiment" ] ]
-
-        Nothing ->
-            div [ Attr.class "input-group" ]
-                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput UpdateExperimentInput, onEnter SetExperiment, style [ "font-size" => "30px" ] ] []
-                , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick SetExperiment ] [ text "Set" ] ]
-                ]
+-- cross-page view stuff
 
 
 continueButtonChildren : Model -> List (Html Msg)
@@ -306,6 +170,23 @@ continueButtonChildren model =
             [ div [] [ text "Continue" ] ]
 
 
+
+-- continuous retros
+
+
+experimentView : String -> Maybe String -> Html Msg
+experimentView newExperiment maybeExperiment =
+    case maybeExperiment of
+        Just experiment ->
+            div [] [ text experiment, button [ noTab, onClick ChangeExperiment, Attr.class "btn btn-sm btn-primary" ] [ text "Edit experiment" ] ]
+
+        Nothing ->
+            div [ Attr.class "input-group" ]
+                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput UpdateExperimentInput, onEnter SetExperiment, style [ "font-size" => "30px" ] ] []
+                , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick SetExperiment ] [ text "Set" ] ]
+                ]
+
+
 ratingsToPlotData : List Int -> List ( Float, Float )
 ratingsToPlotData ratings =
     List.indexedMap (\index value -> ( toFloat index, toFloat value )) ratings
@@ -322,6 +203,10 @@ ratingsView model =
 
         Nothing ->
             div [] []
+
+
+
+-- breaks
 
 
 breakView : Int -> Int -> Int -> Html msg
@@ -358,6 +243,10 @@ viewIntervalsBeforeBreak model =
 noTab : Attribute Msg
 noTab =
     Attr.tabindex -1
+
+
+
+-- continue view TODO: extract this first??? @@@@@@@
 
 
 continueView : Bool -> Model -> Html Msg
@@ -397,11 +286,6 @@ tipView tip =
             ]
         , div [ Attr.class "row" ] [ Tip.tipView tip ]
         ]
-
-
-rpgData : RpgData
-rpgData =
-    Rpg.init
 
 
 nextDriverNavigatorView : Model -> Html Msg
@@ -459,6 +343,10 @@ dnView mobster role =
             ]
 
 
+
+-- view helpers (used across pages)
+
+
 iconView : String -> Int -> Html msg
 iconView iconUrl maxWidth =
     img [ style [ "max-width" => (toString maxWidth ++ "px"), "margin-right" => "0.533em" ], src iconUrl ] []
@@ -470,6 +358,86 @@ nextView thing name =
         [ span [ Attr.class "text-muted" ] [ text ("Next " ++ thing ++ ": ") ]
         , span [ Attr.class "text-info" ] [ text name ]
         ]
+
+
+
+-- configure screen
+
+
+configureView : Model -> Html Msg
+configureView model =
+    div [ Attr.class "container-fluid" ]
+        [ button
+            [ noTab
+            , onClick StartTimer
+            , Attr.class "btn btn-info btn-lg btn-block"
+            , class
+                [ BufferTop
+                , LargeButtonText
+                , TooltipContainer
+                ]
+            ]
+            [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
+        , div [ Attr.class "row" ]
+            [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
+            , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
+            , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
+            ]
+        , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
+        , div []
+            [ h3 [] [ text "Getting Strated" ]
+            , installScriptButton
+            , startRpgButton
+            ]
+        ]
+
+
+
+-- configure inputs (Settings -> Html Msg)
+
+
+timerDurationInputView : Int -> Html Msg
+timerDurationInputView duration =
+    div [ Attr.class "text-primary h3 col-md-12 col-sm-6" ]
+        [ input
+            [ id "timer-duration"
+            , onClick SelectDurationInput
+            , onInput ChangeTimerDuration
+            , type_ "number"
+            , Attr.min (toString minTimerMinutes)
+            , Attr.max (toString maxTimerMinutes)
+            , value (toString duration)
+            , class [ BufferRight ]
+            , style [ "font-size" => "4.0rem" ]
+            ]
+            []
+        , text "Minutes"
+        ]
+
+
+breakIntervalInputView : Int -> Int -> Html Msg
+breakIntervalInputView intervalsPerBreak timerDuration =
+    let
+        theString =
+            if intervalsPerBreak > 0 then
+                "Break every " ++ (toString (intervalsPerBreak * timerDuration)) ++ "′"
+            else
+                "Breaks off"
+    in
+        div [ Attr.class "text-primary h3 col-md-12 col-sm-6" ]
+            [ input
+                [ id "break-interval"
+                , onInput ChangeBreakInterval
+                , type_ "number"
+                , Attr.min (toString minBreakInterval)
+                , Attr.max (toString maxBreakInterval)
+                , value (toString intervalsPerBreak)
+                , class [ BufferRight ]
+                , style [ "font-size" => "4.0rem" ]
+                ]
+                []
+            , text theString
+            ]
 
 
 addMobsterInputView : String -> Mobster.MobsterData -> Html Msg
@@ -676,6 +644,10 @@ view model =
         div [] [ navbar model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
 
 
+
+-- update function helpers
+
+
 resetBreakData : Model -> Model
 resetBreakData model =
     { model | secondsSinceBreak = 0, intervalsSinceBreak = 0 }
@@ -710,6 +682,10 @@ updateSettings settingsUpdater ({ settings } as model) =
             settingsUpdater settings
     in
         { model | settings = updatedSettings } ! [ saveSettings (updatedSettings |> Settings.encoder) ]
+
+
+
+-- update function
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -901,14 +877,8 @@ focusAddMobsterInput =
     Task.attempt DomFocusResult (Dom.focus "add-mobster")
 
 
-minTimerMinutes : Int
-minTimerMinutes =
-    1
 
-
-maxTimerMinutes : Int
-maxTimerMinutes =
-    120
+-- form validations
 
 
 validateTimerDuration : String -> Int -> Int
@@ -939,6 +909,16 @@ validateBreakInterval newDurationAsString oldTimerDuration =
             rawDuration
 
 
+minTimerMinutes : Int
+minTimerMinutes =
+    1
+
+
+maxTimerMinutes : Int
+maxTimerMinutes =
+    120
+
+
 maxBreakInterval : Int
 maxBreakInterval =
     120
@@ -947,6 +927,10 @@ maxBreakInterval =
 minBreakInterval : Int
 minBreakInterval =
     0
+
+
+
+-- elm boilerplate
 
 
 init : { onMac : Bool, settings : Decode.Value } -> ( Model, Cmd Msg )
@@ -979,6 +963,41 @@ subscriptions model =
         ]
 
 
+type alias Model =
+    { settings : Settings.Data
+    , screenState : ScreenState
+    , newMobster : String
+    , combos : Keyboard.Combo.Model Msg
+    , tip : Tip.Tip
+    , experiment : Maybe String
+    , newExperiment : String
+    , ratings : List Int
+    , secondsSinceBreak : Int
+    , intervalsSinceBreak : Int
+    , availableUpdateVersion : Maybe String
+    , dragDrop : DragDropModel
+    , onMac : Bool
+    }
+
+
+initialModel : Settings.Data -> Bool -> Model
+initialModel settings onMac =
+    { settings = settings
+    , screenState = Configure
+    , newMobster = ""
+    , combos = Keyboard.Combo.init ComboMsg Shortcuts.keyboardCombos
+    , tip = Tip.emptyTip
+    , experiment = Nothing
+    , newExperiment = ""
+    , ratings = []
+    , secondsSinceBreak = 0
+    , intervalsSinceBreak = 0
+    , availableUpdateVersion = Nothing
+    , dragDrop = DragDrop.init
+    , onMac = onMac
+    }
+
+
 main : Program { onMac : Bool, settings : Decode.Value } Model Msg
 main =
     Html.programWithFlags
@@ -987,3 +1006,34 @@ main =
         , update = update
         , view = view
         }
+
+
+
+-- electron communication
+
+
+port startTimer : TimerConfiguration -> Cmd msg
+
+
+port saveSettings : Encode.Value -> Cmd msg
+
+
+port saveMobstersFile : String -> Cmd msg
+
+
+port sendIpcMessage : String -> Cmd msg
+
+
+port selectDuration : String -> Cmd msg
+
+
+port openExternalUrl : String -> Cmd msg
+
+
+port timeElapsed : (Int -> msg) -> Sub msg
+
+
+port updateDownloaded : (String -> msg) -> Sub msg
+
+
+port onCopyMobstersShortcut : (() -> msg) -> Sub msg
