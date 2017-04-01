@@ -49,8 +49,8 @@ type alias TimerConfiguration =
     { minutes : Int, driver : String, navigator : String }
 
 
-flags : Model -> TimerConfiguration
-flags model =
+startTimerFlags : Model -> TimerConfiguration
+startTimerFlags model =
     let
         driverNavigator =
             Presenter.nextDriverNavigator model.settings.mobsterData
@@ -725,7 +725,7 @@ update msg model =
                         |> resetIfAfterBreak
             in
                 updatedModel
-                    ! [ (startTimer (flags model)), changeTip ]
+                    ! [ (startTimer (startTimerFlags model)), changeTip ]
                     |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.NextTurn)
 
         ChangeTimerDuration newDurationAsString ->
