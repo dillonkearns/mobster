@@ -21,29 +21,15 @@ type RpgState
     | NextUp
 
 
+{ id, class, classList } =
+    Html.CssHelpers.withNamespace "setup"
 noTabThingy : Attribute msg
 noTabThingy =
     Attr.tabindex -1
 
 
-{ id, class, classList } =
-    Html.CssHelpers.withNamespace "setup"
-
-
-
--- rpgView : RpgState -> a -> Html Msg
-
-
-rpgView :
-    RpgState
-    -> { e
-        | intervalsSinceBreak : a
-        , onMac : b
-        , secondsSinceBreak : c
-        , settings : { d | mobsterData : MobsterData }
-       }
-    -> Html Msg
-rpgView rpgState ({ onMac, secondsSinceBreak, intervalsSinceBreak, settings } as model) =
+rpgView : RpgState -> MobsterData -> Html Msg
+rpgView rpgState mobsterData =
     let
         rpgButton =
             case rpgState of
@@ -68,11 +54,10 @@ rpgView rpgState ({ onMac, secondsSinceBreak, intervalsSinceBreak, settings } as
                         [ text "Start Mobbing" ]
     in
         div [ Attr.class "container-fluid" ]
-            [ -- breakView secondsSinceBreak intervalsSinceBreak settings.intervalsPerBreak,
-              rpgRolesView settings.mobsterData
+            [ rpgRolesView mobsterData
             , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
                 [ rpgButton ]
-            , div [] [ allBadgesView settings.mobsterData ]
+            , div [] [ allBadgesView mobsterData ]
             ]
 
 

@@ -181,6 +181,7 @@ ctrlKey onMac =
         "Ctrl"
 
 
+installScriptButton : Html Msg
 installScriptButton =
     a
         [ onClick (SendIpcMessage ShowScriptInstallInstructions)
@@ -193,6 +194,7 @@ installScriptButton =
         ]
 
 
+startRpgButton : Html Msg
 startRpgButton =
     a
         [ onClick StartRpgMode
@@ -369,7 +371,6 @@ continueView showRotation model =
     in
         div [ Attr.class "container-fluid" ]
             [ ratingsView model
-              -- , div [] [ viewIntervalsBeforeBreak model ]
             , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
             , nextDriverNavigatorView model
             , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
@@ -670,7 +671,7 @@ view model =
                     continueView showRotation model
 
                 Rpg rpgState ->
-                    Setup.Rpg.View.rpgView rpgState model
+                    Setup.Rpg.View.rpgView rpgState model.settings.mobsterData
     in
         div [] [ navbar model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
 
