@@ -103,6 +103,40 @@ ctrlKey onMac =
         "Ctrl"
 
 
+type BootstrapColor
+    = Primary
+    | Success
+    | Warning
+    | Danger
+
+
+type FaIcon
+    = Cog
+    | None
+
+
+navbarButton : String -> Msg -> BootstrapColor -> String -> Html Msg
+navbarButton textContent clickMsg color faIcon =
+    let
+        btnColorClass =
+            "btn-"
+                ++ (color
+                        |> toString
+                        |> String.toLower
+                   )
+
+        faIconClass =
+            if faIcon == "" then
+                ""
+            else
+                "fa fa-" ++ faIcon
+    in
+        button [ noTab, onClick clickMsg, Attr.class ("btn " ++ btnColorClass ++ " btn-sm navbar-btn"), class [ BufferRight ] ]
+            [ text textContent
+            , span [ Attr.class faIconClass ] []
+            ]
+
+
 navbar : ScreenState -> Html Msg
 navbar screen =
     let
@@ -112,9 +146,7 @@ navbar screen =
                     text ""
 
                 _ ->
-                    button [ noTab, onClick OpenConfigure, Attr.class "btn btn-primary btn-sm", class [ BufferRight ] ]
-                        [ span [ Attr.class "fa fa-cog" ] []
-                        ]
+                    navbarButton "" OpenConfigure Primary "cog"
     in
         nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ "background-color" => "rgba(0, 0, 0, 0.2)", "z-index" => "0" ] ]
             [ div [ Attr.class "container-fluid" ]
@@ -125,14 +157,8 @@ navbar screen =
                 , div [ Attr.class "nav navbar-nav navbar-right" ]
                     [ configureScreenButton
                     , invisibleTrigger [ Attr.class "navbar-btn", class [ BufferRight ] ] []
-                    , button [ noTab, onClick (SendIpcMessage Hide), Attr.class "btn btn-sm navbar-btn btn-warning", class [ BufferRight ] ]
-                        [ text "Hide "
-                        , span [ Attr.class "fa fa-minus-square-o" ] []
-                        ]
-                    , button [ noTab, onClick (SendIpcMessage Quit), Attr.class "btn btn-sm navbar-btn btn-danger", class [ BufferRight ] ]
-                        [ text "Quit "
-                        , span [ Attr.class "fa fa-times-circle-o" ] []
-                        ]
+                    , navbarButton "Hide " (SendIpcMessage Hide) Warning "minus-square-o"
+                    , navbarButton "Quit " (SendIpcMessage Quit) Danger "times-circle-o"
                     ]
                 ]
             ]
