@@ -1,8 +1,10 @@
 port module Setup.Main exposing (..)
 
 import Basics.Extra exposing ((=>))
+import Bootstrap
 import Break
 import Dom
+import FA
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
@@ -17,18 +19,17 @@ import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
 import Random
 import Setup.Msg exposing (..)
+import Setup.Navbar as Navbar
 import Setup.PlotScatter
+import Setup.Rpg.View exposing (RpgState(..))
 import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
 import Setup.Stylesheet exposing (CssClasses(..))
+import Setup.View exposing (..)
 import Svg
 import Task
 import Tip
 import Update.Extra
-import Setup.Rpg.View exposing (RpgState(..))
-import Setup.View exposing (..)
-import Bootstrap
-import FA
 
 
 { id, class, classList } =
@@ -67,6 +68,27 @@ startTimerFlags model =
 -- cross-page view stuff 57
 
 
+updateAvailableView : Maybe String -> Html Msg
+updateAvailableView availableUpdateVersion =
+    case availableUpdateVersion of
+        Nothing ->
+            div [] []
+
+        Just version ->
+            div [ Attr.class "alert alert-success" ]
+                [ span [ Attr.class "glyphicon glyphicon-flag", class [ BufferRight ] ] []
+                , text ("A new version is downloaded and ready to install. ")
+                , a [ onClick (SendIpcMessage QuitAndInstall), Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
+                , text "."
+                ]
+
+
+feedbackButton : Html Msg
+feedbackButton =
+    div []
+        [ a [ onClick (SendIpcMessage ShowFeedbackForm), style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
+
+
 continueButtonChildren : Model -> List (Html Msg)
 continueButtonChildren model =
     case model.experiment of
@@ -86,44 +108,12 @@ continueButtonChildren model =
             [ div [] [ text "Continue" ] ]
 
 
-invisibleTrigger : List (Attribute Msg) -> List (Html Msg) -> Html Msg
-invisibleTrigger additionalStyles children =
-    img ([ src "./assets/invisible.png", Attr.class "invisible-trigger navbar-btn", style [ "max-width" => "2.333em" ] ] ++ additionalStyles) children
-
-
 ctrlKey : Bool -> String
 ctrlKey onMac =
     if onMac then
         "⌘"
     else
         "Ctrl"
-
-
-navbar : ScreenState -> Html Msg
-navbar screen =
-    let
-        configureScreenButton =
-            case screen of
-                Configure ->
-                    text ""
-
-                _ ->
-                    Bootstrap.navbarButton "" OpenConfigure Bootstrap.Primary "cog"
-    in
-        nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ "background-color" => "rgba(0, 0, 0, 0.2)", "z-index" => "0" ] ]
-            [ div [ Attr.class "container-fluid" ]
-                [ div [ Attr.class "navbar-header" ]
-                    [ a [ Attr.class "navbar-brand", href "#" ]
-                        [ text "Mobster" ]
-                    ]
-                , div [ Attr.class "nav navbar-nav navbar-right" ]
-                    [ configureScreenButton
-                    , invisibleTrigger [ Attr.class "navbar-btn", class [ BufferRight ] ] []
-                    , Bootstrap.navbarButton "Hide " (SendIpcMessage Hide) Bootstrap.Warning "minus-square-o"
-                    , Bootstrap.navbarButton "Quit " (SendIpcMessage Quit) Bootstrap.Danger "times-circle-o"
-                    ]
-                ]
-            ]
 
 
 
@@ -366,7 +356,7 @@ configureView model =
 
 
 
--- configure inputs (Settings -> Html Msg) 246
+-- configure inputs (Settings -> Html Msg) 56
 
 
 timerDurationInputView : Int -> Html Msg
@@ -425,6 +415,10 @@ addMobsterInputView newMobster mobsterData =
                 , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
                 ]
             ]
+
+
+
+-- roster 150
 
 
 mobstersView : String -> List Presenter.MobsterWithRole -> Mobster.MobsterData -> DragDropModel -> Html Msg
@@ -564,21 +558,6 @@ reorderButtonView mobster =
             ]
 
 
-updateAvailableView : Maybe String -> Html Msg
-updateAvailableView availableUpdateVersion =
-    case availableUpdateVersion of
-        Nothing ->
-            div [] []
-
-        Just version ->
-            div [ Attr.class "alert alert-success" ]
-                [ span [ Attr.class "glyphicon glyphicon-flag", class [ BufferRight ] ] []
-                , text ("A new version is downloaded and ready to install. ")
-                , a [ onClick (SendIpcMessage QuitAndInstall), Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
-                , text "."
-                ]
-
-
 rotationView : Model -> Html Msg
 rotationView model =
     let
@@ -594,10 +573,8 @@ rotationView model =
             ]
 
 
-feedbackButton : Html Msg
-feedbackButton =
-    div []
-        [ a [ onClick (SendIpcMessage ShowFeedbackForm), style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
+
+-- main view function 15
 
 
 view : Model -> Html Msg
@@ -614,7 +591,7 @@ view model =
                 Rpg rpgState ->
                     Setup.Rpg.View.rpgView rpgState model.settings.mobsterData
     in
-        div [] [ navbar model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
+        div [] [ Navbar.view model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
 
 
 
