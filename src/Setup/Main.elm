@@ -331,18 +331,7 @@ noTab =
 configureView : Model -> Html Msg
 configureView model =
     div [ Attr.class "container-fluid" ]
-        [ button
-            [ noTab
-            , onClick StartTimer
-            , Attr.class "btn btn-info btn-lg btn-block"
-            , class
-                [ BufferTop
-                , LargeButtonText
-                , TooltipContainer
-                ]
-            ]
-            [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
-        , div [ Attr.class "row" ]
+        [ div [ Attr.class "row" ]
             [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
@@ -353,6 +342,17 @@ configureView model =
             , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage ShowScriptInstallInstructions) Bootstrap.Primary FA.Github
             , Bootstrap.smallButton "Learn to Mob Game" StartRpgMode Bootstrap.Success FA.Gamepad
             ]
+        , button
+            [ noTab
+            , onClick StartTimer
+            , Attr.class "btn btn-info btn-lg btn-block"
+            , class
+                [ BufferTop
+                , LargeButtonText
+                , TooltipContainer
+                ]
+            ]
+            [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
         ]
 
 
