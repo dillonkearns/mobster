@@ -345,6 +345,7 @@ configureView model =
         , button
             [ noTab
             , onClick StartTimer
+            , style [ "margin-top" => "50px" ]
             , Attr.class "btn btn-info btn-lg btn-block"
             , class
                 [ BufferTop
