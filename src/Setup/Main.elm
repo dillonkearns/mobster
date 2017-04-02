@@ -213,17 +213,16 @@ continueView showRotation model =
             [ ratingsView model
             , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
             , nextDriverNavigatorView model
+            , div [ class [ BufferTop ] ] [ mainView ]
             , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
                 [ button
                     [ noTab
                     , onClick StartTimer
                     , Attr.class "btn btn-info btn-lg btn-block"
-                    , class [ BufferTop, TooltipContainer ]
-                    , class [ LargeButtonText ]
+                    , class [ LargeButtonText, BufferTop, TooltipContainer ]
                     ]
                     ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
                 ]
-            , mainView
             ]
 
 
