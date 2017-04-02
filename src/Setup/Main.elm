@@ -27,6 +27,7 @@ import Tip
 import Update.Extra
 import Setup.Rpg.View exposing (RpgState(..))
 import Setup.View exposing (..)
+import Bootstrap exposing (BootstrapColor(..))
 
 
 { id, class, classList } =
@@ -103,40 +104,6 @@ ctrlKey onMac =
         "Ctrl"
 
 
-type BootstrapColor
-    = Primary
-    | Success
-    | Warning
-    | Danger
-
-
-type FaIcon
-    = Cog
-    | None
-
-
-navbarButton : String -> Msg -> BootstrapColor -> String -> Html Msg
-navbarButton textContent clickMsg color faIcon =
-    let
-        btnColorClass =
-            "btn-"
-                ++ (color
-                        |> toString
-                        |> String.toLower
-                   )
-
-        faIconClass =
-            if faIcon == "" then
-                ""
-            else
-                "fa fa-" ++ faIcon
-    in
-        button [ noTab, onClick clickMsg, Attr.class ("btn " ++ btnColorClass ++ " btn-sm navbar-btn"), class [ BufferRight ] ]
-            [ text textContent
-            , span [ Attr.class faIconClass ] []
-            ]
-
-
 navbar : ScreenState -> Html Msg
 navbar screen =
     let
@@ -146,7 +113,7 @@ navbar screen =
                     text ""
 
                 _ ->
-                    navbarButton "" OpenConfigure Primary "cog"
+                    Bootstrap.navbarButton "" OpenConfigure Primary "cog"
     in
         nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ "background-color" => "rgba(0, 0, 0, 0.2)", "z-index" => "0" ] ]
             [ div [ Attr.class "container-fluid" ]
@@ -157,8 +124,8 @@ navbar screen =
                 , div [ Attr.class "nav navbar-nav navbar-right" ]
                     [ configureScreenButton
                     , invisibleTrigger [ Attr.class "navbar-btn", class [ BufferRight ] ] []
-                    , navbarButton "Hide " (SendIpcMessage Hide) Warning "minus-square-o"
-                    , navbarButton "Quit " (SendIpcMessage Quit) Danger "times-circle-o"
+                    , Bootstrap.navbarButton "Hide " (SendIpcMessage Hide) Warning "minus-square-o"
+                    , Bootstrap.navbarButton "Quit " (SendIpcMessage Quit) Danger "times-circle-o"
                     ]
                 ]
             ]
