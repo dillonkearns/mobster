@@ -138,7 +138,7 @@ experimentView newExperiment maybeExperiment =
 
         Nothing ->
             div [ Attr.class "input-group" ]
-                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput UpdateExperimentInput, onEnter SetExperiment, style [ "font-size" => "30px" ] ] []
+                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput UpdateExperimentInput, onEnter SetExperiment, style [ "font-size" => "1.8rem" ] ] []
                 , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick SetExperiment ] [ text "Set" ] ]
                 ]
 
@@ -331,11 +331,13 @@ configureView : Model -> Html Msg
 configureView model =
     div [ Attr.class "container-fluid" ]
         [ div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-4 col-sm-12" ] [ timerDurationInputView model.settings.timerDuration, breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration ]
+            [ div [ Attr.class "col-md-4 col-sm-12" ]
+                [ timerDurationInputView model.settings.timerDuration
+                , breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration
+                ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
             ]
-        , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
         , div []
             [ h3 [] [ text "Getting Strated" ]
             , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage ShowScriptInstallInstructions) Bootstrap.Primary FA.Github
@@ -362,7 +364,7 @@ configureView model =
 
 timerDurationInputView : Int -> Html Msg
 timerDurationInputView duration =
-    div [ Attr.class "text-primary h3 col-md-12 col-sm-6" ]
+    div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
         [ input
             [ id "timer-duration"
             , onClick SelectDurationInput
@@ -388,7 +390,7 @@ breakIntervalInputView intervalsPerBreak timerDuration =
             else
                 "Breaks off"
     in
-        div [ Attr.class "text-primary h3 col-md-12 col-sm-6" ]
+        div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
             [ input
                 [ id "break-interval"
                 , onInput ChangeBreakInterval
@@ -410,7 +412,7 @@ addMobsterInputView newMobster mobsterData =
         hasError =
             Mobster.containsName newMobster mobsterData
     in
-        div [ Attr.class "row", class [ BufferTop ] ]
+        div [ Attr.class "row" ]
             [ div [ Attr.class "input-group" ]
                 [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", classList [ HasError => hasError ], Attr.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ "font-size" => "2.0rem" ] ] []
                 , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
@@ -451,7 +453,7 @@ inactiveMobstersView inactiveMobsters dragDrop =
 
             ( _, _ ) ->
                 div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle ])
-                    [ h2 [ Attr.class "text-center text-primary" ] [ text "Bench" ]
+                    [ h2 [ Attr.class "text-center text-primary", style [ "margin-top" => "0px" ] ] [ text "Bench" ]
                     , table [ Attr.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
                     ]
 
