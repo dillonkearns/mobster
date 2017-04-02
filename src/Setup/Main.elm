@@ -64,7 +64,26 @@ startTimerFlags model =
 
 
 
--- getting started view @@@@
+-- cross-page view stuff 57
+
+
+continueButtonChildren : Model -> List (Html Msg)
+continueButtonChildren model =
+    case model.experiment of
+        Just experimentText ->
+            [ div [ Attr.class "col-md-4" ] [ text "Continue" ]
+            , div
+                [ Attr.class "col-md-8"
+                , style
+                    [ "font-style" => "italic"
+                    , "text-align" => "left"
+                    ]
+                ]
+                [ text experimentText ]
+            ]
+
+        Nothing ->
+            [ div [] [ text "Continue" ] ]
 
 
 invisibleTrigger : List (Attribute Msg) -> List (Html Msg) -> Html Msg
@@ -108,7 +127,7 @@ navbar screen =
 
 
 
--- shortcuts
+-- shortcuts 3
 
 
 startMobbingShortcut : Bool -> String
@@ -117,30 +136,7 @@ startMobbingShortcut onMac =
 
 
 
--- cross-page view stuff
-
-
-continueButtonChildren : Model -> List (Html Msg)
-continueButtonChildren model =
-    case model.experiment of
-        Just experimentText ->
-            [ div [ Attr.class "col-md-4" ] [ text "Continue" ]
-            , div
-                [ Attr.class "col-md-8"
-                , style
-                    [ "font-style" => "italic"
-                    , "text-align" => "left"
-                    ]
-                ]
-                [ text experimentText ]
-            ]
-
-        Nothing ->
-            [ div [] [ text "Continue" ] ]
-
-
-
--- continuous retros
+-- continuous retros 29
 
 
 experimentView : String -> Maybe String -> Html Msg
@@ -175,7 +171,7 @@ ratingsView model =
 
 
 
--- breaks
+-- breaks 31
 
 
 breakView : Int -> Int -> Int -> Html msg
@@ -215,7 +211,7 @@ noTab =
 
 
 
--- continue view TODO: extract this first??? @@@@@@@
+-- continue view 92
 
 
 continueView : Bool -> Model -> Html Msg
@@ -313,7 +309,7 @@ dnView mobster role =
 
 
 
--- view helpers (used across pages)
+-- view helpers (used across pages) 11
 
 
 iconView : String -> Int -> Html msg
@@ -330,7 +326,7 @@ nextView thing name =
 
 
 
--- configure screen
+-- configure screen 26
 
 
 configureView : Model -> Html Msg
@@ -362,7 +358,7 @@ configureView model =
 
 
 
--- configure inputs (Settings -> Html Msg)
+-- configure inputs (Settings -> Html Msg) 246
 
 
 timerDurationInputView : Int -> Html Msg
@@ -614,7 +610,7 @@ view model =
 
 
 
--- update function helpers
+-- update function helpers 34
 
 
 resetBreakData : Model -> Model
@@ -654,7 +650,7 @@ updateSettings settingsUpdater ({ settings } as model) =
 
 
 
--- update function
+-- update function 187
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -847,7 +843,7 @@ focusAddMobsterInput =
 
 
 
--- form validations
+-- form validations 46
 
 
 validateTimerDuration : String -> Int -> Int
@@ -899,7 +895,7 @@ minBreakInterval =
 
 
 
--- elm boilerplate
+-- elm boilerplate 73
 
 
 init : { onMac : Bool, settings : Decode.Value } -> ( Model, Cmd Msg )
@@ -978,7 +974,7 @@ main =
 
 
 
--- electron communication
+-- electron communication 24
 
 
 port startTimer : TimerConfiguration -> Cmd msg
