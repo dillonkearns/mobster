@@ -30,6 +30,7 @@ import Svg
 import Task
 import Tip
 import Update.Extra
+import ViewHelpers
 
 
 { id, class, classList } =
@@ -195,11 +196,6 @@ viewIntervalsBeforeBreak model =
         div [ onClick ResetBreakData ] intervalBadges
 
 
-noTab : Attribute Msg
-noTab =
-    Attr.tabindex -1
-
-
 
 -- continue view 92
 
@@ -307,7 +303,7 @@ dnView mobster role =
 
 
 
--- view helpers (used across pages) 11
+-- view helpers (used across pages) 14
 
 
 iconView : String -> Int -> Html msg
@@ -321,6 +317,11 @@ nextView thing name =
         [ span [ Attr.class "text-muted" ] [ text ("Next " ++ thing ++ ": ") ]
         , span [ Attr.class "text-info" ] [ text name ]
         ]
+
+
+noTab : Attribute Msg
+noTab =
+    Attr.tabindex -1
 
 
 
@@ -525,24 +526,11 @@ mobsterView dragDrop showHint mobster =
                 [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
                     [ text mobster.name
                     , hint
-                    , roleView mobster.role
+                    , ViewHelpers.roleIconView mobster.role
                     ]
                 ]
             , td [] [ reorderButtonView mobster ]
             ]
-
-
-roleView : Maybe Presenter.Role -> Html Msg
-roleView role =
-    case role of
-        Just (Presenter.Driver) ->
-            span [ Attr.class "role-icon driver-icon" ] []
-
-        Just (Presenter.Navigator) ->
-            span [ Attr.class "role-icon navigator-icon" ] []
-
-        Nothing ->
-            span [ Attr.class "role-icon no-role-icon" ] []
 
 
 reorderButtonView : Presenter.MobsterWithRole -> Html Msg
