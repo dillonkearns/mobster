@@ -2,7 +2,7 @@ module Mobster.Operation exposing (MobsterOperation(..), updateMoblist, add, com
 
 import Array
 import ListHelpers exposing (..)
-import Mobster.Data exposing (Mobster, MobsterData, nextIndex)
+import Mobster.Data exposing (Mobster, MobsterData, nextIndex, previousIndex)
 import Mobster.Rpg as Rpg exposing (RpgData)
 import Mobster.RpgRole exposing (..)
 
@@ -12,6 +12,7 @@ type MobsterOperation
     | Remove Int
     | SetNextDriver Int
     | NextTurn
+    | RewindTurn
     | Bench Int
     | RotateIn Int
     | Add String
@@ -37,6 +38,9 @@ updateMoblist mobsterOperation mobsterData =
 
         NextTurn ->
             setNextDriver (nextIndex mobsterData.nextDriver mobsterData) mobsterData
+
+        RewindTurn ->
+            setNextDriver (previousIndex mobsterData.nextDriver mobsterData) mobsterData
 
         Bench mobsterIndex ->
             bench mobsterIndex mobsterData

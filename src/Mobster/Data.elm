@@ -1,4 +1,4 @@
-module Mobster.Data exposing (MobsterData, Mobster, empty, decode, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex, encoder)
+module Mobster.Data exposing (MobsterData, Mobster, empty, decode, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex, previousIndex, encoder)
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
@@ -87,6 +87,21 @@ nameExists mobster list =
 containsName : String -> MobsterData -> Bool
 containsName string mobsterData =
     nameExists string mobsterData.mobsters || nameExists string mobsterData.inactiveMobsters
+
+
+previousIndex : Int -> MobsterData -> Int
+previousIndex currentIndex mobsterData =
+    let
+        mobSize =
+            List.length mobsterData.mobsters
+
+        index =
+            if mobSize == 0 then
+                0
+            else
+                (currentIndex - 1) % mobSize
+    in
+        index
 
 
 nextIndex : Int -> MobsterData -> Int

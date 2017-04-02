@@ -258,10 +258,26 @@ nextDriverNavigatorView model =
     let
         driverNavigator =
             Presenter.nextDriverNavigator model.settings.mobsterData
+
+        fastForwardButton =
+            div [ Attr.class "col-md-1 col-sm-1 text-default" ]
+                [ span [ Attr.class "btn btn-sm btn-default btn-block", style [ "font-size" => "23px", "padding-right" => "4px" ], class [ ShowOnParentHover ], onClick <| UpdateMobsterData MobsterOperation.NextTurn ]
+                    [ span [ Attr.class "fa fa-fast-forward text-warning" ] []
+                    ]
+                ]
+
+        rewindButton =
+            div [ Attr.class "col-md-1 col-sm-1 text-default" ]
+                [ span [ Attr.class "btn btn-sm btn-default btn-block", style [ "font-size" => "23px", "padding-right" => "4px" ], class [ ShowOnParentHover ], onClick <| UpdateMobsterData MobsterOperation.RewindTurn ]
+                    [ span [ Attr.class "fa fa-fast-backward text-warning" ] []
+                    ]
+                ]
     in
         div [ Attr.class "row h1 text-center", class [ ShowOnParentHoverParent ] ]
-            [ dnView driverNavigator.driver Presenter.Driver
+            [ rewindButton
+            , dnView driverNavigator.driver Presenter.Driver
             , dnView driverNavigator.navigator Presenter.Navigator
+            , fastForwardButton
             ]
 
 
@@ -292,19 +308,11 @@ dnView mobster role =
                 [ span [ Attr.class "fa fa-fast-forward text-warning" ] []
                 , text " Skip"
                 ]
-
-        hoverButtons =
-            case role of
-                Presenter.Driver ->
-                    [ awayButton, skipButton ]
-
-                Presenter.Navigator ->
-                    [ awayButton ]
     in
-        div [ Attr.class "col-md-6 col-sm-6 text-default" ]
+        div [ Attr.class "col-md-5 col-sm-5 text-default" ]
             [ iconView icon 60
             , span [ class [ BufferRight ] ] [ text mobster.name ]
-            , span [] hoverButtons
+            , span [] [ awayButton ]
             ]
 
 

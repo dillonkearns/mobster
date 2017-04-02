@@ -129,9 +129,21 @@ rotateCase2 =
             { startList | nextDriver = 0 }
 
 
+rotateCase3 : Test
+rotateCase3 =
+    let
+        startList =
+            { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] |> toMobsters, nextDriver = 1 }
+    in
+        testOperation "rewind"
+            startList
+            RewindTurn
+            { startList | nextDriver = 0 }
+
+
 rotateCases : Test
 rotateCases =
-    describe "rotate" [ rotateCase1, rotateCase2 ]
+    describe "rotate" [ rotateCase1, rotateCase2, rotateCase3 ]
 
 
 moveCases : Test
