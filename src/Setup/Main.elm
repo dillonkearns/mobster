@@ -66,31 +66,6 @@ startTimerFlags model =
 -- getting started view @@@@
 
 
-installScriptButton : Html Msg
-installScriptButton =
-    a
-        [ onClick (SendIpcMessage ShowScriptInstallInstructions)
-        , Attr.tabindex -1
-        , Attr.class "btn btn-sm btn-primary"
-        , class [ BufferRight ]
-        ]
-        [ span [ class [ BufferRight ] ] [ text "Install Mob Git Commit Script" ]
-        , span [ Attr.class "fa fa-github-alt" ] []
-        ]
-
-
-startRpgButton : Html Msg
-startRpgButton =
-    a
-        [ onClick StartRpgMode
-        , Attr.tabindex -1
-        , Attr.class "btn btn-sm btn-success"
-        ]
-        [ span [ class [ BufferRight ] ] [ text "Learn to Mob Game" ]
-        , span [ Attr.class "fa fa-gamepad" ] []
-        ]
-
-
 invisibleTrigger : List (Attribute Msg) -> List (Html Msg) -> Html Msg
 invisibleTrigger additionalStyles children =
     img ([ src "./assets/invisible.png", Attr.class "invisible-trigger navbar-btn", style [ "max-width" => "2.333em" ] ] ++ additionalStyles) children
@@ -379,8 +354,8 @@ configureView model =
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
         , div []
             [ h3 [] [ text "Getting Strated" ]
-            , installScriptButton
-            , startRpgButton
+            , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage ShowScriptInstallInstructions) Primary "github-alt"
+            , Bootstrap.smallButton "Learn to Mob Game" StartRpgMode Success "gamepad"
             ]
         ]
 

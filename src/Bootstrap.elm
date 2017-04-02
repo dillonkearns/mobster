@@ -1,4 +1,4 @@
-module Bootstrap exposing (navbarButton, BootstrapColor(..))
+module Bootstrap exposing (smallButton, navbarButton, BootstrapColor(..))
 
 import Html exposing (..)
 import Html.Attributes as Attr
@@ -44,5 +44,32 @@ navbarButton textContent clickMsg color faIcon =
     in
         button [ noTab, onClick clickMsg, Attr.class ("btn " ++ btnColorClass ++ " btn-sm navbar-btn"), class [ BufferRight ] ]
             [ text textContent
+            , span [ Attr.class faIconClass ] []
+            ]
+
+
+smallButton : String -> msg -> BootstrapColor -> String -> Html msg
+smallButton textContent clickMsg color faIcon =
+    let
+        btnColorClass =
+            "btn-"
+                ++ (color
+                        |> toString
+                        |> String.toLower
+                   )
+
+        faIconClass =
+            if faIcon == "" then
+                ""
+            else
+                "fa fa-" ++ faIcon
+    in
+        button
+            [ onClick clickMsg
+            , noTab
+            , Attr.class ("btn " ++ btnColorClass ++ " btn-sm")
+            , class [ BufferRight ]
+            ]
+            [ span [ class [ BufferRight ] ] [ text textContent ]
             , span [ Attr.class faIconClass ] []
             ]
