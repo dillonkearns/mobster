@@ -27,7 +27,8 @@ import Tip
 import Update.Extra
 import Setup.Rpg.View exposing (RpgState(..))
 import Setup.View exposing (..)
-import Bootstrap exposing (BootstrapColor(..))
+import Bootstrap
+import FA
 
 
 { id, class, classList } =
@@ -88,7 +89,7 @@ navbar screen =
                     text ""
 
                 _ ->
-                    Bootstrap.navbarButton "" OpenConfigure Primary "cog"
+                    Bootstrap.navbarButton "" OpenConfigure Bootstrap.Primary "cog"
     in
         nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ "background-color" => "rgba(0, 0, 0, 0.2)", "z-index" => "0" ] ]
             [ div [ Attr.class "container-fluid" ]
@@ -99,8 +100,8 @@ navbar screen =
                 , div [ Attr.class "nav navbar-nav navbar-right" ]
                     [ configureScreenButton
                     , invisibleTrigger [ Attr.class "navbar-btn", class [ BufferRight ] ] []
-                    , Bootstrap.navbarButton "Hide " (SendIpcMessage Hide) Warning "minus-square-o"
-                    , Bootstrap.navbarButton "Quit " (SendIpcMessage Quit) Danger "times-circle-o"
+                    , Bootstrap.navbarButton "Hide " (SendIpcMessage Hide) Bootstrap.Warning "minus-square-o"
+                    , Bootstrap.navbarButton "Quit " (SendIpcMessage Quit) Bootstrap.Danger "times-circle-o"
                     ]
                 ]
             ]
@@ -354,8 +355,8 @@ configureView model =
         , div [ Attr.class "h1" ] [ experimentView model.newExperiment model.experiment ]
         , div []
             [ h3 [] [ text "Getting Strated" ]
-            , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage ShowScriptInstallInstructions) Primary "github-alt"
-            , Bootstrap.smallButton "Learn to Mob Game" StartRpgMode Success "gamepad"
+            , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage ShowScriptInstallInstructions) Bootstrap.Primary FA.Github
+            , Bootstrap.smallButton "Learn to Mob Game" StartRpgMode Bootstrap.Success FA.Gamepad
             ]
         ]
 
