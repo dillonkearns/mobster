@@ -7,7 +7,7 @@ import Timer.Timer exposing (..)
 
 
 type alias Model =
-    { driver : String, navigator : String, secondsLeft : Int, originalDurationSeconds : Int }
+    { driver : String, navigator : String, secondsLeft : Int, originalDurationSeconds : Int, isBreak : Bool }
 
 
 type Msg
@@ -15,10 +15,13 @@ type Msg
 
 
 type alias Flags =
-    { minutes : Int, driver : String, navigator : String, isDev : Bool }
+    { minutes : Int, driver : String, navigator : String, isDev : Bool, isBreak : Bool }
 
 
 port timerDone : Int -> Cmd msg
+
+
+port breakTimerDone : Int -> Cmd msg
 
 
 driverView : String -> Html msg
@@ -42,12 +45,33 @@ iconView iconUrl =
     img [ style [ ( "max-width", "20px" ) ], src iconUrl ] []
 
 
+coffeeIcon : Html msg
+coffeeIcon =
+    div [ style [ ( "font-size", "50px" ) ] ] [ i [ class "text-success fa fa-coffee" ] [] ]
+
+
+activeMobsters : Model -> Html msg
+activeMobsters model =
+    div [ style [ ( "margin-top", "8px" ) ] ]
+        [ driverView model.driver
+        , navigatorView model.navigator
+        ]
+
+
+mainContent : Model -> Html msg
+mainContent model =
+    if model.isBreak then
+        coffeeIcon
+    else
+        activeMobsters model
+
+
 view : Model -> Html msg
 view model =
     div [ class "text-center" ]
-        [ h1 [] [ text (timerToString (secondsToTimer model.secondsLeft)) ]
-        , driverView model.driver
-        , navigatorView model.navigator
+        [ h1 [ style [ ( "margin", "0px" ), ( "margin-top", "10px" ) ] ]
+            [ text (timerToString (secondsToTimer model.secondsLeft)) ]
+        , mainContent model
         ]
 
 
@@ -65,7 +89,10 @@ update msg model =
                     updateTimer model.secondsLeft
             in
                 if updatedSecondsLeft <= 0 then
-                    model ! [ timerDone model.originalDurationSeconds ]
+                    if model.isBreak then
+                        model ! [ breakTimerDone model.originalDurationSeconds ]
+                    else
+                        model ! [ timerDone model.originalDurationSeconds ]
                 else
                     { model | secondsLeft = updatedSecondsLeft } ! []
 
@@ -80,7 +107,7 @@ init flags =
             else
                 flags.minutes * 60
     in
-        ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator, originalDurationSeconds = secondsLeft }, Cmd.none )
+        ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator, originalDurationSeconds = secondsLeft, isBreak = flags.isBreak }, Cmd.none )
 
 
 main : Program Flags Model Msg

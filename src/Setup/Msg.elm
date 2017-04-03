@@ -8,6 +8,8 @@ import Mobster.Operation exposing (MobsterOperation)
 
 type Msg
     = StartTimer
+    | SkipBreak
+    | StartBreak
     | ViewRpgNextUp
     | ShowRotationScreen
     | SkipHotkey
@@ -30,6 +32,7 @@ type Msg
     | ComboMsg Keyboard.Combo.Msg
     | ShuffleMobsters
     | TimeElapsed Int
+    | BreakDone Int
     | UpdateAvailable String
     | ResetBreakData
     | RotateInHotkey Int

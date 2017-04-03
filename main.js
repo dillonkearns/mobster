@@ -189,6 +189,12 @@ function createWindow () {
     focusMainWindow()
   })
 
+  ipcMain.on('break-done', (event, timeElapsed) => {
+    closeTimer()
+    mainWindow.webContents.send('break-done', timeElapsed)
+    focusMainWindow()
+  })
+
   ipcMain.on('Quit', (event) => {
     app.quit()
   })

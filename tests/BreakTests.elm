@@ -64,5 +64,18 @@ all =
                             Break.breakSuggested timersSinceBreak timersPerBreakInterval
                     in
                         Expect.equal result False
+            , test "break not suggested when value set to 0" <|
+                \() ->
+                    let
+                        timersSinceBreak =
+                            1000
+
+                        timersPerBreakInterval =
+                            0
+
+                        result =
+                            Break.breakSuggested timersSinceBreak timersPerBreakInterval
+                    in
+                        Expect.equal result False
             ]
         ]

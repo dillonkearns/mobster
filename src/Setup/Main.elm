@@ -50,18 +50,25 @@ changeTip =
 
 
 type alias TimerConfiguration =
-    { minutes : Int, driver : String, navigator : String }
+    { minutes : Int, driver : String, navigator : String, isBreak : Bool }
 
 
-startTimerFlags : Model -> TimerConfiguration
-startTimerFlags model =
+startTimerFlags : Bool -> Model -> TimerConfiguration
+startTimerFlags isBreak model =
     let
         driverNavigator =
             Presenter.nextDriverNavigator model.settings.mobsterData
+
+        minutes =
+            if isBreak then
+                5
+            else
+                model.settings.timerDuration
     in
-        { minutes = model.settings.timerDuration
+        { minutes = minutes
         , driver = driverNavigator.driver.name
         , navigator = driverNavigator.navigator.name
+        , isBreak = isBreak
         }
 
 
@@ -167,7 +174,7 @@ ratingsView model =
 
 breakView : Int -> Int -> Int -> Html msg
 breakView secondsSinceBreak intervalsSinceBreak intervalsPerBreak =
-    if intervalsPerBreak > 0 && Break.breakSuggested intervalsSinceBreak intervalsPerBreak then
+    if Break.breakSuggested intervalsSinceBreak intervalsPerBreak then
         div [ Attr.class "alert alert-warning alert-dismissible", style [ "font-size" => "1.2em" ] ]
             [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
             , text ("How about a walk? (You've been mobbing for " ++ (toString (secondsSinceBreak // 60)) ++ " minutes.)")
@@ -200,6 +207,53 @@ viewIntervalsBeforeBreak model =
 -- continue view 92
 
 
+continueButtons : Model -> Html Msg
+continueButtons model =
+    let
+        continueButton =
+            div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
+                [ button
+                    [ noTab
+                    , onClick StartTimer
+                    , Attr.class "btn btn-info btn-lg btn-block"
+                    , class [ LargeButtonText, BufferTop, TooltipContainer ]
+                    ]
+                    ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
+                ]
+    in
+        if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+            div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
+                [ div [ Attr.class "col-md-3" ]
+                    [ button
+                        [ noTab
+                        , onClick SkipBreak
+                        , Attr.class "btn btn-default btn-lg btn-block"
+                        , class [ LargeButtonText, BufferTop, BufferRight, TooltipContainer, ButtonMuted ]
+                        ]
+                        [ span [] [ text "Skip Break" ] ]
+                    ]
+                , div [ Attr.class "col-md-9" ]
+                    [ button
+                        [ noTab
+                        , onClick StartBreak
+                        , Attr.class "btn btn-success btn-lg btn-block"
+                        , class [ LargeButtonText, BufferTop, TooltipContainer ]
+                        ]
+                        [ span [ class [ BufferRight ] ] [ text "Take a Break" ], i [ Attr.class "fa fa-coffee" ] [] ]
+                    ]
+                ]
+        else
+            div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
+                [ button
+                    [ noTab
+                    , onClick StartTimer
+                    , Attr.class "btn btn-info btn-lg btn-block"
+                    , class [ LargeButtonText, BufferTop, TooltipContainer ]
+                    ]
+                    ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
+                ]
+
+
 continueView : Bool -> Model -> Html Msg
 continueView showRotation model =
     let
@@ -214,15 +268,7 @@ continueView showRotation model =
             , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
             , nextDriverNavigatorView model
             , div [ class [ BufferTop ] ] [ mainView ]
-            , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
-                [ button
-                    [ noTab
-                    , onClick StartTimer
-                    , Attr.class "btn btn-info btn-lg btn-block"
-                    , class [ LargeButtonText, BufferTop, TooltipContainer ]
-                    ]
-                    ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
-                ]
+            , continueButtons model
             ]
 
 
@@ -509,21 +555,21 @@ mobsterView dragDrop showHint mobster =
                 _ ->
                     False
 
-        hoverText =
-            if isBeingDraggedOver then
-                ">"
-            else
-                " "
-
         hint =
             if showHint then
                 Shortcuts.numberHint mobster.index
             else
                 span [] []
+
+        displayType =
+            if isBeingDraggedOver then
+                "1"
+            else
+                "0"
     in
         tr
             (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
-            [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success" ] [ text hoverText ] ]
+            [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
             , td mobsterCellStyle
                 [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
                     [ text mobster.name
@@ -665,8 +711,33 @@ update msg model =
                         |> resetIfAfterBreak
             in
                 updatedModel
-                    ! [ (startTimer (startTimerFlags model)), changeTip ]
+                    ! [ (startTimer (startTimerFlags False model)), changeTip ]
                     |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.NextTurn)
+
+        SkipBreak ->
+            let
+                updatedModel =
+                    { model | screenState = Continue False }
+                        |> resetBreakData
+            in
+                updatedModel ! []
+
+        StartBreak ->
+            let
+                nextScreenState =
+                    case model.screenState of
+                        Rpg _ ->
+                            Rpg Checklist
+
+                        _ ->
+                            Continue False
+
+                updatedModel =
+                    { model | screenState = nextScreenState }
+                        |> resetIfAfterBreak
+            in
+                updatedModel
+                    ! [ (startTimer (startTimerFlags True model)), changeTip ]
 
         ChangeTimerDuration newDurationAsString ->
             model
@@ -744,6 +815,9 @@ update msg model =
 
         TimeElapsed elapsedSeconds ->
             { model | secondsSinceBreak = (model.secondsSinceBreak + elapsedSeconds), intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
+
+        BreakDone elapsedSeconds ->
+            model ! []
 
         ResetBreakData ->
             (model |> resetBreakData) ! []
@@ -899,6 +973,7 @@ subscriptions model =
     Sub.batch
         [ Keyboard.Combo.subscriptions model.combos
         , timeElapsed TimeElapsed
+        , breakDone BreakDone
         , updateDownloaded UpdateAvailable
         ]
 
@@ -971,6 +1046,9 @@ port openExternalUrl : String -> Cmd msg
 
 
 port timeElapsed : (Int -> msg) -> Sub msg
+
+
+port breakDone : (Int -> msg) -> Sub msg
 
 
 port updateDownloaded : (String -> msg) -> Sub msg

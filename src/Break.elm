@@ -11,4 +11,9 @@ timersBeforeNext timersSinceBreak timersPerBreak =
 
 breakSuggested : Int -> Int -> Bool
 breakSuggested timersSinceBreak timersPerBreak =
-    timersSinceBreak >= timersPerBreak
+    breaksTurnedOn timersPerBreak && timersSinceBreak >= timersPerBreak
+
+
+breaksTurnedOn : Int -> Bool
+breaksTurnedOn timersPerBreak =
+    timersPerBreak > 0

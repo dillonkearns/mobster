@@ -459,6 +459,10 @@
       setup.ports.timeElapsed.send(elapsedSeconds)
     })
 
+    ipcRenderer.on('break-done', function (event, elapsedSeconds) {
+      setup.ports.breakDone.send(elapsedSeconds)
+    })
+
     $(() => {
       $('.invisible-trigger').hover(
         () => { $('body').addClass('transparent') },

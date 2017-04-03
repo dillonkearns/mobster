@@ -22,6 +22,7 @@ type CssClasses
     | HasError
     | RpgIcon1
     | RpgIcon2
+    | ButtonMuted
 
 
 css : Stylesheet
@@ -69,6 +70,7 @@ css =
         , class HasError [ border3 (px 3) (solid) (rgba 231 76 60 0.7) |> important ]
         , class RpgIcon1 (rpgIconCss (rgb 8 133 236))
         , class RpgIcon2 (rpgIconCss (rgb 144 7 179))
+        , class ButtonMuted [ backgroundColor (rgb 192 192 192), hover [ backgroundColor (rgb 112 112 112) ] ]
         ]
 
 
