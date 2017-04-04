@@ -385,7 +385,7 @@ configureView model =
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
             ]
         , div []
-            [ h3 [] [ text "Getting Strated" ]
+            [ h3 [] [ text "Getting Started" ]
             , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage ShowScriptInstallInstructions) Bootstrap.Primary FA.Github
             , Bootstrap.smallButton "Learn to Mob Game" StartRpgMode Bootstrap.Success FA.Gamepad
             ]
