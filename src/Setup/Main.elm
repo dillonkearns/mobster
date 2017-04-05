@@ -264,7 +264,8 @@ continueView showRotation model =
                 tipView model.tip
     in
         div [ Attr.class "container-fluid" ]
-            [ ratingsView model
+            [ viewIntervalsBeforeBreak model
+            , ratingsView model
             , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
             , nextDriverNavigatorView model
             , div [ class [ BufferTop ] ] [ mainView ]
