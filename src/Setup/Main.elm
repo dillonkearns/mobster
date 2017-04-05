@@ -380,6 +380,7 @@ configureView model =
             [ div [ Attr.class "col-md-4 col-sm-12" ]
                 [ timerDurationInputView model.settings.timerDuration
                 , breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration
+                , breakDurationInputView model.settings.breakDuration
                 ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
@@ -424,6 +425,24 @@ timerDurationInputView duration =
             ]
             []
         , text "Minutes"
+        ]
+
+
+breakDurationInputView : Int -> Html Msg
+breakDurationInputView duration =
+    div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
+        [ input
+            [ id "break-duration"
+            , onInput ChangeBreakDuration
+            , type_ "number"
+            , Attr.min (toString 1)
+            , Attr.max (toString 240)
+            , value (toString duration)
+            , class [ BufferRight ]
+            , style [ "font-size" => "4.0rem" ]
+            ]
+            []
+        , text "Minutes Per Break"
         ]
 
 
@@ -744,6 +763,11 @@ update msg model =
                 |> updateSettings
                     (\settings -> { settings | timerDuration = (validateTimerDuration newDurationAsString settings.timerDuration) })
 
+        ChangeBreakDuration newDurationAsString ->
+            model
+                |> updateSettings
+                    (\settings -> { settings | breakDuration = (validateBreakDuration newDurationAsString settings.breakDuration) })
+
         ChangeBreakInterval newIntervalAsString ->
             model
                 |> updateSettings
@@ -905,6 +929,20 @@ validateTimerDuration newDurationAsString oldTimerDuration =
             maxTimerMinutes
         else if rawDuration < minTimerMinutes then
             minTimerMinutes
+        else
+            rawDuration
+
+
+validateBreakDuration : String -> Int -> Int
+validateBreakDuration newDurationAsString oldTimerDuration =
+    let
+        rawDuration =
+            Result.withDefault 5 (String.toInt newDurationAsString)
+    in
+        if rawDuration > 240 then
+            240
+        else if rawDuration < 1 then
+            1
         else
             rawDuration
 

@@ -21,6 +21,7 @@ type Msg
     | ClickAddMobster
     | DomFocusResult (Result Dom.Error ())
     | ChangeTimerDuration String
+    | ChangeBreakDuration String
     | ChangeBreakInterval String
     | SelectDurationInput
     | OpenConfigure
