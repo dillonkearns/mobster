@@ -728,9 +728,15 @@ update msg model =
                     { model | screenState = nextScreenState }
                         |> resetIfAfterBreak
             in
-                updatedModel
-                    ! [ (startTimer (startTimerFlags False model)), changeTip ]
-                    |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.NextTurn)
+                case model.screenState of
+                    Rpg rpgState ->
+                        updatedModel
+                            ! [ (startTimer (startTimerFlags False model)), changeTip ]
+
+                    _ ->
+                        updatedModel
+                            ! [ (startTimer (startTimerFlags False model)), changeTip ]
+                            |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.NextTurn)
 
         SkipBreak ->
             let
