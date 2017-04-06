@@ -172,17 +172,6 @@ ratingsView model =
 -- breaks 31
 
 
-breakView : Int -> Int -> Int -> Html msg
-breakView secondsSinceBreak intervalsSinceBreak intervalsPerBreak =
-    if Break.breakSuggested intervalsSinceBreak intervalsPerBreak then
-        div [ Attr.class "alert alert-warning alert-dismissible", style [ "font-size" => "1.2em" ] ]
-            [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
-            , text ("How about a walk? (You've been mobbing for " ++ (toString (secondsSinceBreak // 60)) ++ " minutes.)")
-            ]
-    else
-        div [] []
-
-
 viewIntervalsBeforeBreak : Model -> Html Msg
 viewIntervalsBeforeBreak model =
     let
@@ -209,49 +198,15 @@ viewIntervalsBeforeBreak model =
 
 continueButtons : Model -> Html Msg
 continueButtons model =
-    let
-        continueButton =
-            div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
-                [ button
-                    [ noTab
-                    , onClick StartTimer
-                    , Attr.class "btn btn-info btn-lg btn-block"
-                    , class [ LargeButtonText, BufferTop, TooltipContainer ]
-                    ]
-                    ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
-                ]
-    in
-        if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
-            div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
-                [ div [ Attr.class "col-md-3" ]
-                    [ button
-                        [ noTab
-                        , onClick SkipBreak
-                        , Attr.class "btn btn-default btn-lg btn-block"
-                        , class [ LargeButtonText, BufferTop, BufferRight, TooltipContainer, ButtonMuted ]
-                        ]
-                        [ span [] [ text "Skip Break" ] ]
-                    ]
-                , div [ Attr.class "col-md-9" ]
-                    [ button
-                        [ noTab
-                        , onClick StartBreak
-                        , Attr.class "btn btn-success btn-lg btn-block"
-                        , class [ LargeButtonText, BufferTop, TooltipContainer ]
-                        ]
-                        [ span [ class [ BufferRight ] ] [ text "Take a Break" ], i [ Attr.class "fa fa-coffee" ] [] ]
-                    ]
-                ]
-        else
-            div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
-                [ button
-                    [ noTab
-                    , onClick StartTimer
-                    , Attr.class "btn btn-info btn-lg btn-block"
-                    , class [ LargeButtonText, BufferTop, TooltipContainer ]
-                    ]
-                    ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
-                ]
+    div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
+        [ button
+            [ noTab
+            , onClick StartTimer
+            , Attr.class "btn btn-info btn-lg btn-block"
+            , class [ LargeButtonText, BufferTop, TooltipContainer ]
+            ]
+            ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
+        ]
 
 
 continueView : Bool -> Model -> Html Msg
@@ -263,14 +218,57 @@ continueView showRotation model =
             else
                 tipView model.tip
     in
-        div [ Attr.class "container-fluid" ]
-            [ viewIntervalsBeforeBreak model
-            , ratingsView model
-            , breakView model.secondsSinceBreak model.intervalsSinceBreak model.settings.intervalsPerBreak
-            , nextDriverNavigatorView model
-            , div [ class [ BufferTop ] ] [ mainView ]
-            , continueButtons model
+        if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+            breakView model
+        else
+            div [ Attr.class "container-fluid" ]
+                [ viewIntervalsBeforeBreak model
+                , ratingsView model
+                , nextDriverNavigatorView model
+                , div [ class [ BufferTop ] ] [ mainView ]
+                , continueButtons model
+                ]
+
+
+breakButtonsView : Html Msg
+breakButtonsView =
+    div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
+        [ div [ Attr.class "col-md-3" ]
+            [ button
+                [ noTab
+                , onClick SkipBreak
+                , Attr.class "btn btn-default btn-lg btn-block"
+                , class [ LargeButtonText, BufferTop, BufferRight, TooltipContainer, ButtonMuted ]
+                ]
+                [ span [] [ text "Skip Break" ] ]
             ]
+        , div [ Attr.class "col-md-9" ]
+            [ button
+                [ noTab
+                , onClick StartBreak
+                , Attr.class "btn btn-success btn-lg btn-block"
+                , class [ LargeButtonText, BufferTop, TooltipContainer ]
+                ]
+                [ span [ class [ BufferRight ] ] [ text "Take a Break" ], i [ Attr.class "fa fa-coffee" ] [] ]
+            ]
+        ]
+
+
+breakView : Model -> Html Msg
+breakView model =
+    div [ Attr.class "container-fluid" ]
+        [ breakAlertView model.secondsSinceBreak
+        , div [ class [ BufferTop ] ] [ tipView model.tip ]
+        , breakButtonsView
+        ]
+
+
+breakAlertView : Int -> Html msg
+breakAlertView secondsSinceBreak =
+    div [ Attr.class "alert alert-warning alert-dismissible", style [ "font-size" => "1.2em" ] ]
+        [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
+        , text ("How about a walk? (You've been mobbing for " ++ (toString (secondsSinceBreak // 60)) ++ " minutes.)")
+        ]
 
 
 tipView : Tip.Tip -> Html Msg
