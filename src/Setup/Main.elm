@@ -837,7 +837,7 @@ update msg model =
             model ! [ shuffleMobstersCmd model.settings.mobsterData ]
 
         TimeElapsed elapsedSeconds ->
-            { model | secondsSinceBreak = (model.secondsSinceBreak + elapsedSeconds), intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
+            { model | secondsSinceBreak = model.secondsSinceBreak + elapsedSeconds, intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
 
         BreakDone elapsedSeconds ->
             model ! []
