@@ -41,6 +41,7 @@ type Msg
     | DragDropMsg (DragDrop.Msg DragId DropArea)
     | OpenExternalUrl String
     | SendIpcMessage IpcMessage
+    | ChangeShortcut String
 
 
 type DragId
@@ -59,3 +60,4 @@ type IpcMessage
     | Hide
     | Quit
     | QuitAndInstall
+    | ChangeShortcutIpc

@@ -380,6 +380,7 @@ configureView model =
                 [ timerDurationInputView model.settings.timerDuration
                 , breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration
                 , breakDurationInputView model.settings.breakDuration
+                  -- , shortcutInputView "Show/Hide Shortcut"
                 ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
@@ -468,6 +469,20 @@ breakIntervalInputView intervalsPerBreak timerDuration =
                 []
             , text theString
             ]
+
+
+shortcutInputView : String -> Html Msg
+shortcutInputView currentShortcut =
+    div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
+        [ input
+            [ id "shortCut"
+            , onInput ChangeShortcut
+            , class [ BufferRight ]
+            , style [ "font-size" => "4.0rem" ]
+            ]
+            []
+        , text currentShortcut
+        ]
 
 
 addMobsterInputView : String -> Mobster.MobsterData -> Html Msg
@@ -908,6 +923,12 @@ update msg model =
                 ! []
                 |> Update.Extra.andThen update
                     (UpdateMobsterData MobsterOperation.NextTurn)
+
+        Setup.Msg.ChangeShortcut _ ->
+            model
+                ! []
+                |> Update.Extra.andThen update
+                    (SendIpcMessage ChangeShortcutIpc)
 
 
 reorderOperation : List Mobster.Mobster -> Msg

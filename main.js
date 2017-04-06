@@ -137,6 +137,11 @@ ipcMain.on('timer-mouse-hover', (event) => {
   }
 })
 
+ipcMain.on('ChangeShortcutIpc', (event) =>{
+  console.log("ChangeShortcutIpc")
+  globalShortcut.unregisterAll()
+  registerShortcuts('CommandOrControl+Shift+T')
+})
 ipcMain.on('get-active-mobsters-path', (event) => {
   event.returnValue = currentMobstersFilePath
 })
@@ -273,7 +278,7 @@ function showScripts() {
 function onReady() {
   createWindow()
   createTray()
-  registerShortcuts()
+  registerShortcuts('CommandOrControl+Shift+K')
   setupAutoUpdater()
 }
 
@@ -337,8 +342,8 @@ function setupAutoUpdater() {
   }
 }
 
-function registerShortcuts() {
-  globalShortcut.register('CommandOrControl+Shift+K', () => {
+function registerShortcuts(shortcutString) {
+  globalShortcut.register(shortcutString, () => {
     if (timerWindow) {
       app.focus() // ensure that app is focused so dialog appears in foreground
       let dialogActionIndex = dialog.showMessageBox({
