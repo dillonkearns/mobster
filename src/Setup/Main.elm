@@ -265,9 +265,9 @@ breakView model =
 
 breakAlertView : Int -> Html msg
 breakAlertView secondsSinceBreak =
-    div [ Attr.class "alert alert-warning alert-dismissible", style [ "font-size" => "1.2em" ] ]
+    div [ Attr.class "alert alert-info alert-dismissible", style [ "font-size" => "1.2em" ] ]
         [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
-        , text ("How about a walk? (You've been mobbing for " ++ (toString (secondsSinceBreak // 60)) ++ " minutes.)")
+        , text ("How about a walk? You've been mobbing for " ++ (toString (secondsSinceBreak // 60)) ++ " minutes.")
         ]
 
 
