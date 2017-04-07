@@ -933,7 +933,8 @@ update msg model =
                         "CommandOrControl+Shift+" ++ newShortcut
             in
                 model
-                    ! []
+                    |> updateSettings
+                        (\settings -> { settings | showHideShortcut = shortcutString })
                     |> Update.Extra.andThen update
                         (SendIpcMessage ChangeShortcutIpc (Encode.string (shortcutString)))
 
@@ -1036,7 +1037,11 @@ init { onMac, settings } =
                     in
                         Settings.initial
     in
-        initialModel initialSettings onMac ! [] |> saveActiveMobsters
+        initialModel initialSettings onMac
+            ! []
+            |> saveActiveMobsters
+            |> Update.Extra.andThen update
+                (SendIpcMessage ChangeShortcutIpc (Encode.string (initialSettings.showHideShortcut)))
 
 
 subscriptions : Model -> Sub Msg
