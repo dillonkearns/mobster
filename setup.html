@@ -434,8 +434,10 @@
       document.getElementById(id).select()
     })
 
-    setup.ports.sendIpcMessage.subscribe(function(message) {
-      ipcRenderer.send(message)
+    setup.ports.sendIpcMessage.subscribe(function([message, data]) {
+      console.log("data", data);
+      console.log("message", message);
+      ipcRenderer.send(message, data)
     })
 
     setup.ports.saveSettings.subscribe(function(settings) {

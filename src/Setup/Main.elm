@@ -908,7 +908,7 @@ update msg model =
                                 model ! []
 
         SendIpcMessage ipcMessage ->
-            model ! [ sendIpcMessage (toString ipcMessage) ]
+            model ! [ sendIpcMessage ( toString ipcMessage, Encode.string "No value." ) ]
 
         OpenExternalUrl url ->
             model
@@ -1100,7 +1100,7 @@ port saveSettings : Encode.Value -> Cmd msg
 port saveMobstersFile : String -> Cmd msg
 
 
-port sendIpcMessage : String -> Cmd msg
+port sendIpcMessage : ( String, Encode.Value ) -> Cmd msg
 
 
 port selectDuration : String -> Cmd msg
