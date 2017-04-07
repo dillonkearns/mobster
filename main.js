@@ -137,8 +137,8 @@ ipcMain.on('timer-mouse-hover', (event) => {
   }
 })
 
-ipcMain.on('ChangeShortcutIpc', (event) =>{
-  console.log("ChangeShortcutIpc")
+ipcMain.on('ChangeShortcutIpc', (event, payload) =>{
+  console.log("ChangeShortcutIpc", payload)
   globalShortcut.unregisterAll()
   registerShortcuts('CommandOrControl+Shift+T')
 })

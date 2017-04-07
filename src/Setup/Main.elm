@@ -86,7 +86,7 @@ updateAvailableView availableUpdateVersion =
             div [ Attr.class "alert alert-success" ]
                 [ span [ Attr.class "glyphicon glyphicon-flag", class [ BufferRight ] ] []
                 , text ("A new version is downloaded and ready to install. ")
-                , a [ onClick (SendIpcMessage QuitAndInstall), Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
+                , a [ onClick (SendIpcMessage QuitAndInstall Encode.null), Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
                 , text "."
                 ]
 
@@ -94,7 +94,7 @@ updateAvailableView availableUpdateVersion =
 feedbackButton : Html Msg
 feedbackButton =
     div []
-        [ a [ onClick (SendIpcMessage ShowFeedbackForm), style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
+        [ a [ onClick (SendIpcMessage ShowFeedbackForm Encode.null), style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
 
 
 continueButtonChildren : Model -> List (Html Msg)
@@ -387,7 +387,7 @@ configureView model =
             ]
         , div []
             [ h3 [] [ text "Getting Started" ]
-            , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage ShowScriptInstallInstructions) Bootstrap.Primary FA.Github
+            , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage ShowScriptInstallInstructions Encode.null) Bootstrap.Primary FA.Github
             , Bootstrap.smallButton "Learn to Mob Game" StartRpgMode Bootstrap.Success FA.Gamepad
             ]
         , button
@@ -907,13 +907,13 @@ update msg model =
                             _ ->
                                 model ! []
 
-        SendIpcMessage ipcMessage ->
-            model ! [ sendIpcMessage ( toString ipcMessage, Encode.string "No value." ) ]
+        SendIpcMessage ipcMessage payload ->
+            model ! [ sendIpcMessage ( toString ipcMessage, payload ) ]
 
         OpenExternalUrl url ->
             model
                 ! [ openExternalUrl url ]
-                |> Update.Extra.andThen update (SendIpcMessage Hide)
+                |> Update.Extra.andThen update (SendIpcMessage Hide Encode.null)
 
         CheckRpgBox msg checkedValue ->
             update msg model
@@ -928,7 +928,7 @@ update msg model =
             model
                 ! []
                 |> Update.Extra.andThen update
-                    (SendIpcMessage ChangeShortcutIpc)
+                    (SendIpcMessage ChangeShortcutIpc (Encode.string ":)"))
 
 
 reorderOperation : List Mobster.Mobster -> Msg

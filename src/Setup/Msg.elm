@@ -2,6 +2,7 @@ module Setup.Msg exposing (..)
 
 import Dom
 import Html5.DragDrop as DragDrop
+import Json.Encode as Encode
 import Keyboard.Combo
 import Mobster.Operation exposing (MobsterOperation)
 
@@ -40,7 +41,7 @@ type Msg
     | RotateOutHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
     | OpenExternalUrl String
-    | SendIpcMessage IpcMessage
+    | SendIpcMessage IpcMessage Encode.Value
     | ChangeShortcut String
 
 

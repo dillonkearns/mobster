@@ -5,6 +5,7 @@ import Bootstrap
 import Html exposing (..)
 import Html.Attributes as Attr exposing (..)
 import Html.CssHelpers
+import Json.Encode as Encode
 import Setup.Msg exposing (IpcMessage(..), Msg(..))
 import Setup.Stylesheet exposing (CssClasses(..))
 import Setup.View exposing (ScreenState(..))
@@ -32,8 +33,8 @@ view screen =
                 , div [ Attr.class "nav navbar-nav navbar-right" ]
                     [ configureScreenButton
                     , invisibleTrigger [ Attr.class "navbar-btn", class [ BufferRight ] ] []
-                    , Bootstrap.navbarButton "Hide " (SendIpcMessage Hide) Bootstrap.Warning "minus-square-o"
-                    , Bootstrap.navbarButton "Quit " (SendIpcMessage Quit) Bootstrap.Danger "times-circle-o"
+                    , Bootstrap.navbarButton "Hide " (SendIpcMessage Hide Encode.null) Bootstrap.Warning "minus-square-o"
+                    , Bootstrap.navbarButton "Quit " (SendIpcMessage Quit Encode.null) Bootstrap.Danger "times-circle-o"
                     ]
                 ]
             ]
