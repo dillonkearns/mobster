@@ -924,11 +924,18 @@ update msg model =
                 |> Update.Extra.andThen update
                     (UpdateMobsterData MobsterOperation.NextTurn)
 
-        Setup.Msg.ChangeShortcut _ ->
-            model
-                ! []
-                |> Update.Extra.andThen update
-                    (SendIpcMessage ChangeShortcutIpc (Encode.string ":)"))
+        Setup.Msg.ChangeShortcut newShortcut ->
+            let
+                shortcutString =
+                    if newShortcut == "" then
+                        ""
+                    else
+                        "CommandOrControl+Shift+" ++ newShortcut
+            in
+                model
+                    ! []
+                    |> Update.Extra.andThen update
+                        (SendIpcMessage ChangeShortcutIpc (Encode.string (shortcutString)))
 
 
 reorderOperation : List Mobster.Mobster -> Msg
