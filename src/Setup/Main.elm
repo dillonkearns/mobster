@@ -380,7 +380,7 @@ configureView model =
                 [ timerDurationInputView model.settings.timerDuration
                 , breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration
                 , breakDurationInputView model.settings.breakDuration
-                  -- , shortcutInputView "Show/Hide Shortcut"
+                , shortcutInputView model.settings.showHideShortcut model.onMac
                 ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
             , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
@@ -471,17 +471,20 @@ breakIntervalInputView intervalsPerBreak timerDuration =
             ]
 
 
-shortcutInputView : String -> Html Msg
-shortcutInputView currentShortcut =
+shortcutInputView : String -> Bool -> Html Msg
+shortcutInputView currentShortcut onMac =
     div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
-        [ input
-            [ id "shortCut"
+        [ text "Show/Hide: "
+        , text ((ctrlKey onMac) ++ "+shift+")
+        , input
+            [ id "shortcut"
             , onInput ChangeShortcut
             , class [ BufferRight ]
-            , style [ "font-size" => "4.0rem" ]
+            , value currentShortcut
+            , style [ "font-size" => "4.0rem", "width" => "40px" ]
+            , Attr.maxlength 1
             ]
             []
-        , text currentShortcut
         ]
 
 
@@ -924,7 +927,7 @@ update msg model =
                 |> Update.Extra.andThen update
                     (UpdateMobsterData MobsterOperation.NextTurn)
 
-        Setup.Msg.ChangeShortcut newShortcut ->
+        ChangeShortcut newShortcut ->
             let
                 shortcutString =
                     if newShortcut == "" then
@@ -934,7 +937,7 @@ update msg model =
             in
                 model
                     |> updateSettings
-                        (\settings -> { settings | showHideShortcut = shortcutString })
+                        (\settings -> { settings | showHideShortcut = newShortcut })
                     |> Update.Extra.andThen update
                         (SendIpcMessage ChangeShortcutIpc (Encode.string (shortcutString)))
 
@@ -1041,7 +1044,7 @@ init { onMac, settings } =
             ! []
             |> saveActiveMobsters
             |> Update.Extra.andThen update
-                (SendIpcMessage ChangeShortcutIpc (Encode.string (initialSettings.showHideShortcut)))
+                (ChangeShortcut initialSettings.showHideShortcut)
 
 
 subscriptions : Model -> Sub Msg

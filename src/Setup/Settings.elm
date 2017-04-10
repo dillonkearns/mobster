@@ -23,7 +23,7 @@ decoder =
         |> optional "breakDuration" (Decode.int) 5
         |> required "intervalsPerBreak" (Decode.int)
         |> required "mobsterData" (Mobster.Data.decoder)
-        |> optional "showHideShortcut" (Decode.string) "CommandOrControl+Shift+K"
+        |> optional "showHideShortcut" (Decode.string) "K"
 
 
 decode : Encode.Value -> Result String Data
@@ -48,5 +48,5 @@ initial =
     , breakDuration = 5
     , intervalsPerBreak = 5
     , mobsterData = Mobster.Data.empty
-    , showHideShortcut = "CommandOrControl+Shift+K"
+    , showHideShortcut = "K"
     }

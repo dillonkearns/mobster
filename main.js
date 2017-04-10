@@ -141,7 +141,7 @@ ipcMain.on('ChangeShortcutIpc', (event, payload) =>{
   console.log("ChangeShortcutIpc", payload)
   globalShortcut.unregisterAll()
   if (payload !== "") {
-    registerShortcuts(payload)
+    setShowHideShortcut(payload)
   }
 })
 ipcMain.on('get-active-mobsters-path', (event) => {
@@ -280,7 +280,6 @@ function showScripts() {
 function onReady() {
   createWindow()
   createTray()
-  registerShortcuts('CommandOrControl+Shift+K')
   setupAutoUpdater()
 }
 
@@ -344,7 +343,7 @@ function setupAutoUpdater() {
   }
 }
 
-function registerShortcuts(shortcutString) {
+function setShowHideShortcut(shortcutString) {
   globalShortcut.register(shortcutString, () => {
     if (timerWindow) {
       app.focus() // ensure that app is focused so dialog appears in foreground
