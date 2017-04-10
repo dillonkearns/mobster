@@ -11,8 +11,9 @@
     "pack": "build --dir",
     "dist-mac": "build --mac",
     "dist-win": "build --win",
-    "dist": "build --mac --win",
-    "release": "build --mac --win"
+    "dist-linux": "build --linux",
+    "dist": "build --mac --win --linux",
+    "release": "build --mac --win --linux"
   },
   "build": {
     "appId": "com.dillonkearns.mobster",
