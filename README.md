@@ -6,8 +6,9 @@ A mob/pair programming timer, inspired by the [MobProgramming/MobTimer.Python](h
 Mobster was built with delight in Elm and Electron <a href="http://elm-lang.org"><img src="https://avatars0.githubusercontent.com/u/4359353?v=3&s=280" height="35" /></a> <a href="http://electron.atom.io"><img src="https://camo.githubusercontent.com/79904b8ba0d1bce43022bbd5710f0ea1db33f54f/68747470733a2f2f7261776769742e636f6d2f73696e647265736f726875732f617765736f6d652d656c656374726f6e2f6d61737465722f656c656374726f6e2d6c6f676f2e737667" height="35"></img></a>
 
 ## RPG Mode
-![RPG Mode](/rpg-mode.gif)
 You can play through the mob programming RPG to practice mobbing skills with your team. This is a port of [Willem Larsen](https://github.com/willemlarsen)'s excellent [Mob Programming RPG](https://github.com/willemlarsen/mobprogrammingrpg). This is a fantastic way to learn about some of the subtleties that are essential to effective mobbing, such as the [Driver/Navigator Pattern (also known as Strong-Style)](http://llewellynfalco.blogspot.com/2014/06/llewellyns-strong-style-pairing.html).
+
+![RPG Mode](/rpg-mode.gif)
 
 ### Recommended Structure
 * Pick a familiar exercise in a familiar language if possible so you can focus on learning mobbing skills, not a new language, etc.
