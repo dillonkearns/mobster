@@ -24,7 +24,6 @@ type Msg
     | ChangeInput InputField String
     | ChangeTimerDuration String
     | ChangeBreakDuration String
-    | ChangeBreakInterval String
     | SelectDurationInput
     | OpenConfigure
     | NewTip Int

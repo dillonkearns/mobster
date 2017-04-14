@@ -458,7 +458,7 @@ breakIntervalInputView intervalsPerBreak timerDuration =
         div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
             [ input
                 [ id "break-interval"
-                , onInput ChangeBreakInterval
+                , onInput (ChangeInput BreakInterval)
                 , type_ "number"
                 , Attr.min (toString minBreakInterval)
                 , Attr.max (toString maxBreakInterval)
@@ -791,15 +791,6 @@ update msg model =
                 |> updateSettings
                     (\settings -> { settings | breakDuration = (validateBreakDuration newDurationAsString settings.breakDuration) })
 
-        ChangeBreakInterval newIntervalAsString ->
-            model
-                |> updateSettings
-                    (\settings ->
-                        { settings
-                            | intervalsPerBreak = (validateBreakInterval newIntervalAsString settings.intervalsPerBreak)
-                        }
-                    )
-
         SelectDurationInput ->
             model ! [ selectDuration "timer-duration" ]
 
@@ -928,18 +919,38 @@ update msg model =
                     (UpdateMobsterData MobsterOperation.NextTurn)
 
         Setup.Msg.ChangeInput inputField newInputValue ->
-            let
-                shortcutString =
-                    if newInputValue == "" then
-                        ""
-                    else
-                        "CommandOrControl+Shift+" ++ newInputValue
-            in
-                model
-                    |> updateSettings
-                        (\settings -> { settings | showHideShortcut = newInputValue })
-                    |> Update.Extra.andThen update
-                        (SendIpcMessage ChangeShortcutIpc (Encode.string (shortcutString)))
+            case inputField of
+                ShowHideShortcut ->
+                    let
+                        shortcutString =
+                            if newInputValue == "" then
+                                ""
+                            else
+                                "CommandOrControl+Shift+" ++ newInputValue
+                    in
+                        model
+                            |> updateSettings
+                                (\settings -> { settings | showHideShortcut = newInputValue })
+                            |> Update.Extra.andThen update
+                                (SendIpcMessage ChangeShortcutIpc (Encode.string (shortcutString)))
+
+                Setup.Msg.BreakInterval ->
+                    model
+                        |> updateSettings
+                            (\settings ->
+                                { settings
+                                    | intervalsPerBreak = (validateBreakInterval newInputValue settings.intervalsPerBreak)
+                                }
+                            )
+
+                Setup.Msg.TimerDuration ->
+                    Debug.crash "TODO"
+
+                Setup.Msg.BreakDuration ->
+                    Debug.crash "TODO"
+
+                Setup.Msg.Experiment ->
+                    Debug.crash "TODO"
 
 
 reorderOperation : List Mobster.Mobster -> Msg
