@@ -21,6 +21,7 @@ type Msg
     | AddMobster
     | ClickAddMobster
     | DomFocusResult (Result Dom.Error ())
+    | ChangeInput InputField String
     | ChangeTimerDuration String
     | ChangeBreakDuration String
     | ChangeBreakInterval String
@@ -42,7 +43,14 @@ type Msg
     | DragDropMsg (DragDrop.Msg DragId DropArea)
     | OpenExternalUrl String
     | SendIpcMessage IpcMessage Encode.Value
-    | ChangeShortcut String
+
+
+type InputField
+    = TimerDuration
+    | BreakDuration
+    | BreakInterval
+    | Experiment
+    | ShowHideShortcut
 
 
 type DragId

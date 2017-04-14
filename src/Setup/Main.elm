@@ -478,7 +478,7 @@ shortcutInputView currentShortcut onMac =
         , text ((ctrlKey onMac) ++ "+shift+")
         , input
             [ id "shortcut"
-            , onInput ChangeShortcut
+            , onInput (ChangeInput ShowHideShortcut)
             , class [ BufferRight ]
             , value currentShortcut
             , style [ "font-size" => "4.0rem", "width" => "40px" ]
@@ -927,17 +927,17 @@ update msg model =
                 |> Update.Extra.andThen update
                     (UpdateMobsterData MobsterOperation.NextTurn)
 
-        ChangeShortcut newShortcut ->
+        Setup.Msg.ChangeInput inputField newInputValue ->
             let
                 shortcutString =
-                    if newShortcut == "" then
+                    if newInputValue == "" then
                         ""
                     else
-                        "CommandOrControl+Shift+" ++ newShortcut
+                        "CommandOrControl+Shift+" ++ newInputValue
             in
                 model
                     |> updateSettings
-                        (\settings -> { settings | showHideShortcut = newShortcut })
+                        (\settings -> { settings | showHideShortcut = newInputValue })
                     |> Update.Extra.andThen update
                         (SendIpcMessage ChangeShortcutIpc (Encode.string (shortcutString)))
 
@@ -1044,7 +1044,7 @@ init { onMac, settings } =
             ! []
             |> saveActiveMobsters
             |> Update.Extra.andThen update
-                (ChangeShortcut initialSettings.showHideShortcut)
+                (ChangeInput ShowHideShortcut initialSettings.showHideShortcut)
 
 
 subscriptions : Model -> Sub Msg
