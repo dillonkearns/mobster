@@ -22,14 +22,11 @@ type Msg
     | ClickAddMobster
     | DomFocusResult (Result Dom.Error ())
     | ChangeInput InputField String
-    | ChangeTimerDuration String
-    | ChangeBreakDuration String
     | SelectDurationInput
     | OpenConfigure
     | NewTip Int
     | SetExperiment
     | ChangeExperiment
-    | UpdateExperimentInput String
     | EnterRating Int
     | ComboMsg Keyboard.Combo.Msg
     | ShuffleMobsters

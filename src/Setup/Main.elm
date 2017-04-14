@@ -145,7 +145,7 @@ experimentView newExperiment maybeExperiment =
 
         Nothing ->
             div [ Attr.class "input-group" ]
-                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput UpdateExperimentInput, onEnter SetExperiment, style [ "font-size" => "1.8rem" ] ] []
+                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput (ChangeInput Experiment), onEnter SetExperiment, style [ "font-size" => "1.8rem" ] ] []
                 , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick SetExperiment ] [ text "Set" ] ]
                 ]
 
@@ -415,7 +415,7 @@ timerDurationInputView duration =
         [ input
             [ id "timer-duration"
             , onClick SelectDurationInput
-            , onInput ChangeTimerDuration
+            , onInput (ChangeInput TimerDuration)
             , type_ "number"
             , Attr.min (toString minTimerMinutes)
             , Attr.max (toString maxTimerMinutes)
@@ -433,7 +433,7 @@ breakDurationInputView duration =
     div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
         [ input
             [ id "break-duration"
-            , onInput ChangeBreakDuration
+            , onInput (ChangeInput BreakDuration)
             , type_ "number"
             , Attr.min (toString 1)
             , Attr.max (toString 240)
@@ -781,16 +781,6 @@ update msg model =
                 updatedModel
                     ! [ (startTimer (startTimerFlags True model)), changeTip ]
 
-        ChangeTimerDuration newDurationAsString ->
-            model
-                |> updateSettings
-                    (\settings -> { settings | timerDuration = (validateTimerDuration newDurationAsString settings.timerDuration) })
-
-        ChangeBreakDuration newDurationAsString ->
-            model
-                |> updateSettings
-                    (\settings -> { settings | breakDuration = (validateBreakDuration newDurationAsString settings.breakDuration) })
-
         SelectDurationInput ->
             model ! [ selectDuration "timer-duration" ]
 
@@ -838,9 +828,6 @@ update msg model =
                 model ! []
             else
                 { model | experiment = Just model.newExperiment } ! []
-
-        UpdateExperimentInput newExperiment ->
-            { model | newExperiment = newExperiment } ! []
 
         ChangeExperiment ->
             { model | experiment = Nothing } ! []
@@ -934,7 +921,7 @@ update msg model =
                             |> Update.Extra.andThen update
                                 (SendIpcMessage ChangeShortcutIpc (Encode.string (shortcutString)))
 
-                Setup.Msg.BreakInterval ->
+                BreakInterval ->
                     model
                         |> updateSettings
                             (\settings ->
@@ -943,14 +930,18 @@ update msg model =
                                 }
                             )
 
-                Setup.Msg.TimerDuration ->
-                    Debug.crash "TODO"
+                TimerDuration ->
+                    model
+                        |> updateSettings
+                            (\settings -> { settings | timerDuration = (validateTimerDuration newInputValue settings.timerDuration) })
 
-                Setup.Msg.BreakDuration ->
-                    Debug.crash "TODO"
+                BreakDuration ->
+                    model
+                        |> updateSettings
+                            (\settings -> { settings | breakDuration = (validateBreakDuration newInputValue settings.breakDuration) })
 
-                Setup.Msg.Experiment ->
-                    Debug.crash "TODO"
+                Experiment ->
+                    { model | newExperiment = newInputValue } ! []
 
 
 reorderOperation : List Mobster.Mobster -> Msg
