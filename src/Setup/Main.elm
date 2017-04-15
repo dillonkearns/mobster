@@ -927,19 +927,19 @@ update msg model =
                         |> updateSettings
                             (\settings ->
                                 { settings
-                                    | intervalsPerBreak = (validateBreakInterval newInputValue settings.intervalsPerBreak)
+                                    | intervalsPerBreak = validateBreakInterval newInputValue
                                 }
                             )
 
                 TimerDuration ->
                     model
                         |> updateSettings
-                            (\settings -> { settings | timerDuration = (validateTimerDuration newInputValue settings.timerDuration) })
+                            (\settings -> { settings | timerDuration = validateTimerDuration newInputValue })
 
                 BreakDuration ->
                     model
                         |> updateSettings
-                            (\settings -> { settings | breakDuration = (validateBreakDuration newInputValue settings.breakDuration) })
+                            (\settings -> { settings | breakDuration = validateBreakDuration newInputValue })
 
                 Experiment ->
                     { model | newExperiment = newInputValue } ! []
@@ -959,18 +959,18 @@ focusAddMobsterInput =
 -- form validations 46
 
 
-validateTimerDuration : String -> Int -> Int
-validateTimerDuration newDurationAsString oldTimerDuration =
+validateTimerDuration : String -> Int
+validateTimerDuration newDurationAsString =
     Validations.parseIntWithinRange ( minTimerMinutes, maxTimerMinutes ) newDurationAsString
 
 
-validateBreakDuration : String -> Int -> Int
-validateBreakDuration newDurationAsString oldTimerDuration =
+validateBreakDuration : String -> Int
+validateBreakDuration newDurationAsString =
     Validations.parseIntWithinRange ( 1, 240 ) newDurationAsString
 
 
-validateBreakInterval : String -> Int -> Int
-validateBreakInterval newDurationAsString oldTimerDuration =
+validateBreakInterval : String -> Int
+validateBreakInterval newDurationAsString =
     Validations.parseIntWithinRange ( minBreakInterval, maxBreakInterval ) newDurationAsString
 
 
