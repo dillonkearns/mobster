@@ -9,6 +9,7 @@ import RpgTests
 import SettingsDecodeTests
 import Test exposing (..)
 import TimerTests
+import ValidationsTests
 
 
 all : Test
@@ -23,4 +24,5 @@ all =
         , BreakTests.all
         , SettingsDecodeTests.all
         , RpgTests.all
+        , ValidationsTests.all
         ]

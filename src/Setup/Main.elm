@@ -25,6 +25,7 @@ import Setup.Rpg.View exposing (RpgState(..))
 import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
 import Setup.Stylesheet exposing (CssClasses(..))
+import Setup.Validations as Validations
 import Setup.View exposing (..)
 import Svg
 import Task
@@ -905,7 +906,7 @@ update msg model =
                 |> Update.Extra.andThen update
                     (UpdateMobsterData MobsterOperation.NextTurn)
 
-        Setup.Msg.ChangeInput inputField newInputValue ->
+        ChangeInput inputField newInputValue ->
             case inputField of
                 ShowHideShortcut ->
                     let
@@ -960,44 +961,17 @@ focusAddMobsterInput =
 
 validateTimerDuration : String -> Int -> Int
 validateTimerDuration newDurationAsString oldTimerDuration =
-    let
-        rawDuration =
-            Result.withDefault 5 (String.toInt newDurationAsString)
-    in
-        if rawDuration > maxTimerMinutes then
-            maxTimerMinutes
-        else if rawDuration < minTimerMinutes then
-            minTimerMinutes
-        else
-            rawDuration
+    Validations.parseIntWithinRange ( minTimerMinutes, maxTimerMinutes ) newDurationAsString
 
 
 validateBreakDuration : String -> Int -> Int
 validateBreakDuration newDurationAsString oldTimerDuration =
-    let
-        rawDuration =
-            Result.withDefault 5 (String.toInt newDurationAsString)
-    in
-        if rawDuration > 240 then
-            240
-        else if rawDuration < 1 then
-            1
-        else
-            rawDuration
+    Validations.parseIntWithinRange ( 1, 240 ) newDurationAsString
 
 
 validateBreakInterval : String -> Int -> Int
 validateBreakInterval newDurationAsString oldTimerDuration =
-    let
-        rawDuration =
-            Result.withDefault 6 (String.toInt newDurationAsString)
-    in
-        if rawDuration > maxBreakInterval then
-            maxBreakInterval
-        else if rawDuration < minBreakInterval then
-            minBreakInterval
-        else
-            rawDuration
+    Validations.parseIntWithinRange ( minBreakInterval, maxBreakInterval ) newDurationAsString
 
 
 minTimerMinutes : Int
