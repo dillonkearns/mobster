@@ -35,7 +35,7 @@
   "license": "MIT",
   "devDependencies": {
     "devtron": "^1.4.0",
-    "electron": "^1.6.0",
+    "electron": "^1.6.2",
     "electron-builder": "^11.7.0",
     "elm": "^0.18.0",
     "elm-css": "^0.6.0",
