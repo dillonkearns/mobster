@@ -21,6 +21,7 @@ import Random
 import Setup.Forms.ViewHelpers
 import Setup.InputField exposing (IntInputField(..))
 import Setup.Msg exposing (..)
+import Ipc
 import Setup.Navbar as Navbar
 import Setup.PlotScatter
 import Setup.Rpg.View exposing (RpgState(..))
@@ -56,7 +57,7 @@ type alias TimerConfiguration =
     { minutes : Int, driver : String, navigator : String, isBreak : Bool }
 
 
-startTimerFlags : Bool -> Model -> TimerConfiguration
+startTimerFlags : Bool -> Model -> Encode.Value
 startTimerFlags isBreak model =
     let
         { driver, navigator } =
@@ -64,15 +65,16 @@ startTimerFlags isBreak model =
 
         minutes =
             if isBreak then
-                5
+                model.settings.breakDuration
             else
                 model.settings.timerDuration
     in
-        { minutes = minutes
-        , driver = driver.name
-        , navigator = navigator.name
-        , isBreak = isBreak
-        }
+        Encode.object
+            [ "minutes" => Encode.int minutes
+            , "driver" => Encode.string driver.name
+            , "navigator" => Encode.string navigator.name
+            , "isBreak" => Encode.bool isBreak
+            ]
 
 
 
@@ -89,7 +91,7 @@ updateAvailableView availableUpdateVersion =
             div [ Attr.class "alert alert-success" ]
                 [ span [ Attr.class "glyphicon glyphicon-flag", class [ BufferRight ] ] []
                 , text ("A new version is downloaded and ready to install. ")
-                , a [ onClick (SendIpcMessage QuitAndInstall Encode.null), Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
+                , a [ onClick (SendIpcMessage Ipc.QuitAndInstall Encode.null), Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
                 , text "."
                 ]
 
@@ -97,7 +99,7 @@ updateAvailableView availableUpdateVersion =
 feedbackButton : Html Msg
 feedbackButton =
     div []
-        [ a [ onClick (SendIpcMessage ShowFeedbackForm Encode.null), style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
+        [ a [ onClick (SendIpcMessage Ipc.ShowFeedbackForm Encode.null), style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
 
 
 continueButtonChildren : Model -> List (Html Msg)
@@ -280,7 +282,7 @@ tipView tip =
         [ div [ Attr.class "row" ]
             [ h2 [ Attr.class "text-success pull-left", style [ "margin" => "0px", "padding-bottom" => "0.667em" ] ]
                 [ text tip.title ]
-            , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", onClick <| SendIpcMessage OpenExternalUrl (Encode.string tip.url) ] [ text "Learn More" ]
+            , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", onClick <| SendIpcMessage Ipc.OpenExternalUrl (Encode.string tip.url) ] [ text "Learn More" ]
             ]
         , div [ Attr.class "row" ] [ Tip.tipView tip ]
         ]
@@ -386,7 +388,7 @@ configureView model =
             ]
         , div []
             [ h3 [] [ text "Getting Started" ]
-            , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage ShowScriptInstallInstructions Encode.null) Bootstrap.Primary FA.Github
+            , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage Ipc.ShowScriptInstallInstructions Encode.null) Bootstrap.Primary FA.Github
             , Bootstrap.smallButton "Learn to Mob Game" StartRpgMode Bootstrap.Success FA.Gamepad
             ]
         , button
@@ -713,16 +715,18 @@ update msg model =
                 updatedModel =
                     { model | screenState = nextScreenState }
                         |> resetIfAfterBreak
+
+                startTimerUpdate =
+                    updatedModel
+                        ! [ changeTip ]
+                        |> Update.Extra.andThen update (SendIpcMessage Ipc.StartTimer (startTimerFlags False model))
             in
                 case model.screenState of
                     Rpg rpgState ->
-                        updatedModel
-                            ! [ (startTimer (startTimerFlags False model)), changeTip ]
+                        startTimerUpdate
 
                     _ ->
-                        updatedModel
-                            ! [ (startTimer (startTimerFlags False model)), changeTip ]
-                            |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.NextTurn)
+                        startTimerUpdate |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.NextTurn)
 
         SkipBreak ->
             let
@@ -747,7 +751,8 @@ update msg model =
                         |> resetIfAfterBreak
             in
                 updatedModel
-                    ! [ (startTimer (startTimerFlags True model)), changeTip ]
+                    ! [ changeTip ]
+                    |> Update.Extra.andThen update (SendIpcMessage Ipc.StartTimer (startTimerFlags True model))
 
         SelectDurationInput ->
             model ! [ selectDuration "timer-duration" ]
@@ -881,7 +886,7 @@ update msg model =
                                     |> updateSettings
                                         (\settings -> { settings | showHideShortcut = newInputValue })
                                     |> Update.Extra.andThen update
-                                        (SendIpcMessage ChangeShortcutIpc (Encode.string (shortcutString)))
+                                        (SendIpcMessage Ipc.ChangeShortcutIpc (Encode.string (shortcutString)))
 
                         Experiment ->
                             { model | newExperiment = newInputValue } ! []
@@ -1007,9 +1012,6 @@ main =
 
 
 -- electron communication 24
-
-
-port startTimer : TimerConfiguration -> Cmd msg
 
 
 port saveSettings : Encode.Value -> Cmd msg

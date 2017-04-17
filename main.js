@@ -177,7 +177,7 @@ function createWindow () {
     slashes: true
   }))
 
-  ipcMain.on('start-timer', (event, flags) => {
+  ipcMain.on('StartTimer', (event, flags) => {
     startTimer(flags)
     hideMainWindow()
   })

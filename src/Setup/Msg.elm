@@ -6,6 +6,7 @@ import Json.Encode as Encode
 import Keyboard.Combo
 import Mobster.Operation exposing (MobsterOperation)
 import Setup.InputField exposing (..)
+import Ipc
 
 
 type Msg
@@ -37,7 +38,7 @@ type Msg
     | RotateInHotkey Int
     | RotateOutHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
-    | SendIpcMessage IpcMessage Encode.Value
+    | SendIpcMessage Ipc.Msg Encode.Value
 
 
 type InputField
@@ -59,13 +60,3 @@ type DragId
 type DropArea
     = DropBench
     | DropActiveMobster Int
-
-
-type IpcMessage
-    = ShowFeedbackForm
-    | ShowScriptInstallInstructions
-    | Hide
-    | Quit
-    | QuitAndInstall
-    | ChangeShortcutIpc
-    | OpenExternalUrl
