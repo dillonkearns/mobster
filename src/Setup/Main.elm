@@ -59,7 +59,7 @@ type alias TimerConfiguration =
 startTimerFlags : Bool -> Model -> TimerConfiguration
 startTimerFlags isBreak model =
     let
-        driverNavigator =
+        { driver, navigator } =
             Presenter.nextDriverNavigator model.settings.mobsterData
 
         minutes =
@@ -69,8 +69,8 @@ startTimerFlags isBreak model =
                 model.settings.timerDuration
     in
         { minutes = minutes
-        , driver = driverNavigator.driver.name
-        , navigator = driverNavigator.navigator.name
+        , driver = driver.name
+        , navigator = navigator.name
         , isBreak = isBreak
         }
 
@@ -464,7 +464,7 @@ addMobsterInputView newMobster mobsterData =
     in
         div [ Attr.class "row" ]
             [ div [ Attr.class "input-group" ]
-                [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", classList [ HasError => hasError ], Attr.class "form-control", value newMobster, onInput UpdateMobsterInput, onEnter AddMobster, style [ "font-size" => "2.0rem" ] ] []
+                [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", classList [ HasError => hasError ], Attr.class "form-control", value newMobster, onInput <| ChangeInput (StringField NewMobster), onEnter AddMobster, style [ "font-size" => "2.0rem" ] ] []
                 , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
                 ]
             ]
@@ -778,9 +778,6 @@ update msg model =
                     (\settings -> { settings | mobsterData = MobsterOperation.updateMoblist operation model.settings.mobsterData })
                 |> saveActiveMobsters
 
-        UpdateMobsterInput text ->
-            { model | newMobster = text } ! []
-
         ComboMsg msg ->
             let
                 updatedCombos =
@@ -893,6 +890,9 @@ update msg model =
 
                         Experiment ->
                             { model | newExperiment = newInputValue } ! []
+
+                        NewMobster ->
+                            { model | newMobster = newInputValue } ! []
 
                 IntField intField ->
                     let

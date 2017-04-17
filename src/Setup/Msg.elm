@@ -18,7 +18,6 @@ type Msg
     | StartRpgMode
     | UpdateMobsterData MobsterOperation
     | CheckRpgBox Msg Bool
-    | UpdateMobsterInput String
     | AddMobster
     | ClickAddMobster
     | DomFocusResult (Result Dom.Error ())
@@ -50,6 +49,7 @@ type InputField
 type StringInputField
     = Experiment
     | ShowHideShortcut
+    | NewMobster
 
 
 type DragId
