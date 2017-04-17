@@ -18,6 +18,8 @@ import Mobster.Data as Mobster
 import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
 import Random
+import Setup.Forms.ViewHelpers
+import Setup.InputField exposing (IntInputField(..))
 import Setup.Msg exposing (..)
 import Setup.Navbar as Navbar
 import Setup.PlotScatter
@@ -32,7 +34,6 @@ import Task
 import Tip
 import Update.Extra
 import ViewHelpers
-import Setup.InputField exposing (IntInputField(..))
 
 
 { id, class, classList } =
@@ -370,10 +371,6 @@ noTab =
     Attr.tabindex -1
 
 
-
--- configure screen 26
-
-
 configureView : Model -> Html Msg
 configureView model =
     div [ Attr.class "container-fluid" ]
@@ -408,24 +405,13 @@ configureView model =
 
 
 
--- configure inputs (Settings -> Html Msg) 56
+-- configure inputs (Settings -> Html Msg) 46
 
 
 timerDurationInputView : Int -> Html Msg
 timerDurationInputView duration =
     div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
-        [ input
-            [ id "timer-duration"
-            , onClick SelectDurationInput
-            , onInput (ChangeInput (IntField TimerDuration))
-            , type_ "number"
-            , Attr.min (toString minTimerMinutes)
-            , Attr.max (toString maxTimerMinutes)
-            , value (toString duration)
-            , class [ BufferRight ]
-            , style [ "font-size" => "4.0rem" ]
-            ]
-            []
+        [ Setup.Forms.ViewHelpers.intInputView TimerDuration duration
         , text "Minutes"
         ]
 
@@ -433,17 +419,7 @@ timerDurationInputView duration =
 breakDurationInputView : Int -> Html Msg
 breakDurationInputView duration =
     div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
-        [ input
-            [ id "break-duration"
-            , onInput (ChangeInput (IntField BreakDuration))
-            , type_ "number"
-            , Attr.min (toString 1)
-            , Attr.max (toString 240)
-            , value (toString duration)
-            , class [ BufferRight ]
-            , style [ "font-size" => "4.0rem" ]
-            ]
-            []
+        [ Setup.Forms.ViewHelpers.intInputView BreakDuration duration
         , text "Minutes Per Break"
         ]
 
@@ -458,17 +434,7 @@ breakIntervalInputView intervalsPerBreak timerDuration =
                 "Breaks off"
     in
         div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
-            [ input
-                [ id "break-interval"
-                , onInput (ChangeInput (IntField BreakInterval))
-                , type_ "number"
-                , Attr.min (toString minBreakInterval)
-                , Attr.max (toString maxBreakInterval)
-                , value (toString intervalsPerBreak)
-                , class [ BufferRight ]
-                , style [ "font-size" => "4.0rem" ]
-                ]
-                []
+            [ Setup.Forms.ViewHelpers.intInputView BreakInterval intervalsPerBreak
             , text theString
             ]
 
@@ -958,30 +924,6 @@ reorderOperation shuffledMobsters =
 focusAddMobsterInput : Cmd Msg
 focusAddMobsterInput =
     Task.attempt DomFocusResult (Dom.focus "add-mobster")
-
-
-
--- form validations 18
-
-
-minTimerMinutes : Int
-minTimerMinutes =
-    1
-
-
-maxTimerMinutes : Int
-maxTimerMinutes =
-    120
-
-
-maxBreakInterval : Int
-maxBreakInterval =
-    120
-
-
-minBreakInterval : Int
-minBreakInterval =
-    0
 
 
 

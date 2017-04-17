@@ -1,4 +1,4 @@
-module Setup.Validations exposing (parseInputFieldWithinRange, parseIntWithinRange)
+module Setup.Validations exposing (parseInputFieldWithinRange, parseIntWithinRange, inputRangeFor)
 
 import Setup.InputField exposing (IntInputField(..))
 
