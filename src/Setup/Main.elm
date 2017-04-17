@@ -32,6 +32,7 @@ import Task
 import Tip
 import Update.Extra
 import ViewHelpers
+import Setup.InputField exposing (IntInputField(..))
 
 
 { id, class, classList } =
@@ -146,7 +147,7 @@ experimentView newExperiment maybeExperiment =
 
         Nothing ->
             div [ Attr.class "input-group" ]
-                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput (ChangeInput Experiment), onEnter SetExperiment, style [ "font-size" => "1.8rem" ] ] []
+                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput (ChangeInput (StringField Experiment)), onEnter SetExperiment, style [ "font-size" => "1.8rem" ] ] []
                 , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick SetExperiment ] [ text "Set" ] ]
                 ]
 
@@ -416,7 +417,7 @@ timerDurationInputView duration =
         [ input
             [ id "timer-duration"
             , onClick SelectDurationInput
-            , onInput (ChangeInput TimerDuration)
+            , onInput (ChangeInput (IntField TimerDuration))
             , type_ "number"
             , Attr.min (toString minTimerMinutes)
             , Attr.max (toString maxTimerMinutes)
@@ -434,7 +435,7 @@ breakDurationInputView duration =
     div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
         [ input
             [ id "break-duration"
-            , onInput (ChangeInput BreakDuration)
+            , onInput (ChangeInput (IntField BreakDuration))
             , type_ "number"
             , Attr.min (toString 1)
             , Attr.max (toString 240)
@@ -459,7 +460,7 @@ breakIntervalInputView intervalsPerBreak timerDuration =
         div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
             [ input
                 [ id "break-interval"
-                , onInput (ChangeInput BreakInterval)
+                , onInput (ChangeInput (IntField BreakInterval))
                 , type_ "number"
                 , Attr.min (toString minBreakInterval)
                 , Attr.max (toString maxBreakInterval)
@@ -479,7 +480,7 @@ shortcutInputView currentShortcut onMac =
         , text ((ctrlKey onMac) ++ "+shift+")
         , input
             [ id "shortcut"
-            , onInput (ChangeInput ShowHideShortcut)
+            , onInput (ChangeInput (StringField ShowHideShortcut))
             , class [ BufferRight ]
             , value currentShortcut
             , style [ "font-size" => "4.0rem", "width" => "40px" ]
@@ -908,41 +909,45 @@ update msg model =
 
         ChangeInput inputField newInputValue ->
             case inputField of
-                ShowHideShortcut ->
+                StringField stringField ->
+                    case stringField of
+                        ShowHideShortcut ->
+                            let
+                                shortcutString =
+                                    if newInputValue == "" then
+                                        ""
+                                    else
+                                        "CommandOrControl+Shift+" ++ newInputValue
+                            in
+                                model
+                                    |> updateSettings
+                                        (\settings -> { settings | showHideShortcut = newInputValue })
+                                    |> Update.Extra.andThen update
+                                        (SendIpcMessage ChangeShortcutIpc (Encode.string (shortcutString)))
+
+                        Experiment ->
+                            { model | newExperiment = newInputValue } ! []
+
+                IntField intField ->
                     let
-                        shortcutString =
-                            if newInputValue == "" then
-                                ""
-                            else
-                                "CommandOrControl+Shift+" ++ newInputValue
+                        newValueInRange =
+                            Validations.parseInputFieldWithinRange intField newInputValue
                     in
-                        model
-                            |> updateSettings
-                                (\settings -> { settings | showHideShortcut = newInputValue })
-                            |> Update.Extra.andThen update
-                                (SendIpcMessage ChangeShortcutIpc (Encode.string (shortcutString)))
+                        case intField of
+                            BreakInterval ->
+                                model
+                                    |> updateSettings
+                                        (\settings -> { settings | intervalsPerBreak = newValueInRange })
 
-                BreakInterval ->
-                    model
-                        |> updateSettings
-                            (\settings ->
-                                { settings
-                                    | intervalsPerBreak = validateBreakInterval newInputValue
-                                }
-                            )
+                            TimerDuration ->
+                                model
+                                    |> updateSettings
+                                        (\settings -> { settings | timerDuration = newValueInRange })
 
-                TimerDuration ->
-                    model
-                        |> updateSettings
-                            (\settings -> { settings | timerDuration = validateTimerDuration newInputValue })
-
-                BreakDuration ->
-                    model
-                        |> updateSettings
-                            (\settings -> { settings | breakDuration = validateBreakDuration newInputValue })
-
-                Experiment ->
-                    { model | newExperiment = newInputValue } ! []
+                            BreakDuration ->
+                                model
+                                    |> updateSettings
+                                        (\settings -> { settings | breakDuration = newValueInRange })
 
 
 reorderOperation : List Mobster.Mobster -> Msg
@@ -956,22 +961,7 @@ focusAddMobsterInput =
 
 
 
--- form validations 46
-
-
-validateTimerDuration : String -> Int
-validateTimerDuration newDurationAsString =
-    Validations.parseIntWithinRange ( minTimerMinutes, maxTimerMinutes ) newDurationAsString
-
-
-validateBreakDuration : String -> Int
-validateBreakDuration newDurationAsString =
-    Validations.parseIntWithinRange ( 1, 240 ) newDurationAsString
-
-
-validateBreakInterval : String -> Int
-validateBreakInterval newDurationAsString =
-    Validations.parseIntWithinRange ( minBreakInterval, maxBreakInterval ) newDurationAsString
+-- form validations 18
 
 
 minTimerMinutes : Int
@@ -1020,7 +1010,7 @@ init { onMac, settings } =
             ! []
             |> saveActiveMobsters
             |> Update.Extra.andThen update
-                (ChangeInput ShowHideShortcut initialSettings.showHideShortcut)
+                (ChangeInput (StringField ShowHideShortcut) initialSettings.showHideShortcut)
 
 
 subscriptions : Model -> Sub Msg

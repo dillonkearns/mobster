@@ -11,7 +11,6 @@
         "NoRedInk/elm-decode-pipeline": "3.0.0 <= v < 4.0.0",
         "ccapndave/elm-update-extra": "2.3.1 <= v < 3.0.0",
         "debois/elm-dom": "1.2.3 <= v < 2.0.0",
-        "eeue56/elm-all-dict": "2.0.1 <= v < 3.0.0",
         "elm-community/array-extra": "1.0.2 <= v < 2.0.0",
         "elm-community/basics-extra": "2.0.0 <= v < 3.0.0",
         "elm-community/html-extra": "2.2.0 <= v < 3.0.0",

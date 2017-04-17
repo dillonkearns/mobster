@@ -5,6 +5,7 @@ import Html5.DragDrop as DragDrop
 import Json.Encode as Encode
 import Keyboard.Combo
 import Mobster.Operation exposing (MobsterOperation)
+import Setup.InputField exposing (..)
 
 
 type Msg
@@ -42,10 +43,12 @@ type Msg
 
 
 type InputField
-    = TimerDuration
-    | BreakDuration
-    | BreakInterval
-    | Experiment
+    = IntField IntInputField
+    | StringField StringInputField
+
+
+type StringInputField
+    = Experiment
     | ShowHideShortcut
 
 
