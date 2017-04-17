@@ -11,6 +11,7 @@ import Html.CssHelpers
 import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit)
 import Html.Events.Extra exposing (onEnter)
 import Html5.DragDrop as DragDrop
+import Ipc
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard.Combo
@@ -21,7 +22,6 @@ import Random
 import Setup.Forms.ViewHelpers
 import Setup.InputField exposing (IntInputField(..))
 import Setup.Msg exposing (..)
-import Ipc
 import Setup.Navbar as Navbar
 import Setup.PlotScatter
 import Setup.Rpg.View exposing (RpgState(..))
@@ -32,6 +32,7 @@ import Setup.Validations as Validations
 import Setup.View exposing (..)
 import Svg
 import Task
+import Timer.Flags
 import Tip
 import Update.Extra
 import ViewHelpers
@@ -69,12 +70,12 @@ startTimerFlags isBreak model =
             else
                 model.settings.timerDuration
     in
-        Encode.object
-            [ "minutes" => Encode.int minutes
-            , "driver" => Encode.string driver.name
-            , "navigator" => Encode.string navigator.name
-            , "isBreak" => Encode.bool isBreak
-            ]
+        Timer.Flags.encode
+            { minutes = minutes
+            , driver = driver.name
+            , navigator = navigator.name
+            , isBreak = isBreak
+            }
 
 
 

@@ -10,6 +10,7 @@ import SettingsDecodeTests
 import Test exposing (..)
 import TimerTests
 import ValidationsTests
+import TimerFlagsTests
 
 
 all : Test
@@ -25,4 +26,5 @@ all =
         , SettingsDecodeTests.all
         , RpgTests.all
         , ValidationsTests.all
+        , TimerFlagsTests.all
         ]

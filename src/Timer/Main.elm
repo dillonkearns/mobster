@@ -1,9 +1,12 @@
 port module Timer.Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (src, style, class)
+import Html.Attributes exposing (class, src, style)
 import Time exposing (..)
+import Timer.Flags exposing (IncomingFlags)
 import Timer.Timer exposing (..)
+import Json.Encode as Encode
+import Json.Decode as Decode
 
 
 type alias Model =
@@ -12,10 +15,6 @@ type alias Model =
 
 type Msg
     = Tick Time.Time
-
-
-type alias Flags =
-    { minutes : Int, driver : String, navigator : String, isDev : Bool, isBreak : Bool }
 
 
 port timerDone : Int -> Cmd msg
@@ -97,20 +96,29 @@ update msg model =
                     { model | secondsLeft = updatedSecondsLeft } ! []
 
 
-init : Flags -> ( Model, Cmd msg )
-init flags =
-    let
-        secondsLeft =
-            if flags.isDev then
-                -- just show timer for one second no matter what it's set to
-                1
-            else
-                flags.minutes * 60
-    in
-        ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator, originalDurationSeconds = secondsLeft, isBreak = flags.isBreak }, Cmd.none )
+init : Encode.Value -> ( Model, Cmd msg )
+init flagsJson =
+    case Decode.decodeValue Timer.Flags.decoder flagsJson of
+        Ok flags ->
+            let
+                secondsLeft =
+                    if flags.isDev then
+                        -- just show timer for one second no matter what it's set to
+                        1
+                    else
+                        flags.minutes * 60
+            in
+                ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator, originalDurationSeconds = secondsLeft, isBreak = flags.isBreak }, Cmd.none )
+
+        Err _ ->
+            Debug.crash "Failed to decode flags"
 
 
-main : Program Flags Model Msg
+type alias Flags =
+    { timerFlags : Timer.Flags.Flags, isDev : Bool }
+
+
+main : Program Decode.Value Model Msg
 main =
     Html.programWithFlags
         { init = init
