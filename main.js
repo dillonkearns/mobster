@@ -186,7 +186,8 @@ function createWindow () {
     updateMobsterNamesFile(currentMobsterNames)
   })
 
-  ipcMain.on('open-external-url', (event, url) => {
+  ipcMain.on('OpenExternalUrl', (event, url) => {
+    hideMainWindow()
     shell.openExternal(url)
   })
 

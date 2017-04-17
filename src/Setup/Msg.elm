@@ -37,7 +37,6 @@ type Msg
     | RotateInHotkey Int
     | RotateOutHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
-    | OpenExternalUrl String
     | SendIpcMessage IpcMessage Encode.Value
 
 
@@ -69,3 +68,4 @@ type IpcMessage
     | Quit
     | QuitAndInstall
     | ChangeShortcutIpc
+    | OpenExternalUrl

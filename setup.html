@@ -448,10 +448,6 @@
       ipcRenderer.send('save-mobsters-file', currentMobsterNames)
     })
 
-    setup.ports.openExternalUrl.subscribe(function(url) {
-      ipcRenderer.send('open-external-url', url)
-    })
-
     ipcRenderer.on('update-downloaded', function (event, updatedVersion) {
       console.log('on update-downloaded. updatedVersion = ', updatedVersion)
       setup.ports.updateDownloaded.send("Not a real version...")
