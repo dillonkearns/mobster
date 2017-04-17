@@ -6,14 +6,6 @@ import Json.Decode
 import Json.Decode.Pipeline as Pipeline exposing (required, optional, hardcoded)
 
 
-type alias Flags =
-    { minutes : Int
-    , driver : String
-    , navigator : String
-    , isBreak : Bool
-    }
-
-
 type alias IncomingFlags =
     { minutes : Int
     , driver : String
@@ -23,7 +15,14 @@ type alias IncomingFlags =
     }
 
 
-encode : Flags -> Encode.Value
+encode :
+    { outgoingFlags
+        | driver : String
+        , isBreak : Bool
+        , minutes : Int
+        , navigator : String
+    }
+    -> Encode.Value
 encode flags =
     Encode.object
         [ "minutes" => Encode.int flags.minutes

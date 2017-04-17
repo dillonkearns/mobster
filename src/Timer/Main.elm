@@ -114,10 +114,6 @@ init flagsJson =
             Debug.crash "Failed to decode flags"
 
 
-type alias Flags =
-    { timerFlags : Timer.Flags.Flags, isDev : Bool }
-
-
 main : Program Decode.Value Model Msg
 main =
     Html.programWithFlags
