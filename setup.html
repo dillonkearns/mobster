@@ -435,8 +435,7 @@
     })
 
     setup.ports.sendIpcMessage.subscribe(function([message, data]) {
-      console.log("data", data);
-      console.log("message", message);
+      console.log("sendIpcMessage", message, data)
       ipcRenderer.send(message, data)
     })
 
