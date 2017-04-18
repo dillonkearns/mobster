@@ -112,6 +112,9 @@ function startTimer(flags) {
   timerWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
     width: timerWidth, height: timerHeight, focusable: false})
 
+  timerWindow.webContents.on('crashed', function () { bugsnag.notify("crashed", "timerWindow crashed") })
+  timerWindow.on('unresponsive', function () {  bugsnag.notify("unresponsive", "timerWindow unresponsive") })
+
   positionWindowRight(timerWindow)
 
   ipcMain.once('timer-flags', (event) => {
@@ -162,6 +165,9 @@ function createWindow () {
     alwaysOnTop: true,
     icon: `${assetsDirectory}/icon.ico`
   })
+
+  mainWindow.webContents.on('crashed', function () { bugsnag.notify("crashed", "mainWindow crashed") })
+  mainWindow.on('unresponsive', function () {  bugsnag.notify("unresponsive", "mainWindow unresponsive") })
   setTimeout(() => {
     mainWindow.setAlwaysOnTop(true) // delay to workaround https://github.com/electron/electron/issues/8287
   }, 1000)
