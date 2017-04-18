@@ -34,8 +34,8 @@ view screen =
                 , div [ Attr.class "nav navbar-nav navbar-right" ]
                     [ configureScreenButton
                     , invisibleTrigger [ Attr.class "navbar-btn", class [ BufferRight ] ] []
-                    , Bootstrap.navbarButton "Hide " (SendIpcMessage Ipc.Hide Encode.null) Bootstrap.Warning "minus-square-o"
-                    , Bootstrap.navbarButton "Quit " (SendIpcMessage Ipc.Quit Encode.null) Bootstrap.Danger "times-circle-o"
+                    , Bootstrap.navbarButton "Hide " (SendIpc Ipc.Hide Encode.null) Bootstrap.Warning "minus-square-o"
+                    , Bootstrap.navbarButton "Quit " (SendIpc Ipc.Quit Encode.null) Bootstrap.Danger "times-circle-o"
                     ]
                 ]
             ]

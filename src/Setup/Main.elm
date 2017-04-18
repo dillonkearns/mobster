@@ -92,7 +92,7 @@ updateAvailableView availableUpdateVersion =
             div [ Attr.class "alert alert-success" ]
                 [ span [ Attr.class "glyphicon glyphicon-flag", class [ BufferRight ] ] []
                 , text ("A new version is downloaded and ready to install. ")
-                , a [ onClick (SendIpcMessage Ipc.QuitAndInstall Encode.null), Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
+                , a [ onClick <| SendIpc Ipc.QuitAndInstall Encode.null, Attr.href "#", Attr.class "alert-link" ] [ text "Update now" ]
                 , text "."
                 ]
 
@@ -100,7 +100,7 @@ updateAvailableView availableUpdateVersion =
 feedbackButton : Html Msg
 feedbackButton =
     div []
-        [ a [ onClick (SendIpcMessage Ipc.ShowFeedbackForm Encode.null), style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
+        [ a [ onClick <| SendIpc Ipc.ShowFeedbackForm Encode.null, style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
 
 
 continueButtonChildren : Model -> List (Html Msg)
@@ -283,7 +283,7 @@ tipView tip =
         [ div [ Attr.class "row" ]
             [ h2 [ Attr.class "text-success pull-left", style [ "margin" => "0px", "padding-bottom" => "0.667em" ] ]
                 [ text tip.title ]
-            , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", onClick <| SendIpcMessage Ipc.OpenExternalUrl (Encode.string tip.url) ] [ text "Learn More" ]
+            , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", onClick <| SendIpc Ipc.OpenExternalUrl (Encode.string tip.url) ] [ text "Learn More" ]
             ]
         , div [ Attr.class "row" ] [ Tip.tipView tip ]
         ]
@@ -389,7 +389,7 @@ configureView model =
             ]
         , div []
             [ h3 [] [ text "Getting Started" ]
-            , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpcMessage Ipc.ShowScriptInstallInstructions Encode.null) Bootstrap.Primary FA.Github
+            , Bootstrap.smallButton "Install Mob Git Commit Script" (SendIpc Ipc.ShowScriptInstallInstructions Encode.null) Bootstrap.Primary FA.Github
             , Bootstrap.smallButton "Learn to Mob Game" StartRpgMode Bootstrap.Success FA.Gamepad
             ]
         , button
@@ -661,7 +661,7 @@ resetIfAfterBreak model =
 saveActiveMobsters : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 saveActiveMobsters (( model, msg ) as updateResult) =
     updateResult
-        |> Update.Extra.andThen update (SendIpcMessage Ipc.SaveActiveMobstersFile (Encode.string <| Mobster.currentMobsterNames model.settings.mobsterData))
+        |> Update.Extra.andThen update (SendIpc Ipc.SaveActiveMobstersFile (Encode.string <| Mobster.currentMobsterNames model.settings.mobsterData))
 
 
 updateSettings : (Settings.Data -> Settings.Data) -> Model -> ( Model, Cmd Msg )
@@ -716,7 +716,7 @@ update msg model =
                 startTimerUpdate =
                     updatedModel
                         ! [ changeTip ]
-                        |> Update.Extra.andThen update (SendIpcMessage Ipc.StartTimer (startTimerFlags False model))
+                        |> Update.Extra.andThen update (SendIpc Ipc.StartTimer (startTimerFlags False model))
             in
                 case model.screenState of
                     Rpg rpgState ->
@@ -749,7 +749,7 @@ update msg model =
             in
                 updatedModel
                     ! [ changeTip ]
-                    |> Update.Extra.andThen update (SendIpcMessage Ipc.StartTimer (startTimerFlags True model))
+                    |> Update.Extra.andThen update (SendIpc Ipc.StartTimer (startTimerFlags True model))
 
         SelectDurationInput ->
             model ! [ selectDuration "timer-duration" ]
@@ -855,8 +855,8 @@ update msg model =
                             _ ->
                                 model ! []
 
-        SendIpcMessage ipcMessage payload ->
-            model ! [ sendIpcMessage ( toString ipcMessage, payload ) ]
+        SendIpc ipcMessage payload ->
+            model ! [ sendIpc ( toString ipcMessage, payload ) ]
 
         CheckRpgBox msg checkedValue ->
             update msg model
@@ -883,7 +883,7 @@ update msg model =
                                     |> updateSettings
                                         (\settings -> { settings | showHideShortcut = newInputValue })
                                     |> Update.Extra.andThen update
-                                        (SendIpcMessage Ipc.ChangeShortcutIpc (Encode.string (shortcutString)))
+                                        (SendIpc Ipc.ChangeShortcutIpc (Encode.string shortcutString))
 
                         Experiment ->
                             { model | newExperiment = newInputValue } ! []
@@ -1014,7 +1014,7 @@ main =
 port saveSettings : Encode.Value -> Cmd msg
 
 
-port sendIpcMessage : ( String, Encode.Value ) -> Cmd msg
+port sendIpc : ( String, Encode.Value ) -> Cmd msg
 
 
 port selectDuration : String -> Cmd msg

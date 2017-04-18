@@ -430,8 +430,8 @@
       document.getElementById(id).select()
     })
 
-    setup.ports.sendIpcMessage.subscribe(function([message, data]) {
-      console.log("sendIpcMessage", message, data)
+    setup.ports.sendIpc.subscribe(function([message, data]) {
+      console.log("sendIpc", message, data)
       ipcRenderer.send(message, data)
     })
 

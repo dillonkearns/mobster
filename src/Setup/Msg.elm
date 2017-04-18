@@ -38,7 +38,7 @@ type Msg
     | RotateInHotkey Int
     | RotateOutHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
-    | SendIpcMessage Ipc.Msg Encode.Value
+    | SendIpc Ipc.Msg Encode.Value
 
 
 type InputField
