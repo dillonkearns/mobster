@@ -182,7 +182,7 @@ function createWindow () {
     hideMainWindow()
   })
 
-  ipcMain.on('save-mobsters-file', (event, currentMobsterNames) => {
+  ipcMain.on('SaveActiveMobstersFile', (event, currentMobsterNames) => {
     updateMobsterNamesFile(currentMobsterNames)
   })
 

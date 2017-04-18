@@ -10,3 +10,4 @@ type Msg
     | ChangeShortcutIpc
     | OpenExternalUrl
     | StartTimer
+    | SaveActiveMobstersFile

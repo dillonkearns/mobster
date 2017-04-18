@@ -439,10 +439,6 @@
       window.localStorage.setItem('settings', JSON.stringify(settings))
     })
 
-    setup.ports.saveMobstersFile.subscribe(function(currentMobsterNames) {
-      ipcRenderer.send('save-mobsters-file', currentMobsterNames)
-    })
-
     ipcRenderer.on('update-downloaded', function (event, updatedVersion) {
       console.log('on update-downloaded. updatedVersion = ', updatedVersion)
       setup.ports.updateDownloaded.send("Not a real version...")

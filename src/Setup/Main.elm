@@ -658,14 +658,10 @@ resetIfAfterBreak model =
             model
 
 
-saveActiveMobstersCmd : Model -> Cmd msg
-saveActiveMobstersCmd model =
-    saveMobstersFile (Mobster.currentMobsterNames model.settings.mobsterData)
-
-
 saveActiveMobsters : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
-saveActiveMobsters ( model, cmd ) =
-    model ! [ cmd, saveActiveMobstersCmd model ]
+saveActiveMobsters (( model, msg ) as updateResult) =
+    updateResult
+        |> Update.Extra.andThen update (SendIpcMessage Ipc.SaveActiveMobstersFile (Encode.string <| Mobster.currentMobsterNames model.settings.mobsterData))
 
 
 updateSettings : (Settings.Data -> Settings.Data) -> Model -> ( Model, Cmd Msg )
@@ -1016,9 +1012,6 @@ main =
 
 
 port saveSettings : Encode.Value -> Cmd msg
-
-
-port saveMobstersFile : String -> Cmd msg
 
 
 port sendIpcMessage : ( String, Encode.Value ) -> Cmd msg
