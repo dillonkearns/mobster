@@ -679,7 +679,7 @@ updateSettings settingsUpdater ({ settings } as model) =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
+    case Debug.log "update" msg of
         SkipHotkey ->
             case model.screenState of
                 Continue showRotation ->
@@ -1008,7 +1008,7 @@ main =
 
 
 
--- electron communication 24
+-- electron communication 19
 
 
 port saveSettings : Encode.Value -> Cmd msg
