@@ -7,7 +7,7 @@ type Msg
     | Hide
     | Quit
     | QuitAndInstall
-    | ChangeShortcutIpc
+    | ChangeShortcut
     | OpenExternalUrl
     | StartTimer
     | SaveActiveMobstersFile

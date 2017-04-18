@@ -883,7 +883,7 @@ update msg model =
                                     |> updateSettings
                                         (\settings -> { settings | showHideShortcut = newInputValue })
                                     |> Update.Extra.andThen update
-                                        (SendIpc Ipc.ChangeShortcutIpc (Encode.string shortcutString))
+                                        (SendIpc Ipc.ChangeShortcut (Encode.string shortcutString))
 
                         Experiment ->
                             { model | newExperiment = newInputValue } ! []
