@@ -87,13 +87,19 @@ update msg model =
                 updatedSecondsLeft =
                     updateTimer model.secondsLeft
             in
-                if updatedSecondsLeft <= 0 then
-                    if model.isBreak then
-                        model ! [ breakTimerDone model.originalDurationSeconds ]
-                    else
-                        model ! [ timerDone model.originalDurationSeconds ]
-                else
-                    { model | secondsLeft = updatedSecondsLeft } ! []
+                { model | secondsLeft = updatedSecondsLeft }
+                    ! if timerComplete updatedSecondsLeft then
+                        [ timerDoneCommand model.isBreak model.originalDurationSeconds ]
+                      else
+                        []
+
+
+timerDoneCommand : Bool -> Int -> Cmd msg
+timerDoneCommand isBreak originalDurationSeconds =
+    if isBreak then
+        breakTimerDone originalDurationSeconds
+    else
+        timerDone originalDurationSeconds
 
 
 init : Encode.Value -> ( Model, Cmd msg )
@@ -114,11 +120,24 @@ init flagsJson =
             Debug.crash "Failed to decode flags"
 
 
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    if timerComplete model.secondsLeft then
+        Sub.none
+    else
+        every second Tick
+
+
+timerComplete : Int -> Bool
+timerComplete secondsLeft =
+    secondsLeft <= 0
+
+
 main : Program Decode.Value Model Msg
 main =
     Html.programWithFlags
         { init = init
-        , subscriptions = \_ -> every second Tick
+        , subscriptions = subscriptions
         , update = update
         , view = view
         }
