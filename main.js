@@ -141,7 +141,6 @@ ipcMain.on('timer-mouse-hover', (event) => {
 })
 
 ipcMain.on('ChangeShortcut', (event, payload) =>{
-  console.log("ChangeShortcut", payload)
   globalShortcut.unregisterAll()
   if (payload !== "") {
     setShowHideShortcut(payload)
