@@ -1,0 +1,6 @@
+{
+  "mainPaths": [
+    "src/Setup/Main.elm",
+    "src/Timer/Main.elm"
+  ]
+}
