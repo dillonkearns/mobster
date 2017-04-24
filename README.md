@@ -1,5 +1,6 @@
 ### **[Download the latest release](https://github.com/dillonkearns/mobster/releases/latest)** [![GitHub release](https://img.shields.io/github/release/dillonkearns/mobster.svg?style=flat-square)](https://github.com/dillonkearns/mobster/releases/latest)
-# Mobster [![Stories in Ready](https://img.shields.io/waffle/label/evancohen/smart-mirror/ready.svg?style=flat-square)](https://waffle.io/dillonkearns/mobster) [![Build Status](https://img.shields.io/travis/dillonkearns/mobster/master.svg?style=flat-square)](https://travis-ci.org/dillonkearns/mobster)
+<a href="https://trello.com/b/QWb0iO8j/mobster">Ideas tracked on <img src="/trello.png" width="48"></a>  
+# Mobster [![Build Status](https://img.shields.io/travis/dillonkearns/mobster/master.svg?style=flat-square)](https://travis-ci.org/dillonkearns/mobster)
 
 A mob/pair programming timer, inspired by the [MobProgramming/MobTimer.Python](https://github.com/MobProgramming/MobTimer.Python). Runs great on Mac, Windows, and Linux. Learn all about mobbing at the MobTimer.Python github page, and at [mobprogramming.org](http://mobprogramming.org/).
 
