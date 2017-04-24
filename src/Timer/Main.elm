@@ -41,7 +41,7 @@ navigatorView name =
 
 iconView : String -> Html msg
 iconView iconUrl =
-    img [ style [ ( "max-width", "20px" ) ], src iconUrl ] []
+    img [ class "role-icon", style [ ( "max-width", "20px" ) ], src iconUrl ] []
 
 
 coffeeIcon : Html msg
