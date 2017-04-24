@@ -751,7 +751,7 @@ update msg model =
                     ! [ changeTip ]
                     |> Update.Extra.andThen update (SendIpc Ipc.StartTimer (startTimerFlags True model))
 
-        SelectDurationInput ->
+        SelectInputField ->
             model ! [ selectDuration "timer-duration" ]
 
         OpenConfigure ->

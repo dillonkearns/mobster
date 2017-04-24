@@ -23,7 +23,7 @@ type Msg
     | ClickAddMobster
     | DomFocusResult (Result Dom.Error ())
     | ChangeInput InputField String
-    | SelectDurationInput
+    | SelectInputField
     | OpenConfigure
     | NewTip Int
     | SetExperiment

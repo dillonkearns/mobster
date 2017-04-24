@@ -21,7 +21,7 @@ intInputView inputField duration =
     in
         input
             [ id "timer-duration"
-            , onClick SelectDurationInput
+            , onClick SelectInputField
             , onInput (ChangeInput (IntField inputField))
             , type_ "number"
             , Attr.min (toString minTimerMinutes)
