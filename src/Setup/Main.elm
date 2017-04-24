@@ -202,6 +202,11 @@ viewIntervalsBeforeBreak model =
 -- continue view 92
 
 
+continueButtonId : String
+continueButtonId =
+    "continue-button"
+
+
 continueButtons : Model -> Html Msg
 continueButtons model =
     div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
@@ -210,6 +215,7 @@ continueButtons model =
             , onClick StartTimer
             , Attr.class "btn btn-info btn-lg btn-block"
             , class [ LargeButtonText, BufferTop, TooltipContainer ]
+            , Attr.id continueButtonId
             ]
             ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
         ]
@@ -715,7 +721,7 @@ update msg model =
 
                 startTimerUpdate =
                     updatedModel
-                        ! [ changeTip ]
+                        ! [ changeTip, blurContinueButton ]
                         |> Update.Extra.andThen update (SendIpc Ipc.StartTimer (startTimerFlags False model))
             in
                 case model.screenState of
@@ -771,7 +777,7 @@ update msg model =
                     ! [ focusAddMobsterInput ]
                     |> Update.Extra.andThen update (UpdateMobsterData (MobsterOperation.Add model.newMobster))
 
-        DomFocusResult _ ->
+        DomResult _ ->
             model ! []
 
         UpdateMobsterData operation ->
@@ -920,7 +926,16 @@ reorderOperation shuffledMobsters =
 
 focusAddMobsterInput : Cmd Msg
 focusAddMobsterInput =
-    Task.attempt DomFocusResult (Dom.focus "add-mobster")
+    "add-mobster"
+        |> Dom.focus
+        |> Task.attempt DomResult
+
+
+blurContinueButton : Cmd Msg
+blurContinueButton =
+    continueButtonId
+        |> Dom.blur
+        |> Task.attempt DomResult
 
 
 

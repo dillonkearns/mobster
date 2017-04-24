@@ -21,7 +21,7 @@ type Msg
     | CheckRpgBox Msg Bool
     | AddMobster
     | ClickAddMobster
-    | DomFocusResult (Result Dom.Error ())
+    | DomResult (Result Dom.Error ())
     | ChangeInput InputField String
     | SelectInputField String
     | OpenConfigure
