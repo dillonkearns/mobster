@@ -18,15 +18,18 @@ intInputView inputField duration =
     let
         ( minTimerMinutes, maxTimerMinutes ) =
             Validations.inputRangeFor inputField
+
+        fieldId =
+            toString inputField
     in
         input
-            [ id "timer-duration"
-            , onClick SelectInputField
-            , onInput (ChangeInput (IntField inputField))
+            [ id fieldId
+            , onClick <| SelectInputField fieldId
+            , onInput <| ChangeInput (IntField inputField)
             , type_ "number"
-            , Attr.min (toString minTimerMinutes)
-            , Attr.max (toString maxTimerMinutes)
-            , value (toString duration)
+            , Attr.min <| toString minTimerMinutes
+            , Attr.max <| toString maxTimerMinutes
+            , value <| toString duration
             , class [ BufferRight ]
             , style [ "font-size" => "4.0rem" ]
             ]
