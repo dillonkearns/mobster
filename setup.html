@@ -10,8 +10,8 @@
     <script type="text/javascript" src="./elm.js"></script>
     <script>window.Elm = require('./elm.js')</script>
     <script type="text/javascript">
-    const $ = jQuery = require('jquery')
-    </script>
+    const $ = (jQuery = require('jquery'))
+</script>
     <style>
       html,body {
         -webkit-user-select: none;
@@ -417,48 +417,51 @@
   <body id="setup-window">
   </body>
 
-  <script>
-    const {ipcRenderer, clipboard} = require('electron')
-    const {version} = require('./package')
-    console.log(`Running version ${version}`)
+<script>
+const { ipcRenderer, clipboard } = require('electron')
+const { version } = require('./package')
+console.log(`Running version ${version}`)
 
-    let settings = JSON.parse(window.localStorage.getItem('settings'))
-    let onMac = /Mac/.test(navigator.platform)
-    let setup = Elm.Setup.Main.fullscreen({settings, onMac})
+let settings = JSON.parse(window.localStorage.getItem('settings'))
+let onMac = /Mac/.test(navigator.platform)
+let setup = Elm.Setup.Main.fullscreen({ settings, onMac })
 
-    setup.ports.selectDuration.subscribe(function(id) {
-      document.getElementById(id).select()
-    })
+setup.ports.selectDuration.subscribe(function(id) {
+  document.getElementById(id).select()
+})
 
-    setup.ports.sendIpc.subscribe(function([message, data]) {
-      console.log("sendIpc", message, data)
-      ipcRenderer.send(message, data)
-    })
+setup.ports.sendIpc.subscribe(function([message, data]) {
+  console.log('sendIpc', message, data)
+  ipcRenderer.send(message, data)
+})
 
-    setup.ports.saveSettings.subscribe(function(settings) {
-      window.localStorage.setItem('settings', JSON.stringify(settings))
-    })
+setup.ports.saveSettings.subscribe(function(settings) {
+  window.localStorage.setItem('settings', JSON.stringify(settings))
+})
 
-    ipcRenderer.on('update-downloaded', function (event, updatedVersion) {
-      console.log('on update-downloaded. updatedVersion = ', updatedVersion)
-      setup.ports.updateDownloaded.send("Not a real version...")
-    })
+ipcRenderer.on('update-downloaded', function(event, updatedVersion) {
+  console.log('on update-downloaded. updatedVersion = ', updatedVersion)
+  setup.ports.updateDownloaded.send('Not a real version...')
+})
 
-    ipcRenderer.on('timer-done', function (event, elapsedSeconds) {
-      setup.ports.timeElapsed.send(elapsedSeconds)
-    })
+ipcRenderer.on('timer-done', function(event, elapsedSeconds) {
+  setup.ports.timeElapsed.send(elapsedSeconds)
+})
 
-    ipcRenderer.on('break-done', function (event, elapsedSeconds) {
-      setup.ports.breakDone.send(elapsedSeconds)
-    })
+ipcRenderer.on('break-done', function(event, elapsedSeconds) {
+  setup.ports.breakDone.send(elapsedSeconds)
+})
 
-    $(() => {
-      $('.invisible-trigger').hover(
-        () => { $('body').addClass('transparent') },
-        () => { $('body').removeClass('transparent') }
-      )
-    })
-
-  </script>
-    <script src="./assets/js/bootstrap337.min.js" crossorigin="anonymous"></script>
+$(() => {
+  $('.invisible-trigger').hover(
+    () => {
+      $('body').addClass('transparent')
+    },
+    () => {
+      $('body').removeClass('transparent')
+    }
+  )
+})
+</script>
+<script src="./assets/js/bootstrap337.min.js" crossorigin="anonymous"></script>
 </html>

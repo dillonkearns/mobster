@@ -1,7 +1,15 @@
 const electron = require('electron')
-const {ipcMain, globalShortcut, app, Tray, BrowserWindow, dialog, shell} = require('electron')
+const {
+  ipcMain,
+  globalShortcut,
+  app,
+  Tray,
+  BrowserWindow,
+  dialog,
+  shell
+} = require('electron')
 const autoUpdater = require('electron-updater').autoUpdater
-autoUpdater.requestHeaders = {"Cache-Control": "no-cache"}
+autoUpdater.requestHeaders = { 'Cache-Control': 'no-cache' }
 require('electron-debug')({
   enabled: true // enable debug shortcuts in prod build
 })
@@ -12,7 +20,7 @@ const path = require('path')
 const url = require('url')
 const log = require('electron-log')
 const assetsDirectory = path.join(__dirname, 'assets')
-const {version} = require('./package')
+const { version } = require('./package')
 const fs = require('fs')
 const osascript = require('node-osascript')
 const appDataPath = app.getPath('userData')
@@ -24,8 +32,11 @@ log.info(`Running version ${version}`)
 let checkForUpdates = true
 
 let releaseStage = isDev ? 'development' : 'production'
-bugsnag.register('032040bba551785c7846442332cc067f', {autoNotify: true, appVersion: version, releaseStage: releaseStage})
-
+bugsnag.register('032040bba551785c7846442332cc067f', {
+  autoNotify: true,
+  appVersion: version,
+  releaseStage: releaseStage
+})
 
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
   // Someone tried to run a second instance, we should focus our window.
@@ -36,7 +47,6 @@ const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
 if (shouldQuit) {
   app.quit()
 }
-
 
 const returnFocusOsascript = `tell application "System Events"
 	set activeApp to name of application processes whose frontmost is true
@@ -49,10 +59,12 @@ const returnFocusOsascript = `tell application "System Events"
 end tell`
 
 function returnFocusMac() {
-  osascript.execute(returnFocusOsascript, function(err, result, raw){
-  if (err) { return console.error(err) }
-  console.log(result, raw)
-});
+  osascript.execute(returnFocusOsascript, function(err, result, raw) {
+    if (err) {
+      return console.error(err)
+    }
+    console.log(result, raw)
+  })
 }
 
 function writeToFile(filePath, fileContents) {
@@ -64,7 +76,7 @@ function writeToFile(filePath, fileContents) {
 }
 
 function updateMobsterNamesFile(currentMobsterNames) {
-    writeToFile(currentMobstersFilePath, currentMobsterNames)
+  writeToFile(currentMobstersFilePath, currentMobsterNames)
 }
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -78,13 +90,13 @@ const onMac = /^darwin/.test(process.platform)
 const onWindows = /^win/.test(process.platform)
 
 function focusMainWindow() {
-    // TODO: workaround - remove once
-    // https://github.com/electron/electron/issues/2867#issuecomment-264312493 has been resolved
-    if (onWindows) {
-      mainWindow.minimize()
-    }
-    mainWindow.show()
-    mainWindow.focus()
+  // TODO: workaround - remove once
+  // https://github.com/electron/electron/issues/2867#issuecomment-264312493 has been resolved
+  if (onWindows) {
+    mainWindow.minimize()
+  }
+  mainWindow.show()
+  mainWindow.focus()
 }
 
 function hideMainWindow() {
@@ -93,46 +105,55 @@ function hideMainWindow() {
 }
 
 function positionWindowLeft(window) {
-  let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
-  window.setPosition(0, height - timerHeight);
+  let { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+  window.setPosition(0, height - timerHeight)
 }
 
 function positionWindowRight(window) {
-  const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
-  window.setPosition(width - timerWidth, height - timerHeight);
+  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+  window.setPosition(width - timerWidth, height - timerHeight)
 }
 
 function returnFocus() {
-    if (onMac) {
-      returnFocusMac()
-    }
+  if (onMac) {
+    returnFocusMac()
+  }
 }
 
 function startTimer(flags) {
-  timerWindow = new BrowserWindow({transparent: true, frame: false, alwaysOnTop: true,
-    width: timerWidth, height: timerHeight, focusable: false})
+  timerWindow = new BrowserWindow({
+    transparent: true,
+    frame: false,
+    alwaysOnTop: true,
+    width: timerWidth,
+    height: timerHeight,
+    focusable: false
+  })
 
-  timerWindow.webContents.on('crashed', function () { bugsnag.notify("crashed", "timerWindow crashed") })
-  timerWindow.on('unresponsive', function () {  bugsnag.notify("unresponsive", "timerWindow unresponsive") })
+  timerWindow.webContents.on('crashed', function() {
+    bugsnag.notify('crashed', 'timerWindow crashed')
+  })
+  timerWindow.on('unresponsive', function() {
+    bugsnag.notify('unresponsive', 'timerWindow unresponsive')
+  })
 
   positionWindowRight(timerWindow)
 
-  ipcMain.once('timer-flags', (event) => {
+  ipcMain.once('timer-flags', event => {
     event.returnValue = flags
   })
 
-
-  timerWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'timer.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
-
-
+  timerWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, 'timer.html'),
+      protocol: 'file:',
+      slashes: true
+    })
+  )
 }
 
-ipcMain.on('timer-mouse-hover', (event) => {
-  [x, y] = timerWindow.getPosition()
+ipcMain.on('timer-mouse-hover', event => {
+  ;[x, y] = timerWindow.getPosition()
   if (x === 0) {
     positionWindowRight(timerWindow)
   } else {
@@ -140,13 +161,13 @@ ipcMain.on('timer-mouse-hover', (event) => {
   }
 })
 
-ipcMain.on('ChangeShortcut', (event, payload) =>{
+ipcMain.on('ChangeShortcut', (event, payload) => {
   globalShortcut.unregisterAll()
-  if (payload !== "") {
+  if (payload !== '') {
     setShowHideShortcut(payload)
   }
 })
-ipcMain.on('get-active-mobsters-path', (event) => {
+ipcMain.on('get-active-mobsters-path', event => {
   event.returnValue = currentMobstersFilePath
 })
 
@@ -157,7 +178,7 @@ function closeTimer() {
   }
 }
 
-function createWindow () {
+function createWindow() {
   mainWindow = new BrowserWindow({
     transparent: true,
     frame: false,
@@ -165,22 +186,28 @@ function createWindow () {
     icon: `${assetsDirectory}/icon.ico`
   })
 
-  mainWindow.webContents.on('crashed', function () { bugsnag.notify("crashed", "mainWindow crashed") })
-  mainWindow.on('unresponsive', function () {  bugsnag.notify("unresponsive", "mainWindow unresponsive") })
+  mainWindow.webContents.on('crashed', function() {
+    bugsnag.notify('crashed', 'mainWindow crashed')
+  })
+  mainWindow.on('unresponsive', function() {
+    bugsnag.notify('unresponsive', 'mainWindow unresponsive')
+  })
   setTimeout(() => {
     mainWindow.setAlwaysOnTop(true) // delay to workaround https://github.com/electron/electron/issues/8287
   }, 1000)
   mainWindow.maximize()
 
-  electron.screen.on('display-metrics-changed', function () {
+  electron.screen.on('display-metrics-changed', function() {
     mainWindow.maximize()
   })
 
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'setup.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
+  mainWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, 'setup.html'),
+      protocol: 'file:',
+      slashes: true
+    })
+  )
 
   ipcMain.on('StartTimer', (event, flags) => {
     startTimer(flags)
@@ -208,19 +235,21 @@ function createWindow () {
     focusMainWindow()
   })
 
-  ipcMain.on('Quit', (event) => {
+  ipcMain.on('Quit', event => {
     app.quit()
   })
 
-  ipcMain.on('ShowFeedbackForm', (event) => {
-    new BrowserWindow({show: true, frame: true, alwaysOnTop: true}).loadURL('https://dillonkearns.typeform.com/to/k9P6iV')
+  ipcMain.on('ShowFeedbackForm', event => {
+    new BrowserWindow({ show: true, frame: true, alwaysOnTop: true }).loadURL(
+      'https://dillonkearns.typeform.com/to/k9P6iV'
+    )
   })
 
-  ipcMain.on('ShowScriptInstallInstructions', (event) => {
+  ipcMain.on('ShowScriptInstallInstructions', event => {
     showScripts()
   })
 
-  ipcMain.on('Hide', (event) => {
+  ipcMain.on('Hide', event => {
     toggleMainWindow()
   })
 
@@ -229,21 +258,18 @@ function createWindow () {
   })
 
   // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
+  mainWindow.on('closed', function() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
   })
-
-
 }
 
 function toggleMainWindow() {
   if (mainWindow.isVisible()) {
     hideMainWindow()
-  }
-  else {
+  } else {
     focusMainWindow()
   }
 }
@@ -272,11 +298,13 @@ function showScripts() {
     frame: true,
     icon: `${assetsDirectory}/icon.ico`
   })
-  scriptsWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'script-install-instructions.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
+  scriptsWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, 'script-install-instructions.html'),
+      protocol: 'file:',
+      slashes: true
+    })
+  )
   scriptsWindow.on('closed', () => {
     scriptsWindow = null
     toggleMainWindow()
@@ -295,7 +323,7 @@ function onReady() {
 app.on('ready', onReady)
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function () {
+app.on('window-all-closed', function() {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
@@ -303,7 +331,7 @@ app.on('window-all-closed', function () {
   }
 })
 
-app.on('activate', function () {
+app.on('activate', function() {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
@@ -312,7 +340,7 @@ app.on('activate', function () {
 })
 
 function setupAutoUpdater() {
-  autoUpdater.logger = log;
+  autoUpdater.logger = log
   autoUpdater.on('checking-for-update', () => {
     log.info('checking-for-update')
   })
@@ -326,7 +354,7 @@ function setupAutoUpdater() {
     checkForUpdates = false
   })
 
-  autoUpdater.on('update-downloaded', (versionInfo) => {
+  autoUpdater.on('update-downloaded', versionInfo => {
     log.info('update-downloaded: ', versionInfo)
     mainWindow.webContents.send('update-downloaded', versionInfo)
   })
@@ -337,15 +365,15 @@ function setupAutoUpdater() {
 
   if (!isDev) {
     autoUpdater.checkForUpdates()
-    log.info("About to set up interval")
+    log.info('About to set up interval')
     function myCheckForUpdates() {
-      log.info("About to check for updates on interval")
+      log.info('About to check for updates on interval')
 
       if (checkForUpdates) {
         autoUpdater.checkForUpdates()
       }
     }
-    setInterval(myCheckForUpdates, 120 * 1000);
+    setInterval(myCheckForUpdates, 120 * 1000)
   }
 }
 
@@ -357,7 +385,7 @@ function setShowHideShortcut(shortcutString) {
         type: 'warning',
         buttons: ['Stop timer', 'Keep it running'],
         message: 'Stop the timer?',
-        cancelId: 1,
+        cancelId: 1
       })
       if (dialogActionIndex !== 1) {
         closeTimer()

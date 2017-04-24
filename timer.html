@@ -33,25 +33,28 @@
   <body id="timer-window">
   </body>
 
-  <script>
-    require('./renderer.js')
-    const {ipcRenderer} = require('electron')
+<script>
+require('./renderer.js')
+const { ipcRenderer } = require('electron')
 
-    let flags = ipcRenderer.sendSync('timer-flags')
-    flags.isDev = require('electron-is-dev')
-    let timer = Elm.Timer.Main.fullscreen(flags)
+let flags = ipcRenderer.sendSync('timer-flags')
+flags.isDev = require('electron-is-dev')
+let timer = Elm.Timer.Main.fullscreen(flags)
 
-    document.getElementById('timer-window')
-      .addEventListener("mouseenter", function(event) {
-        ipcRenderer.send('timer-mouse-hover')
-      }, false)
+document.getElementById('timer-window').addEventListener(
+  'mouseenter',
+  function(event) {
+    ipcRenderer.send('timer-mouse-hover')
+  },
+  false
+)
 
-    timer.ports.timerDone.subscribe(function(elapsedSeconds) {
-      ipcRenderer.send('timer-done', elapsedSeconds)
-    })
+timer.ports.timerDone.subscribe(function(elapsedSeconds) {
+  ipcRenderer.send('timer-done', elapsedSeconds)
+})
 
-    timer.ports.breakTimerDone.subscribe(function(elapsedSeconds) {
-      ipcRenderer.send('break-done', elapsedSeconds)
-    })
-  </script>
+timer.ports.breakTimerDone.subscribe(function(elapsedSeconds) {
+  ipcRenderer.send('break-done', elapsedSeconds)
+})
+</script>
 </html>
