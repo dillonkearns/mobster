@@ -64,6 +64,26 @@ all =
                 { query = "query", selection = QuickRotate.New "query" }
                     |> QuickRotate.next [ "asdf", "query1", "query2" ]
                     |> Expect.equal { query = "query", selection = QuickRotate.Index 1 }
+        , test "next from no selection" <|
+            \() ->
+                QuickRotate.init
+                    |> QuickRotate.next [ "asdf", "query1", "query2" ]
+                    |> Expect.equal { query = "", selection = QuickRotate.Index 0 }
+        , test "previous skips new from All when query is empty" <|
+            \() ->
+                QuickRotate.init
+                    |> QuickRotate.previous [ "asdf", "query1", "query2" ]
+                    |> Expect.equal { query = "", selection = QuickRotate.Index 2 }
+        , test "previous skips over new query when empty" <|
+            \() ->
+                { query = "", selection = QuickRotate.Index 0 }
+                    |> QuickRotate.previous [ "asdf", "query1", "query2" ]
+                    |> Expect.equal { query = "", selection = QuickRotate.Index 2 }
+        , test "next skips over new query when empty" <|
+            \() ->
+                { query = "", selection = QuickRotate.Index 2 }
+                    |> QuickRotate.next [ "asdf", "query1", "query2" ]
+                    |> Expect.equal { query = "", selection = QuickRotate.Index 0 }
         , test "gives you indices of matches" <|
             \() ->
                 QuickRotate.init

@@ -30,7 +30,10 @@ previous list state =
     in
         case state.selection of
             All ->
-                state
+                if List.isEmpty list then
+                    state
+                else
+                    { state | selection = Index ((List.length list) - 1) }
 
             New string ->
                 let
@@ -57,7 +60,10 @@ previous list state =
                             { state | selection = Index nextMatchIndex }
 
                         Nothing ->
-                            { state | selection = New state.query }
+                            if state.query == "" then
+                                previous list { state | selection = New state.query }
+                            else
+                                { state | selection = New state.query }
 
 
 next : List String -> State -> State
@@ -68,7 +74,10 @@ next list state =
     in
         case state.selection of
             All ->
-                state
+                if List.isEmpty list then
+                    state
+                else
+                    { state | selection = Index 0 }
 
             New string ->
                 let
@@ -95,7 +104,10 @@ next list state =
                             { state | selection = Index nextMatchIndex }
 
                         Nothing ->
-                            { state | selection = New state.query }
+                            if state.query == "" then
+                                next list { state | selection = New state.query }
+                            else
+                                { state | selection = New state.query }
 
 
 matches : List String -> State -> List Int
