@@ -558,6 +558,7 @@ quickRotateQueryInputView quickRotateQuery =
         input
             [ Attr.placeholder "Type to filter"
             , type_ "text"
+            , Attr.id quickRotateQueryId
             , Attr.class "form-control"
             , value quickRotateQuery
             , onWithOptions "keydown" options dec
@@ -775,7 +776,17 @@ update msg model =
         ShowRotationScreen ->
             case model.screenState of
                 Continue showRotation ->
-                    { model | screenState = Continue (not showRotation) } ! []
+                    let
+                        sideEffects =
+                            if showRotation then
+                                []
+                            else
+                                [ quickRotateQueryId
+                                    |> Dom.focus
+                                    |> Task.attempt DomResult
+                                ]
+                    in
+                        { model | screenState = Continue (not showRotation) } ! sideEffects
 
                 _ ->
                     model ! []
@@ -1030,6 +1041,11 @@ update msg model =
                         | quickRotateState = QuickRotate.previous (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState
                     }
                         ! []
+
+
+quickRotateQueryId : String
+quickRotateQueryId =
+    "quick-rotate-query"
 
 
 reorderOperation : List Mobster.Mobster -> Msg
