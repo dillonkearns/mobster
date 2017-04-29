@@ -4,13 +4,14 @@ import BreakTests
 import MobsterDataTests
 import MobsterOperationTests
 import MobsterPresenterTests
+import QuickRotateTests
 import RpgPresenterTests
 import RpgTests
 import SettingsDecodeTests
 import Test exposing (..)
+import TimerFlagsTests
 import TimerTests
 import ValidationsTests
-import TimerFlagsTests
 
 
 all : Test
@@ -27,4 +28,5 @@ all =
         , RpgTests.all
         , ValidationsTests.all
         , TimerFlagsTests.all
+        , QuickRotateTests.all
         ]
