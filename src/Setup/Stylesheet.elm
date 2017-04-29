@@ -23,6 +23,7 @@ type CssClasses
     | RpgIcon1
     | RpgIcon2
     | ButtonMuted
+    | HandPointer
 
 
 css : Stylesheet
@@ -40,8 +41,9 @@ css =
             [ body
                 [ fontSize (px 15) ]
             ]
-        , button [ cursor default |> important ]
-        , a [ cursor default |> important ]
+        , button [ cursor default ]
+        , a [ cursor default ]
+        , class HandPointer [ cursor pointer |> important ]
         , selector ".btn" [ cursor default |> important ]
         , class DragBelow [ borderBottom3 (px 2) (solid) (rgba 14 255 125 1) ]
         , class BufferTop
