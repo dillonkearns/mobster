@@ -534,7 +534,7 @@ quickRotateQueryInputView quickRotateQuery =
                 (\code ->
                     if code == 38 then
                         Ok (QuickRotateMove Previous)
-                    else if code == 40 then
+                    else if code == 9 || code == 40 then
                         Ok (QuickRotateMove Next)
                     else if code == 13 then
                         Ok QuickRotateAdd
