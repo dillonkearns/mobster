@@ -37,4 +37,26 @@ all =
                     |> QuickRotate.update "query" [ "query1", "query2", "def" ]
                     |> QuickRotate.next [ "query1", "query2", "def" ]
                     |> Expect.equal { selection = (QuickRotate.Index 1), query = "query" }
+        , test "finds next when matches start from the middle" <|
+            \() ->
+                QuickRotate.init
+                    |> QuickRotate.update "query" [ "asdf", "query1", "query2" ]
+                    |> QuickRotate.next [ "asdf", "query1", "query2" ]
+                    |> Expect.equal { selection = (QuickRotate.Index 2), query = "query" }
+        , test "next wraps around to new" <|
+            \() ->
+                { query = "query", selection = QuickRotate.Index 2 }
+                    |> QuickRotate.next [ "asdf", "query1", "query2" ]
+                    |> Expect.equal { query = "query", selection = (QuickRotate.New "query") }
+        , test "next wraps around from new to first match" <|
+            \() ->
+                { query = "query", selection = QuickRotate.New "query" }
+                    |> QuickRotate.next [ "asdf", "query1", "query2" ]
+                    |> Expect.equal { query = "query", selection = (QuickRotate.Index 1) }
+        , test "gives you indices of matches" <|
+            \() ->
+                QuickRotate.init
+                    |> QuickRotate.update "query" [ "query1", "query2", "def" ]
+                    |> QuickRotate.matches [ "query1", "query2", "def" ]
+                    |> Expect.equal [ 0, 1 ]
         ]

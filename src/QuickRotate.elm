@@ -22,7 +22,50 @@ init =
 
 next : List String -> State -> State
 next list state =
-    { state | selection = Index 1 }
+    case state.selection of
+        All ->
+            state
+
+        New string ->
+            let
+                allMatches =
+                    matches list state
+
+                firstMatch =
+                    allMatches
+                        |> List.head
+            in
+                case firstMatch of
+                    Just firstMatchIndex ->
+                        { state | selection = Index firstMatchIndex }
+
+                    Nothing ->
+                        state
+
+        Index int ->
+            let
+                allMatches =
+                    matches list state
+
+                nextMatch =
+                    allMatches
+                        |> List.filter (\index -> index > int)
+                        |> List.head
+            in
+                case nextMatch of
+                    Just nextMatchIndex ->
+                        { state | selection = Index nextMatchIndex }
+
+                    Nothing ->
+                        { state | selection = New state.query }
+
+
+matches : List String -> State -> List Int
+matches list state =
+    list
+        |> List.indexedMap (,)
+        |> List.filter (\( index, item ) -> String.contains (String.toLower state.query) (String.toLower item))
+        |> List.map (\( index, _ ) -> index)
 
 
 update : String -> List String -> State -> State
@@ -31,7 +74,7 @@ update newQuery list state =
         matches =
             list
                 |> List.indexedMap (,)
-                |> List.filter (\( index, item ) -> String.contains newQuery item)
+                |> List.filter (\( index, item ) -> String.contains (String.toLower newQuery) (String.toLower item))
 
         firstMatchingIndex =
             case List.head matches of
