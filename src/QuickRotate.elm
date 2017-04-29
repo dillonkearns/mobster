@@ -8,21 +8,30 @@ type Selection
 
 
 type alias State =
-    Selection
+    { selection : Selection
+    , query : String
+    }
 
 
 init : State
 init =
-    All
+    { selection = All
+    , query = ""
+    }
+
+
+next : List String -> State -> State
+next list state =
+    { state | selection = Index 1 }
 
 
 update : String -> List String -> State -> State
-update query list state =
+update newQuery list state =
     let
         matches =
             list
                 |> List.indexedMap (,)
-                |> List.filter (\( index, item ) -> String.contains query item)
+                |> List.filter (\( index, item ) -> String.contains newQuery item)
 
         firstMatchingIndex =
             case List.head matches of
@@ -34,7 +43,7 @@ update query list state =
     in
         case firstMatchingIndex of
             Nothing ->
-                New query
+                { query = newQuery, selection = New newQuery }
 
             Just firstMatchingIndex ->
-                Index firstMatchingIndex
+                { query = newQuery, selection = Index firstMatchingIndex }
