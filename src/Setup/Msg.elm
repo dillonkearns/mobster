@@ -39,6 +39,9 @@ type Msg
     | RotateOutHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
     | SendIpc Ipc.Msg Encode.Value
+    | NoOp
+    | QuickRotateAdd
+    | QuickRotateNext
 
 
 type InputField
@@ -50,6 +53,7 @@ type StringInputField
     = Experiment
     | ShowHideShortcut
     | NewMobster
+    | QuickRotateQuery
 
 
 type DragId

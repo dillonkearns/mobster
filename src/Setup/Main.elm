@@ -8,7 +8,7 @@ import FA
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
-import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit)
+import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit, onWithOptions)
 import Html.Events.Extra exposing (onEnter)
 import Html5.DragDrop as DragDrop
 import Ipc
@@ -21,6 +21,7 @@ import Mobster.Presenter as Presenter
 import Random
 import Setup.Forms.ViewHelpers
 import Setup.InputField exposing (IntInputField(..))
+import QuickRotate
 import Setup.Msg exposing (..)
 import Setup.Navbar as Navbar
 import Setup.PlotScatter
@@ -522,9 +523,79 @@ mobsterCellStyle =
     [ style [ "text-align" => "right", "padding-right" => "0.667em" ] ]
 
 
-inactiveMobsterViewWithHints : Int -> String -> Html Msg
-inactiveMobsterViewWithHints mobsterIndex inactiveMobster =
-    tr []
+quickRotateQueryInputView : String -> Html Msg
+quickRotateQueryInputView quickRotateQuery =
+    let
+        options =
+            { preventDefault = True, stopPropagation = False }
+
+        dec =
+            (Decode.map
+                (\code ->
+                    if code == 38 then
+                        Ok NoOp
+                    else if code == 40 then
+                        Ok QuickRotateNext
+                    else if code == 13 then
+                        Ok QuickRotateAdd
+                    else
+                        Err "not handling that key"
+                )
+                keyCode
+            )
+                |> Decode.andThen
+                    fromResult
+
+        fromResult : Result String a -> Decode.Decoder a
+        fromResult result =
+            case result of
+                Ok val ->
+                    Decode.succeed val
+
+                Err reason ->
+                    Decode.fail reason
+    in
+        input
+            [ Attr.placeholder "Type to filter"
+            , type_ "text"
+            , Attr.class "form-control"
+            , value quickRotateQuery
+            , onWithOptions "keydown" options dec
+            , onInput <| ChangeInput (StringField QuickRotateQuery)
+            , style [ "font-size" => "2.0rem" ]
+            ]
+            []
+
+
+newMobsterRowView : QuickRotate.State -> Html Msg
+newMobsterRowView quickRotateState =
+    let
+        rowClass =
+            case quickRotateState.selection of
+                QuickRotate.New _ ->
+                    "success"
+
+                _ ->
+                    "active"
+    in
+        tr [ Attr.class rowClass ]
+            [ td mobsterCellStyle
+                [ span [ style [ "color" => "white" ], Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.Add quickRotateState.query)) ] [ text (quickRotateState.query ++ " "), span [ Attr.class "fa fa-plus-circle" ] [] ] ]
+            ]
+
+
+inactiveMobsterViewWithHints : String -> QuickRotate.Selection -> List Int -> Int -> String -> Html Msg
+inactiveMobsterViewWithHints quickRotateQuery quickRotateSelection matches mobsterIndex inactiveMobster =
+    tr
+        [ Attr.class
+            (if (quickRotateSelection == QuickRotate.Index mobsterIndex) then
+                "info"
+             else if List.member mobsterIndex matches then
+                "active"
+             else
+                ""
+            )
+        ]
         [ td mobsterCellStyle
             [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , Shortcuts.hint mobsterIndex
@@ -615,10 +686,14 @@ rotationView model =
 
         inactiveMobsters =
             model.settings.mobsterData.inactiveMobsters
+
+        matches =
+            QuickRotate.matches (inactiveMobsters |> List.map .name) model.quickRotateState
     in
         div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ]
-            , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] (List.indexedMap inactiveMobsterViewWithHints (inactiveMobsters |> List.map .name)) ]
+            [ quickRotateQueryInputView model.quickRotateState.query
+            , div [ Attr.class "col-md-6" ] [ table [] [ tbody [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ] ]
+            , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] [ tbody [] ((List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name)) ++ [ newMobsterRowView model.quickRotateState ]) ] ]
             ]
 
 
@@ -897,6 +972,9 @@ update msg model =
                         NewMobster ->
                             { model | newMobster = newInputValue } ! []
 
+                        QuickRotateQuery ->
+                            { model | quickRotateState = QuickRotate.update newInputValue (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState } ! []
+
                 IntField intField ->
                     let
                         newValueInRange =
@@ -917,6 +995,33 @@ update msg model =
                                 model
                                     |> updateSettings
                                         (\settings -> { settings | breakDuration = newValueInRange })
+
+        NoOp ->
+            model
+                ! []
+
+        QuickRotateAdd ->
+            case model.quickRotateState.selection of
+                QuickRotate.Index benchIndex ->
+                    { model | quickRotateState = QuickRotate.init }
+                        ! []
+                        |> Update.Extra.andThen update
+                            (UpdateMobsterData (MobsterOperation.RotateIn benchIndex))
+
+                QuickRotate.All ->
+                    model ! []
+
+                QuickRotate.New newMobster ->
+                    { model | quickRotateState = QuickRotate.init }
+                        ! []
+                        |> Update.Extra.andThen update
+                            (UpdateMobsterData (MobsterOperation.Add newMobster))
+
+        QuickRotateNext ->
+            { model
+                | quickRotateState = QuickRotate.next (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState
+            }
+                ! []
 
 
 reorderOperation : List Mobster.Mobster -> Msg
@@ -991,6 +1096,7 @@ type alias Model =
     , availableUpdateVersion : Maybe String
     , dragDrop : DragDropModel
     , onMac : Bool
+    , quickRotateState : QuickRotate.State
     }
 
 
@@ -1009,6 +1115,7 @@ initialModel settings onMac =
     , availableUpdateVersion = Nothing
     , dragDrop = DragDrop.init
     , onMac = onMac
+    , quickRotateState = QuickRotate.init
     }
 
 
