@@ -41,7 +41,12 @@ type Msg
     | SendIpc Ipc.Msg Encode.Value
     | NoOp
     | QuickRotateAdd
-    | QuickRotateNext
+    | QuickRotateMove Direction
+
+
+type Direction
+    = Previous
+    | Next
 
 
 type InputField

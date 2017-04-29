@@ -533,9 +533,9 @@ quickRotateQueryInputView quickRotateQuery =
             (Decode.map
                 (\code ->
                     if code == 38 then
-                        Ok NoOp
+                        Ok (QuickRotateMove Previous)
                     else if code == 40 then
-                        Ok QuickRotateNext
+                        Ok (QuickRotateMove Next)
                     else if code == 13 then
                         Ok QuickRotateAdd
                     else
@@ -1017,11 +1017,19 @@ update msg model =
                         |> Update.Extra.andThen update
                             (UpdateMobsterData (MobsterOperation.Add newMobster))
 
-        QuickRotateNext ->
-            { model
-                | quickRotateState = QuickRotate.next (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState
-            }
-                ! []
+        QuickRotateMove direction ->
+            case direction of
+                Next ->
+                    { model
+                        | quickRotateState = QuickRotate.next (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState
+                    }
+                        ! []
+
+                Previous ->
+                    { model
+                        | quickRotateState = QuickRotate.previous (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState
+                    }
+                        ! []
 
 
 reorderOperation : List Mobster.Mobster -> Msg

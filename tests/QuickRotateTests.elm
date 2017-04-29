@@ -36,23 +36,34 @@ all =
                 QuickRotate.init
                     |> QuickRotate.update "query" [ "query1", "query2", "def" ]
                     |> QuickRotate.next [ "query1", "query2", "def" ]
-                    |> Expect.equal { selection = (QuickRotate.Index 1), query = "query" }
+                    |> Expect.equal { selection = QuickRotate.Index 1, query = "query" }
         , test "finds next when matches start from the middle" <|
             \() ->
                 QuickRotate.init
                     |> QuickRotate.update "query" [ "asdf", "query1", "query2" ]
                     |> QuickRotate.next [ "asdf", "query1", "query2" ]
-                    |> Expect.equal { selection = (QuickRotate.Index 2), query = "query" }
+                    |> Expect.equal { selection = QuickRotate.Index 2, query = "query" }
         , test "next wraps around to new" <|
             \() ->
                 { query = "query", selection = QuickRotate.Index 2 }
                     |> QuickRotate.next [ "asdf", "query1", "query2" ]
                     |> Expect.equal { query = "query", selection = (QuickRotate.New "query") }
+        , test "previous rotates back to new first" <|
+            \() ->
+                QuickRotate.init
+                    |> QuickRotate.update "query" [ "asdf", "query1", "query2" ]
+                    |> QuickRotate.previous [ "asdf", "query1", "query2" ]
+                    |> Expect.equal { selection = QuickRotate.New "query", query = "query" }
+        , test "previous rotates back by one" <|
+            \() ->
+                { query = "query", selection = QuickRotate.Index 2 }
+                    |> QuickRotate.previous [ "asdf", "query1", "query2" ]
+                    |> Expect.equal { query = "query", selection = QuickRotate.Index 1 }
         , test "next wraps around from new to first match" <|
             \() ->
                 { query = "query", selection = QuickRotate.New "query" }
                     |> QuickRotate.next [ "asdf", "query1", "query2" ]
-                    |> Expect.equal { query = "query", selection = (QuickRotate.Index 1) }
+                    |> Expect.equal { query = "query", selection = QuickRotate.Index 1 }
         , test "gives you indices of matches" <|
             \() ->
                 QuickRotate.init
