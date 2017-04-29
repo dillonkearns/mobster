@@ -18,6 +18,7 @@ type CssClasses
     | Tooltip
     | ShowOnParentHover
     | ShowOnParentHoverParent
+    | HasHoverActions
     | DragBelow
     | HasError
     | RpgIcon1
@@ -68,6 +69,11 @@ css =
                         ]
                     ]
                 ]
+            ]
+        , class HasHoverActions
+            [ borderBottom3 (px 2) dotted (rgba 80 60 100 0.4)
+            , paddingBottom (px 8)
+            , hover [ borderBottom3 (px 2) dotted (rgba 80 60 100 0.0) ]
             ]
         , class HasError [ border3 (px 3) (solid) (rgba 231 76 60 0.7) |> important ]
         , class RpgIcon1 (rpgIconCss (rgb 8 133 236))

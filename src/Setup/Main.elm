@@ -316,7 +316,7 @@ nextDriverNavigatorView model =
                     ]
                 ]
     in
-        div [ Attr.class "row h1 text-center", class [ ShowOnParentHoverParent ] ]
+        div [ Attr.class "row h1 text-center", class [ ShowOnParentHoverParent, HasHoverActions ] ]
             [ rewindButton
             , dnView driverNavigator.driver Presenter.Driver
             , dnView driverNavigator.navigator Presenter.Navigator
