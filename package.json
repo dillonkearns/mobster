@@ -33,10 +33,12 @@
   ],
   "author": "Dillon Kearns",
   "license": "MIT",
+  "optionalDependencies": {
+    "electron": "^1.6.2",
+    "electron-builder": "^11.7.0"
+  },
   "devDependencies": {
     "devtron": "^1.4.0",
-    "electron": "^1.6.2",
-    "electron-builder": "^11.7.0",
     "elm": "^0.18.0",
     "elm-css": "^0.6.0",
     "elm-test": "^0.18.2"
