@@ -134,9 +134,12 @@ update newQuery list state =
                 Just ( index, _ ) ->
                     Just index
     in
-        case firstMatchingIndex of
-            Nothing ->
-                { query = newQuery, selection = New newQuery }
+        if newQuery == "" then
+            { query = newQuery, selection = All }
+        else
+            case firstMatchingIndex of
+                Nothing ->
+                    { query = newQuery, selection = New newQuery }
 
-            Just firstMatchingIndex ->
-                { query = newQuery, selection = Index firstMatchingIndex }
+                Just firstMatchingIndex ->
+                    { query = newQuery, selection = Index firstMatchingIndex }

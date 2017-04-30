@@ -578,10 +578,16 @@ newMobsterRowView quickRotateState =
 
                 _ ->
                     "active"
+
+        displayText =
+            if quickRotateState.query == "" then
+                "Type a new name to add it"
+            else
+                quickRotateState.query
     in
         tr [ Attr.class rowClass ]
             [ td mobsterCellStyle
-                [ span [ style [ "color" => "white" ], Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.Add quickRotateState.query)) ] [ text (quickRotateState.query ++ " "), span [ Attr.class "fa fa-plus-circle" ] [] ] ]
+                [ span [ style [ "color" => "white" ], Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.Add quickRotateState.query)) ] [ text (displayText ++ " "), span [ Attr.class "fa fa-plus-circle" ] [] ] ]
             ]
 
 

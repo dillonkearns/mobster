@@ -84,6 +84,16 @@ all =
                 { query = "", selection = QuickRotate.Index 2 }
                     |> QuickRotate.next [ "asdf", "query1", "query2" ]
                     |> Expect.equal { query = "", selection = QuickRotate.Index 0 }
+        , test "clearing query from new selection with an empty list deselects it" <|
+            \() ->
+                { query = "some query", selection = QuickRotate.New "" }
+                    |> QuickRotate.update "" []
+                    |> Expect.equal { query = "", selection = QuickRotate.All }
+        , test "clearing query from Index selection deselects it" <|
+            \() ->
+                { query = "some query", selection = QuickRotate.Index 1 }
+                    |> QuickRotate.update "" [ "Item 1", "Item 2" ]
+                    |> Expect.equal { query = "", selection = QuickRotate.All }
         , test "gives you indices of matches" <|
             \() ->
                 QuickRotate.init
