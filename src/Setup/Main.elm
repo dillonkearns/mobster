@@ -629,6 +629,9 @@ inactiveMobsterViewWithHints quickRotateQuery quickRotateSelection matches mobst
             [ td mobsterCellStyle
                 [ span [ Attr.class textClasses, onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
                 , Shortcuts.hint mobsterIndex
+                , div [ Attr.class "btn-group btn-group-xs", style [ "margin-left" => "0.667em" ] ]
+                    [ button [ noTab, Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (MobsterOperation.Remove mobsterIndex)) ] [ text "x" ]
+                    ]
                 ]
             ]
 
