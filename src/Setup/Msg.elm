@@ -2,11 +2,12 @@ module Setup.Msg exposing (..)
 
 import Dom
 import Html5.DragDrop as DragDrop
+import Ipc
 import Json.Encode as Encode
 import Keyboard.Combo
+import Keyboard.Extra
 import Mobster.Operation exposing (MobsterOperation)
 import Setup.InputField exposing (..)
-import Ipc
 
 
 type Msg
@@ -42,6 +43,7 @@ type Msg
     | NoOp
     | QuickRotateAdd
     | QuickRotateMove Direction
+    | KeyPressed Bool Keyboard.Extra.Key
 
 
 type Direction

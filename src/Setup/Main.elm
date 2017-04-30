@@ -15,13 +15,14 @@ import Ipc
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard.Combo
+import Keyboard.Extra
 import Mobster.Data as Mobster
 import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
+import QuickRotate
 import Random
 import Setup.Forms.ViewHelpers
 import Setup.InputField exposing (IntInputField(..))
-import QuickRotate
 import Setup.Msg exposing (..)
 import Setup.Navbar as Navbar
 import Setup.PlotScatter
@@ -1021,7 +1022,10 @@ update msg model =
                             { model | newMobster = newInputValue } ! []
 
                         QuickRotateQuery ->
-                            { model | quickRotateState = QuickRotate.update newInputValue (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState } ! []
+                            if model.altPressed then
+                                model ! []
+                            else
+                                { model | quickRotateState = QuickRotate.update newInputValue (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState } ! []
 
                 IntField intField ->
                     let
@@ -1081,6 +1085,14 @@ update msg model =
                         | quickRotateState = QuickRotate.previous (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState
                     }
                         ! []
+
+        Setup.Msg.KeyPressed pressed key ->
+            case key of
+                Keyboard.Extra.Alt ->
+                    { model | altPressed = pressed } ! []
+
+                _ ->
+                    model ! []
 
 
 focusQuickRotateInput : Cmd Msg
@@ -1171,6 +1183,8 @@ subscriptions model =
         , timeElapsed TimeElapsed
         , breakDone BreakDone
         , updateDownloaded UpdateAvailable
+        , Keyboard.Extra.downs (KeyPressed True)
+        , Keyboard.Extra.ups (KeyPressed False)
         ]
 
 
@@ -1189,6 +1203,7 @@ type alias Model =
     , dragDrop : DragDropModel
     , onMac : Bool
     , quickRotateState : QuickRotate.State
+    , altPressed : Bool
     }
 
 
@@ -1212,6 +1227,7 @@ initialModel settings onMac =
     , dragDrop = DragDrop.init
     , onMac = onMac
     , quickRotateState = QuickRotate.init
+    , altPressed = False
     }
 
 

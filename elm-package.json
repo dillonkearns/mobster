@@ -23,6 +23,7 @@
         "ktonon/elm-test-extra": "1.4.0 <= v < 2.0.0",
         "myrho/elm-round": "1.0.0 <= v < 2.0.0",
         "norpan/elm-html5-drag-drop": "1.0.2 <= v < 2.0.0",
+        "ohanhi/keyboard-extra": "2.1.0 <= v < 3.0.0",
         "rtfeldman/elm-css": "8.0.0 <= v < 9.0.0",
         "rtfeldman/elm-css-helpers": "2.0.1 <= v < 3.0.0",
         "scottcorgan/keyboard-combo": "3.0.0 <= v < 4.0.0",
