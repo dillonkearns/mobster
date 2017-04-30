@@ -556,20 +556,20 @@ quickRotateQueryInputView quickRotateQuery =
                     Decode.fail reason
     in
         input
-            [ Attr.placeholder "Type to filter"
+            [ Attr.placeholder "Type to filter or add"
             , type_ "text"
             , Attr.id quickRotateQueryId
             , Attr.class "form-control"
             , value quickRotateQuery
             , onWithOptions "keydown" options dec
             , onInput <| ChangeInput (StringField QuickRotateQuery)
-            , style [ "font-size" => "2.0rem" ]
+            , style [ "font-size" => "2.0rem", "background-color" => "transparent", "color" => "white" ]
             ]
             []
 
 
-newMobsterRowView : QuickRotate.State -> Bool -> Html Msg
-newMobsterRowView quickRotateState newMobsterDisabled =
+newMobsterRowView : Model -> QuickRotate.State -> Bool -> Html Msg
+newMobsterRowView model quickRotateState newMobsterDisabled =
     let
         rowClass =
             case quickRotateState.selection of
@@ -590,7 +590,12 @@ newMobsterRowView quickRotateState newMobsterDisabled =
     in
         tr [ Attr.class rowClass ]
             [ td mobsterCellStyle
-                [ span [ style [ "color" => "white" ], Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.Add quickRotateState.query)) ] [ text (displayText ++ " "), span [ Attr.class "fa fa-plus-circle" ] [] ] ]
+                [ div [ Attr.class "row" ]
+                    [ div [ Attr.class "col-md-10" ] [ quickRotateQueryInputView model.quickRotateState.query ]
+                    , div [ Attr.class "col-md-2" ] [ span [ Attr.class "fa fa-plus-circle" ] [] ]
+                    ]
+                ]
+              -- [ span [ style [ "color" => "white" ], Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.Add quickRotateState.query)) ] [ text (displayText ++ " "), span [ Attr.class "fa fa-plus-circle" ] [] ] ]
             ]
 
 
@@ -714,9 +719,8 @@ rotationView model =
             preventAddingMobster model.settings.mobsterData.mobsters model.quickRotateState.query
     in
         div [ Attr.class "row" ]
-            [ quickRotateQueryInputView model.quickRotateState.query
-            , div [ Attr.class "col-md-6" ] [ table [] [ tbody [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ] ]
-            , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] [ tbody [] ((List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name)) ++ [ newMobsterRowView model.quickRotateState newMobsterDisabled ]) ] ]
+            [ div [ Attr.class "col-md-6" ] [ table [] [ tbody [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ] ]
+            , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] [ tbody [] ([ newMobsterRowView model model.quickRotateState newMobsterDisabled ] ++ (List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name))) ] ]
             ]
 
 
