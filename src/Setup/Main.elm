@@ -1197,7 +1197,11 @@ initialModel settings onMac =
     { settings = settings
     , screenState = Configure
     , newMobster = ""
-    , combos = Keyboard.Combo.init ComboMsg Shortcuts.keyboardCombos
+    , combos =
+        Keyboard.Combo.init
+            { toMsg = ComboMsg
+            , combos = Shortcuts.keyboardCombos
+            }
     , tip = Tip.emptyTip
     , experiment = Nothing
     , newExperiment = ""
