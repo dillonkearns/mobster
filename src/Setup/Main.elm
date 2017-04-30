@@ -229,7 +229,10 @@ continueView showRotation model =
             if showRotation then
                 rotationView model
             else
-                tipView model.tip
+                div [ onClick ShowRotationScreen ]
+                    [ table [ Attr.class "table" ] [ tbody [] [ newMobsterRowView model model.quickRotateState False ] ]
+                    , tipView model.tip
+                    ]
     in
         if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
             breakView model
@@ -556,7 +559,7 @@ quickRotateQueryInputView quickRotateQuery =
                     Decode.fail reason
     in
         input
-            [ Attr.placeholder "Type to filter or add"
+            [ Attr.placeholder "Filter or add mobsters"
             , type_ "text"
             , Attr.id quickRotateQueryId
             , Attr.class "form-control"
@@ -595,7 +598,6 @@ newMobsterRowView model quickRotateState newMobsterDisabled =
                     , div [ Attr.class "col-md-2" ] [ span [ Attr.class "fa fa-plus-circle" ] [] ]
                     ]
                 ]
-              -- [ span [ style [ "color" => "white" ], Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.Add quickRotateState.query)) ] [ text (displayText ++ " "), span [ Attr.class "fa fa-plus-circle" ] [] ] ]
             ]
 
 
@@ -606,16 +608,19 @@ inactiveMobsterViewWithHints quickRotateQuery quickRotateSelection matches mobst
             quickRotateSelection == QuickRotate.Index mobsterIndex
 
         textClasses =
-            if isSelected then
+            if isSelected || isMatch then
                 "inactive-mobster selected"
             else
                 "inactive-mobster"
+
+        isMatch =
+            List.member mobsterIndex matches
     in
         tr
             [ Attr.class
                 (if isSelected then
                     "info"
-                 else if List.member mobsterIndex matches then
+                 else if isMatch then
                     "active"
                  else
                     ""
@@ -718,9 +723,13 @@ rotationView model =
         newMobsterDisabled =
             preventAddingMobster model.settings.mobsterData.mobsters model.quickRotateState.query
     in
-        div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-6" ] [ table [] [ tbody [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ] ]
-            , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] [ tbody [] ([ newMobsterRowView model model.quickRotateState newMobsterDisabled ] ++ (List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name))) ] ]
+        div []
+            [ div [ Attr.class "row" ]
+                [ div [ Attr.class "col-md-6" ] [ table [] [ tbody [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ] ]
+                , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] [ tbody [] ([ newMobsterRowView model model.quickRotateState newMobsterDisabled ] ++ (List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name))) ] ]
+                ]
+            , button [ style [ "margin-bottom" => "12px" ], Attr.class "btn btn-small btn-default pull-right", onClick ShowRotationScreen ]
+                [ span [ Attr.class "fa fa-window-close", class [ BufferRight ] ] [], text "Back to tip view" ]
             ]
 
 
