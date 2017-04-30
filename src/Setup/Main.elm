@@ -907,6 +907,7 @@ update msg model =
                     (\settings -> { settings | mobsterData = MobsterOperation.updateMoblist operation model.settings.mobsterData })
                 |> saveActiveMobsters
                 |> focusQuickRotateInputIfVisible
+                |> updateQuickRotateStateIfActive
 
         ComboMsg msg ->
             let
@@ -1093,6 +1094,14 @@ focusQuickRotateInputIfVisible : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
     if model.screenState == (Continue True) then
         model ! [ cmd, focusQuickRotateInput ]
+    else
+        updateResult
+
+
+updateQuickRotateStateIfActive : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+updateQuickRotateStateIfActive (( model, cmd ) as updateResult) =
+    if model.screenState == (Continue True) then
+        ( { model | quickRotateState = QuickRotate.update model.quickRotateState.query (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState }, cmd )
     else
         updateResult
 
