@@ -231,7 +231,7 @@ continueView showRotation model =
                 rotationView model
             else
                 div [ onClick ShowRotationScreen ]
-                    [ table [ Attr.class "table" ] [ tbody [] [ newMobsterRowView model model.quickRotateState False ] ]
+                    [ table [ Attr.class "table table-hover" ] [ tbody [] [ newMobsterRowView model model.quickRotateState False ] ]
                     , tipView model.tip
                     ]
     in
