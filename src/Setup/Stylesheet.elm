@@ -71,7 +71,7 @@ css =
                 ]
             ]
         , class HasHoverActions
-            [ borderBottom3 (px 2) dotted (rgba 80 60 100 0.4)
+            [ borderBottom3 (px 2) dotted (rgba 80 60 100 0.6)
             , paddingBottom (px 8)
             , hover [ borderBottom3 (px 2) dotted (rgba 80 60 100 0.0) ]
             ]
