@@ -3,7 +3,7 @@ module Setup.Shortcuts exposing (..)
 import Array
 import Basics.Extra exposing ((=>))
 import Html exposing (..)
-import Html.Attributes exposing (style)
+import Html.Attributes as Attr exposing (style)
 import Keyboard.Combo
 import Setup.Msg exposing (..)
 
@@ -19,7 +19,7 @@ hint index =
         letter =
             Maybe.withDefault "?" (Array.get index letters)
     in
-        span [ style [ "font-size" => "0.7em" ] ] [ text (" (" ++ letter ++ ")") ]
+        span [ Attr.class "text-muted", style [ "font-size" => "0.7em" ] ] [ text " (", u [] [ text letter ], text ")" ]
 
 
 numberHint : Int -> Html msg
