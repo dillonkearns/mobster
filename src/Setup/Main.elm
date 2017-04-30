@@ -816,10 +816,7 @@ update msg model =
                             if showRotation then
                                 []
                             else
-                                [ quickRotateQueryId
-                                    |> Dom.focus
-                                    |> Task.attempt DomResult
-                                ]
+                                [ focusQuickRotateInput ]
                     in
                         { model | screenState = Continue (not showRotation) } ! sideEffects
 
@@ -906,6 +903,7 @@ update msg model =
                 |> updateSettings
                     (\settings -> { settings | mobsterData = MobsterOperation.updateMoblist operation model.settings.mobsterData })
                 |> saveActiveMobsters
+                |> focusQuickRotateInputIfVisible
 
         ComboMsg msg ->
             let
@@ -1079,6 +1077,21 @@ update msg model =
                         | quickRotateState = QuickRotate.previous (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState
                     }
                         ! []
+
+
+focusQuickRotateInput : Cmd Msg
+focusQuickRotateInput =
+    quickRotateQueryId
+        |> Dom.focus
+        |> Task.attempt DomResult
+
+
+focusQuickRotateInputIfVisible : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
+    if model.screenState == (Continue True) then
+        model ! [ cmd, focusQuickRotateInput ]
+    else
+        updateResult
 
 
 preventAddingMobster : List Mobster.Mobster -> String -> Bool
