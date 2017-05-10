@@ -1,4 +1,4 @@
-port module Setup.Main exposing (..)
+module Setup.Main exposing (..)
 
 import Basics.Extra exposing ((=>))
 import Bootstrap
@@ -19,6 +19,7 @@ import Keyboard.Extra
 import Mobster.Data as Mobster
 import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
+import Setup.Ports
 import QuickRotate
 import Random
 import Setup.Forms.ViewHelpers
@@ -791,7 +792,7 @@ updateSettings settingsUpdater ({ settings } as model) =
         updatedSettings =
             settingsUpdater settings
     in
-        { model | settings = updatedSettings } ! [ saveSettings (updatedSettings |> Settings.encoder) ]
+        { model | settings = updatedSettings } ! [ Setup.Ports.saveSettings (updatedSettings |> Settings.encoder) ]
 
 
 
@@ -880,7 +881,7 @@ update msg model =
                     |> Update.Extra.andThen update (SendIpc Ipc.StartTimer (startTimerFlags True model))
 
         SelectInputField fieldId ->
-            model ! [ selectDuration fieldId ]
+            model ! [ Setup.Ports.selectDuration fieldId ]
 
         OpenConfigure ->
             { model | screenState = Configure } ! []
@@ -986,7 +987,7 @@ update msg model =
                                 model ! []
 
         SendIpc ipcMessage payload ->
-            model ! [ sendIpc ( toString ipcMessage, payload ) ]
+            model ! [ Setup.Ports.sendIpc ( toString ipcMessage, payload ) ]
 
         CheckRpgBox msg checkedValue ->
             update msg model
@@ -1180,9 +1181,9 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Keyboard.Combo.subscriptions model.combos
-        , timeElapsed TimeElapsed
-        , breakDone BreakDone
-        , updateDownloaded UpdateAvailable
+        , Setup.Ports.timeElapsed TimeElapsed
+        , Setup.Ports.breakDone BreakDone
+        , Setup.Ports.updateDownloaded UpdateAvailable
         , Keyboard.Extra.downs (KeyPressed True)
         , Keyboard.Extra.ups (KeyPressed False)
         ]
@@ -1239,28 +1240,3 @@ main =
         , update = update
         , view = view
         }
-
-
-
--- electron communication 19
-
-
-port saveSettings : Encode.Value -> Cmd msg
-
-
-port sendIpc : ( String, Encode.Value ) -> Cmd msg
-
-
-port selectDuration : String -> Cmd msg
-
-
-port timeElapsed : (Int -> msg) -> Sub msg
-
-
-port breakDone : (Int -> msg) -> Sub msg
-
-
-port updateDownloaded : (String -> msg) -> Sub msg
-
-
-port onCopyMobstersShortcut : (() -> msg) -> Sub msg
