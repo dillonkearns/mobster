@@ -68,6 +68,18 @@ tips =
             "It's not about Mob Programming"
       , author = "Woody Zuill"
       }
+    , { url = "https://agilein3minut.es/32"
+      , title = "Shared Attention"
+      , body =
+            "With everyone paying attention pretty often, we stay focused, never stay stuck for long, and make better choices."
+      , author = "Amitai Schleier"
+      }
+    , { url = "https://agilein3minut.es/32"
+      , title = "Limit WIP"
+      , body =
+            "Since there's no \"my bugfix\" or \"your feature\", we naturally limit our Work In Progress."
+      , author = "Amitai Schleier"
+      }
     ]
 
 
