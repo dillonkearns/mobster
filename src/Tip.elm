@@ -77,7 +77,7 @@ tips =
     , { url = "https://agilein3minut.es/32"
       , title = "Limit WIP"
       , body =
-            "Since there's no \"my bugfix\" or \"your feature\", we naturally limit our Work In Progress."
+            """Since there's no "my bugfix" or "your feature", we naturally limit our Work In Progress."""
       , author = "Amitai Schleier"
       }
     ]
