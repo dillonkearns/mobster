@@ -911,12 +911,12 @@ update msg model =
                 |> focusQuickRotateInputIfVisible
                 |> updateQuickRotateStateIfActive
 
-        ComboMsg msg ->
+        ComboMsg comboMsg ->
             let
-                updatedCombos =
-                    Keyboard.Combo.update msg model.combos
+                ( combos, cmd ) =
+                    Keyboard.Combo.update comboMsg model.combos
             in
-                { model | combos = updatedCombos } ! []
+                ( { model | combos = combos }, cmd )
 
         NewTip tipIndex ->
             { model | tip = (Tip.get tipIndex) } ! []
