@@ -232,7 +232,11 @@ continueView showRotation model =
     let
         mainView =
             if showRotation then
-                RosterView.rotationView model
+                div []
+                    [ RosterView.rotationView model
+                    , button [ style [ "margin-bottom" => "12px" ], Attr.class "btn btn-small btn-default pull-right", onClick ShowRotationScreen ]
+                        [ span [ class [ BufferRight ] ] [ text "Back to tip view" ], span [ Attr.class "fa fa-arrow-circle-o-left" ] [] ]
+                    ]
             else
                 div [ onClick ShowRotationScreen ]
                     [ table [ Attr.class "table table-hover" ] [ tbody [] [ RosterView.newMobsterRowView model model.quickRotateState False ] ]
@@ -399,8 +403,10 @@ configureView model =
                 , breakDurationInputView model.settings.breakDuration
                 , shortcutInputView model.settings.showHideShortcut model.onMac
                 ]
-            , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
-            , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
+
+            -- , div [ Attr.class "col-md-4 col-sm-6" ] [ mobstersView model.newMobster (Presenter.mobsters model.settings.mobsterData) model.settings.mobsterData model.dragDrop ]
+            -- , div [ Attr.class "col-md-4 col-sm-6" ] [ inactiveMobstersView (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.dragDrop ]
+            , div [ Attr.class "col-md-8 col-sm-12" ] [ RosterView.rotationView model ]
             ]
         , div []
             [ h3 [] [ text "Getting Started" ]

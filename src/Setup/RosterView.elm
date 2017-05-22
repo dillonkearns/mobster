@@ -111,13 +111,9 @@ rotationView model =
         newMobsterDisabled =
             preventAddingMobster model.settings.mobsterData.mobsters model.quickRotateState.query
     in
-    div []
-        [ div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-6" ] [ table [] [ tbody [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ] ]
-            , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] [ tbody [] ([ newMobsterRowView model model.quickRotateState newMobsterDisabled ] ++ List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name)) ] ]
-            ]
-        , button [ style [ "margin-bottom" => "12px" ], Attr.class "btn btn-small btn-default pull-right", onClick ShowRotationScreen ]
-            [ span [ class [ BufferRight ] ] [ text "Back to tip view" ], span [ Attr.class "fa fa-arrow-circle-o-left" ] [] ]
+    div [ Attr.class "row" ]
+        [ div [ Attr.class "col-md-6" ] [ table [] [ tbody [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ] ]
+        , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] [ tbody [] ([ newMobsterRowView model model.quickRotateState newMobsterDisabled ] ++ List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name)) ] ]
         ]
 
 
@@ -153,7 +149,7 @@ newMobsterRowView model quickRotateState newMobsterDisabled =
         [ td mobsterCellStyle
             [ div [ Attr.class "row" ]
                 [ div [ Attr.class "col-md-10" ] [ quickRotateQueryInputView model.quickRotateState.query ]
-                , div [ Attr.class "col-md-2" ] [ span [ Attr.class "fa fa-plus-circle" ] [] ]
+                , div [ Attr.class "col-md-2" ] [ span [ Attr.class "fa fa-refresh text-success" ] [] ]
                 ]
             ]
         ]
