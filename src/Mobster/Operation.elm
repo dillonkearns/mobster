@@ -1,4 +1,4 @@
-module Mobster.Operation exposing (MobsterOperation(..), updateMoblist, add, completeGoalInRpgData)
+module Mobster.Operation exposing (MobsterOperation(..), add, completeGoalInRpgData, updateMoblist)
 
 import Array
 import ListHelpers exposing (..)
@@ -28,7 +28,7 @@ updateMoblist mobsterOperation mobsterData =
                 updatedMobsters =
                     move fromIndex toIndex mobsterData.mobsters
             in
-                { mobsterData | mobsters = updatedMobsters }
+            { mobsterData | mobsters = updatedMobsters }
 
         Remove mobsterIndex ->
             remove mobsterIndex mobsterData
@@ -67,16 +67,16 @@ mobsterWithCompletedGoal mobsterIndex role goalIndex mobsterData =
                 |> Array.fromList
                 |> Array.get mobsterIndex
     in
-        case maybeMobster of
-            Just mobster ->
-                let
-                    updatedRpgData =
-                        completeGoalInRpgData role goalIndex mobster.rpgData
-                in
-                    Just { mobster | rpgData = updatedRpgData }
+    case maybeMobster of
+        Just mobster ->
+            let
+                updatedRpgData =
+                    completeGoalInRpgData role goalIndex mobster.rpgData
+            in
+            Just { mobster | rpgData = updatedRpgData }
 
-            Nothing ->
-                Nothing
+        Nothing ->
+            Nothing
 
 
 completeGoal : Int -> RpgRole -> Int -> Mobster.Data.MobsterData -> MobsterData
@@ -96,12 +96,12 @@ completeGoal mobsterIndex role goalIndex mobsterData =
                 Nothing ->
                     mobsterData.mobsters
     in
-        { mobsterData | mobsters = updatedMobsters }
+    { mobsterData | mobsters = updatedMobsters }
 
 
 add : String -> MobsterData -> MobsterData
 add mobster list =
-    { list | mobsters = (List.append list.mobsters [ { name = mobster, rpgData = Rpg.init } ]) }
+    { list | mobsters = List.append list.mobsters [ { name = mobster, rpgData = Rpg.init } ] }
 
 
 rotateIn : Int -> MobsterData -> MobsterData
@@ -110,19 +110,19 @@ rotateIn index list =
         ( maybeMobsterToMove, inactiveWithoutNewlyActive ) =
             removeAndGet index list.inactiveMobsters
     in
-        case maybeMobsterToMove of
-            Just mobsterToMove ->
-                let
-                    activeWithNewlyActive =
-                        list.mobsters
-                            |> Array.fromList
-                            |> insertAt mobsterToMove list.nextDriver False
-                            |> Array.toList
-                in
-                    { list | mobsters = activeWithNewlyActive, inactiveMobsters = inactiveWithoutNewlyActive }
+    case maybeMobsterToMove of
+        Just mobsterToMove ->
+            let
+                activeWithNewlyActive =
+                    list.mobsters
+                        |> Array.fromList
+                        |> insertAt mobsterToMove list.nextDriver False
+                        |> Array.toList
+            in
+            { list | mobsters = activeWithNewlyActive, inactiveMobsters = inactiveWithoutNewlyActive }
 
-            Nothing ->
-                list
+        Nothing ->
+            list
 
 
 bench : Int -> MobsterData -> MobsterData
@@ -131,20 +131,20 @@ bench index list =
         ( maybeMobsterToBench, activeWithoutBenchedMobster ) =
             removeAndGet index list.mobsters
     in
-        case maybeMobsterToBench of
-            Just mobsterToBench ->
-                let
-                    updatedInactive =
-                        List.append list.inactiveMobsters [ mobsterToBench ]
-                in
-                    { list
-                        | mobsters = activeWithoutBenchedMobster
-                        , inactiveMobsters = updatedInactive
-                    }
-                        |> setNextDriverInBounds
+    case maybeMobsterToBench of
+        Just mobsterToBench ->
+            let
+                updatedInactive =
+                    List.append list.inactiveMobsters [ mobsterToBench ]
+            in
+            { list
+                | mobsters = activeWithoutBenchedMobster
+                , inactiveMobsters = updatedInactive
+            }
+                |> setNextDriverInBounds
 
-            Nothing ->
-                list
+        Nothing ->
+            list
 
 
 remove : Int -> MobsterData -> MobsterData
@@ -166,7 +166,7 @@ setNextDriverInBounds : MobsterData -> MobsterData
 setNextDriverInBounds mobsterData =
     let
         maxDriverIndex =
-            (List.length mobsterData.mobsters) - 1
+            List.length mobsterData.mobsters - 1
 
         indexInBounds =
             if mobsterData.nextDriver > maxDriverIndex && mobsterData.nextDriver > 0 then
@@ -174,7 +174,7 @@ setNextDriverInBounds mobsterData =
             else
                 mobsterData.nextDriver
     in
-        { mobsterData | nextDriver = indexInBounds }
+    { mobsterData | nextDriver = indexInBounds }
 
 
 completeGoalInRpgData : RpgRole -> Int -> RpgData -> RpgData
@@ -223,7 +223,7 @@ completeGoalInRpgData role goalIndex rpgData =
                 Sponsor ->
                     { rpgData | sponsor = updatedExperience }
     in
-        updatedRpgData
+    updatedRpgData
 
 
 completeGoal2 goal =
@@ -261,4 +261,4 @@ updateMobsterGoal goalIndex mobster =
         updatedRpgData =
             { rpgData | driver = updatedExperience }
     in
-        { mobster | rpgData = updatedRpgData }
+    { mobster | rpgData = updatedRpgData }

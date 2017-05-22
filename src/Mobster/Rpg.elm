@@ -1,4 +1,4 @@
-module Mobster.Rpg exposing (Experience, RpgData, Goal, init, badges)
+module Mobster.Rpg exposing (Experience, Goal, RpgData, badges, init)
 
 import ListHelpers exposing (compact)
 import Mobster.RpgRole exposing (..)
@@ -45,7 +45,7 @@ badges rpgData =
                 |> List.map somethingToBadge
                 |> compact
     in
-        completeBadges
+    completeBadges
 
 
 somethingToBadge : ( RpgRole, Experience ) -> Maybe RpgRole
@@ -56,10 +56,10 @@ somethingToBadge ( role, experience ) =
                 |> List.filter .complete
                 |> List.length
     in
-        if goalCount > 2 then
-            Just role
-        else
-            Nothing
+    if goalCount > 2 then
+        Just role
+    else
+        Nothing
 
 
 init : RpgData

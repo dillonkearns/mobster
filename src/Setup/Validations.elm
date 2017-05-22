@@ -1,4 +1,4 @@
-module Setup.Validations exposing (parseInputFieldWithinRange, parseIntWithinRange, inputRangeFor)
+module Setup.Validations exposing (inputRangeFor, parseInputFieldWithinRange, parseIntWithinRange)
 
 import Setup.InputField exposing (IntInputField(..))
 
@@ -14,10 +14,10 @@ parseIntWithinRange ( min, max ) rawInput =
         default =
             min
     in
-        rawInput
-            |> String.toInt
-            |> Result.withDefault default
-            |> clamp min max
+    rawInput
+        |> String.toInt
+        |> Result.withDefault default
+        |> clamp min max
 
 
 inputRangeFor : IntInputField -> ( Int, Int )

@@ -44,6 +44,8 @@ import ViewHelpers
 
 { id, class, classList } =
     Html.CssHelpers.withNamespace "setup"
+
+
 shuffleMobstersCmd : Mobster.MobsterData -> Cmd Msg
 shuffleMobstersCmd mobsterData =
     Random.generate reorderOperation (Mobster.randomizeMobsters mobsterData)
@@ -74,12 +76,12 @@ startTimerFlags isBreak model =
             else
                 model.settings.timerDuration
     in
-        Timer.Flags.encode
-            { minutes = minutes
-            , driver = driver.name
-            , navigator = navigator.name
-            , isBreak = isBreak
-            }
+    Timer.Flags.encode
+        { minutes = minutes
+        , driver = driver.name
+        , navigator = navigator.name
+        , isBreak = isBreak
+        }
 
 
 
@@ -95,7 +97,7 @@ updateAvailableView availableUpdateVersion =
         Just version ->
             div [ Attr.class "alert alert-success" ]
                 [ span [ Attr.class "glyphicon glyphicon-flag", class [ BufferRight ] ] []
-                , text ("A new version is downloaded and ready to install. ")
+                , text "A new version is downloaded and ready to install. "
                 , a [ onClick <| SendIpc Ipc.QuitAndInstall Encode.null, Attr.href "#", Attr.class "alert-link", class [ HandPointer ] ] [ text "Update now" ]
                 , text "."
                 ]
@@ -140,7 +142,7 @@ ctrlKey onMac =
 
 startMobbingShortcut : Bool -> String
 startMobbingShortcut onMac =
-    ((ctrlKey onMac) ++ "+Enter")
+    ctrlKey onMac ++ "+Enter"
 
 
 
@@ -199,7 +201,7 @@ viewIntervalsBeforeBreak model =
                             span [ Attr.class "label label-info" ] [ text " " ]
                     )
     in
-        div [ onClick ResetBreakData ] intervalBadges
+    div [ onClick ResetBreakData ] intervalBadges
 
 
 
@@ -221,7 +223,7 @@ continueButtons model =
             , class [ LargeButtonText, BufferTop, TooltipContainer ]
             , Attr.id continueButtonId
             ]
-            ((continueButtonChildren model) ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
+            (continueButtonChildren model ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
         ]
 
 
@@ -237,16 +239,16 @@ continueView showRotation model =
                     , tipView model.tip
                     ]
     in
-        if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
-            breakView model
-        else
-            div [ Attr.class "container-fluid" ]
-                [ viewIntervalsBeforeBreak model
-                , ratingsView model
-                , nextDriverNavigatorView model
-                , div [ class [ BufferTop ] ] [ mainView ]
-                , continueButtons model
-                ]
+    if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+        breakView model
+    else
+        div [ Attr.class "container-fluid" ]
+            [ viewIntervalsBeforeBreak model
+            , ratingsView model
+            , nextDriverNavigatorView model
+            , div [ class [ BufferTop ] ] [ mainView ]
+            , continueButtons model
+            ]
 
 
 breakButtonsView : Html Msg
@@ -286,7 +288,7 @@ breakAlertView : Int -> Html msg
 breakAlertView secondsSinceBreak =
     div [ Attr.class "alert alert-info alert-dismissible", style [ "font-size" => "1.2em" ] ]
         [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
-        , text ("How about a walk? You've been mobbing for " ++ (toString (secondsSinceBreak // 60)) ++ " minutes.")
+        , text ("How about a walk? You've been mobbing for " ++ toString (secondsSinceBreak // 60) ++ " minutes.")
         ]
 
 
@@ -322,12 +324,12 @@ nextDriverNavigatorView model =
                     ]
                 ]
     in
-        div [ Attr.class "row h1 text-center", class [ ShowOnParentHoverParent, HasHoverActions ] ]
-            [ rewindButton
-            , dnView driverNavigator.driver Presenter.Driver
-            , dnView driverNavigator.navigator Presenter.Navigator
-            , fastForwardButton
-            ]
+    div [ Attr.class "row h1 text-center", class [ ShowOnParentHoverParent, HasHoverActions ] ]
+        [ rewindButton
+        , dnView driverNavigator.driver Presenter.Driver
+        , dnView driverNavigator.navigator Presenter.Navigator
+        , fastForwardButton
+        ]
 
 
 dnView : Presenter.Mobster -> Presenter.Role -> Html Msg
@@ -358,11 +360,11 @@ dnView mobster role =
                 , text " Skip"
                 ]
     in
-        div [ Attr.class "col-md-5 col-sm-5 text-default" ]
-            [ iconView icon 60
-            , span [ class [ BufferRight ] ] [ text mobster.name ]
-            , span [] [ awayButton ]
-            ]
+    div [ Attr.class "col-md-5 col-sm-5 text-default" ]
+        [ iconView icon 60
+        , span [ class [ BufferRight ] ] [ text mobster.name ]
+        , span [] [ awayButton ]
+        ]
 
 
 
@@ -445,21 +447,21 @@ breakIntervalInputView intervalsPerBreak timerDuration =
     let
         theString =
             if intervalsPerBreak > 0 then
-                "Break every " ++ (toString (intervalsPerBreak * timerDuration)) ++ "′"
+                "Break every " ++ toString (intervalsPerBreak * timerDuration) ++ "′"
             else
                 "Breaks off"
     in
-        div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
-            [ Setup.Forms.ViewHelpers.intInputView BreakInterval intervalsPerBreak
-            , text theString
-            ]
+    div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
+        [ Setup.Forms.ViewHelpers.intInputView BreakInterval intervalsPerBreak
+        , text theString
+        ]
 
 
 shortcutInputView : String -> Bool -> Html Msg
 shortcutInputView currentShortcut onMac =
     div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
         [ text "Show/Hide: "
-        , text ((ctrlKey onMac) ++ "+shift+")
+        , text (ctrlKey onMac ++ "+shift+")
         , input
             [ id "shortcut"
             , onInput (ChangeInput (StringField ShowHideShortcut))
@@ -478,12 +480,12 @@ addMobsterInputView newMobster mobsterData =
         hasError =
             Mobster.containsName newMobster mobsterData
     in
-        div [ Attr.class "row" ]
-            [ div [ Attr.class "input-group" ]
-                [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", classList [ HasError => hasError ], Attr.class "form-control", value newMobster, onInput <| ChangeInput (StringField NewMobster), onEnter AddMobster, style [ "font-size" => "2.0rem" ] ] []
-                , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
-                ]
+    div [ Attr.class "row" ]
+        [ div [ Attr.class "input-group" ]
+            [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", classList [ HasError => hasError ], Attr.class "form-control", value newMobster, onInput <| ChangeInput (StringField NewMobster), onEnter AddMobster, style [ "font-size" => "2.0rem" ] ] []
+            , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
             ]
+        ]
 
 
 
@@ -513,15 +515,15 @@ inactiveMobstersView inactiveMobsters dragDrop =
                 ( _, _ ) ->
                     class []
     in
-        case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
-            ( Just (ActiveMobster _), _ ) ->
-                div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle, style [ "height" => "150px" ] ]) [ text "Move to bench" ]
+    case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
+        ( Just (ActiveMobster _), _ ) ->
+            div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle, style [ "height" => "150px" ] ]) [ text "Move to bench" ]
 
-            ( _, _ ) ->
-                div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle ])
-                    [ h2 [ Attr.class "text-center text-primary", style [ "margin-top" => "0px" ] ] [ text "Bench" ]
-                    , table [ Attr.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
-                    ]
+        ( _, _ ) ->
+            div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle ])
+                [ h2 [ Attr.class "text-center text-primary", style [ "margin-top" => "0px" ] ] [ text "Bench" ]
+                , table [ Attr.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
+                ]
 
 
 quickRotateQueryInputView : String -> Html Msg
@@ -531,7 +533,7 @@ quickRotateQueryInputView quickRotateQuery =
             { preventDefault = True, stopPropagation = False }
 
         dec =
-            (Decode.map
+            Decode.map
                 (\code ->
                     if code == 38 then
                         Ok (QuickRotateMove Previous)
@@ -543,7 +545,6 @@ quickRotateQueryInputView quickRotateQuery =
                         Err "not handling that key"
                 )
                 keyCode
-            )
                 |> Decode.andThen
                     fromResult
 
@@ -556,23 +557,23 @@ quickRotateQueryInputView quickRotateQuery =
                 Err reason ->
                     Decode.fail reason
     in
-        input
-            [ Attr.placeholder "Filter or add mobsters"
-            , type_ "text"
-            , Attr.id quickRotateQueryId
-            , Attr.class "form-control"
-            , value quickRotateQuery
-            , onWithOptions "keydown" options dec
-            , onInput <| ChangeInput (StringField QuickRotateQuery)
-            , style [ "font-size" => "2.0rem", "background-color" => "transparent", "color" => "white" ]
-            ]
-            []
+    input
+        [ Attr.placeholder "Filter or add mobsters"
+        , type_ "text"
+        , Attr.id quickRotateQueryId
+        , Attr.class "form-control"
+        , value quickRotateQuery
+        , onWithOptions "keydown" options dec
+        , onInput <| ChangeInput (StringField QuickRotateQuery)
+        , style [ "font-size" => "2.0rem", "background-color" => "transparent", "color" => "white" ]
+        ]
+        []
 
 
 inactiveMobsterView : Int -> String -> Html Msg
 inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
-        [ td (RosterView.mobsterCellStyle ++ (DragDrop.draggable DragDropMsg (InactiveMobster mobsterIndex)))
+        [ td (RosterView.mobsterCellStyle ++ DragDrop.draggable DragDropMsg (InactiveMobster mobsterIndex))
             [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , div [ Attr.class "btn-group btn-group-xs", style [ "margin-left" => "0.667em" ] ]
                 [ button [ noTab, Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (MobsterOperation.Remove mobsterIndex)) ] [ text "x" ]
@@ -588,7 +589,7 @@ mobsterView dragDrop showHint mobster =
             case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
                 ( Just (InactiveMobster _), Just (DropActiveMobster _) ) ->
                     case mobster.role of
-                        Just (Presenter.Driver) ->
+                        Just Presenter.Driver ->
                             True
 
                         _ ->
@@ -617,18 +618,18 @@ mobsterView dragDrop showHint mobster =
             else
                 "0"
     in
-        tr
-            (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
-            [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
-            , td RosterView.mobsterCellStyle
-                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
-                    [ text mobster.name
-                    , hint
-                    , ViewHelpers.roleIconView mobster.role
-                    ]
+    tr
+        (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
+        [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
+        , td RosterView.mobsterCellStyle
+            [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
+                [ text mobster.name
+                , hint
+                , ViewHelpers.roleIconView mobster.role
                 ]
-            , td [] [ reorderButtonView mobster ]
             ]
+        , td [] [ reorderButtonView mobster ]
+        ]
 
 
 reorderButtonView : Presenter.MobsterWithRole -> Html Msg
@@ -637,11 +638,11 @@ reorderButtonView mobster =
         mobsterIndex =
             mobster.index
     in
-        div []
-            [ div [ Attr.class "btn-group btn-group-xs" ]
-                [ button [ noTab, Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (MobsterOperation.Bench mobsterIndex)) ] [ text "x" ]
-                ]
+    div []
+        [ div [ Attr.class "btn-group btn-group-xs" ]
+            [ button [ noTab, Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (MobsterOperation.Bench mobsterIndex)) ] [ text "x" ]
             ]
+        ]
 
 
 
@@ -662,7 +663,7 @@ view model =
                 Rpg rpgState ->
                     Setup.Rpg.View.rpgView rpgState model.settings.mobsterData
     in
-        div [] [ Navbar.view model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
+    div [] [ Navbar.view model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
 
 
 
@@ -680,10 +681,10 @@ resetIfAfterBreak model =
         timeForBreak =
             Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak
     in
-        if timeForBreak then
-            model |> resetBreakData
-        else
-            model
+    if timeForBreak then
+        model |> resetBreakData
+    else
+        model
 
 
 saveActiveMobsters : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
@@ -698,7 +699,7 @@ updateSettings settingsUpdater ({ settings } as model) =
         updatedSettings =
             settingsUpdater settings
     in
-        { model | settings = updatedSettings } ! [ Setup.Ports.saveSettings (updatedSettings |> Settings.encoder) ]
+    { model | settings = updatedSettings } ! [ Setup.Ports.saveSettings (updatedSettings |> Settings.encoder) ]
 
 
 
@@ -729,7 +730,7 @@ update msg model =
                             else
                                 [ focusQuickRotateInput ]
                     in
-                        { model | screenState = Continue (not showRotation) } ! sideEffects
+                    { model | screenState = Continue (not showRotation) } ! sideEffects
 
                 _ ->
                     model ! []
@@ -753,12 +754,12 @@ update msg model =
                         ! [ changeTip, blurContinueButton ]
                         |> Update.Extra.andThen update (SendIpc Ipc.StartTimer (startTimerFlags False model))
             in
-                case model.screenState of
-                    Rpg rpgState ->
-                        startTimerUpdate
+            case model.screenState of
+                Rpg rpgState ->
+                    startTimerUpdate
 
-                    _ ->
-                        startTimerUpdate |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.NextTurn)
+                _ ->
+                    startTimerUpdate |> Update.Extra.andThen update (UpdateMobsterData MobsterOperation.NextTurn)
 
         SkipBreak ->
             let
@@ -766,7 +767,7 @@ update msg model =
                     { model | screenState = Continue False }
                         |> resetBreakData
             in
-                updatedModel ! []
+            updatedModel ! []
 
         StartBreak ->
             let
@@ -782,9 +783,9 @@ update msg model =
                     { model | screenState = nextScreenState }
                         |> resetIfAfterBreak
             in
-                updatedModel
-                    ! [ changeTip ]
-                    |> Update.Extra.andThen update (SendIpc Ipc.StartTimer (startTimerFlags True model))
+            updatedModel
+                ! [ changeTip ]
+                |> Update.Extra.andThen update (SendIpc Ipc.StartTimer (startTimerFlags True model))
 
         SelectInputField fieldId ->
             model ! [ Setup.Ports.selectDuration fieldId ]
@@ -822,10 +823,10 @@ update msg model =
                 ( combos, cmd ) =
                     Keyboard.Combo.update comboMsg model.combos
             in
-                ( { model | combos = combos }, cmd )
+            ( { model | combos = combos }, cmd )
 
         NewTip tipIndex ->
-            { model | tip = (Tip.get tipIndex) } ! []
+            { model | tip = Tip.get tipIndex } ! []
 
         SetExperiment ->
             if model.newExperiment == "" then
@@ -855,13 +856,13 @@ update msg model =
             { model | availableUpdateVersion = Just availableUpdateVersion } ! []
 
         RotateOutHotkey index ->
-            if model.screenState == (Continue True) then
+            if model.screenState == Continue True then
                 update (UpdateMobsterData (MobsterOperation.Bench index)) model
             else
                 model ! []
 
         RotateInHotkey index ->
-            if model.screenState == (Continue True) then
+            if model.screenState == Continue True then
                 update (UpdateMobsterData (MobsterOperation.RotateIn index)) model
             else
                 model ! []
@@ -874,23 +875,23 @@ update msg model =
                 updatedModel =
                     { model | dragDrop = updatedDragDrop }
             in
-                case dragDropResult of
-                    Nothing ->
-                        updatedModel ! []
+            case dragDropResult of
+                Nothing ->
+                    updatedModel ! []
 
-                    Just ( dragId, dropId ) ->
-                        case ( dragId, dropId ) of
-                            ( ActiveMobster id, DropActiveMobster actualDropid ) ->
-                                update (UpdateMobsterData (MobsterOperation.Move id actualDropid)) updatedModel
+                Just ( dragId, dropId ) ->
+                    case ( dragId, dropId ) of
+                        ( ActiveMobster id, DropActiveMobster actualDropid ) ->
+                            update (UpdateMobsterData (MobsterOperation.Move id actualDropid)) updatedModel
 
-                            ( ActiveMobster id, DropBench ) ->
-                                update (UpdateMobsterData (MobsterOperation.Bench id)) updatedModel
+                        ( ActiveMobster id, DropBench ) ->
+                            update (UpdateMobsterData (MobsterOperation.Bench id)) updatedModel
 
-                            ( InactiveMobster inactiveMobsterId, DropActiveMobster activeMobsterId ) ->
-                                update (UpdateMobsterData (MobsterOperation.RotateIn inactiveMobsterId)) updatedModel
+                        ( InactiveMobster inactiveMobsterId, DropActiveMobster activeMobsterId ) ->
+                            update (UpdateMobsterData (MobsterOperation.RotateIn inactiveMobsterId)) updatedModel
 
-                            _ ->
-                                model ! []
+                        _ ->
+                            model ! []
 
         SendIpc ipcMessage payload ->
             model ! [ Setup.Ports.sendIpc ( toString ipcMessage, payload ) ]
@@ -916,11 +917,11 @@ update msg model =
                                     else
                                         "CommandOrControl+Shift+" ++ newInputValue
                             in
-                                model
-                                    |> updateSettings
-                                        (\settings -> { settings | showHideShortcut = newInputValue })
-                                    |> Update.Extra.andThen update
-                                        (SendIpc Ipc.ChangeShortcut (Encode.string shortcutString))
+                            model
+                                |> updateSettings
+                                    (\settings -> { settings | showHideShortcut = newInputValue })
+                                |> Update.Extra.andThen update
+                                    (SendIpc Ipc.ChangeShortcut (Encode.string shortcutString))
 
                         Experiment ->
                             { model | newExperiment = newInputValue } ! []
@@ -939,21 +940,21 @@ update msg model =
                         newValueInRange =
                             Validations.parseInputFieldWithinRange intField newInputValue
                     in
-                        case intField of
-                            BreakInterval ->
-                                model
-                                    |> updateSettings
-                                        (\settings -> { settings | intervalsPerBreak = newValueInRange })
+                    case intField of
+                        BreakInterval ->
+                            model
+                                |> updateSettings
+                                    (\settings -> { settings | intervalsPerBreak = newValueInRange })
 
-                            TimerDuration ->
-                                model
-                                    |> updateSettings
-                                        (\settings -> { settings | timerDuration = newValueInRange })
+                        TimerDuration ->
+                            model
+                                |> updateSettings
+                                    (\settings -> { settings | timerDuration = newValueInRange })
 
-                            BreakDuration ->
-                                model
-                                    |> updateSettings
-                                        (\settings -> { settings | breakDuration = newValueInRange })
+                        BreakDuration ->
+                            model
+                                |> updateSettings
+                                    (\settings -> { settings | breakDuration = newValueInRange })
 
         NoOp ->
             model
@@ -1011,7 +1012,7 @@ focusQuickRotateInput =
 
 focusQuickRotateInputIfVisible : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
-    if model.screenState == (Continue True) then
+    if model.screenState == Continue True then
         model ! [ cmd, focusQuickRotateInput ]
     else
         updateResult
@@ -1019,7 +1020,7 @@ focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
 
 updateQuickRotateStateIfActive : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 updateQuickRotateStateIfActive (( model, cmd ) as updateResult) =
-    if model.screenState == (Continue True) then
+    if model.screenState == Continue True then
         ( { model | quickRotateState = QuickRotate.update model.quickRotateState.query (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState }, cmd )
     else
         updateResult
@@ -1032,7 +1033,7 @@ quickRotateQueryId =
 
 reorderOperation : List Mobster.Mobster -> Msg
 reorderOperation shuffledMobsters =
-    (UpdateMobsterData (MobsterOperation.Reorder shuffledMobsters))
+    UpdateMobsterData (MobsterOperation.Reorder shuffledMobsters)
 
 
 focusAddMobsterInput : Cmd Msg
@@ -1069,13 +1070,13 @@ init { onMac, settings } =
                         _ =
                             Debug.log "init failed to decode settings" errorString
                     in
-                        Settings.initial
+                    Settings.initial
     in
-        initialModel initialSettings onMac
-            ! []
-            |> saveActiveMobsters
-            |> Update.Extra.andThen update
-                (ChangeInput (StringField ShowHideShortcut) initialSettings.showHideShortcut)
+    initialModel initialSettings onMac
+        ! []
+        |> saveActiveMobsters
+        |> Update.Extra.andThen update
+            (ChangeInput (StringField ShowHideShortcut) initialSettings.showHideShortcut)
 
 
 subscriptions : Model -> Sub Msg

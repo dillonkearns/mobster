@@ -1,11 +1,11 @@
-module Bootstrap exposing (smallButton, navbarButton, Color(..))
+module Bootstrap exposing (Color(..), navbarButton, smallButton)
 
+import FA exposing (Icon)
 import Html exposing (..)
 import Html.Attributes as Attr
-import Html.Events exposing (..)
 import Html.CssHelpers
+import Html.Events exposing (..)
 import Setup.Stylesheet exposing (CssClasses(..))
-import FA exposing (Icon)
 
 
 type RpgState
@@ -22,6 +22,8 @@ type Color
 
 { id, class, classList } =
     Html.CssHelpers.withNamespace "setup"
+
+
 noTab : Attribute msg
 noTab =
     Attr.tabindex -1
@@ -36,10 +38,10 @@ navbarButton textContent clickMsg color faIcon =
             else
                 "fa fa-" ++ faIcon
     in
-        button [ noTab, onClick clickMsg, Attr.class ("btn " ++ btnColorClass color ++ " btn-sm navbar-btn"), class [ BufferRight ] ]
-            [ text textContent
-            , span [ Attr.class faIconClass ] []
-            ]
+    button [ noTab, onClick clickMsg, Attr.class ("btn " ++ btnColorClass color ++ " btn-sm navbar-btn"), class [ BufferRight ] ]
+        [ text textContent
+        , span [ Attr.class faIconClass ] []
+        ]
 
 
 smallButton : String -> msg -> Color -> FA.Icon -> Html msg

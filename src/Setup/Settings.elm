@@ -1,10 +1,10 @@
 module Setup.Settings exposing (..)
 
-import Json.Decode as Decode
-import Json.Encode as Encode
-import Json.Decode.Pipeline exposing (..)
-import Mobster.Data exposing (MobsterData)
 import Basics.Extra exposing ((=>))
+import Json.Decode as Decode
+import Json.Decode.Pipeline exposing (..)
+import Json.Encode as Encode
+import Mobster.Data exposing (MobsterData)
 
 
 type alias Data =
@@ -19,11 +19,11 @@ type alias Data =
 decoder : Decode.Decoder Data
 decoder =
     Json.Decode.Pipeline.decode Data
-        |> required "timerDuration" (Decode.int)
-        |> optional "breakDuration" (Decode.int) 5
-        |> required "intervalsPerBreak" (Decode.int)
-        |> required "mobsterData" (Mobster.Data.decoder)
-        |> optional "showHideShortcut" (Decode.string) "K"
+        |> required "timerDuration" Decode.int
+        |> optional "breakDuration" Decode.int 5
+        |> required "intervalsPerBreak" Decode.int
+        |> required "mobsterData" Mobster.Data.decoder
+        |> optional "showHideShortcut" Decode.string "K"
 
 
 decode : Encode.Value -> Result String Data

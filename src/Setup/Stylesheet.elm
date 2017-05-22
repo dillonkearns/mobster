@@ -1,7 +1,7 @@
 module Setup.Stylesheet exposing (..)
 
 import Css exposing (..)
-import Css.Elements exposing (body, button, html, span, a)
+import Css.Elements exposing (a, body, button, html, span)
 import Css.Namespace exposing (namespace)
 
 
@@ -46,7 +46,7 @@ css =
         , a [ cursor default ]
         , class HandPointer [ cursor pointer |> important ]
         , selector ".btn" [ cursor default |> important ]
-        , class DragBelow [ borderBottom3 (px 2) (solid) (rgba 14 255 125 1) ]
+        , class DragBelow [ borderBottom3 (px 2) solid (rgba 14 255 125 1) ]
         , class BufferTop
             [ Css.marginTop (px 20) ]
         , class BufferRight
@@ -75,7 +75,7 @@ css =
             , paddingBottom (px 8)
             , hover [ borderBottom3 (px 2) dotted (rgba 80 60 100 0.0) ]
             ]
-        , class HasError [ border3 (px 3) (solid) (rgba 231 76 60 0.7) |> important ]
+        , class HasError [ border3 (px 3) solid (rgba 231 76 60 0.7) |> important ]
         , class RpgIcon1 (rpgIconCss (rgb 8 133 236))
         , class RpgIcon2 (rpgIconCss (rgb 144 7 179))
         , class ButtonMuted [ backgroundColor (rgb 192 192 192), hover [ backgroundColor (rgb 112 112 112) ] ]
@@ -102,13 +102,13 @@ tooltipStyle : Snippet
 tooltipStyle =
     class TooltipContainer
         -- /* Tooltip CSS  - help from https://jsfiddle.net/greypants/zgCb7/ */
-        [ Css.transform (translateZ (zero))
+        [ Css.transform (translateZ zero)
         , children
             [ class Tooltip
                 [ left (Css.pct 50) |> important
-                , right (auto) |> important
-                , textAlign (center) |> important
-                , transform (translate2 (pct -50) (zero)) |> important
+                , right auto |> important
+                , textAlign center |> important
+                , transform (translate2 (pct -50) zero) |> important
                 , fontSize (Css.rem 2.5)
                 , Css.backgroundColor (rgba 14 255 125 1)
                 , bottom (pct 100)

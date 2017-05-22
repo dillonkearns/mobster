@@ -10,10 +10,10 @@ roleIconView role =
     let
         roleIconClass =
             case role of
-                Just (Mobster.Presenter.Driver) ->
+                Just Mobster.Presenter.Driver ->
                     "driver-icon"
 
-                Just (Mobster.Presenter.Navigator) ->
+                Just Mobster.Presenter.Navigator ->
                     "navigator-icon"
 
                 Nothing ->
@@ -22,4 +22,4 @@ roleIconView role =
         iconClassString =
             "role-icon " ++ roleIconClass
     in
-        span [ Attr.class iconClassString ] []
+    span [ Attr.class iconClassString ] []

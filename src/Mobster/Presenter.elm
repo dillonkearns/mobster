@@ -1,7 +1,7 @@
 module Mobster.Presenter exposing (..)
 
-import Mobster.Data exposing (nextIndex, MobsterData)
 import Array
+import Mobster.Data exposing (MobsterData, nextIndex)
 
 
 type alias DriverNavigator =
@@ -61,9 +61,9 @@ nextDriverNavigator mobsterData =
                 Nothing ->
                     driver
     in
-        { driver = driver
-        , navigator = navigator
-        }
+    { driver = driver
+    , navigator = navigator
+    }
 
 
 mobsterListItemToMobster : DriverNavigator -> Int -> Mobster.Data.Mobster -> MobsterWithRole
@@ -77,7 +77,7 @@ mobsterListItemToMobster driverNavigator index mobster =
             else
                 Nothing
     in
-        { name = mobster.name, role = role, index = index }
+    { name = mobster.name, role = role, index = index }
 
 
 asMobsterList : MobsterData -> List Mobster

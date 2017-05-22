@@ -19,16 +19,16 @@ present mobsterData =
         mobstersWithIndex =
             List.indexedMap (,) mobsterData.mobsters
     in
-        if List.length mobsterData.mobsters >= 4 then
-            mobstersWithIndex
-                ++ mobstersWithIndex
-                |> List.drop mobsterData.nextDriver
-                |> List.take 4
-                |> List.indexedMap toRpgMobster
-        else
-            mobstersWithIndex
-                |> List.take 4
-                |> List.indexedMap toRpgMobster
+    if List.length mobsterData.mobsters >= 4 then
+        mobstersWithIndex
+            ++ mobstersWithIndex
+            |> List.drop mobsterData.nextDriver
+            |> List.take 4
+            |> List.indexedMap toRpgMobster
+    else
+        mobstersWithIndex
+            |> List.take 4
+            |> List.indexedMap toRpgMobster
 
 
 experienceForRole : RpgRole -> Mobster.Rpg.RpgData -> Mobster.Rpg.Experience
@@ -61,7 +61,7 @@ toRpgMobster roleIndex ( mobsterIndex, mobster ) =
             else
                 Level2
     in
-        RpgMobster (getRoleForIndex level roleIndex) (experienceForRole (getRoleForIndex level roleIndex) mobster.rpgData) mobster.name mobsterIndex
+    RpgMobster (getRoleForIndex level roleIndex) (experienceForRole (getRoleForIndex level roleIndex) mobster.rpgData) mobster.name mobsterIndex
 
 
 getRoleForIndex : Level -> Int -> RpgRole

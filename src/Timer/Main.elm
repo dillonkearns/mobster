@@ -2,11 +2,11 @@ port module Timer.Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, src, style)
+import Json.Decode as Decode
+import Json.Encode as Encode
 import Time exposing (..)
 import Timer.Flags exposing (IncomingFlags)
 import Timer.Timer exposing (..)
-import Json.Encode as Encode
-import Json.Decode as Decode
 
 
 type alias Model =
@@ -87,11 +87,12 @@ update msg model =
                 updatedSecondsLeft =
                     updateTimer model.secondsLeft
             in
-                { model | secondsLeft = updatedSecondsLeft }
-                    ! if timerComplete updatedSecondsLeft then
-                        [ timerDoneCommand model.isBreak model.originalDurationSeconds ]
-                      else
-                        []
+            { model | secondsLeft = updatedSecondsLeft }
+                ! (if timerComplete updatedSecondsLeft then
+                    [ timerDoneCommand model.isBreak model.originalDurationSeconds ]
+                   else
+                    []
+                  )
 
 
 timerDoneCommand : Bool -> Int -> Cmd msg
@@ -114,7 +115,7 @@ init flagsJson =
                     else
                         flags.minutes * 60
             in
-                ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator, originalDurationSeconds = secondsLeft, isBreak = flags.isBreak }, Cmd.none )
+            ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator, originalDurationSeconds = secondsLeft, isBreak = flags.isBreak }, Cmd.none )
 
         Err _ ->
             Debug.crash "Failed to decode flags"

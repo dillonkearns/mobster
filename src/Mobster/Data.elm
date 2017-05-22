@@ -1,12 +1,12 @@
-module Mobster.Data exposing (MobsterData, Mobster, empty, decode, randomizeMobsters, decoder, currentMobsterNames, containsName, nextIndex, previousIndex, encoder)
+module Mobster.Data exposing (Mobster, MobsterData, containsName, currentMobsterNames, decode, decoder, empty, encoder, nextIndex, previousIndex, randomizeMobsters)
 
-import Json.Decode as Decode exposing (Decoder)
-import Json.Encode as Encode
-import Json.Decode.Pipeline as Pipeline exposing (required, optional, hardcoded)
-import Random.List
-import Random
-import Mobster.Rpg as Rpg exposing (RpgData)
 import Basics.Extra exposing ((=>))
+import Json.Decode as Decode exposing (Decoder)
+import Json.Decode.Pipeline as Pipeline exposing (hardcoded, optional, required)
+import Json.Encode as Encode
+import Mobster.Rpg as Rpg exposing (RpgData)
+import Random
+import Random.List
 
 
 type alias Mobster =
@@ -46,7 +46,7 @@ decoder =
     Pipeline.decode MobsterData
         |> required "mobsters" (Decode.list Decode.string |> Decode.map mobsterNamesToMobsters)
         |> optional "inactiveMobsters" (Decode.list Decode.string |> Decode.map mobsterNamesToMobsters) []
-        |> required "nextDriver" (Decode.int)
+        |> required "nextDriver" Decode.int
 
 
 mobsterNamesToMobsters : List String -> List Mobster
@@ -101,7 +101,7 @@ previousIndex currentIndex mobsterData =
             else
                 (currentIndex - 1) % mobSize
     in
-        index
+    index
 
 
 nextIndex : Int -> MobsterData -> Int
@@ -116,4 +116,4 @@ nextIndex currentIndex mobsterData =
             else
                 (currentIndex + 1) % mobSize
     in
-        index
+    index

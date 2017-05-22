@@ -12,4 +12,4 @@ secondsToTimer seconds =
 
 timerToString : Timer -> String
 timerToString { minutes, seconds } =
-    (toString minutes) ++ ":" ++ (String.pad 2 '0' (toString seconds))
+    toString minutes ++ ":" ++ String.pad 2 '0' (toString seconds)

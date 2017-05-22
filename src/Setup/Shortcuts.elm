@@ -19,7 +19,7 @@ hint index =
         letter =
             Maybe.withDefault "?" (Array.get index letters)
     in
-        span [ Attr.class "text-muted", style [ "font-size" => "0.7em" ] ] [ text " (", u [] [ text letter ], text ")" ]
+    span [ Attr.class "text-muted", style [ "font-size" => "0.7em" ] ] [ text " (", u [] [ text letter ], text ")" ]
 
 
 numberHint : Int -> Html msg
@@ -33,12 +33,12 @@ numberHint index =
             else
                 Nothing
     in
-        case maybeHint of
-            Just hintText ->
-                span [ style [ "font-size" => "0.7em", "color" => "grey" ] ] [ text (" (" ++ toString hintText ++ ")") ]
+    case maybeHint of
+        Just hintText ->
+            span [ style [ "font-size" => "0.7em", "color" => "grey" ] ] [ text (" (" ++ toString hintText ++ ")") ]
 
-            Nothing ->
-                span [] []
+        Nothing ->
+            span [] []
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)

@@ -1,16 +1,18 @@
-module Setup.RpgIcons exposing (mobsterIcon, mobsterCar)
+module Setup.RpgIcons exposing (mobsterCar, mobsterIcon)
 
-import Html.CssHelpers
-import Setup.Stylesheet exposing (CssClasses(..))
 import Html
 import Html.Attributes exposing (attribute)
+import Html.CssHelpers
 import Mobster.RpgRole exposing (..)
+import Setup.Stylesheet exposing (CssClasses(..))
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
 
 { id, class, classList } =
     Html.CssHelpers.withNamespace "setup"
+
+
 mobsterIcon : RpgRole -> Html.Html msg
 mobsterIcon role =
     let
@@ -31,7 +33,7 @@ mobsterIcon role =
                 Mobster.RpgRole.Mobber ->
                     ( RpgIcon1, mobberIcon )
     in
-        Html.span [ class [ cssClass ] ] [ icon ]
+    Html.span [ class [ cssClass ] ] [ icon ]
 
 
 researcherIcon : Svg msg
@@ -139,10 +141,10 @@ rpgIcon widthArg paths =
         widthString =
             toString widthArg
     in
-        svg [ width (widthString ++ "pt"), height (widthString ++ "pt"), viewBox ("0 0 " ++ widthString ++ " " ++ widthString), preserveAspectRatio "xMidYMid meet", attribute "version" "1.0", attribute "xmlns" "http://www.w3.org/2000/svg" ]
-            [ g [ transform ("translate(0.000000," ++ widthString ++ ".000000) scale(0.100000,-0.100000)"), fill "#000000", stroke "none" ]
-                (List.map pathToSvgPath paths)
-            ]
+    svg [ width (widthString ++ "pt"), height (widthString ++ "pt"), viewBox ("0 0 " ++ widthString ++ " " ++ widthString), preserveAspectRatio "xMidYMid meet", attribute "version" "1.0", attribute "xmlns" "http://www.w3.org/2000/svg" ]
+        [ g [ transform ("translate(0.000000," ++ widthString ++ ".000000) scale(0.100000,-0.100000)"), fill "#000000", stroke "none" ]
+            (List.map pathToSvgPath paths)
+        ]
 
 
 pathToSvgPath : String -> Svg msg

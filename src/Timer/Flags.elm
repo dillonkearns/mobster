@@ -1,9 +1,9 @@
 module Timer.Flags exposing (..)
 
-import Json.Encode as Encode
 import Basics.Extra exposing ((=>))
 import Json.Decode
-import Json.Decode.Pipeline as Pipeline exposing (required, optional, hardcoded)
+import Json.Decode.Pipeline as Pipeline exposing (hardcoded, optional, required)
+import Json.Encode as Encode
 
 
 type alias IncomingFlags =
@@ -35,8 +35,8 @@ encode flags =
 decoder : Json.Decode.Decoder IncomingFlags
 decoder =
     Pipeline.decode IncomingFlags
-        |> required "minutes" (Json.Decode.int)
-        |> required "driver" (Json.Decode.string)
-        |> required "navigator" (Json.Decode.string)
-        |> required "isBreak" (Json.Decode.bool)
-        |> optional "isDev" (Json.Decode.bool) False
+        |> required "minutes" Json.Decode.int
+        |> required "driver" Json.Decode.string
+        |> required "navigator" Json.Decode.string
+        |> required "isBreak" Json.Decode.bool
+        |> optional "isDev" Json.Decode.bool False

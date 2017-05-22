@@ -12,13 +12,13 @@ move fromIndex toIndex mobsters =
                 |> Array.fromList
                 |> Array.get fromIndex
     in
-        mobsters
-            |> mapToJust
-            |> Array.fromList
-            |> Array.set fromIndex Nothing
-            |> insertAt mobsterToMove toIndex (fromIndex > toIndex)
-            |> Array.toList
-            |> compact
+    mobsters
+        |> mapToJust
+        |> Array.fromList
+        |> Array.set fromIndex Nothing
+        |> insertAt mobsterToMove toIndex (fromIndex > toIndex)
+        |> Array.toList
+        |> compact
 
 
 removeAndGet : Int -> List a -> ( Maybe a, List a )
@@ -37,7 +37,7 @@ removeAndGet index list =
                 |> Array.Extra.removeAt index
                 |> Array.toList
     in
-        ( removedMobster, listWithoutMobster )
+    ( removedMobster, listWithoutMobster )
 
 
 removeFromListAt : Int -> List a -> List a
@@ -60,7 +60,7 @@ replaceSlice substitution start end asArray =
         part3 =
             Array.slice end (Array.length asArray) asArray
     in
-        (Array.append (Array.append part1 part2) part3)
+    Array.append (Array.append part1 part2) part3
 
 
 insertBelow : a -> Int -> Array.Array a -> Array.Array a

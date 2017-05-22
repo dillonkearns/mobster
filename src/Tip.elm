@@ -1,8 +1,8 @@
 module Tip exposing (..)
 
-import Random
 import Array
 import Html exposing (..)
+import Random
 
 
 type alias Tip =
@@ -19,12 +19,12 @@ get index =
         maybeTip =
             Array.get index (Array.fromList tips)
     in
-        Maybe.withDefault emptyTip maybeTip
+    Maybe.withDefault emptyTip maybeTip
 
 
 random : Random.Generator Int
 random =
-    (Random.int 0 ((List.length tips) - 1))
+    Random.int 0 (List.length tips - 1)
 
 
 emptyTip : Tip

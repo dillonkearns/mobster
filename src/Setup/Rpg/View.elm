@@ -2,18 +2,18 @@ module Setup.Rpg.View exposing (RpgState(..), rpgView)
 
 import Basics.Extra exposing ((=>))
 import Html exposing (..)
-import Html.Keyed
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
 import Html.Events exposing (keyCode, on, onCheck, onClick, onDoubleClick, onInput, onSubmit)
+import Html.Keyed
 import List.Extra
 import Mobster.Data exposing (..)
+import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Rpg as Rpg exposing (RpgData)
 import Mobster.RpgPresenter
 import Setup.Msg exposing (..)
 import Setup.RpgIcons
 import Setup.Stylesheet exposing (CssClasses(..))
-import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 
 
 type RpgState
@@ -23,6 +23,8 @@ type RpgState
 
 { id, class, classList } =
     Html.CssHelpers.withNamespace "setup"
+
+
 noTabThingy : Attribute msg
 noTabThingy =
     Attr.tabindex -1
@@ -53,12 +55,12 @@ rpgView rpgState mobsterData =
                         ]
                         [ text "Start Mobbing" ]
     in
-        div [ Attr.class "container-fluid" ]
-            [ rpgRolesView mobsterData
-            , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
-                [ rpgButton ]
-            , div [] [ allBadgesView mobsterData ]
-            ]
+    div [ Attr.class "container-fluid" ]
+        [ rpgRolesView mobsterData
+        , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
+            [ rpgButton ]
+        , div [] [ allBadgesView mobsterData ]
+        ]
 
 
 allBadgesView : Mobster.Data.MobsterData -> Html Msg
@@ -73,13 +75,13 @@ mobsterBadgesView mobster =
             mobster.rpgData
                 |> Rpg.badges
     in
-        if List.length badges == 0 then
-            span [] []
-        else
-            span []
-                ([ span [] [ text mobster.name ] ]
-                    ++ (badges |> List.map (Setup.RpgIcons.mobsterIcon))
-                )
+    if List.length badges == 0 then
+        span [] []
+    else
+        span []
+            ([ span [] [ text mobster.name ] ]
+                ++ (badges |> List.map Setup.RpgIcons.mobsterIcon)
+            )
 
 
 rpgRolesView : MobsterData -> Html Msg
@@ -88,7 +90,7 @@ rpgRolesView mobsterData =
         ( row1, row2 ) =
             List.Extra.splitAt 2 (mobsterData |> Mobster.RpgPresenter.present)
     in
-        div [] [ rpgRolesRow row1, rpgRolesRow row2 ]
+    div [] [ rpgRolesRow row1, rpgRolesRow row2 ]
 
 
 rpgRolesRow : List Mobster.RpgPresenter.RpgMobster -> Html Msg
@@ -113,7 +115,7 @@ rpgCardView mobster =
         header =
             div [ Attr.class "h1" ] [ iconDiv, text (roleName ++ " ( " ++ mobster.name ++ ")") ]
     in
-        div [] [ header, experienceView mobster ]
+    div [] [ header, experienceView mobster ]
 
 
 goalView : Mobster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> ( String, Html Msg )
@@ -125,12 +127,12 @@ goalView mobster goalIndex goal =
         uniqueId =
             nameWithoutWhitespace ++ toString mobster.role ++ toString goalIndex
     in
-        ( uniqueId
-        , li [ Attr.class "checkbox checkbox-success", onCheck (CheckRpgBox (UpdateMobsterData (MobsterOperation.CompleteGoal mobster.index mobster.role goalIndex))) ]
-            [ input [ Attr.id uniqueId, type_ "checkbox", Attr.checked goal.complete ] []
-            , label [ Attr.for uniqueId ] [ text goal.description ]
-            ]
-        )
+    ( uniqueId
+    , li [ Attr.class "checkbox checkbox-success", onCheck (CheckRpgBox (UpdateMobsterData (MobsterOperation.CompleteGoal mobster.index mobster.role goalIndex))) ]
+        [ input [ Attr.id uniqueId, type_ "checkbox", Attr.checked goal.complete ] []
+        , label [ Attr.for uniqueId ] [ text goal.description ]
+        ]
+    )
 
 
 experienceView : Mobster.RpgPresenter.RpgMobster -> Html Msg
