@@ -1,4 +1,4 @@
-port module Timer.Main exposing (..)
+port module Timer.Main exposing (main, updateTimer)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, src, style)

@@ -1,4 +1,4 @@
-module Setup.Main exposing (..)
+module Setup.Main exposing (main)
 
 import Basics.Extra exposing ((=>))
 import Bootstrap
