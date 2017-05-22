@@ -1,4 +1,4 @@
-module Setup.RosterView exposing (rotationView, preventAddingMobster, newMobsterRowView)
+module Setup.RosterView exposing (rotationView, preventAddingMobster, newMobsterRowView, mobsterCellStyle)
 
 import Basics.Extra exposing ((=>))
 import Json.Decode as Decode
@@ -17,6 +17,8 @@ import Setup.Stylesheet exposing (CssClasses(..))
 import ViewHelpers
 
 
+{ id, class, classList } =
+    Html.CssHelpers.withNamespace "setup"
 type alias DragDropModel =
     DragDrop.Model DragId DropArea
 
@@ -39,8 +41,6 @@ reorderButtonView mobster =
             ]
 
 
-{ id, class, classList } =
-    Html.CssHelpers.withNamespace "setup"
 mobsterView : DragDropModel -> Bool -> Presenter.MobsterWithRole -> Html Msg
 mobsterView dragDrop showHint mobster =
     let

@@ -524,11 +524,6 @@ inactiveMobstersView inactiveMobsters dragDrop =
                     ]
 
 
-mobsterCellStyle : List (Attribute Msg)
-mobsterCellStyle =
-    [ style [ "text-align" => "right", "padding-right" => "0.667em" ] ]
-
-
 quickRotateQueryInputView : String -> Html Msg
 quickRotateQueryInputView quickRotateQuery =
     let
@@ -577,7 +572,7 @@ quickRotateQueryInputView quickRotateQuery =
 inactiveMobsterView : Int -> String -> Html Msg
 inactiveMobsterView mobsterIndex inactiveMobster =
     tr []
-        [ td (mobsterCellStyle ++ (DragDrop.draggable DragDropMsg (InactiveMobster mobsterIndex)))
+        [ td (RosterView.mobsterCellStyle ++ (DragDrop.draggable DragDropMsg (InactiveMobster mobsterIndex)))
             [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , div [ Attr.class "btn-group btn-group-xs", style [ "margin-left" => "0.667em" ] ]
                 [ button [ noTab, Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (MobsterOperation.Remove mobsterIndex)) ] [ text "x" ]
