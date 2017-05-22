@@ -102,19 +102,30 @@ rotationView model =
         mobsters =
             Presenter.mobsters model.settings.mobsterData
 
+        newMobsterDisabled =
+            preventAddingMobster model.settings.mobsterData.mobsters model.quickRotateState.query
+    in
+    div [ Attr.class "row" ]
+        [ --  div [ Attr.class "col-md-6" ] [ table [] [ tbody [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ] ]
+          -- ,div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] [ tbody [] ([ newMobsterRowView model model.quickRotateState newMobsterDisabled ] ++ List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name)) ] ]
+          table [ Attr.class "table h4" ]
+            [ tbody [] (inputBox model newMobsterDisabled :: rosterRowsView model) ]
+        ]
+
+
+inputBox model newMobsterDisabled =
+    newMobsterRowView model model.quickRotateState newMobsterDisabled
+
+
+rosterRowsView model =
+    let
         inactiveMobsters =
             model.settings.mobsterData.inactiveMobsters
 
         matches =
             QuickRotate.matches (inactiveMobsters |> List.map .name) model.quickRotateState
-
-        newMobsterDisabled =
-            preventAddingMobster model.settings.mobsterData.mobsters model.quickRotateState.query
     in
-    div [ Attr.class "row" ]
-        [ div [ Attr.class "col-md-6" ] [ table [] [ tbody [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ] ]
-        , div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] [ tbody [] ([ newMobsterRowView model model.quickRotateState newMobsterDisabled ] ++ List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name)) ] ]
-        ]
+    List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name)
 
 
 preventAddingMobster : List Mobster.Mobster -> String -> Bool
