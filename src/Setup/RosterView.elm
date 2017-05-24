@@ -115,8 +115,14 @@ rotationView model mobsterData =
             preventAddingMobster mobsterData.mobsters model.quickRotateState.query
     in
     div [ Attr.class "row" ]
-        [ table [ Attr.class "table h4" ]
-            [ tbody [] (inputBox model.quickRotateState newMobsterDisabled :: rosterRowsView model mobsterData) ]
+        [ div [ Attr.class "col-md-11" ]
+            [ table [ Attr.class "table h4", style [ "margin-top" => "0" ] ]
+                [ tbody []
+                    (inputBox model.quickRotateState newMobsterDisabled :: rosterRowsView model mobsterData)
+                ]
+            ]
+        , div [ Attr.class "well text-center col-md-1" ]
+            [ img [ onClick ShuffleMobsters, Attr.class "shuffle", src "./assets/dice.png", style [ "max-width" => "1.667em" ] ] [] ]
         ]
 
 
