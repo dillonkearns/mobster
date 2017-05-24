@@ -735,6 +735,9 @@ update msg model =
                     in
                     { model | screenState = Continue (not showRotation) } ! sideEffects
 
+                Configure ->
+                    model ! [ focusQuickRotateInput ]
+
                 _ ->
                     model ! []
 
@@ -862,13 +865,13 @@ update msg model =
             { model | availableUpdateVersion = Just availableUpdateVersion } ! []
 
         RotateOutHotkey index ->
-            if model.screenState == Continue True then
+            if rosterViewIsShowing model.screenState then
                 update (UpdateMobsterData (MobsterOperation.Bench index)) model
             else
                 model ! []
 
         RotateInHotkey index ->
-            if model.screenState == Continue True then
+            if rosterViewIsShowing model.screenState then
                 update (UpdateMobsterData (MobsterOperation.RotateIn index)) model
             else
                 model ! []
@@ -1007,6 +1010,10 @@ update msg model =
 
                 _ ->
                     model ! []
+
+
+rosterViewIsShowing screenState =
+    screenState == Continue True || screenState == Configure
 
 
 keyboardComboInit =
