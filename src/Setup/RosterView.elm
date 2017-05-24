@@ -259,7 +259,7 @@ quickRotateQueryInputView quickRotateQuery =
                     Decode.fail reason
     in
     input
-        [ Attr.placeholder "Filter or add mobsters"
+        [ Attr.placeholder "Rotate or add mobsters"
         , type_ "text"
         , Attr.id quickRotateQueryId
         , Attr.class "form-control"
