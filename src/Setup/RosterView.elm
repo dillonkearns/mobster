@@ -203,7 +203,7 @@ inactiveMobsterViewWithHints quickRotateQuery quickRotateSelection matches mobst
         [ Attr.class
             (if isSelected then
                 "info"
-             else if isMatch then
+             else if isMatch && quickRotateQuery /= "" then
                 "active"
              else
                 ""
