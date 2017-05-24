@@ -86,18 +86,19 @@ mobsterView dragDrop showHint mobster =
             else
                 "0"
     in
-    td
-        ((DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index)) ++ [ Attr.class " text-right" ])
-        [ span [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
-        , span mobsterCellStyle
-            [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
-                [ text mobster.name
-                , hint
-                , span [ style [ "padding-left" => "5px", "color" => "white" ], Attr.class "fa fa-arrows-v" ] []
-                , ViewHelpers.roleIconView mobster.role
+    td [ Attr.class " text-right" ]
+        [ span (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
+            [ span [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
+            , span mobsterCellStyle
+                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
+                    [ text mobster.name
+                    , hint
+                    , span [ style [ "padding-left" => "5px", "color" => "white" ], Attr.class "fa fa-arrows-v" ] []
+                    , ViewHelpers.roleIconView mobster.role
+                    ]
                 ]
+            , span [] [ reorderButtonView mobster ]
             ]
-        , span [] [ reorderButtonView mobster ]
         ]
 
 
