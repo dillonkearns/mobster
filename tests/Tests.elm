@@ -4,6 +4,7 @@ import BreakTests
 import MobsterDataTests
 import MobsterOperationTests
 import MobsterPresenterTests
+import PaddedZipTests
 import QuickRotateTests
 import RpgPresenterTests
 import RpgTests
@@ -29,4 +30,5 @@ all =
         , ValidationsTests.all
         , TimerFlagsTests.all
         , QuickRotateTests.all
+        , PaddedZipTests.all
         ]
