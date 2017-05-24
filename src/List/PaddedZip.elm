@@ -4,10 +4,10 @@ module List.PaddedZip exposing (paddedZip)
 paddedZip list1 list2 =
     let
         list1Maybes =
-            list1 |> List.map (\item -> Just item)
+            list1 |> List.map Just
 
         list2Maybes =
-            list2 |> List.map (\item -> Just item)
+            list2 |> List.map Just
 
         differenceInLength =
             List.length list1 - List.length list2
