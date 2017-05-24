@@ -7,9 +7,11 @@ import Html.CssHelpers
 import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit, onWithOptions)
 import Html5.DragDrop as DragDrop
 import Json.Decode as Decode
+import List.PaddedZip
 import Mobster.Data as Mobster
 import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
+import Mobster.Rpg
 import QuickRotate
 import Setup.Msg exposing (..)
 import Setup.Shortcuts as Shortcuts
@@ -30,14 +32,19 @@ mobsterCellStyle =
     [ style [ "text-align" => "right", "padding-right" => "0.667em" ] ]
 
 
+mobsterCellStyle2 : Attribute Msg
+mobsterCellStyle2 =
+    style [ "text-align" => "right", "padding-right" => "0.667em" ]
+
+
 reorderButtonView : Presenter.MobsterWithRole -> Html Msg
 reorderButtonView mobster =
     let
         mobsterIndex =
             mobster.index
     in
-    div []
-        [ div [ Attr.class "btn-group btn-group-xs" ]
+    span []
+        [ span [ Attr.class "btn-group btn-group-xs" ]
             [ button [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (MobsterOperation.Bench mobsterIndex)) ] [ text "x" ]
             ]
         ]
@@ -79,17 +86,18 @@ mobsterView dragDrop showHint mobster =
             else
                 "0"
     in
-    tr
-        (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
-        [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
-        , td mobsterCellStyle
+    td
+        ((DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index)) ++ [ Attr.class " text-right" ])
+        [ span [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
+        , span mobsterCellStyle
             [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
                 [ text mobster.name
                 , hint
+                , span [ style [ "padding-left" => "5px", "color" => "white" ], Attr.class "fa fa-arrows-v" ] []
                 , ViewHelpers.roleIconView mobster.role
                 ]
             ]
-        , td [] [ reorderButtonView mobster ]
+        , span [] [ reorderButtonView mobster ]
         ]
 
 
@@ -97,35 +105,47 @@ mobsterView dragDrop showHint mobster =
 -- rotationView : Model -> Html Msg
 
 
-rotationView model =
+rotationView model mobsterData =
     let
         mobsters =
-            Presenter.mobsters model.settings.mobsterData
+            Presenter.mobsters mobsterData
 
         newMobsterDisabled =
-            preventAddingMobster model.settings.mobsterData.mobsters model.quickRotateState.query
+            preventAddingMobster mobsterData.mobsters model.quickRotateState.query
     in
     div [ Attr.class "row" ]
-        [ --  div [ Attr.class "col-md-6" ] [ table [] [ tbody [ Attr.class "table h4" ] (List.map (mobsterView model.dragDrop True) mobsters) ] ]
-          -- ,div [ Attr.class "col-md-6" ] [ table [ Attr.class "table h4" ] [ tbody [] ([ newMobsterRowView model model.quickRotateState newMobsterDisabled ] ++ List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name)) ] ]
-          table [ Attr.class "table h4" ]
-            [ tbody [] (inputBox model newMobsterDisabled :: rosterRowsView model) ]
+        [ table [ Attr.class "table h4" ]
+            [ tbody [] (inputBox model.quickRotateState newMobsterDisabled :: rosterRowsView model mobsterData) ]
         ]
 
 
-inputBox model newMobsterDisabled =
-    newMobsterRowView model model.quickRotateState newMobsterDisabled
+inputBox quickRotateState newMobsterDisabled =
+    newMobsterRowView quickRotateState newMobsterDisabled
 
 
-rosterRowsView model =
+rosterRowsView model mobsterData =
     let
         inactiveMobsters =
-            model.settings.mobsterData.inactiveMobsters
+            mobsterData.inactiveMobsters
 
         matches =
             QuickRotate.matches (inactiveMobsters |> List.map .name) model.quickRotateState
+
+        mobsters =
+            Presenter.mobsters mobsterData
+
+        newMobsterDisabled =
+            preventAddingMobster mobsterData.mobsters model.quickRotateState.query
     in
-    List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name)
+    List.PaddedZip.paddedZip
+        (List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
+        (List.map (mobsterView model.dragDrop True) mobsters)
+        |> List.map (\( activeMobster, inactiveMobster ) -> tr [] [ Maybe.withDefault emptyCell inactiveMobster, Maybe.withDefault emptyCell activeMobster ])
+
+
+emptyCell : Html msg
+emptyCell =
+    td [ Attr.class "" ] []
 
 
 preventAddingMobster : List Mobster.Mobster -> String -> Bool
@@ -133,11 +153,8 @@ preventAddingMobster mobsters newMobster =
     mobsters |> List.map (.name >> String.toLower) |> List.member (newMobster |> String.toLower |> String.trim)
 
 
-
--- newMobsterRowView : Model -> QuickRotate.State -> Bool -> Html Msg
-
-
-newMobsterRowView model quickRotateState newMobsterDisabled =
+newMobsterRowView : QuickRotate.State -> Bool -> Html Msg
+newMobsterRowView quickRotateState newMobsterDisabled =
     let
         rowClass =
             case quickRotateState.selection of
@@ -157,10 +174,10 @@ newMobsterRowView model quickRotateState newMobsterDisabled =
                 quickRotateState.query
     in
     tr [ Attr.class rowClass ]
-        [ td mobsterCellStyle
+        [ td [ mobsterCellStyle2, Attr.colspan 100 ]
             [ div [ Attr.class "row" ]
-                [ div [ Attr.class "col-md-10" ] [ quickRotateQueryInputView model.quickRotateState.query ]
-                , div [ Attr.class "col-md-2" ] [ span [ Attr.class "fa fa-refresh text-success" ] [] ]
+                [ div [ Attr.class "col-md-10" ] [ quickRotateQueryInputView quickRotateState.query ]
+                , div [ Attr.class "col-md-2" ] [ span [ Attr.class "fa fa-user-plus text-success" ] [] ]
                 ]
             ]
         ]
@@ -181,7 +198,7 @@ inactiveMobsterViewWithHints quickRotateQuery quickRotateSelection matches mobst
         isMatch =
             List.member mobsterIndex matches
     in
-    tr
+    td
         [ Attr.class
             (if isSelected then
                 "info"
@@ -190,8 +207,9 @@ inactiveMobsterViewWithHints quickRotateQuery quickRotateSelection matches mobst
              else
                 ""
             )
+        , mobsterCellStyle2
         ]
-        [ td mobsterCellStyle
+        [ span []
             [ span [ Attr.class textClasses, onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , Shortcuts.hint mobsterIndex
             , div [ Attr.class "btn-group btn-group-xs", style [ "margin-left" => "0.667em" ] ]
