@@ -86,7 +86,7 @@ mobsterView dragDrop showHint mobster =
             else
                 "0"
     in
-    td [ Attr.class "text-right" ]
+    td [ Attr.class "text-right col-md-6" ]
         [ span (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
             [ span [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
             , span mobsterCellStyle
@@ -145,14 +145,14 @@ rosterRowsView model mobsterData =
             preventAddingMobster mobsterData.mobsters model.quickRotateState.query
     in
     List.PaddedZip.paddedZip
-        (List.indexedMap (inactiveMobsterViewWithHints model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
+        (List.indexedMap (inactiveMobsterView model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
         (List.map (mobsterView model.dragDrop True) mobsters)
         |> List.map (\( activeMobster, inactiveMobster ) -> tr [] [ Maybe.withDefault emptyCell inactiveMobster, Maybe.withDefault emptyCell activeMobster ])
 
 
 emptyCell : Html msg
 emptyCell =
-    td [ Attr.class "" ] []
+    td [ Attr.class "col-md-6" ] []
 
 
 preventAddingMobster : List Mobster.Mobster -> String -> Bool
@@ -190,8 +190,8 @@ newMobsterRowView quickRotateState newMobsterDisabled =
         ]
 
 
-inactiveMobsterViewWithHints : String -> QuickRotate.Selection -> List Int -> Int -> String -> Html Msg
-inactiveMobsterViewWithHints quickRotateQuery quickRotateSelection matches mobsterIndex inactiveMobster =
+inactiveMobsterView : String -> QuickRotate.Selection -> List Int -> Int -> String -> Html Msg
+inactiveMobsterView quickRotateQuery quickRotateSelection matches mobsterIndex inactiveMobster =
     let
         isSelected =
             quickRotateSelection == QuickRotate.Index mobsterIndex
@@ -207,12 +207,14 @@ inactiveMobsterViewWithHints quickRotateQuery quickRotateSelection matches mobst
     in
     td
         [ Attr.class
-            (if isSelected then
+            ((if isSelected then
                 "info"
-             else if isMatch && quickRotateQuery /= "" then
+              else if isMatch && quickRotateQuery /= "" then
                 "active"
-             else
+              else
                 ""
+             )
+                ++ " col-md-6"
             )
         , mobsterCellStyle2
         ]
