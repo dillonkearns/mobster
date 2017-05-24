@@ -6,9 +6,9 @@ import Break
 import Dom
 import FA
 import Html exposing (..)
-import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
+import Html.Attributes as Attr exposing (id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
-import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit, onWithOptions)
+import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit)
 import Html.Events.Extra exposing (onEnter)
 import Html5.DragDrop as DragDrop
 import Ipc
@@ -39,7 +39,6 @@ import Task
 import Timer.Flags
 import Tip
 import Update.Extra
-import ViewHelpers
 
 
 { id, class, classList } =
@@ -58,10 +57,6 @@ type alias DragDropModel =
 changeTip : Cmd Msg
 changeTip =
     Random.generate NewTip Tip.random
-
-
-type alias TimerConfiguration =
-    { minutes : Int, driver : String, navigator : String, isBreak : Bool }
 
 
 startTimerFlags : Bool -> Model -> Encode.Value
@@ -357,12 +352,6 @@ dnView mobster role =
                 [ span [ Attr.class "fa fa-user-times text-danger", style [ "padding-right" => "4px" ] ] []
                 , text " Away"
                 ]
-
-        skipButton =
-            span [ Attr.class "btn btn-sm btn-default", style [ "font-size" => "23px", "padding-right" => "4px" ], class [ ShowOnParentHover ], onClick <| UpdateMobsterData MobsterOperation.NextTurn ]
-                [ span [ Attr.class "fa fa-fast-forward text-warning" ] []
-                , text " Skip"
-                ]
     in
     div [ Attr.class "col-md-5 col-sm-5 text-default" ]
         [ iconView icon 60
@@ -487,163 +476,6 @@ addMobsterInputView newMobster mobsterData =
         [ div [ Attr.class "input-group" ]
             [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", classList [ HasError => hasError ], Attr.class "form-control", value newMobster, onInput <| ChangeInput (StringField NewMobster), onEnter AddMobster, style [ "font-size" => "2.0rem" ] ] []
             , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick ClickAddMobster ] [ text "Add Mobster" ] ]
-            ]
-        ]
-
-
-
--- roster 150
-
-
-mobstersView : String -> List Presenter.MobsterWithRole -> Mobster.MobsterData -> DragDropModel -> Html Msg
-mobstersView newMobster mobsters mobsterData dragDrop =
-    div [ style [ "padding-bottom" => "35px" ] ]
-        [ addMobsterInputView newMobster mobsterData
-        , img [ onClick ShuffleMobsters, Attr.class "shuffle", class [ BufferTop ], src "./assets/dice.png", style [ "max-width" => "1.667em" ] ] []
-        , table [ Attr.class "table h3" ] (List.map (mobsterView dragDrop False) mobsters)
-        ]
-
-
-inactiveMobstersView : List String -> DragDropModel -> Html Msg
-inactiveMobstersView inactiveMobsters dragDrop =
-    let
-        benchStyle =
-            case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
-                ( Just (ActiveMobster _), Just DropBench ) ->
-                    class [ DropAreaActive ]
-
-                ( Just (ActiveMobster _), _ ) ->
-                    class [ DropAreaInactive ]
-
-                ( _, _ ) ->
-                    class []
-    in
-    case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
-        ( Just (ActiveMobster _), _ ) ->
-            div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle, style [ "height" => "150px" ] ]) [ text "Move to bench" ]
-
-        ( _, _ ) ->
-            div (DragDrop.droppable DragDropMsg DropBench ++ [ benchStyle ])
-                [ h2 [ Attr.class "text-center text-primary", style [ "margin-top" => "0px" ] ] [ text "Bench" ]
-                , table [ Attr.class "table h3" ] (List.indexedMap inactiveMobsterView inactiveMobsters)
-                ]
-
-
-quickRotateQueryInputView : String -> Html Msg
-quickRotateQueryInputView quickRotateQuery =
-    let
-        options =
-            { preventDefault = True, stopPropagation = False }
-
-        dec =
-            Decode.map
-                (\code ->
-                    if code == 38 then
-                        Ok (QuickRotateMove Previous)
-                    else if code == 9 || code == 40 then
-                        Ok (QuickRotateMove Next)
-                    else if code == 13 then
-                        Ok QuickRotateAdd
-                    else
-                        Err "not handling that key"
-                )
-                keyCode
-                |> Decode.andThen
-                    fromResult
-
-        fromResult : Result String a -> Decode.Decoder a
-        fromResult result =
-            case result of
-                Ok val ->
-                    Decode.succeed val
-
-                Err reason ->
-                    Decode.fail reason
-    in
-    input
-        [ Attr.placeholder "Filter or add mobsters"
-        , type_ "text"
-        , Attr.id quickRotateQueryId
-        , Attr.class "form-control"
-        , value quickRotateQuery
-        , onWithOptions "keydown" options dec
-        , onInput <| ChangeInput (StringField QuickRotateQuery)
-        , style [ "font-size" => "2.0rem", "background-color" => "transparent", "color" => "white" ]
-        ]
-        []
-
-
-inactiveMobsterView : Int -> String -> Html Msg
-inactiveMobsterView mobsterIndex inactiveMobster =
-    tr []
-        [ td (RosterView.mobsterCellStyle ++ DragDrop.draggable DragDropMsg (InactiveMobster mobsterIndex))
-            [ span [ Attr.class "inactive-mobster", onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
-            , div [ Attr.class "btn-group btn-group-xs", style [ "margin-left" => "0.667em" ] ]
-                [ button [ noTab, Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (MobsterOperation.Remove mobsterIndex)) ] [ text "x" ]
-                ]
-            ]
-        ]
-
-
-mobsterView : DragDropModel -> Bool -> Presenter.MobsterWithRole -> Html Msg
-mobsterView dragDrop showHint mobster =
-    let
-        inactiveOverActiveStyle =
-            case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
-                ( Just (InactiveMobster _), Just (DropActiveMobster _) ) ->
-                    case mobster.role of
-                        Just Presenter.Driver ->
-                            True
-
-                        _ ->
-                            False
-
-                _ ->
-                    False
-
-        isBeingDraggedOver =
-            case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
-                ( Just (ActiveMobster _), Just (DropActiveMobster id) ) ->
-                    id == mobster.index
-
-                _ ->
-                    False
-
-        hint =
-            if showHint then
-                Shortcuts.numberHint mobster.index
-            else
-                span [] []
-
-        displayType =
-            if isBeingDraggedOver then
-                "1"
-            else
-                "0"
-    in
-    tr
-        (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
-        [ td [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
-        , td RosterView.mobsterCellStyle
-            [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
-                [ text mobster.name
-                , hint
-                , ViewHelpers.roleIconView mobster.role
-                ]
-            ]
-        , td [] [ reorderButtonView mobster ]
-        ]
-
-
-reorderButtonView : Presenter.MobsterWithRole -> Html Msg
-reorderButtonView mobster =
-    let
-        mobsterIndex =
-            mobster.index
-    in
-    div []
-        [ div [ Attr.class "btn-group btn-group-xs" ]
-            [ button [ noTab, Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (MobsterOperation.Bench mobsterIndex)) ] [ text "x" ]
             ]
         ]
 
