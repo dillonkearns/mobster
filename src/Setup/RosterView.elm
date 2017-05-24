@@ -86,7 +86,7 @@ mobsterView dragDrop showHint mobster =
             else
                 "0"
     in
-    td [ Attr.class " text-right" ]
+    td [ Attr.class "text-right" ]
         [ span (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
             [ span [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
             , span mobsterCellStyle
@@ -191,7 +191,7 @@ inactiveMobsterViewWithHints quickRotateQuery quickRotateSelection matches mobst
             quickRotateSelection == QuickRotate.Index mobsterIndex
 
         textClasses =
-            if isSelected || isMatch then
+            if isSelected || (isMatch && quickRotateQuery /= "") then
                 "inactive-mobster selected"
             else
                 "inactive-mobster"
