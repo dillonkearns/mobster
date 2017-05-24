@@ -220,7 +220,7 @@ inactiveMobsterView quickRotateQuery quickRotateSelection matches mobsterIndex i
         ]
         [ span []
             [ span [ Attr.class textClasses, onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
-            , Shortcuts.hint mobsterIndex
+            , Shortcuts.letterHint mobsterIndex
             , div [ Attr.class "btn-group btn-group-xs", style [ "margin-left" => "0.667em" ] ]
                 [ button [ Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (MobsterOperation.Remove mobsterIndex)) ] [ text "x" ]
                 ]

@@ -13,13 +13,13 @@ letters =
     Array.fromList [ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p" ]
 
 
-hint : Int -> Html msg
-hint index =
+letterHint : Int -> Html msg
+letterHint index =
     let
         letter =
             Maybe.withDefault "?" (Array.get index letters)
     in
-    span [ Attr.class "text-muted", style [ "font-size" => "0.7em" ] ] [ text " (", u [] [ text letter ], text ")" ]
+    hint letter
 
 
 numberHint : Int -> Html msg
@@ -35,10 +35,15 @@ numberHint index =
     in
     case maybeHint of
         Just hintText ->
-            span [ style [ "font-size" => "0.7em", "color" => "grey" ] ] [ text (" (" ++ toString hintText ++ ")") ]
+            hint (toString hintText)
 
         Nothing ->
             span [] []
+
+
+hint : String -> Html msg
+hint string =
+    span [ Attr.class "text-muted", style [ "font-size" => "0.58em" ] ] [ text " (", u [] [ text string ], text ")" ]
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
