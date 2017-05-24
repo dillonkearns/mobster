@@ -749,7 +749,10 @@ update msg model =
                             Continue False
 
                 updatedModel =
-                    { model | screenState = nextScreenState }
+                    { model
+                        | screenState = nextScreenState
+                        , combos = keyboardComboInit
+                    }
                         |> resetIfAfterBreak
 
                 startTimerUpdate =
@@ -1006,6 +1009,13 @@ update msg model =
                     model ! []
 
 
+keyboardComboInit =
+    Keyboard.Combo.init
+        { toMsg = ComboMsg
+        , combos = Shortcuts.keyboardCombos
+        }
+
+
 focusQuickRotateInput : Cmd Msg
 focusQuickRotateInput =
     quickRotateQueryId
@@ -1118,11 +1128,7 @@ initialModel settings onMac =
     { settings = settings
     , screenState = Configure
     , newMobster = ""
-    , combos =
-        Keyboard.Combo.init
-            { toMsg = ComboMsg
-            , combos = Shortcuts.keyboardCombos
-            }
+    , combos = keyboardComboInit
     , tip = Tip.emptyTip
     , experiment = Nothing
     , newExperiment = ""
