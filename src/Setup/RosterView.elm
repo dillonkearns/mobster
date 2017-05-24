@@ -93,7 +93,6 @@ mobsterView dragDrop showHint mobster =
                 [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
                     [ text mobster.name
                     , hint
-                    , span [ style [ "padding-left" => "5px", "color" => "white" ], Attr.class "fa fa-arrows-v" ] []
                     , ViewHelpers.roleIconView mobster.role
                     ]
                 ]
