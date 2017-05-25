@@ -5,6 +5,7 @@ import Bootstrap
 import Break
 import Dom
 import FA
+import GlobalShortcut
 import Html exposing (..)
 import Html.Attributes as Attr exposing (id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
@@ -751,18 +752,7 @@ update msg model =
                 StringField stringField ->
                     case stringField of
                         ShowHideShortcut ->
-                            let
-                                shortcutString =
-                                    if newInputValue == "" then
-                                        ""
-                                    else
-                                        "CommandOrControl+Shift+" ++ newInputValue
-                            in
-                            model
-                                |> updateSettings
-                                    (\settings -> { settings | showHideShortcut = newInputValue })
-                                |> Update.Extra.andThen update
-                                    (SendIpc Ipc.ChangeShortcut (Encode.string shortcutString))
+                            changeGlobalShortcutIfValid model newInputValue
 
                         Experiment ->
                             { model | newExperiment = newInputValue } ! []
@@ -844,10 +834,31 @@ update msg model =
                     model ! []
 
 
+changeGlobalShortcutIfValid : Model -> String -> ( Model, Cmd Msg )
+changeGlobalShortcutIfValid model newInputValue =
+    if GlobalShortcut.isInvalid newInputValue then
+        model ! []
+    else
+        let
+            shortcutString =
+                if newInputValue == "" then
+                    ""
+                else
+                    "CommandOrControl+Shift+" ++ newInputValue
+        in
+        model
+            |> updateSettings
+                (\settings -> { settings | showHideShortcut = newInputValue })
+            |> Update.Extra.andThen update
+                (SendIpc Ipc.ChangeShortcut (Encode.string shortcutString))
+
+
+rosterViewIsShowing : ScreenState -> Bool
 rosterViewIsShowing screenState =
     screenState == Continue True || screenState == Configure
 
 
+keyboardComboInit : Keyboard.Combo.Model Msg
 keyboardComboInit =
     Keyboard.Combo.init
         { toMsg = ComboMsg

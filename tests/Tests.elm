@@ -1,6 +1,7 @@
 module Tests exposing (..)
 
 import BreakTests
+import GlobalShortcutTests
 import MobsterDataTests
 import MobsterOperationTests
 import MobsterPresenterTests
@@ -31,4 +32,5 @@ all =
         , TimerFlagsTests.all
         , QuickRotateTests.all
         , PaddedZipTests.all
+        , GlobalShortcutTests.all
         ]
