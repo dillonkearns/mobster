@@ -231,7 +231,7 @@ continueView showRotation model =
         mainView =
             if showRotation then
                 div []
-                    [ RosterView.rotationView model model.settings.mobsterData
+                    [ RosterView.rotationView model model.settings.mobsterData model.activeMobstersStyle
                     , button [ style [ "margin-bottom" => "12px" ], Attr.class "btn btn-small btn-default pull-right", onClick Msg.ShowRotationScreen ]
                         [ span [ class [ BufferRight ] ] [ text "Back to tip view" ], span [ Attr.class "fa fa-arrow-circle-o-left" ] [] ]
                     ]
@@ -395,7 +395,7 @@ configureView model =
                 , breakDurationInputView model.settings.breakDuration
                 , shortcutInputView model.settings.showHideShortcut model.onMac
                 ]
-            , div [ Attr.class "col-md-8 col-sm-12" ] [ RosterView.rotationView model model.settings.mobsterData ]
+            , div [ Attr.class "col-md-8 col-sm-12" ] [ RosterView.rotationView model model.settings.mobsterData model.activeMobstersStyle ]
             ]
         , div []
             [ h3 [] [ text "Getting Started" ]
@@ -685,7 +685,7 @@ update msg model =
             update Msg.StartTimer { model | ratings = model.ratings ++ [ rating ] }
 
         Msg.ShuffleMobsters ->
-            Dice.animateRoll model
+            (model |> Dice.animateRoll |> Dice.animateActiveMobstersShuffle)
                 ! [ shuffleMobstersCmd model.settings.mobsterData ]
 
         Msg.TimeElapsed elapsedSeconds ->
@@ -833,7 +833,7 @@ update msg model =
                     model ! []
 
         Msg.Animate animMsg ->
-            { model | dieStyle = Animation.update animMsg model.dieStyle } ! []
+            { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = Animation.update animMsg model.activeMobstersStyle } ! []
 
 
 changeGlobalShortcutIfValid : Model -> String -> ( Model, Cmd Msg )
@@ -954,6 +954,7 @@ subscriptions model =
         , Keyboard.Extra.downs (Msg.KeyPressed True)
         , Keyboard.Extra.ups (Msg.KeyPressed False)
         , Animation.subscription Msg.Animate [ model.dieStyle ]
+        , Animation.subscription Msg.Animate [ model.activeMobstersStyle ]
         ]
 
 
@@ -974,6 +975,7 @@ type alias Model =
     , quickRotateState : QuickRotate.State
     , altPressed : Bool
     , dieStyle : Animation.State
+    , activeMobstersStyle : Animation.State
     }
 
 
@@ -994,11 +996,8 @@ initialModel settings onMac =
     , onMac = onMac
     , quickRotateState = QuickRotate.init
     , altPressed = False
-    , dieStyle =
-        Animation.style
-            [ Animation.rotate (Animation.turn 0.0)
-            , Animation.translate (Animation.px 0) (Animation.px 0)
-            ]
+    , dieStyle = Animation.style [ Animation.rotate (Animation.turn 0.0) ]
+    , activeMobstersStyle = Animation.style [ Animation.opacity 1 ]
     }
 
 
