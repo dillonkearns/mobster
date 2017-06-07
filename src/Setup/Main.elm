@@ -798,10 +798,6 @@ update msg model =
                                 |> updateSettings
                                     (\settings -> { settings | breakDuration = newValueInRange })
 
-        Msg.NoOp ->
-            model
-                ! []
-
         Msg.QuickRotateAdd ->
             case model.quickRotateState.selection of
                 QuickRotate.Index benchIndex ->

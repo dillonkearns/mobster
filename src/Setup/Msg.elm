@@ -41,7 +41,6 @@ type Msg
     | RotateOutHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
     | SendIpc Ipc.Msg Encode.Value
-    | NoOp
     | QuickRotateAdd
     | QuickRotateMove Direction
     | KeyPressed Bool Keyboard.Extra.Key
