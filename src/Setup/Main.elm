@@ -4,6 +4,7 @@ import Animation exposing (Step)
 import Basics.Extra exposing ((=>))
 import Bootstrap
 import Break
+import Dice
 import Dom
 import FA
 import GlobalShortcut
@@ -38,7 +39,6 @@ import Setup.Validations as Validations
 import Setup.View exposing (..)
 import Svg
 import Task
-import Time
 import Timer.Flags
 import Tip
 import Update.Extra
@@ -685,7 +685,7 @@ update msg model =
             update Msg.StartTimer { model | ratings = model.ratings ++ [ rating ] }
 
         Msg.ShuffleMobsters ->
-            animateDieRoll model
+            Dice.animateRoll model
                 ! [ shuffleMobstersCmd model.settings.mobsterData ]
 
         Msg.TimeElapsed elapsedSeconds ->
@@ -834,26 +834,6 @@ update msg model =
 
         Msg.Animate animMsg ->
             { model | dieStyle = Animation.update animMsg model.dieStyle } ! []
-
-
-animateDieRoll : Model -> Model
-animateDieRoll model =
-    { model
-        | dieStyle =
-            Animation.interrupt dieRollAnimation model.dieStyle
-    }
-
-
-dieRollAnimation : List Step
-dieRollAnimation =
-    [ Animation.set [ Animation.rotate (Animation.turn 0) ]
-    , Animation.toWith easing [ Animation.rotate (Animation.turn 1) ]
-    ]
-
-
-easing : Animation.Interpolation
-easing =
-    Animation.easing { duration = Time.second / 2, ease = identity }
 
 
 changeGlobalShortcutIfValid : Model -> String -> ( Model, Cmd Msg )
