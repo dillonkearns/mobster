@@ -1,5 +1,6 @@
 module Setup.RosterView exposing (mobsterCellStyle, newMobsterRowView, preventAddingMobster, rotationView)
 
+import Animation
 import Basics.Extra exposing ((=>))
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
@@ -121,7 +122,12 @@ rotationView model mobsterData =
                 ]
             ]
         , div [ Attr.class "well text-center col-md-1" ]
-            [ img [ onClick ShuffleMobsters, Attr.class "shuffle", src "./assets/dice.png", style [ "max-width" => "1.667em" ] ] [] ]
+            [ img
+                (Animation.render model.dieStyle
+                    ++ [ onClick ShuffleMobsters, Attr.class "shuffle", src "./assets/dice.png", style [ "max-width" => "1.667em" ] ]
+                )
+                []
+            ]
         ]
 
 

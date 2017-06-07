@@ -1,5 +1,6 @@
 module Setup.Msg exposing (..)
 
+import Animation
 import Dom
 import Html5.DragDrop as DragDrop
 import Ipc
@@ -44,6 +45,7 @@ type Msg
     | QuickRotateAdd
     | QuickRotateMove Direction
     | KeyPressed Bool Keyboard.Extra.Key
+    | Animate Animation.Msg
 
 
 type Direction

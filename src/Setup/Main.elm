@@ -1,5 +1,6 @@
 module Setup.Main exposing (main)
 
+import Animation
 import Basics.Extra exposing ((=>))
 import Bootstrap
 import Break
@@ -683,7 +684,17 @@ update msg model =
             update StartTimer { model | ratings = model.ratings ++ [ rating ] }
 
         ShuffleMobsters ->
-            model ! [ shuffleMobstersCmd model.settings.mobsterData ]
+            { model
+                | dieStyle =
+                    Animation.interrupt
+                        [ Animation.set
+                            [ Animation.rotate (Animation.turn 1) ]
+                        , Animation.to
+                            [ Animation.rotate (Animation.turn 0) ]
+                        ]
+                        model.dieStyle
+            }
+                ! [ shuffleMobstersCmd model.settings.mobsterData ]
 
         TimeElapsed elapsedSeconds ->
             { model | secondsSinceBreak = model.secondsSinceBreak + elapsedSeconds, intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
@@ -833,6 +844,9 @@ update msg model =
                 _ ->
                     model ! []
 
+        Animate animMsg ->
+            { model | dieStyle = Animation.update animMsg model.dieStyle } ! []
+
 
 changeGlobalShortcutIfValid : Model -> String -> ( Model, Cmd Msg )
 changeGlobalShortcutIfValid model newInputValue =
@@ -951,6 +965,7 @@ subscriptions model =
         , Setup.Ports.updateDownloaded UpdateAvailable
         , Keyboard.Extra.downs (KeyPressed True)
         , Keyboard.Extra.ups (KeyPressed False)
+        , Animation.subscription Animate [ model.dieStyle ]
         ]
 
 
@@ -970,6 +985,7 @@ type alias Model =
     , onMac : Bool
     , quickRotateState : QuickRotate.State
     , altPressed : Bool
+    , dieStyle : Animation.State
     }
 
 
@@ -990,6 +1006,10 @@ initialModel settings onMac =
     , onMac = onMac
     , quickRotateState = QuickRotate.init
     , altPressed = False
+    , dieStyle =
+        Animation.style
+            [ Animation.rotate (Animation.turn 0.0)
+            ]
     }
 
 
