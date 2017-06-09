@@ -103,11 +103,8 @@ mobsterView dragDrop showHint activeMobstersStyle mobster =
 
 
 rotationView :
-    { a
-        | dragDrop : DragDropModel
-        , quickRotateState :
-            { query : String, selection : QuickRotate.Selection }
-    }
+    DragDropModel
+    -> { query : String, selection : QuickRotate.Selection }
     ->
         { inactiveMobsters :
             List { name : String, rpgData : Mobster.Rpg.RpgData }
@@ -117,19 +114,19 @@ rotationView :
     -> Animation.State
     -> List (Html.Attribute Msg)
     -> Html Msg
-rotationView model mobsterData activeMobstersStyle diceAnimationStyle =
+rotationView dragDrop quickRotateState mobsterData activeMobstersStyle diceAnimationStyle =
     let
         mobsters =
             Presenter.mobsters mobsterData
 
         newMobsterDisabled =
-            preventAddingMobster mobsterData.mobsters model.quickRotateState.query
+            preventAddingMobster mobsterData.mobsters quickRotateState.query
     in
     div [ Attr.class "row" ]
         [ div [ Attr.class "col-md-11" ]
             [ table [ Attr.class "table h4", style [ "margin-top" => "0" ] ]
                 [ tbody []
-                    (newMobsterRowView True model.quickRotateState newMobsterDisabled :: rosterRowsView model mobsterData activeMobstersStyle)
+                    (newMobsterRowView True quickRotateState newMobsterDisabled :: rosterRowsView dragDrop quickRotateState mobsterData activeMobstersStyle)
                 ]
             ]
         , div [ Attr.class "well text-center col-md-1" ]
@@ -143,11 +140,8 @@ rotationView model mobsterData activeMobstersStyle diceAnimationStyle =
 
 
 rosterRowsView :
-    { a
-        | dragDrop : DragDropModel
-        , quickRotateState :
-            { query : String, selection : QuickRotate.Selection }
-    }
+    DragDropModel
+    -> { query : String, selection : QuickRotate.Selection }
     ->
         { inactiveMobsters :
             List { rpgData : Mobster.Rpg.RpgData, name : String }
@@ -156,23 +150,23 @@ rosterRowsView :
         }
     -> Animation.State
     -> List (Html Msg)
-rosterRowsView model mobsterData activeMobstersStyle =
+rosterRowsView dragDrop quickRotateState mobsterData activeMobstersStyle =
     let
         inactiveMobsters =
             mobsterData.inactiveMobsters
 
         matches =
-            QuickRotate.matches (inactiveMobsters |> List.map .name) model.quickRotateState
+            QuickRotate.matches (inactiveMobsters |> List.map .name) quickRotateState
 
         mobsters =
             Presenter.mobsters mobsterData
 
         newMobsterDisabled =
-            preventAddingMobster mobsterData.mobsters model.quickRotateState.query
+            preventAddingMobster mobsterData.mobsters quickRotateState.query
     in
     List.PaddedZip.paddedZip
-        (List.indexedMap (inactiveMobsterView False model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
-        (List.map (mobsterView model.dragDrop True activeMobstersStyle) mobsters)
+        (List.indexedMap (inactiveMobsterView False quickRotateState.query quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
+        (List.map (mobsterView dragDrop True activeMobstersStyle) mobsters)
         |> List.map (\( activeMobster, inactiveMobster ) -> tr [] [ Maybe.withDefault emptyCell inactiveMobster, Maybe.withDefault emptyCell activeMobster ])
 
 
