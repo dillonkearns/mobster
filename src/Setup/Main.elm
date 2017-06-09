@@ -596,7 +596,7 @@ update msg model =
                 startTimerUpdate =
                     updatedModel
                         ! [ changeTip, blurContinueButton ]
-                        |> Update.Extra.andThen update (Msg.SendIpc Ipc.StartTimer (startTimerFlags False model))
+                        |> withIpcMsg Ipc.StartTimer (startTimerFlags False model)
             in
             case model.screenState of
                 Rpg rpgState ->
@@ -629,7 +629,7 @@ update msg model =
             in
             updatedModel
                 ! [ changeTip ]
-                |> Update.Extra.andThen update (Msg.SendIpc Ipc.StartTimer (startTimerFlags True model))
+                |> withIpcMsg Ipc.StartTimer (startTimerFlags True model)
 
         Msg.SelectInputField fieldId ->
             model ! [ Setup.Ports.selectDuration fieldId ]
