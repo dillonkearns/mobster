@@ -231,7 +231,7 @@ continueView showRotation model =
         mainView =
             if showRotation then
                 div []
-                    [ RosterView.rotationView model model.settings.mobsterData model.activeMobstersStyle
+                    [ RosterView.rotationView model model.settings.mobsterData model.activeMobstersStyle (Animation.render model.dieStyle)
                     , button [ style [ "margin-bottom" => "12px" ], Attr.class "btn btn-small btn-default pull-right", onClick Msg.ShowRotationScreen ]
                         [ span [ class [ BufferRight ] ] [ text "Back to tip view" ], span [ Attr.class "fa fa-arrow-circle-o-left" ] [] ]
                     ]
@@ -395,7 +395,7 @@ configureView model =
                 , breakDurationInputView model.settings.breakDuration
                 , shortcutInputView model.settings.showHideShortcut model.onMac
                 ]
-            , div [ Attr.class "col-md-8 col-sm-12" ] [ RosterView.rotationView model model.settings.mobsterData model.activeMobstersStyle ]
+            , div [ Attr.class "col-md-8 col-sm-12" ] [ RosterView.rotationView model model.settings.mobsterData model.activeMobstersStyle (Animation.render model.dieStyle) ]
             ]
         , div []
             [ h3 [] [ text "Getting Started" ]

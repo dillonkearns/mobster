@@ -102,7 +102,22 @@ mobsterView dragDrop showHint activeMobstersStyle mobster =
         ]
 
 
-rotationView model mobsterData activeMobstersStyle =
+rotationView :
+    { a
+        | dragDrop : DragDropModel
+        , quickRotateState :
+            { query : String, selection : QuickRotate.Selection }
+    }
+    ->
+        { inactiveMobsters :
+            List { name : String, rpgData : Mobster.Rpg.RpgData }
+        , mobsters : List Mobster.Mobster
+        , nextDriver : Int
+        }
+    -> Animation.State
+    -> List (Html.Attribute Msg)
+    -> Html Msg
+rotationView model mobsterData activeMobstersStyle diceAnimationStyle =
     let
         mobsters =
             Presenter.mobsters mobsterData
@@ -119,7 +134,7 @@ rotationView model mobsterData activeMobstersStyle =
             ]
         , div [ Attr.class "well text-center col-md-1" ]
             [ img
-                (Animation.render model.dieStyle
+                (diceAnimationStyle
                     ++ [ onClick ShuffleMobsters, Attr.class "shuffle", src "./assets/dice.png", style [ "max-width" => "1.667em" ] ]
                 )
                 []
