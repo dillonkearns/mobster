@@ -655,12 +655,7 @@ update msg model =
             model ! []
 
         Msg.UpdateRosterData operation ->
-            model
-                |> updateSettings
-                    (\settings -> { settings | rosterData = MobsterOperation.updateMoblist operation model.settings.rosterData })
-                |> saveActiveMobsters
-                |> focusQuickRotateInputIfVisible
-                |> updateQuickRotateStateIfActive
+            model |> performRosterOperation operation
 
         Msg.ComboMsg comboMsg ->
             let
@@ -834,6 +829,16 @@ update msg model =
 
         Msg.Animate animMsg ->
             { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = Animation.update animMsg model.activeMobstersStyle } ! []
+
+
+performRosterOperation : MobsterOperation -> Model -> ( Model, Cmd Msg )
+performRosterOperation operation model =
+    model
+        |> updateSettings
+            (\settings -> { settings | rosterData = MobsterOperation.updateMoblist operation model.settings.rosterData })
+        |> saveActiveMobsters
+        |> focusQuickRotateInputIfVisible
+        |> updateQuickRotateStateIfActive
 
 
 changeGlobalShortcutIfValid : Model -> String -> ( Model, Cmd Msg )
