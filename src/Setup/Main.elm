@@ -738,8 +738,8 @@ update msg model =
                         _ ->
                             model ! []
 
-        Msg.SendIpc ipcMessage payload ->
-            model ! [ Setup.Ports.sendIpc ( toString ipcMessage, payload ) ]
+        Msg.SendIpc ipcMsg payload ->
+            model ! [ sendIpcCmd ipcMsg payload ]
 
         Msg.CheckRpgBox msg checkedValue ->
             update msg model
@@ -834,6 +834,11 @@ update msg model =
 
         Msg.Animate animMsg ->
             { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = Animation.update animMsg model.activeMobstersStyle } ! []
+
+
+sendIpcCmd : Ipc.Msg -> Encode.Value -> Cmd msg
+sendIpcCmd ipcMsg payload =
+    Setup.Ports.sendIpc ( toString ipcMsg, payload )
 
 
 changeGlobalShortcutIfValid : Model -> String -> ( Model, Cmd Msg )
