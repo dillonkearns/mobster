@@ -11,7 +11,7 @@ import GlobalShortcut
 import Html exposing (..)
 import Html.Attributes as Attr exposing (id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
-import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit)
+import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit)
 import Html.Events.Extra exposing (onEnter)
 import Html5.DragDrop as DragDrop
 import Ipc
@@ -236,8 +236,8 @@ continueView showRotation model =
                         [ span [ class [ BufferRight ] ] [ text "Back to tip view" ], span [ Attr.class "fa fa-arrow-circle-o-left" ] [] ]
                     ]
             else
-                div [ onClick Msg.ShowRotationScreen ]
-                    [ table [ Attr.class "table table-hover" ] [ tbody [] [ RosterView.newMobsterRowView model.quickRotateState False ] ]
+                div []
+                    [ table [ Attr.class "table table-hover" ] [ tbody [] [ RosterView.newMobsterRowView False model.quickRotateState False ] ]
                     , tipView model.tip
                     ]
     in

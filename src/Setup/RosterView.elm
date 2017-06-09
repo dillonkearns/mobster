@@ -5,15 +5,16 @@ import Basics.Extra exposing ((=>))
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
-import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit, onWithOptions)
+import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit, onWithOptions)
 import Html5.DragDrop as DragDrop
 import Json.Decode as Decode
 import List.PaddedZip
 import Mobster.Data as Mobster
 import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
+import Mobster.Rpg
 import QuickRotate
-import Setup.Msg exposing (..)
+import Setup.Msg as Msg exposing (..)
 import Setup.Shortcuts as Shortcuts
 import Setup.Stylesheet exposing (CssClasses(..))
 import ViewHelpers
@@ -113,7 +114,7 @@ rotationView model mobsterData activeMobstersStyle =
         [ div [ Attr.class "col-md-11" ]
             [ table [ Attr.class "table h4", style [ "margin-top" => "0" ] ]
                 [ tbody []
-                    (inputBox model.quickRotateState newMobsterDisabled :: rosterRowsView model mobsterData activeMobstersStyle)
+                    (newMobsterRowView True model.quickRotateState newMobsterDisabled :: rosterRowsView model mobsterData activeMobstersStyle)
                 ]
             ]
         , div [ Attr.class "well text-center col-md-1" ]
@@ -126,10 +127,20 @@ rotationView model mobsterData activeMobstersStyle =
         ]
 
 
-inputBox quickRotateState newMobsterDisabled =
-    newMobsterRowView quickRotateState newMobsterDisabled
-
-
+rosterRowsView :
+    { a
+        | dragDrop : DragDropModel
+        , quickRotateState :
+            { query : String, selection : QuickRotate.Selection }
+    }
+    ->
+        { inactiveMobsters :
+            List { rpgData : Mobster.Rpg.RpgData, name : String }
+        , nextDriver : Int
+        , mobsters : List Mobster.Mobster
+        }
+    -> Animation.State
+    -> List (Html Msg)
 rosterRowsView model mobsterData activeMobstersStyle =
     let
         inactiveMobsters =
@@ -145,7 +156,7 @@ rosterRowsView model mobsterData activeMobstersStyle =
             preventAddingMobster mobsterData.mobsters model.quickRotateState.query
     in
     List.PaddedZip.paddedZip
-        (List.indexedMap (inactiveMobsterView model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
+        (List.indexedMap (inactiveMobsterView False model.quickRotateState.query model.quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
         (List.map (mobsterView model.dragDrop True activeMobstersStyle) mobsters)
         |> List.map (\( activeMobster, inactiveMobster ) -> tr [] [ Maybe.withDefault emptyCell inactiveMobster, Maybe.withDefault emptyCell activeMobster ])
 
@@ -160,8 +171,8 @@ preventAddingMobster mobsters newMobster =
     mobsters |> List.map (.name >> String.toLower) |> List.member (newMobster |> String.toLower |> String.trim)
 
 
-newMobsterRowView : QuickRotate.State -> Bool -> Html Msg
-newMobsterRowView quickRotateState newMobsterDisabled =
+newMobsterRowView : Bool -> QuickRotate.State -> Bool -> Html Msg
+newMobsterRowView inRotateView quickRotateState newMobsterDisabled =
     let
         rowClass =
             case quickRotateState.selection of
@@ -183,15 +194,15 @@ newMobsterRowView quickRotateState newMobsterDisabled =
     tr [ Attr.class rowClass ]
         [ td [ mobsterCellStyle2, Attr.colspan 100 ]
             [ div [ Attr.class "row" ]
-                [ div [ Attr.class "col-md-10" ] [ quickRotateQueryInputView quickRotateState.query ]
+                [ div [ Attr.class "col-md-10" ] [ quickRotateQueryInputView inRotateView quickRotateState.query ]
                 , div [ Attr.class "col-md-2" ] [ span [ Attr.class "fa fa-user-plus text-success" ] [] ]
                 ]
             ]
         ]
 
 
-inactiveMobsterView : String -> QuickRotate.Selection -> List Int -> Int -> String -> Html Msg
-inactiveMobsterView quickRotateQuery quickRotateSelection matches mobsterIndex inactiveMobster =
+inactiveMobsterView : Bool -> String -> QuickRotate.Selection -> List Int -> Int -> String -> Html Msg
+inactiveMobsterView inRotateView quickRotateQuery quickRotateSelection matches mobsterIndex inactiveMobster =
     let
         isSelected =
             quickRotateSelection == QuickRotate.Index mobsterIndex
@@ -228,8 +239,8 @@ inactiveMobsterView quickRotateQuery quickRotateSelection matches mobsterIndex i
         ]
 
 
-quickRotateQueryInputView : String -> Html Msg
-quickRotateQueryInputView quickRotateQuery =
+quickRotateQueryInputView : Bool -> String -> Html Msg
+quickRotateQueryInputView inRotateView quickRotateQuery =
     let
         options =
             { preventDefault = True, stopPropagation = False }
@@ -259,17 +270,31 @@ quickRotateQueryInputView quickRotateQuery =
                 Err reason ->
                     Decode.fail reason
     in
-    input
-        [ Attr.placeholder "Rotate or add mobsters"
-        , type_ "text"
-        , Attr.id quickRotateQueryId
-        , Attr.class "form-control"
-        , value quickRotateQuery
-        , onWithOptions "keydown" options dec
-        , onInput <| ChangeInput (StringField QuickRotateQuery)
-        , style [ "font-size" => "2.0rem", "background-color" => "transparent", "color" => "white" ]
-        ]
-        []
+    if inRotateView then
+        input
+            [ Attr.placeholder "Rotate or add mobsters"
+            , type_ "text"
+            , Attr.id quickRotateQueryId
+            , Attr.class "form-control"
+            , value quickRotateQuery
+            , onWithOptions "keydown" options dec
+            , onInput <| ChangeInput (StringField QuickRotateQuery)
+            , style [ "font-size" => "2.0rem", "background-color" => "transparent", "color" => "white" ]
+            ]
+            []
+    else
+        input
+            [ Attr.placeholder "Rotate or add mobsters"
+            , type_ "text"
+            , Attr.id quickRotateQueryId
+            , Attr.class "form-control"
+            , value quickRotateQuery
+            , onWithOptions "keydown" options dec
+            , onInput <| ChangeInput (StringField QuickRotateQuery)
+            , style [ "font-size" => "2.0rem", "background-color" => "transparent", "color" => "white" ]
+            , onFocus Msg.ShowRotationScreen
+            ]
+            []
 
 
 quickRotateQueryId : String
