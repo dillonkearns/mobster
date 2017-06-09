@@ -831,7 +831,18 @@ update msg model =
             { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = Animation.update animMsg model.activeMobstersStyle } ! []
 
 
-performRosterOperation : MobsterOperation -> Model -> ( Model, Cmd Msg )
+type alias Thingy model =
+    { model | settings : Settings.Data }
+
+
+
+-- performRosterOperation : MobsterOperation -> Thingy model -> ( Thingy model, Cmd Msg )
+
+
+performRosterOperation :
+    MobsterOperation
+    -> { model | settings : Settings.Data, screenState : ScreenState, quickRotateState : QuickRotate.State }
+    -> ( { model | settings : Settings.Data, screenState : ScreenState, quickRotateState : QuickRotate.State }, Cmd Msg )
 performRosterOperation operation model =
     model
         |> updateSettings
@@ -889,7 +900,7 @@ focusQuickRotateInput =
         |> Task.attempt Msg.DomResult
 
 
-focusQuickRotateInputIfVisible : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+focusQuickRotateInputIfVisible : ( { model | screenState : ScreenState }, Cmd Msg ) -> ( { model | screenState : ScreenState }, Cmd Msg )
 focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
     if model.screenState == Continue True then
         model ! [ cmd, focusQuickRotateInput ]
@@ -897,7 +908,9 @@ focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
         updateResult
 
 
-updateQuickRotateStateIfActive : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+updateQuickRotateStateIfActive :
+    ( { model | screenState : ScreenState, settings : Settings.Data, quickRotateState : QuickRotate.State }, Cmd Msg )
+    -> ( { model | screenState : ScreenState, settings : Settings.Data, quickRotateState : QuickRotate.State }, Cmd Msg )
 updateQuickRotateStateIfActive (( model, cmd ) as updateResult) =
     if model.screenState == Continue True then
         ( { model | quickRotateState = QuickRotate.update model.quickRotateState.query (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState }, cmd )
