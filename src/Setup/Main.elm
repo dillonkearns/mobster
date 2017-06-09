@@ -19,7 +19,7 @@ import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard.Combo
 import Keyboard.Extra
-import Mobster.Data as Mobster
+import Mobster.Data as Roster
 import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
 import Mobster.Presenter as Presenter
 import QuickRotate
@@ -48,9 +48,9 @@ import Update.Extra
     Html.CssHelpers.withNamespace "setup"
 
 
-shuffleMobstersCmd : Mobster.MobsterData -> Cmd Msg
+shuffleMobstersCmd : Roster.MobsterData -> Cmd Msg
 shuffleMobstersCmd mobsterData =
-    Random.generate reorderOperation (Mobster.randomizeMobsters mobsterData)
+    Random.generate reorderOperation (Roster.randomizeMobsters mobsterData)
 
 
 type alias DragDropModel =
@@ -469,11 +469,11 @@ shortcutInputView currentShortcut onMac =
         ]
 
 
-addMobsterInputView : String -> Mobster.MobsterData -> Html Msg
+addMobsterInputView : String -> Roster.MobsterData -> Html Msg
 addMobsterInputView newMobster mobsterData =
     let
         hasError =
-            Mobster.containsName newMobster mobsterData
+            Roster.containsName newMobster mobsterData
     in
     div [ Attr.class "row" ]
         [ div [ Attr.class "input-group" ]
@@ -528,7 +528,7 @@ resetIfAfterBreak model =
 saveActiveMobsters : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 saveActiveMobsters (( model, msg ) as updateResult) =
     updateResult
-        |> Update.Extra.andThen update (Msg.SendIpc Ipc.SaveActiveMobstersFile (Encode.string <| Mobster.currentMobsterNames model.settings.mobsterData))
+        |> Update.Extra.andThen update (Msg.SendIpc Ipc.SaveActiveMobstersFile (Encode.string <| Roster.currentMobsterNames model.settings.mobsterData))
 
 
 updateSettings : (Settings.Data -> Settings.Data) -> Model -> ( Model, Cmd Msg )
@@ -638,7 +638,7 @@ update msg model =
             { model | screenState = Configure } ! []
 
         Msg.AddMobster ->
-            if model.newMobster == "" || Mobster.containsName model.newMobster model.settings.mobsterData then
+            if model.newMobster == "" || Roster.containsName model.newMobster model.settings.mobsterData then
                 model ! []
             else
                 update (Msg.UpdateMobsterData (MobsterOperation.Add model.newMobster)) { model | newMobster = "" }
@@ -896,7 +896,7 @@ quickRotateQueryId =
     "quick-rotate-query"
 
 
-reorderOperation : List Mobster.Mobster -> Msg
+reorderOperation : List Roster.Mobster -> Msg
 reorderOperation shuffledMobsters =
     Msg.UpdateMobsterData (MobsterOperation.Reorder shuffledMobsters)
 
