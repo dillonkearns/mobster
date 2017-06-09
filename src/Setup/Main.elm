@@ -697,7 +697,7 @@ update msg model =
 
         Msg.RotateOutHotkey index ->
             if rosterViewIsShowing model.screenState then
-                update (Msg.UpdateRosterData (MobsterOperation.Bench index)) model
+                performRosterOperation (MobsterOperation.Bench index) model
             else
                 model ! []
 
