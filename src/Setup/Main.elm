@@ -12,7 +12,6 @@ import Html exposing (..)
 import Html.Attributes as Attr exposing (id, placeholder, src, style, target, title, type_, value)
 import Html.CssHelpers
 import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit)
-import Html.Events.Extra exposing (onEnter)
 import Html5.DragDrop as DragDrop
 import Ipc
 import Json.Decode as Decode
@@ -28,7 +27,6 @@ import Setup.Forms.ViewHelpers
 import Setup.InputField exposing (IntInputField(..))
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Navbar as Navbar
-import Setup.PlotScatter
 import Setup.Ports
 import Setup.RosterView as RosterView
 import Setup.Rpg.View exposing (RpgState(..))
@@ -37,7 +35,6 @@ import Setup.Shortcuts as Shortcuts
 import Setup.Stylesheet exposing (CssClasses(..))
 import Setup.Validations as Validations
 import Setup.View exposing (..)
-import Svg
 import Task
 import Timer.Flags
 import Tip
@@ -144,41 +141,6 @@ startMobbingShortcut onMac =
 
 
 
--- continuous retros 29
-
-
-experimentView : String -> Maybe String -> Html Msg
-experimentView newExperiment maybeExperiment =
-    case maybeExperiment of
-        Just experiment ->
-            div [] [ text experiment, button [ noTab, onClick Msg.ChangeExperiment, Attr.class "btn btn-sm btn-primary" ] [ text "Edit experiment" ] ]
-
-        Nothing ->
-            div [ Attr.class "input-group" ]
-                [ input [ id "add-mobster", placeholder "Try a daily experiment", type_ "text", Attr.class "form-control", value newExperiment, onInput (Msg.ChangeInput (Msg.StringField Msg.Experiment)), onEnter Msg.SetExperiment, style [ "font-size" => "1.8rem" ] ] []
-                , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick Msg.SetExperiment ] [ text "Set" ] ]
-                ]
-
-
-ratingsToPlotData : List Int -> List ( Float, Float )
-ratingsToPlotData ratings =
-    List.indexedMap (\index value -> ( toFloat index, toFloat value )) ratings
-
-
-ratingsView : Model -> Svg.Svg Msg
-ratingsView model =
-    case model.experiment of
-        Just _ ->
-            if List.length model.ratings > 0 then
-                Setup.PlotScatter.view (ratingsToPlotData model.ratings)
-            else
-                div [] []
-
-        Nothing ->
-            div [] []
-
-
-
 -- breaks 31
 
 
@@ -246,7 +208,6 @@ continueView showRotation model =
     else
         div [ Attr.class "container-fluid" ]
             [ viewIntervalsBeforeBreak model
-            , ratingsView model
             , nextDriverNavigatorView model
             , div [ class [ BufferTop ] ] [ mainView ]
             , continueButtons model
@@ -469,20 +430,6 @@ shortcutInputView currentShortcut onMac =
         ]
 
 
-addMobsterInputView : String -> Roster.RosterData -> Html Msg
-addMobsterInputView newMobster rosterData =
-    let
-        hasError =
-            Roster.containsName newMobster rosterData
-    in
-    div [ Attr.class "row" ]
-        [ div [ Attr.class "input-group" ]
-            [ input [ id "add-mobster", Attr.placeholder "Jane Doe", type_ "text", classList [ HasError => hasError ], Attr.class "form-control", value newMobster, onInput <| Msg.ChangeInput (Msg.StringField Msg.NewMobster), onEnter Msg.AddMobster, style [ "font-size" => "2.0rem" ] ] []
-            , span [ Attr.class "input-group-btn", type_ "button" ] [ button [ noTab, Attr.class "btn btn-primary", onClick Msg.ClickAddMobster ] [ text "Add Mobster" ] ]
-            ]
-        ]
-
-
 
 -- main view function 15
 
@@ -642,14 +589,6 @@ update msg model =
                 model ! []
             else
                 update (Msg.UpdateRosterData (MobsterOperation.Add model.newMobster)) { model | newMobster = "" }
-
-        Msg.ClickAddMobster ->
-            if model.newMobster == "" then
-                model ! [ focusAddMobsterInput ]
-            else
-                { model | newMobster = "" }
-                    ! [ focusAddMobsterInput ]
-                    |> Update.Extra.andThen update (Msg.UpdateRosterData (MobsterOperation.Add model.newMobster))
 
         Msg.DomResult _ ->
             model ! []
@@ -926,13 +865,6 @@ quickRotateQueryId =
 reorderOperation : List Roster.Mobster -> Msg
 reorderOperation shuffledMobsters =
     Msg.UpdateRosterData (MobsterOperation.Reorder shuffledMobsters)
-
-
-focusAddMobsterInput : Cmd Msg
-focusAddMobsterInput =
-    "add-mobster"
-        |> Dom.focus
-        |> Task.attempt Msg.DomResult
 
 
 blurContinueButton : Cmd Msg
