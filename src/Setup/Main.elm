@@ -158,8 +158,7 @@ continueButtons : Model -> Html Msg
 continueButtons model =
     div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
         [ button
-            [ noTab
-            , onClick Msg.StartTimer
+            [ onClick Msg.StartTimer
             , Attr.class "btn btn-info btn-lg btn-block"
             , class [ LargeButtonText, BufferTop, TooltipContainer ]
             , Attr.id continueButtonId
@@ -202,8 +201,7 @@ breakButtonsView =
     div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
         [ div [ Attr.class "col-md-3" ]
             [ button
-                [ noTab
-                , onClick Msg.SkipBreak
+                [ onClick Msg.SkipBreak
                 , Attr.class "btn btn-default btn-lg btn-block"
                 , class [ LargeButtonText, BufferTop, BufferRight, TooltipContainer, ButtonMuted ]
                 ]
@@ -211,8 +209,7 @@ breakButtonsView =
             ]
         , div [ Attr.class "col-md-9" ]
             [ button
-                [ noTab
-                , onClick Msg.StartBreak
+                [ onClick Msg.StartBreak
                 , Attr.class "btn btn-success btn-lg btn-block"
                 , class [ LargeButtonText, BufferTop, TooltipContainer ]
                 ]
@@ -324,11 +321,6 @@ nextView thing name =
         ]
 
 
-noTab : Attribute Msg
-noTab =
-    Attr.tabindex -1
-
-
 configureView : Model -> Html Msg
 configureView model =
     div [ Attr.class "container-fluid" ]
@@ -347,8 +339,7 @@ configureView model =
             , Bootstrap.smallButton "Learn to Mob Game" Msg.StartRpgMode Bootstrap.Success FA.Gamepad
             ]
         , button
-            [ noTab
-            , onClick Msg.StartTimer
+            [ onClick Msg.StartTimer
             , style [ "margin-top" => "50px" ]
             , Attr.class "btn btn-info btn-lg btn-block"
             , class
