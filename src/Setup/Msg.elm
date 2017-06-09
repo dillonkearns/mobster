@@ -27,8 +27,6 @@ type Msg
     | SelectInputField String
     | OpenConfigure
     | NewTip Int
-    | SetExperiment
-    | ChangeExperiment
     | EnterRating Int
     | ComboMsg Keyboard.Combo.Msg
     | ShuffleMobsters
@@ -57,8 +55,7 @@ type InputField
 
 
 type StringInputField
-    = Experiment
-    | ShowHideShortcut
+    = ShowHideShortcut
     | NewMobster
     | QuickRotateQuery
 

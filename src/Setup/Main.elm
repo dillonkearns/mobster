@@ -59,7 +59,7 @@ changeTip =
     Random.generate Msg.NewTip Tip.random
 
 
-startTimerFlags : Bool -> Model -> Encode.Value
+startTimerFlags : Bool -> { model | settings : Settings.Data } -> Encode.Value
 startTimerFlags isBreak model =
     let
         { driver, navigator } =
@@ -102,25 +102,6 @@ feedbackButton : Html Msg
 feedbackButton =
     div []
         [ a [ onClick <| Msg.SendIpc Ipc.ShowFeedbackForm Encode.null, style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
-
-
-continueButtonChildren : Model -> List (Html Msg)
-continueButtonChildren model =
-    case model.experiment of
-        Just experimentText ->
-            [ div [ Attr.class "col-md-4" ] [ text "Continue" ]
-            , div
-                [ Attr.class "col-md-8"
-                , style
-                    [ "font-style" => "italic"
-                    , "text-align" => "left"
-                    ]
-                ]
-                [ text experimentText ]
-            ]
-
-        Nothing ->
-            [ div [] [ text "Continue" ] ]
 
 
 ctrlKey : Bool -> String
@@ -183,7 +164,9 @@ continueButtons model =
             , class [ LargeButtonText, BufferTop, TooltipContainer ]
             , Attr.id continueButtonId
             ]
-            (continueButtonChildren model ++ [ div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ])
+            [ div [] [ text "Continue" ]
+            , div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ]
+            ]
         ]
 
 
@@ -606,15 +589,6 @@ update msg model =
         Msg.NewTip tipIndex ->
             { model | tip = Tip.get tipIndex } ! []
 
-        Msg.SetExperiment ->
-            if model.newExperiment == "" then
-                model ! []
-            else
-                { model | experiment = Just model.newExperiment } ! []
-
-        Msg.ChangeExperiment ->
-            { model | experiment = Nothing } ! []
-
         Msg.EnterRating rating ->
             update Msg.StartTimer { model | ratings = model.ratings ++ [ rating ] }
 
@@ -690,9 +664,6 @@ update msg model =
                     case stringField of
                         Msg.ShowHideShortcut ->
                             changeGlobalShortcutIfValid model newInputValue
-
-                        Msg.Experiment ->
-                            { model | newExperiment = newInputValue } ! []
 
                         Msg.NewMobster ->
                             { model | newMobster = newInputValue } ! []
@@ -926,8 +897,6 @@ type alias Model =
     , newMobster : String
     , combos : Keyboard.Combo.Model Msg
     , tip : Tip.Tip
-    , experiment : Maybe String
-    , newExperiment : String
     , ratings : List Int
     , secondsSinceBreak : Int
     , intervalsSinceBreak : Int
@@ -948,8 +917,6 @@ initialModel settings onMac =
     , newMobster = ""
     , combos = keyboardComboInit
     , tip = Tip.emptyTip
-    , experiment = Nothing
-    , newExperiment = ""
     , ratings = []
     , secondsSinceBreak = 0
     , intervalsSinceBreak = 0
