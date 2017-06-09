@@ -794,7 +794,7 @@ performRosterOperation operation model =
     ( updatedModel |> updateQuickRotateStateIfActive, cmd )
 
 
-changeGlobalShortcutIfValid : Model -> String -> ( Model, Cmd Msg )
+changeGlobalShortcutIfValid : { model | settings : Settings.Data } -> String -> ( { model | settings : Settings.Data }, Cmd Msg )
 changeGlobalShortcutIfValid model newInputValue =
     if GlobalShortcut.isInvalid newInputValue then
         model ! []
