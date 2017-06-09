@@ -270,31 +270,26 @@ quickRotateQueryInputView inRotateView quickRotateQuery =
                 Err reason ->
                     Decode.fail reason
     in
-    if inRotateView then
-        input
-            [ Attr.placeholder "Rotate or add mobsters"
-            , type_ "text"
-            , Attr.id quickRotateQueryId
-            , Attr.class "form-control"
-            , value quickRotateQuery
-            , onWithOptions "keydown" options dec
-            , onInput <| ChangeInput (StringField QuickRotateQuery)
-            , style [ "font-size" => "2.0rem", "background-color" => "transparent", "color" => "white" ]
-            ]
-            []
-    else
-        input
-            [ Attr.placeholder "Rotate or add mobsters"
-            , type_ "text"
-            , Attr.id quickRotateQueryId
-            , Attr.class "form-control"
-            , value quickRotateQuery
-            , onWithOptions "keydown" options dec
-            , onInput <| ChangeInput (StringField QuickRotateQuery)
-            , style [ "font-size" => "2.0rem", "background-color" => "transparent", "color" => "white" ]
-            , onFocus Msg.ShowRotationScreen
-            ]
-            []
+    input
+        [ Attr.placeholder "Rotate or add mobsters"
+        , type_ "text"
+        , Attr.id quickRotateQueryId
+        , Attr.class "form-control"
+        , value quickRotateQuery
+        , onWithOptions "keydown" options dec
+        , onInput <| ChangeInput (StringField QuickRotateQuery)
+        , style [ "font-size" => "2.0rem", "background-color" => "transparent", "color" => "white" ]
+        , if inRotateView then
+            noOpAttribute
+          else
+            onFocus Msg.ShowRotationScreen
+        ]
+        []
+
+
+noOpAttribute : Attribute msg
+noOpAttribute =
+    Attr.attribute "noOp" "noOp"
 
 
 quickRotateQueryId : String
