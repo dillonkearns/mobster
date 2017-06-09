@@ -525,7 +525,7 @@ resetIfAfterBreak model =
         model
 
 
-saveActiveMobsters : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+saveActiveMobsters : ( { model | settings : Settings.Data }, Cmd Msg ) -> ( { model | settings : Settings.Data }, Cmd Msg )
 saveActiveMobsters (( model, msg ) as updateResult) =
     updateResult
         |> withIpcMsg Ipc.SaveActiveMobstersFile (Encode.string <| Roster.currentMobsterNames model.settings.rosterData)
@@ -864,7 +864,7 @@ sendIpcCmd ipcMsg payload =
     Setup.Ports.sendIpc ( toString ipcMsg, payload )
 
 
-withIpcMsg : Ipc.Msg -> Encode.Value -> ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+withIpcMsg : Ipc.Msg -> Encode.Value -> ( model, Cmd Msg ) -> ( model, Cmd Msg )
 withIpcMsg msgIpc valueEncode ( model, cmd ) =
     model ! [ cmd, sendIpcCmd msgIpc valueEncode ]
 
