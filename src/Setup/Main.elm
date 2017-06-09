@@ -836,11 +836,6 @@ update msg model =
             { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = Animation.update animMsg model.activeMobstersStyle } ! []
 
 
-sendIpcCmd : Ipc.Msg -> Encode.Value -> Cmd msg
-sendIpcCmd ipcMsg payload =
-    Setup.Ports.sendIpc ( toString ipcMsg, payload )
-
-
 changeGlobalShortcutIfValid : Model -> String -> ( Model, Cmd Msg )
 changeGlobalShortcutIfValid model newInputValue =
     if GlobalShortcut.isInvalid newInputValue then
@@ -856,8 +851,17 @@ changeGlobalShortcutIfValid model newInputValue =
         model
             |> updateSettings
                 (\settings -> { settings | showHideShortcut = newInputValue })
-            |> Update.Extra.andThen update
-                (Msg.SendIpc Ipc.ChangeShortcut (Encode.string shortcutString))
+            |> withIpcMsg Ipc.ChangeShortcut (Encode.string shortcutString)
+
+
+sendIpcCmd : Ipc.Msg -> Encode.Value -> Cmd msg
+sendIpcCmd ipcMsg payload =
+    Setup.Ports.sendIpc ( toString ipcMsg, payload )
+
+
+withIpcMsg : Ipc.Msg -> Encode.Value -> ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+withIpcMsg msgIpc valueEncode ( model, cmd ) =
+    model ! [ cmd, sendIpcCmd msgIpc valueEncode ]
 
 
 rosterViewIsShowing : ScreenState -> Bool
