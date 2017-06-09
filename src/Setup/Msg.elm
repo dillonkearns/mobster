@@ -7,7 +7,7 @@ import Ipc
 import Json.Encode as Encode
 import Keyboard.Combo
 import Keyboard.Extra
-import Mobster.Operation exposing (MobsterOperation)
+import Roster.Operation exposing (MobsterOperation)
 import Setup.InputField exposing (..)
 
 

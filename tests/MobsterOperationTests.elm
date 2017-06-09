@@ -2,10 +2,10 @@ module MobsterOperationTests exposing (all)
 
 import Test exposing (..)
 import Expect
-import Mobster.Data as Mobster exposing (MobsterData, empty)
-import Mobster.Operation exposing (MobsterOperation(..), updateMoblist)
+import Roster.Data as Mobster exposing (MobsterData, empty)
+import Roster.Operation exposing (MobsterOperation(..), updateMoblist)
 import TestHelpers exposing (toMobsters)
-import Mobster.RpgRole exposing (..)
+import Roster.RpgRole exposing (..)
 
 
 fakeExperience =

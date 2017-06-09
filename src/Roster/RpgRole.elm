@@ -1,4 +1,4 @@
-module Mobster.RpgRole exposing (Level(..), RpgRole(..))
+module Roster.RpgRole exposing (Level(..), RpgRole(..))
 
 
 type Level

@@ -9,11 +9,11 @@ import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, on
 import Html5.DragDrop as DragDrop
 import Json.Decode as Decode
 import List.PaddedZip
-import Mobster.Data as Mobster
-import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
-import Mobster.Presenter as Presenter
-import Mobster.Rpg
 import QuickRotate
+import Roster.Data as Mobster
+import Roster.Operation as MobsterOperation exposing (MobsterOperation)
+import Roster.Presenter as Presenter
+import Roster.Rpg
 import Setup.Msg as Msg exposing (..)
 import Setup.Shortcuts as Shortcuts
 import Setup.Stylesheet exposing (CssClasses(..))

@@ -1,8 +1,8 @@
-module Mobster.RpgPresenter exposing (..)
+module Roster.RpgPresenter exposing (..)
 
-import Mobster.Data exposing (MobsterData)
-import Mobster.Rpg exposing (Experience, badges)
-import Mobster.RpgRole exposing (..)
+import Roster.Data exposing (MobsterData)
+import Roster.Rpg exposing (Experience, badges)
+import Roster.RpgRole exposing (..)
 
 
 type alias RpgMobster =
@@ -31,7 +31,7 @@ present mobsterData =
             |> List.indexedMap toRpgMobster
 
 
-experienceForRole : RpgRole -> Mobster.Rpg.RpgData -> Mobster.Rpg.Experience
+experienceForRole : RpgRole -> Roster.Rpg.RpgData -> Roster.Rpg.Experience
 experienceForRole role rpgData =
     case role of
         Driver ->

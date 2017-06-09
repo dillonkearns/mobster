@@ -1,10 +1,10 @@
-module Mobster.Operation exposing (MobsterOperation(..), add, completeGoalInRpgData, updateMoblist)
+module Roster.Operation exposing (MobsterOperation(..), add, completeGoalInRpgData, updateMoblist)
 
 import Array
 import ListHelpers exposing (..)
-import Mobster.Data exposing (Mobster, MobsterData, nextIndex, previousIndex)
-import Mobster.Rpg as Rpg exposing (RpgData)
-import Mobster.RpgRole exposing (..)
+import Roster.Data exposing (Mobster, MobsterData, nextIndex, previousIndex)
+import Roster.Rpg as Rpg exposing (RpgData)
+import Roster.RpgRole exposing (..)
 
 
 type MobsterOperation
@@ -79,7 +79,7 @@ mobsterWithCompletedGoal mobsterIndex role goalIndex mobsterData =
             Nothing
 
 
-completeGoal : Int -> RpgRole -> Int -> Mobster.Data.MobsterData -> MobsterData
+completeGoal : Int -> RpgRole -> Int -> Roster.Data.MobsterData -> MobsterData
 completeGoal mobsterIndex role goalIndex mobsterData =
     let
         withGoal =
@@ -157,7 +157,7 @@ setNextDriver newDriver mobsterData =
     { mobsterData | nextDriver = newDriver }
 
 
-reorder : List Mobster.Data.Mobster -> MobsterData -> MobsterData
+reorder : List Roster.Data.Mobster -> MobsterData -> MobsterData
 reorder shuffledMobsters mobsterData =
     { mobsterData | mobsters = shuffledMobsters, nextDriver = 0 }
 
@@ -194,7 +194,7 @@ completeGoalInRpgData role goalIndex rpgData =
                 Sponsor ->
                     rpgData.sponsor
 
-                Mobster.RpgRole.Mobber ->
+                Roster.RpgRole.Mobber ->
                     rpgData.mobber
 
         goal =

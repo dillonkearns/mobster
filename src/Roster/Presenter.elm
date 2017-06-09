@@ -1,7 +1,7 @@
-module Mobster.Presenter exposing (..)
+module Roster.Presenter exposing (..)
 
 import Array
-import Mobster.Data exposing (MobsterData, nextIndex)
+import Roster.Data exposing (MobsterData, nextIndex)
 
 
 type alias DriverNavigator =
@@ -66,7 +66,7 @@ nextDriverNavigator mobsterData =
     }
 
 
-mobsterListItemToMobster : DriverNavigator -> Int -> Mobster.Data.Mobster -> MobsterWithRole
+mobsterListItemToMobster : DriverNavigator -> Int -> Roster.Data.Mobster -> MobsterWithRole
 mobsterListItemToMobster driverNavigator index mobster =
     let
         role =

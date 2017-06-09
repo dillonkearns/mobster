@@ -1,12 +1,12 @@
-module Mobster.Data exposing (Mobster, MobsterData, containsName, currentMobsterNames, decode, decoder, empty, encoder, nextIndex, previousIndex, randomizeMobsters)
+module Roster.Data exposing (Mobster, MobsterData, containsName, currentMobsterNames, decode, decoder, empty, encoder, nextIndex, previousIndex, randomizeMobsters)
 
 import Basics.Extra exposing ((=>))
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline as Pipeline exposing (hardcoded, optional, required)
 import Json.Encode as Encode
-import Mobster.Rpg as Rpg exposing (RpgData)
 import Random
 import Random.List
+import Roster.Rpg as Rpg exposing (RpgData)
 
 
 type alias Mobster =

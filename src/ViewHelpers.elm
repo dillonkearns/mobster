@@ -2,18 +2,18 @@ module ViewHelpers exposing (..)
 
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
-import Mobster.Presenter
+import Roster.Presenter
 
 
-roleIconView : Maybe Mobster.Presenter.Role -> Html msg
+roleIconView : Maybe Roster.Presenter.Role -> Html msg
 roleIconView role =
     let
         roleIconClass =
             case role of
-                Just Mobster.Presenter.Driver ->
+                Just Roster.Presenter.Driver ->
                     "driver-icon"
 
-                Just Mobster.Presenter.Navigator ->
+                Just Roster.Presenter.Navigator ->
                     "navigator-icon"
 
                 Nothing ->

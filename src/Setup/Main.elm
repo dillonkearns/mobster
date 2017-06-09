@@ -19,11 +19,11 @@ import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard.Combo
 import Keyboard.Extra
-import Mobster.Data as Roster
-import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
-import Mobster.Presenter as Presenter
 import QuickRotate
 import Random
+import Roster.Data as Roster
+import Roster.Operation as MobsterOperation exposing (MobsterOperation)
+import Roster.Presenter as Presenter
 import Setup.Forms.ViewHelpers
 import Setup.InputField exposing (IntInputField(..))
 import Setup.Msg as Msg exposing (Msg)

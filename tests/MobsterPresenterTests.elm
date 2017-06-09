@@ -1,9 +1,9 @@
 module MobsterPresenterTests exposing (all)
 
-import Test exposing (..)
 import Expect
-import Mobster.Presenter
-import Mobster.Data as Mobster exposing (empty)
+import Roster.Data as Mobster exposing (empty)
+import Roster.Presenter
+import Test exposing (..)
 import TestHelpers exposing (toMobsters)
 
 
@@ -22,8 +22,8 @@ all =
                     expectedNavigator =
                         { name = "John Smith", index = 1 }
                 in
-                    Expect.equal (Mobster.Presenter.nextDriverNavigator startingList)
-                        { driver = expectedDriver, navigator = expectedNavigator }
+                Expect.equal (Roster.Presenter.nextDriverNavigator startingList)
+                    { driver = expectedDriver, navigator = expectedNavigator }
         , test "with three mobsters" <|
             \() ->
                 let
@@ -36,8 +36,8 @@ all =
                     expectedNavigator =
                         { name = "Bob Jones", index = 2 }
                 in
-                    Expect.equal (Mobster.Presenter.nextDriverNavigator list)
-                        { driver = expectedDriver, navigator = expectedNavigator }
+                Expect.equal (Roster.Presenter.nextDriverNavigator list)
+                    { driver = expectedDriver, navigator = expectedNavigator }
         , test "wraps at end of mobster list" <|
             \() ->
                 let
@@ -50,8 +50,8 @@ all =
                     expectedNavigator =
                         { name = "Jane Doe", index = 0 }
                 in
-                    Expect.equal (Mobster.Presenter.nextDriverNavigator list)
-                        { driver = expectedDriver, navigator = expectedNavigator }
+                Expect.equal (Roster.Presenter.nextDriverNavigator list)
+                    { driver = expectedDriver, navigator = expectedNavigator }
         , test "is duplicated with one mobster" <|
             \() ->
                 let
@@ -64,8 +64,8 @@ all =
                     expectedNavigator =
                         { name = "Jane Doe", index = 0 }
                 in
-                    Expect.equal (Mobster.Presenter.nextDriverNavigator startingList)
-                        { driver = expectedDriver, navigator = expectedNavigator }
+                Expect.equal (Roster.Presenter.nextDriverNavigator startingList)
+                    { driver = expectedDriver, navigator = expectedNavigator }
         , test "uses default with no mobsters" <|
             \() ->
                 let
@@ -78,6 +78,6 @@ all =
                     expectedNavigator =
                         { name = "", index = -1 }
                 in
-                    Expect.equal (Mobster.Presenter.nextDriverNavigator startingList)
-                        { driver = expectedDriver, navigator = expectedNavigator }
+                Expect.equal (Roster.Presenter.nextDriverNavigator startingList)
+                    { driver = expectedDriver, navigator = expectedNavigator }
         ]

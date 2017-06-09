@@ -3,7 +3,7 @@ module Setup.RpgIcons exposing (mobsterCar, mobsterIcon)
 import Html
 import Html.Attributes exposing (attribute)
 import Html.CssHelpers
-import Mobster.RpgRole exposing (..)
+import Roster.RpgRole exposing (..)
 import Setup.Stylesheet exposing (CssClasses(..))
 import Svg exposing (..)
 import Svg.Attributes exposing (..)

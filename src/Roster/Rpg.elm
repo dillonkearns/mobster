@@ -1,7 +1,7 @@
-module Mobster.Rpg exposing (Experience, Goal, RpgData, badges, init)
+module Roster.Rpg exposing (Experience, Goal, RpgData, badges, init)
 
 import ListHelpers exposing (compact)
-import Mobster.RpgRole exposing (..)
+import Roster.RpgRole exposing (..)
 
 
 type alias Experience =

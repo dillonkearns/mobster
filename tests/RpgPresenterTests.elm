@@ -2,13 +2,13 @@ module RpgPresenterTests exposing (all)
 
 import Test exposing (..)
 import Expect
-import Mobster.RpgPresenter as RpgPresenter
-import Mobster.Data as MobsterData exposing (empty)
-import Mobster.Rpg as Rpg exposing (init)
+import Roster.RpgPresenter as RpgPresenter
+import Roster.Data as MobsterData exposing (empty)
+import Roster.Rpg as Rpg exposing (init)
 import TestHelpers exposing (toMobstersNoExperience)
-import Mobster.Rpg as Rpg
-import Mobster.Data as MobsterData
-import Mobster.RpgRole exposing (..)
+import Roster.Rpg as Rpg
+import Roster.Data as MobsterData
+import Roster.RpgRole exposing (..)
 
 
 all : Test

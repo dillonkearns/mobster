@@ -1,12 +1,12 @@
 module SettingsDecodeTests exposing (all)
 
-import Test exposing (..)
-import Test.Extra exposing (..)
-import Mobster.Data exposing (empty)
-import Setup.Settings
-import TestHelpers exposing (toMobsters)
 import Expect
 import Json.Decode as Decode
+import Roster.Data exposing (empty)
+import Setup.Settings
+import Test exposing (..)
+import Test.Extra exposing (..)
+import TestHelpers exposing (toMobsters)
 
 
 all : Test
@@ -24,7 +24,7 @@ all =
                       "breakDuration": 5,
                       "intervalsPerBreak": 6,
                       "showHideShortcut": "foo"
-                    }""", DecodesTo (Setup.Settings.Data 5 5 6 Mobster.Data.empty "foo") )
+                    }""", DecodesTo (Setup.Settings.Data 5 5 6 Roster.Data.empty "foo") )
             ]
         , describeDecoder "MobsterData"
             Setup.Settings.decoder

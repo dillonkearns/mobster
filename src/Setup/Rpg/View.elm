@@ -7,10 +7,10 @@ import Html.CssHelpers
 import Html.Events exposing (keyCode, on, onCheck, onClick, onDoubleClick, onInput, onSubmit)
 import Html.Keyed
 import List.Extra
-import Mobster.Data exposing (..)
-import Mobster.Operation as MobsterOperation exposing (MobsterOperation)
-import Mobster.Rpg as Rpg exposing (RpgData)
-import Mobster.RpgPresenter
+import Roster.Data exposing (..)
+import Roster.Operation as MobsterOperation exposing (MobsterOperation)
+import Roster.Rpg as Rpg exposing (RpgData)
+import Roster.RpgPresenter
 import Setup.Msg exposing (..)
 import Setup.RpgIcons
 import Setup.Stylesheet exposing (CssClasses(..))

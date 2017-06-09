@@ -1,11 +1,10 @@
 module RpgTests exposing (all)
 
 import Expect
-import Mobster.Rpg as Rpg exposing (..)
-import Mobster.RpgRole exposing (..)
-import Mobster.Rpg
+import Roster.Operation
+import Roster.Rpg as Rpg exposing (..)
+import Roster.RpgRole exposing (..)
 import Test exposing (..)
-import Mobster.Operation
 
 
 all : Test
@@ -17,8 +16,8 @@ all =
                     rpgData =
                         Rpg.init
                 in
-                    Expect.true (toString rpgData)
-                        (List.all (not << .complete) rpgData.driver)
+                Expect.true (toString rpgData)
+                    (List.all (not << .complete) rpgData.driver)
         , test "complete navigator goal" <|
             \() ->
                 let
@@ -40,9 +39,9 @@ all =
 
                     withCompleted =
                         rpgData
-                            |> Mobster.Operation.completeGoalInRpgData Navigator 0
+                            |> Roster.Operation.completeGoalInRpgData Navigator 0
                 in
-                    Expect.equal withCompleted expectedRpgData
+                Expect.equal withCompleted expectedRpgData
         , test "complete sponsor goal" <|
             \() ->
                 let
@@ -64,9 +63,9 @@ all =
 
                     withCompleted =
                         rpgData
-                            |> Mobster.Operation.completeGoalInRpgData Sponsor 0
+                            |> Roster.Operation.completeGoalInRpgData Sponsor 0
                 in
-                    Expect.equal withCompleted expectedRpgData
+                Expect.equal withCompleted expectedRpgData
         , describe "badges"
             [ test "with no complete goals" <|
                 \() ->
@@ -79,7 +78,7 @@ all =
                             , sponsor = [ { complete = False, description = "sponsor goal" } ]
                             }
                     in
-                        Expect.equal (Mobster.Rpg.badges rpgData) []
+                    Expect.equal (Rpg.badges rpgData) []
             , test "with one role badge complete" <|
                 \() ->
                     let
@@ -95,7 +94,7 @@ all =
                             , sponsor = [ { complete = False, description = "sponsor goal" } ]
                             }
                     in
-                        Expect.equal (Mobster.Rpg.badges rpgData) [ Driver ]
+                    Expect.equal (Rpg.badges rpgData) [ Driver ]
             , test "with multiple role badges complete" <|
                 \() ->
                     let
@@ -110,11 +109,11 @@ all =
                                 , { complete = True, description = "nav goal 2" }
                                 , { complete = True, description = "nav goal 3" }
                                 ]
-                            , mobber = (List.repeat 3 { complete = True, description = "mobber goal" })
+                            , mobber = List.repeat 3 { complete = True, description = "mobber goal" }
                             , researcher = [ { complete = False, description = "researcher goal" } ]
                             , sponsor = [ { complete = False, description = "sponsor goal" } ]
                             }
                     in
-                        Expect.equal (Mobster.Rpg.badges rpgData) [ Driver, Navigator, Mobber ]
+                    Expect.equal (Rpg.badges rpgData) [ Driver, Navigator, Mobber ]
             ]
         ]

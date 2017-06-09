@@ -1,7 +1,7 @@
 module TestHelpers exposing (..)
 
-import Mobster.Rpg as Rpg
-import Mobster.Data as MobsterData
+import Roster.Rpg as Rpg
+import Roster.Data as MobsterData
 
 
 toMobsters : List String -> List MobsterData.Mobster
