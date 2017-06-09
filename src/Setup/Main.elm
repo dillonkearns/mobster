@@ -531,7 +531,7 @@ saveActiveMobsters (( model, msg ) as updateResult) =
         |> withIpcMsg Ipc.SaveActiveMobstersFile (Encode.string <| Roster.currentMobsterNames model.settings.rosterData)
 
 
-updateSettings : (Settings.Data -> Settings.Data) -> Model -> ( Model, Cmd Msg )
+updateSettings : (Settings.Data -> Settings.Data) -> { model | settings : Settings.Data } -> ( { model | settings : Settings.Data }, Cmd Msg )
 updateSettings settingsUpdater ({ settings } as model) =
     let
         updatedSettings =
