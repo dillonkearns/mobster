@@ -783,12 +783,15 @@ performRosterOperation :
     -> { model | settings : Settings.Data, screenState : ScreenState, quickRotateState : QuickRotate.State }
     -> ( { model | settings : Settings.Data, screenState : ScreenState, quickRotateState : QuickRotate.State }, Cmd Msg )
 performRosterOperation operation model =
-    model
-        |> updateSettings
-            (\settings -> { settings | rosterData = MobsterOperation.updateMoblist operation model.settings.rosterData })
-        |> saveActiveMobsters
-        |> focusQuickRotateInputIfVisible
-        |> updateQuickRotateStateIfActive
+    let
+        ( updatedModel, cmd ) =
+            model
+                |> updateSettings
+                    (\settings -> { settings | rosterData = MobsterOperation.updateMoblist operation model.settings.rosterData })
+                |> saveActiveMobsters
+                |> focusQuickRotateInputIfVisible
+    in
+    ( updatedModel |> updateQuickRotateStateIfActive, cmd )
 
 
 changeGlobalShortcutIfValid : Model -> String -> ( Model, Cmd Msg )
@@ -848,13 +851,13 @@ focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
 
 
 updateQuickRotateStateIfActive :
-    ( { model | screenState : ScreenState, settings : Settings.Data, quickRotateState : QuickRotate.State }, Cmd Msg )
-    -> ( { model | screenState : ScreenState, settings : Settings.Data, quickRotateState : QuickRotate.State }, Cmd Msg )
-updateQuickRotateStateIfActive (( model, cmd ) as updateResult) =
+    { model | screenState : ScreenState, settings : Settings.Data, quickRotateState : QuickRotate.State }
+    -> { model | screenState : ScreenState, settings : Settings.Data, quickRotateState : QuickRotate.State }
+updateQuickRotateStateIfActive model =
     if model.screenState == Continue True then
-        ( { model | quickRotateState = QuickRotate.update model.quickRotateState.query (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState }, cmd )
+        { model | quickRotateState = QuickRotate.update model.quickRotateState.query (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState }
     else
-        updateResult
+        model
 
 
 quickRotateQueryId : String
