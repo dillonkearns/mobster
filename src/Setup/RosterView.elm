@@ -46,7 +46,7 @@ reorderButtonView mobster =
     in
     span []
         [ span [ Attr.class "btn-group btn-group-xs" ]
-            [ button [ Attr.class "btn btn-small btn-default", onClick (UpdateMobsterData (MobsterOperation.Bench mobsterIndex)) ] [ text "x" ]
+            [ button [ Attr.class "btn btn-small btn-default", onClick (UpdateRosterData (MobsterOperation.Bench mobsterIndex)) ] [ text "x" ]
             ]
         ]
 
@@ -91,7 +91,7 @@ mobsterView dragDrop showHint activeMobstersStyle mobster =
         [ span (DragDrop.draggable DragDropMsg (ActiveMobster mobster.index) ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobster.index))
             [ span [ Attr.class "active-hover" ] [ span [ Attr.class "text-success fa fa-caret-right", style [ "opacity" => displayType ] ] [] ]
             , span (mobsterCellStyle ++ Animation.render activeMobstersStyle)
-                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateMobsterData (MobsterOperation.SetNextDriver mobster.index)) ]
+                [ span [ classList [ ( DragBelow, inactiveOverActiveStyle ) ], Attr.classList [ "text-info" => (mobster.role == Just Presenter.Driver) ], Attr.class "active-mobster", onClick (UpdateRosterData (MobsterOperation.SetNextDriver mobster.index)) ]
                     [ text mobster.name
                     , hint
                     , ViewHelpers.roleIconView mobster.role
@@ -107,26 +107,26 @@ rotationView :
     -> { query : String, selection : QuickRotate.Selection }
     ->
         { inactiveMobsters :
-            List { name : String, rpgData : Mobster.Rpg.RpgData }
+            List { name : String, rpgData : Roster.Rpg.RpgData }
         , mobsters : List Mobster.Mobster
         , nextDriver : Int
         }
     -> Animation.State
     -> List (Html.Attribute Msg)
     -> Html Msg
-rotationView dragDrop quickRotateState mobsterData activeMobstersStyle diceAnimationStyle =
+rotationView dragDrop quickRotateState rosterData activeMobstersStyle diceAnimationStyle =
     let
         mobsters =
-            Presenter.mobsters mobsterData
+            Presenter.mobsters rosterData
 
         newMobsterDisabled =
-            preventAddingMobster mobsterData.mobsters quickRotateState.query
+            preventAddingMobster rosterData.mobsters quickRotateState.query
     in
     div [ Attr.class "row" ]
         [ div [ Attr.class "col-md-11" ]
             [ table [ Attr.class "table h4", style [ "margin-top" => "0" ] ]
                 [ tbody []
-                    (newMobsterRowView True quickRotateState newMobsterDisabled :: rosterRowsView dragDrop quickRotateState mobsterData activeMobstersStyle)
+                    (newMobsterRowView True quickRotateState newMobsterDisabled :: rosterRowsView dragDrop quickRotateState rosterData activeMobstersStyle)
                 ]
             ]
         , div [ Attr.class "well text-center col-md-1" ]
@@ -144,25 +144,25 @@ rosterRowsView :
     -> { query : String, selection : QuickRotate.Selection }
     ->
         { inactiveMobsters :
-            List { rpgData : Mobster.Rpg.RpgData, name : String }
+            List { rpgData : Roster.Rpg.RpgData, name : String }
         , nextDriver : Int
         , mobsters : List Mobster.Mobster
         }
     -> Animation.State
     -> List (Html Msg)
-rosterRowsView dragDrop quickRotateState mobsterData activeMobstersStyle =
+rosterRowsView dragDrop quickRotateState rosterData activeMobstersStyle =
     let
         inactiveMobsters =
-            mobsterData.inactiveMobsters
+            rosterData.inactiveMobsters
 
         matches =
             QuickRotate.matches (inactiveMobsters |> List.map .name) quickRotateState
 
         mobsters =
-            Presenter.mobsters mobsterData
+            Presenter.mobsters rosterData
 
         newMobsterDisabled =
-            preventAddingMobster mobsterData.mobsters quickRotateState.query
+            preventAddingMobster rosterData.mobsters quickRotateState.query
     in
     List.PaddedZip.paddedZip
         (List.indexedMap (inactiveMobsterView False quickRotateState.query quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
@@ -239,10 +239,10 @@ inactiveMobsterView inRotateView quickRotateQuery quickRotateSelection matches m
         , mobsterCellStyle2
         ]
         [ span []
-            [ span [ Attr.class textClasses, onClick (UpdateMobsterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
+            [ span [ Attr.class textClasses, onClick (UpdateRosterData (MobsterOperation.RotateIn mobsterIndex)) ] [ text inactiveMobster ]
             , Shortcuts.letterHint mobsterIndex
             , div [ Attr.class "btn-group btn-group-xs", style [ "margin-left" => "0.667em" ] ]
-                [ button [ Attr.class "btn btn-small btn-danger", onClick (UpdateMobsterData (MobsterOperation.Remove mobsterIndex)) ] [ text "x" ]
+                [ button [ Attr.class "btn btn-small btn-danger", onClick (UpdateRosterData (MobsterOperation.Remove mobsterIndex)) ] [ text "x" ]
                 ]
             ]
         ]

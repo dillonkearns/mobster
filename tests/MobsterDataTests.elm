@@ -32,7 +32,7 @@ all =
                         |> Roster.Data.containsName "Jane"
                         |> Expect.equal False
             ]
-        , describeDecoder "MobsterData"
+        , describeDecoder "RosterData"
             Roster.Data.decoder
             [ ( "", FailsToDecode )
             , ( """{

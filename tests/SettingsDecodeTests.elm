@@ -15,7 +15,7 @@ all =
         [ describeDecoder "Settings"
             Setup.Settings.decoder
             [ ( """{
-                      "mobsterData": {
+                      "rosterData": {
                         "mobsters": [],
                         "inactiveMobsters": [],
                         "nextDriver": 0
@@ -26,10 +26,10 @@ all =
                       "showHideShortcut": "foo"
                     }""", DecodesTo (Setup.Settings.Data 5 5 6 Roster.Data.empty "foo") )
             ]
-        , describeDecoder "MobsterData"
+        , describeDecoder "RosterData"
             Setup.Settings.decoder
             [ ( """{
-                      "mobsterData": {
+                      "rosterData": {
                         "mobsters": ["Uhura", "Sulu"],
                         "inactiveMobsters": ["Kirk", "Spock"],
                         "nextDriver": 0

@@ -3,11 +3,11 @@ module RpgPresenterTests exposing (all)
 import Test exposing (..)
 import Expect
 import Roster.RpgPresenter as RpgPresenter
-import Roster.Data as MobsterData exposing (empty)
+import Roster.Data as RosterData exposing (empty)
 import Roster.Rpg as Rpg exposing (init)
 import TestHelpers exposing (toMobstersNoExperience)
 import Roster.Rpg as Rpg
-import Roster.Data as MobsterData
+import Roster.Data as RosterData
 import Roster.RpgRole exposing (..)
 
 
@@ -75,7 +75,7 @@ withExperience =
                     rpgData =
                         { init | driver = driverGoals }
                 in
-                    { empty | mobsters = [ MobsterData.Mobster "Sulu" rpgData ] }
+                    { empty | mobsters = [ RosterData.Mobster "Sulu" rpgData ] }
                         |> RpgPresenter.present
                         |> Expect.equal
                             [ RpgPresenter.RpgMobster Driver driverGoals "Sulu" 0 ]
@@ -95,11 +95,11 @@ withExperience =
                 in
                     { empty
                         | mobsters =
-                            [ MobsterData.Mobster "Sulu" fakeExperience
-                            , MobsterData.Mobster "Kirk" fakeExperience
-                            , MobsterData.Mobster "Spock" fakeExperience
-                            , MobsterData.Mobster "Uhura" fakeExperience
-                            , MobsterData.Mobster "Bones" fakeExperience
+                            [ RosterData.Mobster "Sulu" fakeExperience
+                            , RosterData.Mobster "Kirk" fakeExperience
+                            , RosterData.Mobster "Spock" fakeExperience
+                            , RosterData.Mobster "Uhura" fakeExperience
+                            , RosterData.Mobster "Bones" fakeExperience
                             ]
                     }
                         |> RpgPresenter.present
@@ -128,11 +128,11 @@ withExperience =
                 in
                     { empty
                         | mobsters =
-                            [ MobsterData.Mobster "Sulu" fakeExperience
-                            , MobsterData.Mobster "Kirk" fakeExperience
-                            , MobsterData.Mobster "Spock" fakeExperience
-                            , MobsterData.Mobster "Uhura" fakeExperience
-                            , MobsterData.Mobster "Bones" fakeExperience
+                            [ RosterData.Mobster "Sulu" fakeExperience
+                            , RosterData.Mobster "Kirk" fakeExperience
+                            , RosterData.Mobster "Spock" fakeExperience
+                            , RosterData.Mobster "Uhura" fakeExperience
+                            , RosterData.Mobster "Bones" fakeExperience
                             ]
                     }
                         |> RpgPresenter.present

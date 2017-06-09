@@ -1,4 +1,4 @@
-module Roster.Data exposing (Mobster, MobsterData, containsName, currentMobsterNames, decode, decoder, empty, encoder, nextIndex, previousIndex, randomizeMobsters)
+module Roster.Data exposing (Mobster, RosterData, containsName, currentMobsterNames, decode, decoder, empty, encoder, nextIndex, previousIndex, randomizeMobsters)
 
 import Basics.Extra exposing ((=>))
 import Json.Decode as Decode exposing (Decoder)
@@ -15,19 +15,19 @@ type alias Mobster =
     }
 
 
-type alias MobsterData =
+type alias RosterData =
     { mobsters : List Mobster
     , inactiveMobsters : List Mobster
     , nextDriver : Int
     }
 
 
-encoder : MobsterData -> Encode.Value
-encoder mobsterData =
+encoder : RosterData -> Encode.Value
+encoder rosterData =
     Encode.object
-        [ "mobsters" => Encode.list (List.map encodeMobster mobsterData.mobsters)
-        , "inactiveMobsters" => Encode.list (List.map encodeMobster mobsterData.inactiveMobsters)
-        , "nextDriver" => Encode.int mobsterData.nextDriver
+        [ "mobsters" => Encode.list (List.map encodeMobster rosterData.mobsters)
+        , "inactiveMobsters" => Encode.list (List.map encodeMobster rosterData.inactiveMobsters)
+        , "nextDriver" => Encode.int rosterData.nextDriver
         ]
 
 
@@ -36,14 +36,14 @@ encodeMobster mobster =
     Encode.string mobster.name
 
 
-empty : MobsterData
+empty : RosterData
 empty =
     { mobsters = [], inactiveMobsters = [], nextDriver = 0 }
 
 
-decoder : Decoder MobsterData
+decoder : Decoder RosterData
 decoder =
-    Pipeline.decode MobsterData
+    Pipeline.decode RosterData
         |> required "mobsters" (Decode.list Decode.string |> Decode.map mobsterNamesToMobsters)
         |> optional "inactiveMobsters" (Decode.list Decode.string |> Decode.map mobsterNamesToMobsters) []
         |> required "nextDriver" Decode.int
@@ -59,19 +59,19 @@ stringToMobster name =
     Mobster name Rpg.init
 
 
-decode : Encode.Value -> Result String MobsterData
+decode : Encode.Value -> Result String RosterData
 decode data =
     Decode.decodeValue decoder data
 
 
-randomizeMobsters : MobsterData -> Random.Generator (List Mobster)
-randomizeMobsters mobsterData =
-    Random.List.shuffle mobsterData.mobsters
+randomizeMobsters : RosterData -> Random.Generator (List Mobster)
+randomizeMobsters rosterData =
+    Random.List.shuffle rosterData.mobsters
 
 
-currentMobsterNames : MobsterData -> String
-currentMobsterNames mobsterData =
-    mobsterData.mobsters
+currentMobsterNames : RosterData -> String
+currentMobsterNames rosterData =
+    rosterData.mobsters
         |> List.map .name
         |> String.join ", "
 
@@ -84,16 +84,16 @@ nameExists mobster list =
         |> List.member (String.toLower mobster)
 
 
-containsName : String -> MobsterData -> Bool
-containsName string mobsterData =
-    nameExists string mobsterData.mobsters || nameExists string mobsterData.inactiveMobsters
+containsName : String -> RosterData -> Bool
+containsName string rosterData =
+    nameExists string rosterData.mobsters || nameExists string rosterData.inactiveMobsters
 
 
-previousIndex : Int -> MobsterData -> Int
-previousIndex currentIndex mobsterData =
+previousIndex : Int -> RosterData -> Int
+previousIndex currentIndex rosterData =
     let
         mobSize =
-            List.length mobsterData.mobsters
+            List.length rosterData.mobsters
 
         index =
             if mobSize == 0 then
@@ -104,11 +104,11 @@ previousIndex currentIndex mobsterData =
     index
 
 
-nextIndex : Int -> MobsterData -> Int
-nextIndex currentIndex mobsterData =
+nextIndex : Int -> RosterData -> Int
+nextIndex currentIndex rosterData =
     let
         mobSize =
-            List.length mobsterData.mobsters
+            List.length rosterData.mobsters
 
         index =
             if mobSize == 0 then

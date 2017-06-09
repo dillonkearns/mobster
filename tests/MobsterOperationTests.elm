@@ -2,7 +2,7 @@ module MobsterOperationTests exposing (all)
 
 import Test exposing (..)
 import Expect
-import Roster.Data as Mobster exposing (MobsterData, empty)
+import Roster.Data as Mobster exposing (RosterData, empty)
 import Roster.Operation exposing (MobsterOperation(..), updateMoblist)
 import TestHelpers exposing (toMobsters)
 import Roster.RpgRole exposing (..)
@@ -198,7 +198,7 @@ addCases =
         ]
 
 
-testOperation : String -> MobsterData -> MobsterOperation -> MobsterData -> Test
+testOperation : String -> RosterData -> MobsterOperation -> RosterData -> Test
 testOperation description startList operation expectedResult =
     test description <|
         \() ->
@@ -207,7 +207,7 @@ testOperation description startList operation expectedResult =
                 |> Expect.equal expectedResult
 
 
-testOperations : String -> MobsterData -> List MobsterOperation -> MobsterData -> Test
+testOperations : String -> RosterData -> List MobsterOperation -> RosterData -> Test
 testOperations description startList operations expectedResult =
     test description <|
         \() ->

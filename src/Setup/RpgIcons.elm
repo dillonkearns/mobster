@@ -30,7 +30,7 @@ mobsterIcon role =
                 Sponsor ->
                     ( RpgIcon2, sponsorIcon )
 
-                Mobster.RpgRole.Mobber ->
+                Roster.RpgRole.Mobber ->
                     ( RpgIcon1, mobberIcon )
     in
     Html.span [ class [ cssClass ] ] [ icon ]

@@ -2,7 +2,7 @@ module Roster.Operation exposing (MobsterOperation(..), add, completeGoalInRpgDa
 
 import Array
 import ListHelpers exposing (..)
-import Roster.Data exposing (Mobster, MobsterData, nextIndex, previousIndex)
+import Roster.Data exposing (Mobster, RosterData, nextIndex, previousIndex)
 import Roster.Rpg as Rpg exposing (RpgData)
 import Roster.RpgRole exposing (..)
 
@@ -20,50 +20,50 @@ type MobsterOperation
     | CompleteGoal Int RpgRole Int
 
 
-updateMoblist : MobsterOperation -> MobsterData -> MobsterData
-updateMoblist mobsterOperation mobsterData =
+updateMoblist : MobsterOperation -> RosterData -> RosterData
+updateMoblist mobsterOperation rosterData =
     case mobsterOperation of
         Move fromIndex toIndex ->
             let
                 updatedMobsters =
-                    move fromIndex toIndex mobsterData.mobsters
+                    move fromIndex toIndex rosterData.mobsters
             in
-            { mobsterData | mobsters = updatedMobsters }
+            { rosterData | mobsters = updatedMobsters }
 
         Remove mobsterIndex ->
-            remove mobsterIndex mobsterData
+            remove mobsterIndex rosterData
 
         SetNextDriver index ->
-            setNextDriver index mobsterData
+            setNextDriver index rosterData
 
         NextTurn ->
-            setNextDriver (nextIndex mobsterData.nextDriver mobsterData) mobsterData
+            setNextDriver (nextIndex rosterData.nextDriver rosterData) rosterData
 
         RewindTurn ->
-            setNextDriver (previousIndex mobsterData.nextDriver mobsterData) mobsterData
+            setNextDriver (previousIndex rosterData.nextDriver rosterData) rosterData
 
         Bench mobsterIndex ->
-            bench mobsterIndex mobsterData
+            bench mobsterIndex rosterData
 
         RotateIn mobsterIndex ->
-            rotateIn mobsterIndex mobsterData
+            rotateIn mobsterIndex rosterData
 
         Add mobsterName ->
-            add mobsterName mobsterData
+            add mobsterName rosterData
 
         Reorder reorderedMobsters ->
-            reorder reorderedMobsters mobsterData
+            reorder reorderedMobsters rosterData
 
         CompleteGoal mobsterIndex role goalIndex ->
-            mobsterData
+            rosterData
                 |> completeGoal mobsterIndex role goalIndex
 
 
 mobsterWithCompletedGoal : Int -> RpgRole -> Int -> List Mobster -> Maybe Mobster
-mobsterWithCompletedGoal mobsterIndex role goalIndex mobsterData =
+mobsterWithCompletedGoal mobsterIndex role goalIndex rosterData =
     let
         maybeMobster =
-            mobsterData
+            rosterData
                 |> Array.fromList
                 |> Array.get mobsterIndex
     in
@@ -79,32 +79,32 @@ mobsterWithCompletedGoal mobsterIndex role goalIndex mobsterData =
             Nothing
 
 
-completeGoal : Int -> RpgRole -> Int -> Roster.Data.MobsterData -> MobsterData
-completeGoal mobsterIndex role goalIndex mobsterData =
+completeGoal : Int -> RpgRole -> Int -> Roster.Data.RosterData -> RosterData
+completeGoal mobsterIndex role goalIndex rosterData =
     let
         withGoal =
-            mobsterWithCompletedGoal mobsterIndex role goalIndex mobsterData.mobsters
+            mobsterWithCompletedGoal mobsterIndex role goalIndex rosterData.mobsters
 
         updatedMobsters =
             case withGoal of
                 Just mobsterWithGoal ->
-                    mobsterData.mobsters
+                    rosterData.mobsters
                         |> Array.fromList
                         |> Array.set mobsterIndex mobsterWithGoal
                         |> Array.toList
 
                 Nothing ->
-                    mobsterData.mobsters
+                    rosterData.mobsters
     in
-    { mobsterData | mobsters = updatedMobsters }
+    { rosterData | mobsters = updatedMobsters }
 
 
-add : String -> MobsterData -> MobsterData
+add : String -> RosterData -> RosterData
 add mobster list =
     { list | mobsters = List.append list.mobsters [ { name = mobster, rpgData = Rpg.init } ] }
 
 
-rotateIn : Int -> MobsterData -> MobsterData
+rotateIn : Int -> RosterData -> RosterData
 rotateIn index list =
     let
         ( maybeMobsterToMove, inactiveWithoutNewlyActive ) =
@@ -125,7 +125,7 @@ rotateIn index list =
             list
 
 
-bench : Int -> MobsterData -> MobsterData
+bench : Int -> RosterData -> RosterData
 bench index list =
     let
         ( maybeMobsterToBench, activeWithoutBenchedMobster ) =
@@ -147,34 +147,34 @@ bench index list =
             list
 
 
-remove : Int -> MobsterData -> MobsterData
+remove : Int -> RosterData -> RosterData
 remove index list =
     { list | inactiveMobsters = removeFromListAt index list.inactiveMobsters }
 
 
-setNextDriver : Int -> MobsterData -> MobsterData
-setNextDriver newDriver mobsterData =
-    { mobsterData | nextDriver = newDriver }
+setNextDriver : Int -> RosterData -> RosterData
+setNextDriver newDriver rosterData =
+    { rosterData | nextDriver = newDriver }
 
 
-reorder : List Roster.Data.Mobster -> MobsterData -> MobsterData
-reorder shuffledMobsters mobsterData =
-    { mobsterData | mobsters = shuffledMobsters, nextDriver = 0 }
+reorder : List Roster.Data.Mobster -> RosterData -> RosterData
+reorder shuffledMobsters rosterData =
+    { rosterData | mobsters = shuffledMobsters, nextDriver = 0 }
 
 
-setNextDriverInBounds : MobsterData -> MobsterData
-setNextDriverInBounds mobsterData =
+setNextDriverInBounds : RosterData -> RosterData
+setNextDriverInBounds rosterData =
     let
         maxDriverIndex =
-            List.length mobsterData.mobsters - 1
+            List.length rosterData.mobsters - 1
 
         indexInBounds =
-            if mobsterData.nextDriver > maxDriverIndex && mobsterData.nextDriver > 0 then
+            if rosterData.nextDriver > maxDriverIndex && rosterData.nextDriver > 0 then
                 0
             else
-                mobsterData.nextDriver
+                rosterData.nextDriver
     in
-    { mobsterData | nextDriver = indexInBounds }
+    { rosterData | nextDriver = indexInBounds }
 
 
 completeGoalInRpgData : RpgRole -> Int -> RpgData -> RpgData

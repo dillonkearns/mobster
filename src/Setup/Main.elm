@@ -48,9 +48,9 @@ import Update.Extra
     Html.CssHelpers.withNamespace "setup"
 
 
-shuffleMobstersCmd : Roster.MobsterData -> Cmd Msg
-shuffleMobstersCmd mobsterData =
-    Random.generate reorderOperation (Roster.randomizeMobsters mobsterData)
+shuffleMobstersCmd : Roster.RosterData -> Cmd Msg
+shuffleMobstersCmd rosterData =
+    Random.generate reorderOperation (Roster.randomizeMobsters rosterData)
 
 
 type alias DragDropModel =
@@ -66,7 +66,7 @@ startTimerFlags : Bool -> Model -> Encode.Value
 startTimerFlags isBreak model =
     let
         { driver, navigator } =
-            Presenter.nextDriverNavigator model.settings.mobsterData
+            Presenter.nextDriverNavigator model.settings.rosterData
 
         minutes =
             if isBreak then
@@ -231,7 +231,7 @@ continueView showRotation model =
         mainView =
             if showRotation then
                 div []
-                    [ RosterView.rotationView model.dragDrop model.quickRotateState model.settings.mobsterData model.activeMobstersStyle (Animation.render model.dieStyle)
+                    [ RosterView.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle)
                     , button [ style [ "margin-bottom" => "12px" ], Attr.class "btn btn-small btn-default pull-right", onClick Msg.ShowRotationScreen ]
                         [ span [ class [ BufferRight ] ] [ text "Back to tip view" ], span [ Attr.class "fa fa-arrow-circle-o-left" ] [] ]
                     ]
@@ -310,18 +310,18 @@ nextDriverNavigatorView : Model -> Html Msg
 nextDriverNavigatorView model =
     let
         driverNavigator =
-            Presenter.nextDriverNavigator model.settings.mobsterData
+            Presenter.nextDriverNavigator model.settings.rosterData
 
         fastForwardButton =
             div [ Attr.class "col-md-1 col-sm-1 text-default" ]
-                [ span [ Attr.class "btn btn-sm btn-default btn-block", style [ "font-size" => "23px", "padding-right" => "4px" ], class [ ShowOnParentHover ], onClick <| Msg.UpdateMobsterData MobsterOperation.NextTurn ]
+                [ span [ Attr.class "btn btn-sm btn-default btn-block", style [ "font-size" => "23px", "padding-right" => "4px" ], class [ ShowOnParentHover ], onClick <| Msg.UpdateRosterData MobsterOperation.NextTurn ]
                     [ span [ Attr.class "fa fa-fast-forward text-warning" ] []
                     ]
                 ]
 
         rewindButton =
             div [ Attr.class "col-md-1 col-sm-1 text-default" ]
-                [ span [ Attr.class "btn btn-sm btn-default btn-block", style [ "font-size" => "23px", "padding-right" => "4px" ], class [ ShowOnParentHover ], onClick <| Msg.UpdateMobsterData MobsterOperation.RewindTurn ]
+                [ span [ Attr.class "btn btn-sm btn-default btn-block", style [ "font-size" => "23px", "padding-right" => "4px" ], class [ ShowOnParentHover ], onClick <| Msg.UpdateRosterData MobsterOperation.RewindTurn ]
                     [ span [ Attr.class "fa fa-fast-backward text-warning" ] []
                     ]
                 ]
@@ -350,7 +350,7 @@ dnView mobster role =
                 [ Attr.class "btn btn-sm btn-default"
                 , style [ "font-size" => "23px" ]
                 , class [ ShowOnParentHover, BufferRight ]
-                , onClick <| Msg.UpdateMobsterData (MobsterOperation.Bench mobster.index)
+                , onClick <| Msg.UpdateRosterData (MobsterOperation.Bench mobster.index)
                 ]
                 [ span [ Attr.class "fa fa-user-times text-danger", style [ "padding-right" => "4px" ] ] []
                 , text " Away"
@@ -395,7 +395,7 @@ configureView model =
                 , breakDurationInputView model.settings.breakDuration
                 , shortcutInputView model.settings.showHideShortcut model.onMac
                 ]
-            , div [ Attr.class "col-md-8 col-sm-12" ] [ RosterView.rotationView model.dragDrop model.quickRotateState model.settings.mobsterData model.activeMobstersStyle (Animation.render model.dieStyle) ]
+            , div [ Attr.class "col-md-8 col-sm-12" ] [ RosterView.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle) ]
             ]
         , div []
             [ h3 [] [ text "Getting Started" ]
@@ -469,11 +469,11 @@ shortcutInputView currentShortcut onMac =
         ]
 
 
-addMobsterInputView : String -> Roster.MobsterData -> Html Msg
-addMobsterInputView newMobster mobsterData =
+addMobsterInputView : String -> Roster.RosterData -> Html Msg
+addMobsterInputView newMobster rosterData =
     let
         hasError =
-            Roster.containsName newMobster mobsterData
+            Roster.containsName newMobster rosterData
     in
     div [ Attr.class "row" ]
         [ div [ Attr.class "input-group" ]
@@ -499,7 +499,7 @@ view model =
                     continueView showRotation model
 
                 Rpg rpgState ->
-                    Setup.Rpg.View.rpgView rpgState model.settings.mobsterData
+                    Setup.Rpg.View.rpgView rpgState model.settings.rosterData
     in
     div [] [ Navbar.view model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
 
@@ -528,7 +528,7 @@ resetIfAfterBreak model =
 saveActiveMobsters : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 saveActiveMobsters (( model, msg ) as updateResult) =
     updateResult
-        |> Update.Extra.andThen update (Msg.SendIpc Ipc.SaveActiveMobstersFile (Encode.string <| Roster.currentMobsterNames model.settings.mobsterData))
+        |> Update.Extra.andThen update (Msg.SendIpc Ipc.SaveActiveMobstersFile (Encode.string <| Roster.currentMobsterNames model.settings.rosterData))
 
 
 updateSettings : (Settings.Data -> Settings.Data) -> Model -> ( Model, Cmd Msg )
@@ -550,7 +550,7 @@ update msg model =
         Msg.SkipHotkey ->
             case model.screenState of
                 Continue showRotation ->
-                    update (Msg.UpdateMobsterData MobsterOperation.NextTurn) model
+                    update (Msg.UpdateRosterData MobsterOperation.NextTurn) model
 
                 _ ->
                     model ! []
@@ -603,7 +603,7 @@ update msg model =
                     startTimerUpdate
 
                 _ ->
-                    startTimerUpdate |> Update.Extra.andThen update (Msg.UpdateMobsterData MobsterOperation.NextTurn)
+                    startTimerUpdate |> Update.Extra.andThen update (Msg.UpdateRosterData MobsterOperation.NextTurn)
 
         Msg.SkipBreak ->
             let
@@ -638,10 +638,10 @@ update msg model =
             { model | screenState = Configure } ! []
 
         Msg.AddMobster ->
-            if model.newMobster == "" || Roster.containsName model.newMobster model.settings.mobsterData then
+            if model.newMobster == "" || Roster.containsName model.newMobster model.settings.rosterData then
                 model ! []
             else
-                update (Msg.UpdateMobsterData (MobsterOperation.Add model.newMobster)) { model | newMobster = "" }
+                update (Msg.UpdateRosterData (MobsterOperation.Add model.newMobster)) { model | newMobster = "" }
 
         Msg.ClickAddMobster ->
             if model.newMobster == "" then
@@ -649,15 +649,15 @@ update msg model =
             else
                 { model | newMobster = "" }
                     ! [ focusAddMobsterInput ]
-                    |> Update.Extra.andThen update (Msg.UpdateMobsterData (MobsterOperation.Add model.newMobster))
+                    |> Update.Extra.andThen update (Msg.UpdateRosterData (MobsterOperation.Add model.newMobster))
 
         Msg.DomResult _ ->
             model ! []
 
-        Msg.UpdateMobsterData operation ->
+        Msg.UpdateRosterData operation ->
             model
                 |> updateSettings
-                    (\settings -> { settings | mobsterData = MobsterOperation.updateMoblist operation model.settings.mobsterData })
+                    (\settings -> { settings | rosterData = MobsterOperation.updateMoblist operation model.settings.rosterData })
                 |> saveActiveMobsters
                 |> focusQuickRotateInputIfVisible
                 |> updateQuickRotateStateIfActive
@@ -686,7 +686,7 @@ update msg model =
 
         Msg.ShuffleMobsters ->
             (model |> Dice.animateRoll |> Dice.animateActiveMobstersShuffle)
-                ! [ shuffleMobstersCmd model.settings.mobsterData ]
+                ! [ shuffleMobstersCmd model.settings.rosterData ]
 
         Msg.TimeElapsed elapsedSeconds ->
             { model | secondsSinceBreak = model.secondsSinceBreak + elapsedSeconds, intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
@@ -702,13 +702,13 @@ update msg model =
 
         Msg.RotateOutHotkey index ->
             if rosterViewIsShowing model.screenState then
-                update (Msg.UpdateMobsterData (MobsterOperation.Bench index)) model
+                update (Msg.UpdateRosterData (MobsterOperation.Bench index)) model
             else
                 model ! []
 
         Msg.RotateInHotkey index ->
             if rosterViewIsShowing model.screenState then
-                update (Msg.UpdateMobsterData (MobsterOperation.RotateIn index)) model
+                update (Msg.UpdateRosterData (MobsterOperation.RotateIn index)) model
             else
                 model ! []
 
@@ -727,13 +727,13 @@ update msg model =
                 Just ( dragId, dropId ) ->
                     case ( dragId, dropId ) of
                         ( Msg.ActiveMobster id, Msg.DropActiveMobster actualDropid ) ->
-                            update (Msg.UpdateMobsterData (MobsterOperation.Move id actualDropid)) updatedModel
+                            update (Msg.UpdateRosterData (MobsterOperation.Move id actualDropid)) updatedModel
 
                         ( Msg.ActiveMobster id, Msg.DropBench ) ->
-                            update (Msg.UpdateMobsterData (MobsterOperation.Bench id)) updatedModel
+                            update (Msg.UpdateRosterData (MobsterOperation.Bench id)) updatedModel
 
                         ( Msg.InactiveMobster inactiveMobsterId, Msg.DropActiveMobster activeMobsterId ) ->
-                            update (Msg.UpdateMobsterData (MobsterOperation.RotateIn inactiveMobsterId)) updatedModel
+                            update (Msg.UpdateRosterData (MobsterOperation.RotateIn inactiveMobsterId)) updatedModel
 
                         _ ->
                             model ! []
@@ -748,7 +748,7 @@ update msg model =
             { model | screenState = Rpg NextUp }
                 ! []
                 |> Update.Extra.andThen update
-                    (Msg.UpdateMobsterData MobsterOperation.NextTurn)
+                    (Msg.UpdateRosterData MobsterOperation.NextTurn)
 
         Msg.ChangeInput inputField newInputValue ->
             case inputField of
@@ -767,7 +767,7 @@ update msg model =
                             if model.altPressed then
                                 model ! []
                             else
-                                { model | quickRotateState = QuickRotate.update newInputValue (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState } ! []
+                                { model | quickRotateState = QuickRotate.update newInputValue (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState } ! []
 
                 Msg.IntField intField ->
                     let
@@ -796,31 +796,31 @@ update msg model =
                     { model | quickRotateState = QuickRotate.init }
                         ! []
                         |> Update.Extra.andThen update
-                            (Msg.UpdateMobsterData (MobsterOperation.RotateIn benchIndex))
+                            (Msg.UpdateRosterData (MobsterOperation.RotateIn benchIndex))
 
                 QuickRotate.All ->
                     model ! []
 
                 QuickRotate.New newMobster ->
-                    if RosterView.preventAddingMobster model.settings.mobsterData.mobsters newMobster then
+                    if RosterView.preventAddingMobster model.settings.rosterData.mobsters newMobster then
                         model ! []
                     else
                         { model | quickRotateState = QuickRotate.init }
                             ! []
                             |> Update.Extra.andThen update
-                                (Msg.UpdateMobsterData (MobsterOperation.Add newMobster))
+                                (Msg.UpdateRosterData (MobsterOperation.Add newMobster))
 
         Msg.QuickRotateMove direction ->
             case direction of
                 Msg.Next ->
                     { model
-                        | quickRotateState = QuickRotate.next (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState
+                        | quickRotateState = QuickRotate.next (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState
                     }
                         ! []
 
                 Msg.Previous ->
                     { model
-                        | quickRotateState = QuickRotate.previous (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState
+                        | quickRotateState = QuickRotate.previous (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState
                     }
                         ! []
 
@@ -886,7 +886,7 @@ focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
 updateQuickRotateStateIfActive : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 updateQuickRotateStateIfActive (( model, cmd ) as updateResult) =
     if model.screenState == Continue True then
-        ( { model | quickRotateState = QuickRotate.update model.quickRotateState.query (model.settings.mobsterData.inactiveMobsters |> List.map .name) model.quickRotateState }, cmd )
+        ( { model | quickRotateState = QuickRotate.update model.quickRotateState.query (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState }, cmd )
     else
         updateResult
 
@@ -898,7 +898,7 @@ quickRotateQueryId =
 
 reorderOperation : List Roster.Mobster -> Msg
 reorderOperation shuffledMobsters =
-    Msg.UpdateMobsterData (MobsterOperation.Reorder shuffledMobsters)
+    Msg.UpdateRosterData (MobsterOperation.Reorder shuffledMobsters)
 
 
 focusAddMobsterInput : Cmd Msg

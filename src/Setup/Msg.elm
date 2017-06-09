@@ -19,7 +19,7 @@ type Msg
     | ShowRotationScreen
     | SkipHotkey
     | StartRpgMode
-    | UpdateMobsterData MobsterOperation
+    | UpdateRosterData MobsterOperation
     | CheckRpgBox Msg Bool
     | AddMobster
     | ClickAddMobster

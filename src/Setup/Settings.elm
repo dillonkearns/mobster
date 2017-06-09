@@ -4,14 +4,14 @@ import Basics.Extra exposing ((=>))
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (..)
 import Json.Encode as Encode
-import Roster.Data exposing (MobsterData)
+import Roster.Data exposing (RosterData)
 
 
 type alias Data =
     { timerDuration : Int
     , breakDuration : Int
     , intervalsPerBreak : Int
-    , mobsterData : MobsterData
+    , rosterData : RosterData
     , showHideShortcut : String
     }
 
@@ -22,7 +22,7 @@ decoder =
         |> required "timerDuration" Decode.int
         |> optional "breakDuration" Decode.int 5
         |> required "intervalsPerBreak" Decode.int
-        |> required "mobsterData" Roster.Data.decoder
+        |> required "rosterData" Roster.Data.decoder
         |> optional "showHideShortcut" Decode.string "K"
 
 
@@ -37,7 +37,7 @@ encoder settingsData =
         [ "timerDuration" => Encode.int settingsData.timerDuration
         , "breakDuration" => Encode.int settingsData.breakDuration
         , "intervalsPerBreak" => Encode.int settingsData.intervalsPerBreak
-        , "mobsterData" => Roster.Data.encoder settingsData.mobsterData
+        , "rosterData" => Roster.Data.encoder settingsData.rosterData
         , "showHideShortcut" => Encode.string settingsData.showHideShortcut
         ]
 
@@ -47,6 +47,6 @@ initial =
     { timerDuration = 5
     , breakDuration = 5
     , intervalsPerBreak = 5
-    , mobsterData = Roster.Data.empty
+    , rosterData = Roster.Data.empty
     , showHideShortcut = "K"
     }

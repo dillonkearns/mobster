@@ -30,8 +30,8 @@ noTabThingy =
     Attr.tabindex -1
 
 
-rpgView : RpgState -> MobsterData -> Html Msg
-rpgView rpgState mobsterData =
+rpgView : RpgState -> RosterData -> Html Msg
+rpgView rpgState rosterData =
     let
         rpgButton =
             case rpgState of
@@ -56,19 +56,19 @@ rpgView rpgState mobsterData =
                         [ text "Start Mobbing" ]
     in
     div [ Attr.class "container-fluid" ]
-        [ rpgRolesView mobsterData
+        [ rpgRolesView rosterData
         , div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
             [ rpgButton ]
-        , div [] [ allBadgesView mobsterData ]
+        , div [] [ allBadgesView rosterData ]
         ]
 
 
-allBadgesView : Mobster.Data.MobsterData -> Html Msg
-allBadgesView mobsterData =
-    div [] (List.map mobsterBadgesView mobsterData.mobsters)
+allBadgesView : Roster.Data.RosterData -> Html Msg
+allBadgesView rosterData =
+    div [] (List.map mobsterBadgesView rosterData.mobsters)
 
 
-mobsterBadgesView : Mobster.Data.Mobster -> Html Msg
+mobsterBadgesView : Roster.Data.Mobster -> Html Msg
 mobsterBadgesView mobster =
     let
         badges =
@@ -84,26 +84,26 @@ mobsterBadgesView mobster =
             )
 
 
-rpgRolesView : MobsterData -> Html Msg
-rpgRolesView mobsterData =
+rpgRolesView : RosterData -> Html Msg
+rpgRolesView rosterData =
     let
         ( row1, row2 ) =
-            List.Extra.splitAt 2 (mobsterData |> Mobster.RpgPresenter.present)
+            List.Extra.splitAt 2 (rosterData |> Roster.RpgPresenter.present)
     in
     div [] [ rpgRolesRow row1, rpgRolesRow row2 ]
 
 
-rpgRolesRow : List Mobster.RpgPresenter.RpgMobster -> Html Msg
+rpgRolesRow : List Roster.RpgPresenter.RpgMobster -> Html Msg
 rpgRolesRow rpgMobsters =
     div [ Attr.class "row" ] (List.map rpgRoleView rpgMobsters)
 
 
-rpgRoleView : Mobster.RpgPresenter.RpgMobster -> Html Msg
+rpgRoleView : Roster.RpgPresenter.RpgMobster -> Html Msg
 rpgRoleView mobster =
     div [ Attr.class "col-md-6" ] [ rpgCardView mobster ]
 
 
-rpgCardView : Mobster.RpgPresenter.RpgMobster -> Html Msg
+rpgCardView : Roster.RpgPresenter.RpgMobster -> Html Msg
 rpgCardView mobster =
     let
         roleName =
@@ -118,7 +118,7 @@ rpgCardView mobster =
     div [] [ header, experienceView mobster ]
 
 
-goalView : Mobster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> ( String, Html Msg )
+goalView : Roster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> ( String, Html Msg )
 goalView mobster goalIndex goal =
     let
         nameWithoutWhitespace =
@@ -128,13 +128,13 @@ goalView mobster goalIndex goal =
             nameWithoutWhitespace ++ toString mobster.role ++ toString goalIndex
     in
     ( uniqueId
-    , li [ Attr.class "checkbox checkbox-success", onCheck (CheckRpgBox (UpdateMobsterData (MobsterOperation.CompleteGoal mobster.index mobster.role goalIndex))) ]
+    , li [ Attr.class "checkbox checkbox-success", onCheck (CheckRpgBox (UpdateRosterData (MobsterOperation.CompleteGoal mobster.index mobster.role goalIndex))) ]
         [ input [ Attr.id uniqueId, type_ "checkbox", Attr.checked goal.complete ] []
         , label [ Attr.for uniqueId ] [ text goal.description ]
         ]
     )
 
 
-experienceView : Mobster.RpgPresenter.RpgMobster -> Html Msg
+experienceView : Roster.RpgPresenter.RpgMobster -> Html Msg
 experienceView mobster =
     div [] [ Html.Keyed.ul [] (List.indexedMap (goalView mobster) mobster.experience) ]

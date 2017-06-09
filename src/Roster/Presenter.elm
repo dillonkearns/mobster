@@ -1,7 +1,7 @@
 module Roster.Presenter exposing (..)
 
 import Array
-import Roster.Data exposing (MobsterData, nextIndex)
+import Roster.Data exposing (RosterData, nextIndex)
 
 
 type alias DriverNavigator =
@@ -27,17 +27,17 @@ type alias Mobsters =
     List MobsterWithRole
 
 
-nextDriverNavigator : MobsterData -> DriverNavigator
-nextDriverNavigator mobsterData =
+nextDriverNavigator : RosterData -> DriverNavigator
+nextDriverNavigator rosterData =
     let
         list =
-            asMobsterList mobsterData
+            asMobsterList rosterData
 
         mobstersAsArray =
             Array.fromList list
 
         maybeDriver =
-            Array.get mobsterData.nextDriver mobstersAsArray
+            Array.get rosterData.nextDriver mobstersAsArray
 
         driver =
             case maybeDriver of
@@ -48,7 +48,7 @@ nextDriverNavigator mobsterData =
                     { name = "", index = -1 }
 
         navigatorIndex =
-            nextIndex mobsterData.nextDriver mobsterData
+            nextIndex rosterData.nextDriver rosterData
 
         maybeNavigator =
             Array.get navigatorIndex mobstersAsArray
@@ -80,11 +80,11 @@ mobsterListItemToMobster driverNavigator index mobster =
     { name = mobster.name, role = role, index = index }
 
 
-asMobsterList : MobsterData -> List Mobster
-asMobsterList mobsterData =
-    List.indexedMap (\index mobster -> { name = mobster.name, index = index }) mobsterData.mobsters
+asMobsterList : RosterData -> List Mobster
+asMobsterList rosterData =
+    List.indexedMap (\index mobster -> { name = mobster.name, index = index }) rosterData.mobsters
 
 
-mobsters : MobsterData -> Mobsters
-mobsters mobsterData =
-    List.indexedMap (mobsterListItemToMobster (nextDriverNavigator mobsterData)) mobsterData.mobsters
+mobsters : RosterData -> Mobsters
+mobsters rosterData =
+    List.indexedMap (mobsterListItemToMobster (nextDriverNavigator rosterData)) rosterData.mobsters

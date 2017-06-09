@@ -1,6 +1,6 @@
 module Roster.RpgPresenter exposing (..)
 
-import Roster.Data exposing (MobsterData)
+import Roster.Data exposing (RosterData)
 import Roster.Rpg exposing (Experience, badges)
 import Roster.RpgRole exposing (..)
 
@@ -13,16 +13,16 @@ type alias RpgMobster =
     }
 
 
-present : MobsterData -> List RpgMobster
-present mobsterData =
+present : RosterData -> List RpgMobster
+present rosterData =
     let
         mobstersWithIndex =
-            List.indexedMap (,) mobsterData.mobsters
+            List.indexedMap (,) rosterData.mobsters
     in
-    if List.length mobsterData.mobsters >= 4 then
+    if List.length rosterData.mobsters >= 4 then
         mobstersWithIndex
             ++ mobstersWithIndex
-            |> List.drop mobsterData.nextDriver
+            |> List.drop rosterData.nextDriver
             |> List.take 4
             |> List.indexedMap toRpgMobster
     else
