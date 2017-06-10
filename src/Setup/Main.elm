@@ -38,6 +38,7 @@ import Task
 import Timer.Flags
 import Tip
 import Update.Extra
+import View.Break
 import View.Roster
 
 
@@ -186,7 +187,7 @@ continueView showRotation model =
                     ]
     in
     if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
-        breakView model
+        View.Break.view model
     else
         div [ Attr.class "container-fluid" ]
             [ viewIntervalsBeforeBreak model
@@ -194,45 +195,6 @@ continueView showRotation model =
             , div [ class [ BufferTop ] ] [ mainView ]
             , continueButtons model
             ]
-
-
-breakButtonsView : Html Msg
-breakButtonsView =
-    div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
-        [ div [ Attr.class "col-md-3" ]
-            [ button
-                [ onClick Msg.SkipBreak
-                , Attr.class "btn btn-default btn-lg btn-block"
-                , class [ LargeButtonText, BufferTop, BufferRight, TooltipContainer, ButtonMuted ]
-                ]
-                [ span [] [ text "Skip Break" ] ]
-            ]
-        , div [ Attr.class "col-md-9" ]
-            [ button
-                [ onClick Msg.StartBreak
-                , Attr.class "btn btn-success btn-lg btn-block"
-                , class [ LargeButtonText, BufferTop, TooltipContainer ]
-                ]
-                [ span [ class [ BufferRight ] ] [ text "Take a Break" ], i [ Attr.class "fa fa-coffee" ] [] ]
-            ]
-        ]
-
-
-breakView : Model -> Html Msg
-breakView model =
-    div [ Attr.class "container-fluid" ]
-        [ breakAlertView model.secondsSinceBreak
-        , div [ class [ BufferTop ] ] [ tipView model.tip ]
-        , breakButtonsView
-        ]
-
-
-breakAlertView : Int -> Html msg
-breakAlertView secondsSinceBreak =
-    div [ Attr.class "alert alert-info alert-dismissible", style [ "font-size" => "1.2em" ] ]
-        [ span [ Attr.class "glyphicon glyphicon-exclamation-sign", class [ BufferRight ] ] []
-        , text ("How about a walk? You've been mobbing for " ++ toString (secondsSinceBreak // 60) ++ " minutes.")
-        ]
 
 
 tipView : Tip.Tip -> Html Msg
