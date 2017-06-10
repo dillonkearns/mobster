@@ -4,7 +4,6 @@ import Basics.Extra exposing ((=>))
 import Bootstrap
 import Html exposing (..)
 import Html.Attributes as Attr exposing (..)
-import Html.CssHelpers
 import Ipc
 import Json.Encode as Encode
 import Setup.Msg exposing (Msg(..))
@@ -13,7 +12,7 @@ import Setup.View exposing (ScreenState(..))
 
 
 { id, class, classList } =
-    Html.CssHelpers.withNamespace "setup"
+    Setup.Stylesheet.helpers
 
 
 view : ScreenState -> Html Msg

@@ -4,7 +4,6 @@ import Animation
 import Basics.Extra exposing ((=>))
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
-import Html.CssHelpers
 import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit, onWithOptions)
 import Html5.DragDrop as DragDrop
 import Json.Decode as Decode
@@ -21,7 +20,7 @@ import ViewHelpers
 
 
 { id, class, classList } =
-    Html.CssHelpers.withNamespace "setup"
+    Setup.Stylesheet.helpers
 
 
 type alias DragDropModel =

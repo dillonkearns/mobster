@@ -3,7 +3,6 @@ module Setup.Forms.ViewHelpers exposing (..)
 import Basics.Extra exposing ((=>))
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
-import Html.CssHelpers
 import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit)
 import Setup.InputField exposing (IntInputField(..))
 import Setup.Msg exposing (..)
@@ -12,7 +11,7 @@ import Setup.Validations as Validations
 
 
 { id, class, classList } =
-    Html.CssHelpers.withNamespace "setup"
+    Setup.Stylesheet.helpers
 
 
 intInputView : IntInputField -> Int -> Html Msg

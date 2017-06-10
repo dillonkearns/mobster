@@ -2,7 +2,6 @@ module Setup.RpgIcons exposing (mobsterCar, mobsterIcon)
 
 import Html
 import Html.Attributes exposing (attribute)
-import Html.CssHelpers
 import Roster.RpgRole exposing (..)
 import Setup.Stylesheet exposing (CssClasses(..))
 import Svg exposing (..)
@@ -10,7 +9,7 @@ import Svg.Attributes exposing (..)
 
 
 { id, class, classList } =
-    Html.CssHelpers.withNamespace "setup"
+    Setup.Stylesheet.helpers
 
 
 mobsterIcon : RpgRole -> Html.Html msg

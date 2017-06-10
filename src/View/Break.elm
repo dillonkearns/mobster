@@ -3,7 +3,6 @@ module View.Break exposing (view)
 import Basics.Extra exposing ((=>))
 import Html exposing (..)
 import Html.Attributes as Attr exposing (..)
-import Html.CssHelpers
 import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit)
 import Ipc
 import Json.Encode as Encode
@@ -13,7 +12,7 @@ import Tip
 
 
 { id, class, classList } =
-    Html.CssHelpers.withNamespace "setup"
+    Setup.Stylesheet.helpers
 
 
 view : { model | secondsSinceBreak : Int, tip : Tip.Tip } -> Html Msg

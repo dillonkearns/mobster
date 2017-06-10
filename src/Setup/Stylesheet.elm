@@ -1,8 +1,9 @@
-module Setup.Stylesheet exposing (..)
+module Setup.Stylesheet exposing (CssClasses(..), css, helpers)
 
 import Css exposing (..)
 import Css.Elements exposing (a, body, button, html, span)
 import Css.Namespace exposing (namespace)
+import Html.CssHelpers
 
 
 type CssClasses
@@ -25,6 +26,11 @@ type CssClasses
     | RpgIcon2
     | ButtonMuted
     | HandPointer
+
+
+helpers : Html.CssHelpers.Namespace String class id msg
+helpers =
+    Html.CssHelpers.withNamespace "setup"
 
 
 css : Stylesheet

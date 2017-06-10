@@ -3,7 +3,6 @@ module Setup.Rpg.View exposing (RpgState(..), rpgView)
 import Basics.Extra exposing ((=>))
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
-import Html.CssHelpers
 import Html.Events exposing (keyCode, on, onCheck, onClick, onDoubleClick, onInput, onSubmit)
 import Html.Keyed
 import List.Extra
@@ -22,7 +21,7 @@ type RpgState
 
 
 { id, class, classList } =
-    Html.CssHelpers.withNamespace "setup"
+    Setup.Stylesheet.helpers
 
 
 noTabThingy : Attribute msg

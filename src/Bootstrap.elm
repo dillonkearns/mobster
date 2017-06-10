@@ -3,7 +3,6 @@ module Bootstrap exposing (Color(..), navbarButton, smallButton)
 import FA exposing (Icon)
 import Html exposing (..)
 import Html.Attributes as Attr
-import Html.CssHelpers
 import Html.Events exposing (..)
 import Setup.Stylesheet exposing (CssClasses(..))
 
@@ -21,7 +20,7 @@ type Color
 
 
 { id, class, classList } =
-    Html.CssHelpers.withNamespace "setup"
+    Setup.Stylesheet.helpers
 
 
 noTab : Attribute msg

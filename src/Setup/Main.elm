@@ -10,7 +10,6 @@ import FA
 import GlobalShortcut
 import Html exposing (..)
 import Html.Attributes as Attr exposing (id, placeholder, src, style, target, title, type_, value)
-import Html.CssHelpers
 import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit)
 import Html5.DragDrop as DragDrop
 import Ipc
@@ -43,7 +42,7 @@ import View.Roster
 
 
 { id, class, classList } =
-    Html.CssHelpers.withNamespace "setup"
+    Setup.Stylesheet.helpers
 
 
 shuffleMobstersCmd : Roster.RosterData -> Cmd Msg
