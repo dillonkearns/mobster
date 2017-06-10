@@ -12,21 +12,12 @@ import Roster.Rpg as Rpg exposing (RpgData)
 import Roster.RpgPresenter
 import Setup.Msg exposing (..)
 import Setup.RpgIcons
-import Setup.Stylesheet exposing (CssClasses(..))
+import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 
 
 type RpgState
     = Checklist
     | NextUp
-
-
-{ id, class, classList } =
-    Setup.Stylesheet.helpers
-
-
-noTabThingy : Attribute msg
-noTabThingy =
-    Attr.tabindex -1
 
 
 rpgView : RpgState -> RosterData -> Html Msg
@@ -36,8 +27,7 @@ rpgView rpgState rosterData =
             case rpgState of
                 Checklist ->
                     button
-                        [ noTabThingy
-                        , onClick ViewRpgNextUp
+                        [ onClick ViewRpgNextUp
                         , Attr.class "btn btn-info btn-lg btn-block"
                         , class [ BufferTop, TooltipContainer ]
                         , class [ LargeButtonText ]
@@ -46,8 +36,7 @@ rpgView rpgState rosterData =
 
                 NextUp ->
                     button
-                        [ noTabThingy
-                        , onClick StartTimer
+                        [ onClick StartTimer
                         , Attr.class "btn btn-info btn-lg btn-block"
                         , class [ BufferTop, TooltipContainer ]
                         , class [ LargeButtonText ]

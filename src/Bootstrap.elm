@@ -4,7 +4,7 @@ import FA exposing (Icon)
 import Html exposing (..)
 import Html.Attributes as Attr
 import Html.Events exposing (..)
-import Setup.Stylesheet exposing (CssClasses(..))
+import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 
 
 type RpgState
@@ -17,10 +17,6 @@ type Color
     | Success
     | Warning
     | Danger
-
-
-{ id, class, classList } =
-    Setup.Stylesheet.helpers
 
 
 noTab : Attribute msg

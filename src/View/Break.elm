@@ -2,17 +2,13 @@ module View.Break exposing (view)
 
 import Basics.Extra exposing ((=>))
 import Html exposing (..)
-import Html.Attributes as Attr exposing (..)
+import Html.Attributes as Attr exposing (style, target)
 import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit)
 import Ipc
 import Json.Encode as Encode
 import Setup.Msg as Msg exposing (Msg)
-import Setup.Stylesheet exposing (CssClasses(..))
+import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 import Tip
-
-
-{ id, class, classList } =
-    Setup.Stylesheet.helpers
 
 
 view : { model | secondsSinceBreak : Int, tip : Tip.Tip } -> Html Msg

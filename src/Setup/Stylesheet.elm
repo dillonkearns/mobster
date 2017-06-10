@@ -1,31 +1,10 @@
-module Setup.Stylesheet exposing (CssClasses(..), css, helpers)
+module Setup.Stylesheet exposing (css, helpers)
 
 import Css exposing (..)
 import Css.Elements exposing (a, body, button, html, span)
 import Css.Namespace exposing (namespace)
 import Html.CssHelpers
-
-
-type CssClasses
-    = BufferTop
-    | BufferRight
-    | Green
-    | Orange
-    | Red
-    | DropAreaInactive
-    | DropAreaActive
-    | LargeButtonText
-    | TooltipContainer
-    | Tooltip
-    | ShowOnParentHover
-    | ShowOnParentHoverParent
-    | HasHoverActions
-    | DragBelow
-    | HasError
-    | RpgIcon1
-    | RpgIcon2
-    | ButtonMuted
-    | HandPointer
+import StylesheetHelper exposing (CssClasses(..))
 
 
 helpers : Html.CssHelpers.Namespace String class id msg

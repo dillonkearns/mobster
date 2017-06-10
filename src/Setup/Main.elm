@@ -9,7 +9,7 @@ import Dom
 import FA
 import GlobalShortcut
 import Html exposing (..)
-import Html.Attributes as Attr exposing (id, placeholder, src, style, target, title, type_, value)
+import Html.Attributes as Attr exposing (placeholder, src, style, target, title, type_, value)
 import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit)
 import Html5.DragDrop as DragDrop
 import Ipc
@@ -30,19 +30,15 @@ import Setup.Ports
 import Setup.Rpg.View exposing (RpgState(..))
 import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
-import Setup.Stylesheet exposing (CssClasses(..))
 import Setup.Validations as Validations
 import Setup.View exposing (..)
+import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 import Task
 import Timer.Flags
 import Tip
 import Update.Extra
 import View.Break
 import View.Roster
-
-
-{ id, class, classList } =
-    Setup.Stylesheet.helpers
 
 
 shuffleMobstersCmd : Roster.RosterData -> Cmd Msg

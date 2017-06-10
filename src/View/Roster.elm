@@ -15,12 +15,8 @@ import Roster.Presenter as Presenter
 import Roster.Rpg
 import Setup.Msg as Msg exposing (..)
 import Setup.Shortcuts as Shortcuts
-import Setup.Stylesheet exposing (CssClasses(..))
+import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 import ViewHelpers
-
-
-{ id, class, classList } =
-    Setup.Stylesheet.helpers
 
 
 type alias DragDropModel =

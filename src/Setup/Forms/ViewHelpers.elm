@@ -2,16 +2,12 @@ module Setup.Forms.ViewHelpers exposing (..)
 
 import Basics.Extra exposing ((=>))
 import Html exposing (..)
-import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
+import Html.Attributes as Attr exposing (href, placeholder, src, style, target, title, type_, value)
 import Html.Events exposing (keyCode, on, onCheck, onClick, onInput, onSubmit)
 import Setup.InputField exposing (IntInputField(..))
 import Setup.Msg exposing (..)
-import Setup.Stylesheet exposing (CssClasses(..))
 import Setup.Validations as Validations
-
-
-{ id, class, classList } =
-    Setup.Stylesheet.helpers
+import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 
 
 intInputView : IntInputField -> Int -> Html Msg

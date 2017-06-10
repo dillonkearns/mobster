@@ -3,16 +3,12 @@ module Setup.Navbar exposing (view)
 import Basics.Extra exposing ((=>))
 import Bootstrap
 import Html exposing (..)
-import Html.Attributes as Attr exposing (..)
+import Html.Attributes as Attr exposing (href, src, style)
 import Ipc
 import Json.Encode as Encode
 import Setup.Msg exposing (Msg(..))
-import Setup.Stylesheet exposing (CssClasses(..))
 import Setup.View exposing (ScreenState(..))
-
-
-{ id, class, classList } =
-    Setup.Stylesheet.helpers
+import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 
 
 view : ScreenState -> Html Msg
