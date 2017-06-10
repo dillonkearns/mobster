@@ -39,6 +39,7 @@ import Tip
 import Update.Extra
 import View.Break
 import View.Roster
+import View.Tip
 import View.UpdateAvailable
 
 
@@ -77,7 +78,7 @@ startTimerFlags isBreak model =
 
 
 
--- cross-page view stuff 57
+-- cross-page view stuff 37
 
 
 feedbackButton : Html Msg
@@ -94,17 +95,9 @@ ctrlKey onMac =
         "Ctrl"
 
 
-
--- shortcuts 3
-
-
 startMobbingShortcut : Bool -> String
 startMobbingShortcut onMac =
     ctrlKey onMac ++ "+Enter"
-
-
-
--- breaks 31
 
 
 viewIntervalsBeforeBreak : Model -> Html Msg
@@ -164,7 +157,7 @@ continueView showRotation model =
             else
                 div []
                     [ table [ Attr.class "table table-hover" ] [ tbody [] [ View.Roster.newMobsterRowView False model.quickRotateState False ] ]
-                    , tipView model.tip
+                    , View.Tip.view model.tip
                     ]
     in
     if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
@@ -176,18 +169,6 @@ continueView showRotation model =
             , div [ class [ BufferTop ] ] [ mainView ]
             , continueButtons model
             ]
-
-
-tipView : Tip.Tip -> Html Msg
-tipView tip =
-    div [ Attr.class "jumbotron tip", style [ "margin" => "0px", "padding" => "1.667em" ] ]
-        [ div [ Attr.class "row" ]
-            [ h2 [ Attr.class "text-success pull-left", style [ "margin" => "0px", "padding-bottom" => "0.667em" ] ]
-                [ text tip.title ]
-            , a [ Attr.tabindex -1, target "_blank", Attr.class "btn btn-sm btn-primary pull-right", onClick <| Msg.SendIpc Ipc.OpenExternalUrl (Encode.string tip.url) ] [ text "Learn More" ]
-            ]
-        , div [ Attr.class "row" ] [ Tip.tipView tip ]
-        ]
 
 
 nextDriverNavigatorView : Model -> Html Msg
