@@ -38,6 +38,7 @@ import Timer.Flags
 import Tip
 import Update.Extra
 import View.Break
+import View.IntervalsToBreak
 import View.Roster
 import View.Tip
 import View.UpdateAvailable
@@ -100,26 +101,6 @@ startMobbingShortcut onMac =
     ctrlKey onMac ++ "+Enter"
 
 
-viewIntervalsBeforeBreak : Model -> Html Msg
-viewIntervalsBeforeBreak model =
-    let
-        remainingIntervals =
-            Break.timersBeforeNext model.intervalsSinceBreak model.settings.intervalsPerBreak
-
-        intervalBadges =
-            List.range 1 model.settings.intervalsPerBreak
-                |> List.map (\index -> index > model.intervalsSinceBreak)
-                |> List.map
-                    (\grayBadge ->
-                        if grayBadge then
-                            span [ Attr.class "label label-default" ] [ text " " ]
-                        else
-                            span [ Attr.class "label label-info" ] [ text " " ]
-                    )
-    in
-    div [ onClick Msg.ResetBreakData ] intervalBadges
-
-
 
 -- continue view 92
 
@@ -164,7 +145,7 @@ continueView showRotation model =
         View.Break.view model
     else
         div [ Attr.class "container-fluid" ]
-            [ viewIntervalsBeforeBreak model
+            [ View.IntervalsToBreak.view model.intervalsSinceBreak model.settings.intervalsPerBreak
             , nextDriverNavigatorView model
             , div [ class [ BufferTop ] ] [ mainView ]
             , continueButtons model
