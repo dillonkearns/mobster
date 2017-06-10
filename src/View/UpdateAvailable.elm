@@ -6,11 +6,7 @@ import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, on
 import Ipc
 import Json.Encode as Encode
 import Setup.Msg as Msg exposing (Msg)
-import Setup.Stylesheet exposing (CssClasses(..))
-
-
-{ id, class, classList } =
-    Setup.Stylesheet.helpers
+import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 
 
 view : Maybe String -> Html Msg

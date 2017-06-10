@@ -39,6 +39,7 @@ import Tip
 import Update.Extra
 import View.Break
 import View.Roster
+import View.UpdateAvailable
 
 
 shuffleMobstersCmd : Roster.RosterData -> Cmd Msg
@@ -77,21 +78,6 @@ startTimerFlags isBreak model =
 
 
 -- cross-page view stuff 57
-
-
-updateAvailableView : Maybe String -> Html Msg
-updateAvailableView availableUpdateVersion =
-    case availableUpdateVersion of
-        Nothing ->
-            div [] []
-
-        Just version ->
-            div [ Attr.class "alert alert-success" ]
-                [ span [ Attr.class "glyphicon glyphicon-flag", class [ BufferRight ] ] []
-                , text "A new version is downloaded and ready to install. "
-                , a [ onClick <| Msg.SendIpc Ipc.QuitAndInstall Encode.null, Attr.href "#", Attr.class "alert-link", class [ HandPointer ] ] [ text "Update now" ]
-                , text "."
-                ]
 
 
 feedbackButton : Html Msg
@@ -379,7 +365,7 @@ view model =
                 Rpg rpgState ->
                     Setup.Rpg.View.rpgView rpgState model.settings.rosterData
     in
-    div [] [ Navbar.view model.screenState, updateAvailableView model.availableUpdateVersion, mainView, feedbackButton ]
+    div [] [ Navbar.view model.screenState, View.UpdateAvailable.view model.availableUpdateVersion, mainView, feedbackButton ]
 
 
 
