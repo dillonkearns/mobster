@@ -28,7 +28,6 @@ import Setup.InputField exposing (IntInputField(..))
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Navbar as Navbar
 import Setup.Ports
-import Setup.RosterView as RosterView
 import Setup.Rpg.View exposing (RpgState(..))
 import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
@@ -39,6 +38,7 @@ import Task
 import Timer.Flags
 import Tip
 import Update.Extra
+import View.Roster
 
 
 { id, class, classList } =
@@ -175,13 +175,13 @@ continueView showRotation model =
         mainView =
             if showRotation then
                 div []
-                    [ RosterView.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle)
+                    [ View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle)
                     , button [ style [ "margin-bottom" => "12px" ], Attr.class "btn btn-small btn-default pull-right", onClick Msg.ShowRotationScreen ]
                         [ span [ class [ BufferRight ] ] [ text "Back to tip view" ], span [ Attr.class "fa fa-arrow-circle-o-left" ] [] ]
                     ]
             else
                 div []
-                    [ table [ Attr.class "table table-hover" ] [ tbody [] [ RosterView.newMobsterRowView False model.quickRotateState False ] ]
+                    [ table [ Attr.class "table table-hover" ] [ tbody [] [ View.Roster.newMobsterRowView False model.quickRotateState False ] ]
                     , tipView model.tip
                     ]
     in
@@ -331,7 +331,7 @@ configureView model =
                 , breakDurationInputView model.settings.breakDuration
                 , shortcutInputView model.settings.showHideShortcut model.onMac
                 ]
-            , div [ Attr.class "col-md-8 col-sm-12" ] [ RosterView.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle) ]
+            , div [ Attr.class "col-md-8 col-sm-12" ] [ View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle) ]
             ]
         , div []
             [ h3 [] [ text "Getting Started" ]
@@ -698,7 +698,7 @@ update msg model =
                     model ! []
 
                 QuickRotate.New newMobster ->
-                    if RosterView.preventAddingMobster model.settings.rosterData.mobsters newMobster then
+                    if View.Roster.preventAddingMobster model.settings.rosterData.mobsters newMobster then
                         model ! []
                     else
                         { model | quickRotateState = QuickRotate.init }

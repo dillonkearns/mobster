@@ -1,4 +1,4 @@
-module Setup.RosterView exposing (mobsterCellStyle, newMobsterRowView, preventAddingMobster, rotationView)
+module View.Roster exposing (mobsterCellStyle, newMobsterRowView, preventAddingMobster, rotationView)
 
 import Animation
 import Basics.Extra exposing ((=>))
