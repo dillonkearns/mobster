@@ -110,17 +110,17 @@ continueButtonId =
     "continue-button"
 
 
-continueButtons : Model -> Html Msg
-continueButtons model =
+blockButton : String -> Msg -> String -> Html Msg
+blockButton displayText onClickMsg tooltipText =
     div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
         [ button
-            [ onClick Msg.StartTimer
+            [ onClick onClickMsg
             , Attr.class "btn btn-info btn-lg btn-block"
-            , class [ LargeButtonText, BufferTop, TooltipContainer ]
+            , class [ LargeButtonText, BufferTop, TooltipContainer, Title ]
             , Attr.id continueButtonId
             ]
-            [ div [] [ text "Continue" ]
-            , div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ]
+            [ div [] [ text displayText ]
+            , div [ class [ Tooltip ] ] [ text tooltipText ]
             ]
         ]
 
@@ -148,7 +148,7 @@ continueView showRotation model =
             [ View.IntervalsToBreak.view model.intervalsSinceBreak model.settings.intervalsPerBreak
             , nextDriverNavigatorView model
             , div [ class [ BufferTop ] ] [ mainView ]
-            , continueButtons model
+            , blockButton "Continue" Msg.StartTimer (startMobbingShortcut model.onMac)
             ]
 
 
@@ -243,17 +243,7 @@ configureView model =
             , Bootstrap.smallButton "Install Mob Git Commit Script" (Msg.SendIpc Ipc.ShowScriptInstallInstructions Encode.null) Bootstrap.Primary FA.Github
             , Bootstrap.smallButton "Learn to Mob Game" Msg.StartRpgMode Bootstrap.Success FA.Gamepad
             ]
-        , button
-            [ onClick Msg.StartTimer
-            , style [ "margin-top" => "50px" ]
-            , Attr.class "btn btn-info btn-lg btn-block"
-            , class
-                [ BufferTop
-                , LargeButtonText
-                , TooltipContainer
-                ]
-            ]
-            [ text "Start Mobbing", div [ class [ Tooltip ] ] [ text (startMobbingShortcut model.onMac) ] ]
+        , div [ style [ "margin-top" => "50px" ] ] [ blockButton "Start Mobbing" Msg.StartTimer (startMobbingShortcut model.onMac) ]
         ]
 
 

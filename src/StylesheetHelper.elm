@@ -27,3 +27,4 @@ type CssClasses
     | RpgIcon2
     | ButtonMuted
     | HandPointer
+    | Title

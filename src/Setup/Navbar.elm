@@ -25,7 +25,7 @@ view screen =
     nav [ Attr.class "navbar navbar-default navbar-fixed-top", style [ "background-color" => "rgba(0, 0, 0, 0.2)", "z-index" => "0" ] ]
         [ div [ Attr.class "container-fluid" ]
             [ div [ Attr.class "navbar-header" ]
-                [ a [ Attr.class "navbar-brand", href "#" ]
+                [ a [ class [ Title ], Attr.class "navbar-brand", href "#" ]
                     [ text "Mobster" ]
                 ]
             , div [ Attr.class "nav navbar-nav navbar-right" ]
