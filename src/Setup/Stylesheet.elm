@@ -42,7 +42,7 @@ css =
         , class Orange (hoverButton (rgba 255 133 27 1))
         , class DropAreaInactive [ borderStyle Css.dotted ]
         , class DropAreaActive [ backgroundColor (rgba 250 150 100 0.5), borderStyle Css.dotted ]
-        , class LargeButtonText [ fontSize (em 2.85), padding (em 0.3) ]
+        , class LargeButtonText [ fontSize (em 2.85), padding (em 0.3), fontFamilies [ "Fjalla One" ] ]
         , tooltipStyle
         , class ShowOnParentHoverParent
             [ descendants [ class ShowOnParentHover [ opacity (int 0) ] ]

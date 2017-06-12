@@ -30,20 +30,30 @@ breakAlertView secondsSinceBreak =
 breakButtonsView : Html Msg
 breakButtonsView =
     div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
-        [ div [ Attr.class "col-md-3" ]
-            [ button
-                [ onClick Msg.SkipBreak
-                , Attr.class "btn btn-default btn-lg btn-block"
-                , class [ LargeButtonText, BufferTop, BufferRight, TooltipContainer, ButtonMuted ]
-                ]
-                [ span [] [ text "Skip Break" ] ]
+        [ skipBreakButton
+        , takeBreakButton
+        ]
+
+
+takeBreakButton : Html Msg
+takeBreakButton =
+    div [ Attr.class "col-md-9" ]
+        [ button
+            [ onClick Msg.StartBreak
+            , Attr.class "btn btn-success btn-lg btn-block"
+            , class [ LargeButtonText, BufferTop, TooltipContainer ]
             ]
-        , div [ Attr.class "col-md-9" ]
-            [ button
-                [ onClick Msg.StartBreak
-                , Attr.class "btn btn-success btn-lg btn-block"
-                , class [ LargeButtonText, BufferTop, TooltipContainer ]
-                ]
-                [ span [ class [ BufferRight ] ] [ text "Take a Break" ], i [ Attr.class "fa fa-coffee" ] [] ]
+            [ span [ class [ BufferRight ] ] [ text "Take a Break" ], i [ Attr.class "fa fa-coffee" ] [] ]
+        ]
+
+
+skipBreakButton : Html Msg
+skipBreakButton =
+    div [ Attr.class "col-md-3" ]
+        [ button
+            [ onClick Msg.SkipBreak
+            , Attr.class "btn btn-default btn-lg btn-block"
+            , class [ LargeButtonText, BufferTop, BufferRight, TooltipContainer, ButtonMuted ]
             ]
+            [ span [] [ text "Skip Break" ] ]
         ]
