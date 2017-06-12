@@ -129,7 +129,7 @@ continueView showRotation model =
             [ View.IntervalsToBreak.view model.intervalsSinceBreak model.settings.intervalsPerBreak
             , nextDriverNavigatorView model
             , div [ class [ BufferTop ] ] [ mainView ]
-            , ViewHelpers.blockButton "Continue" Msg.StartTimer (startMobbingShortcut model.onMac) continueButtonId
+            , ViewHelpers.blockButton "Continue" Msg.StartTimer (startMobbingShortcut model.onMac |> Just) continueButtonId
             ]
 
 
@@ -224,7 +224,7 @@ configureView model =
             , Bootstrap.smallButton "Install Mob Git Commit Script" (Msg.SendIpc Ipc.ShowScriptInstallInstructions Encode.null) Bootstrap.Primary FA.Github
             , Bootstrap.smallButton "Learn to Mob Game" Msg.StartRpgMode Bootstrap.Success FA.Gamepad
             ]
-        , div [ style [ "margin-top" => "50px" ] ] [ ViewHelpers.blockButton "Start Mobbing" Msg.StartTimer (startMobbingShortcut model.onMac) continueButtonId ]
+        , div [ style [ "margin-top" => "50px" ] ] [ ViewHelpers.blockButton "Start Mobbing" Msg.StartTimer (startMobbingShortcut model.onMac |> Just) continueButtonId ]
         ]
 
 

@@ -1,4 +1,4 @@
-module ViewHelpers exposing (..)
+module ViewHelpers exposing (blockButton, emptyHtml, roleIconView)
 
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
@@ -7,8 +7,8 @@ import Roster.Presenter
 import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 
 
-blockButton : String -> msg -> String -> String -> Html msg
-blockButton displayText onClickMsg tooltipText buttonId =
+blockButton : String -> msg -> Maybe String -> String -> Html msg
+blockButton displayText onClickMsg maybeTooltip buttonId =
     button
         [ onClick onClickMsg
         , Attr.class "btn btn-info btn-lg btn-block"
@@ -16,8 +16,18 @@ blockButton displayText onClickMsg tooltipText buttonId =
         , Attr.id buttonId
         ]
         [ div [] [ text displayText ]
-        , div [ class [ Tooltip ] ] [ text tooltipText ]
+        , Maybe.map tooltipView maybeTooltip |> Maybe.withDefault emptyHtml
         ]
+
+
+tooltipView : String -> Html msg
+tooltipView tooltip =
+    div [ class [ Tooltip ] ] [ text tooltip ]
+
+
+emptyHtml : Html msg
+emptyHtml =
+    text ""
 
 
 roleIconView : Maybe Roster.Presenter.Role -> Html msg
