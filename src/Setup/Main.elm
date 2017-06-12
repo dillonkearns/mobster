@@ -385,33 +385,36 @@ update msg model =
                     model ! []
 
         Msg.StartTimer ->
-            let
-                nextScreenState =
-                    case model.screenState of
-                        Rpg rpgState ->
-                            Rpg Checklist
+            if model.screenState == Continue False && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+                startBreak model
+            else
+                let
+                    nextScreenState =
+                        case model.screenState of
+                            Rpg rpgState ->
+                                Rpg Checklist
 
-                        _ ->
-                            Continue False
+                            _ ->
+                                Continue False
 
-                updatedModel =
-                    { model
-                        | screenState = nextScreenState
-                        , combos = keyboardComboInit
-                    }
-                        |> resetIfAfterBreak
+                    updatedModel =
+                        { model
+                            | screenState = nextScreenState
+                            , combos = keyboardComboInit
+                        }
+                            |> resetIfAfterBreak
 
-                startTimerUpdate =
-                    updatedModel
-                        ! [ changeTip, blurContinueButton ]
-                        |> withIpcMsg Ipc.StartTimer (startTimerFlags False model)
-            in
-            case model.screenState of
-                Rpg rpgState ->
-                    startTimerUpdate
+                    startTimerUpdate =
+                        updatedModel
+                            ! [ changeTip, blurContinueButton ]
+                            |> withIpcMsg Ipc.StartTimer (startTimerFlags False model)
+                in
+                case model.screenState of
+                    Rpg rpgState ->
+                        startTimerUpdate
 
-                _ ->
-                    startTimerUpdate |> Update.Extra.andThen update (Msg.UpdateRosterData MobsterOperation.NextTurn)
+                    _ ->
+                        startTimerUpdate |> Update.Extra.andThen update (Msg.UpdateRosterData MobsterOperation.NextTurn)
 
         Msg.SkipBreak ->
             let
@@ -422,22 +425,7 @@ update msg model =
             updatedModel ! []
 
         Msg.StartBreak ->
-            let
-                nextScreenState =
-                    case model.screenState of
-                        Rpg _ ->
-                            Rpg Checklist
-
-                        _ ->
-                            Continue False
-
-                updatedModel =
-                    { model | screenState = nextScreenState }
-                        |> resetIfAfterBreak
-            in
-            updatedModel
-                ! [ changeTip ]
-                |> withIpcMsg Ipc.StartTimer (startTimerFlags True model)
+            startBreak model
 
         Msg.SelectInputField fieldId ->
             model ! [ Setup.Ports.selectDuration fieldId ]
@@ -617,6 +605,26 @@ update msg model =
 
         Msg.Animate animMsg ->
             { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = Animation.update animMsg model.activeMobstersStyle } ! []
+
+
+startBreak : Model -> ( Model, Cmd Msg )
+startBreak model =
+    let
+        nextScreenState =
+            case model.screenState of
+                Rpg _ ->
+                    Rpg Checklist
+
+                _ ->
+                    Continue False
+
+        updatedModel =
+            { model | screenState = nextScreenState }
+                |> resetIfAfterBreak
+    in
+    updatedModel
+        ! [ changeTip ]
+        |> withIpcMsg Ipc.StartTimer (startTimerFlags True model)
 
 
 type alias Thingy model =
