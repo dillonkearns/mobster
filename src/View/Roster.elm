@@ -286,7 +286,7 @@ quickRotateQueryInputView inRotateView quickRotateQuery =
         , if inRotateView then
             noOpAttribute
           else
-            onFocus Msg.ShowRotationScreen
+            onFocus Msg.ToggleRotationScreen
         ]
         []
 

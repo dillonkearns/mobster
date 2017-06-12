@@ -113,7 +113,7 @@ continueView showRotation model =
             if showRotation then
                 div []
                     [ View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle)
-                    , button [ style [ "margin-bottom" => "12px" ], Attr.class "btn btn-small btn-default pull-right", onClick Msg.ShowRotationScreen ]
+                    , button [ style [ "margin-bottom" => "12px" ], Attr.class "btn btn-small btn-default pull-right", onClick Msg.ToggleRotationScreen ]
                         [ span [ class [ BufferRight ] ] [ text "Back to tip view" ], span [ Attr.class "fa fa-arrow-circle-o-left" ] [] ]
                     ]
             else
@@ -355,7 +355,7 @@ update msg model =
         Msg.StartRpgMode ->
             { model | screenState = Rpg NextUp } ! []
 
-        Msg.ShowRotationScreen ->
+        Msg.ToggleRotationScreen ->
             case model.screenState of
                 Continue showRotation ->
                     let

@@ -16,7 +16,7 @@ type Msg
     | SkipBreak
     | StartBreak
     | ViewRpgNextUp
-    | ShowRotationScreen
+    | ToggleRotationScreen
     | SkipHotkey
     | StartRpgMode
     | UpdateRosterData MobsterOperation

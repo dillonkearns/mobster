@@ -50,8 +50,8 @@ keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
 keyboardCombos =
     [ Keyboard.Combo.combo2 ( Keyboard.Combo.control, Keyboard.Combo.enter ) StartTimer
     , Keyboard.Combo.combo2 ( Keyboard.Combo.command, Keyboard.Combo.enter ) StartTimer
-    , Keyboard.Combo.combo2 ( Keyboard.Combo.option, Keyboard.Combo.r ) ShowRotationScreen
-    , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.r ) ShowRotationScreen
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.option, Keyboard.Combo.r ) ToggleRotationScreen
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.r ) ToggleRotationScreen
     , Keyboard.Combo.combo2 ( Keyboard.Combo.option, Keyboard.Combo.s ) SkipHotkey
     , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.s ) SkipHotkey
     , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.a ) (RotateInHotkey 0)
