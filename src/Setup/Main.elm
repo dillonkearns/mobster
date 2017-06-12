@@ -42,6 +42,7 @@ import View.IntervalsToBreak
 import View.Roster
 import View.Tip
 import View.UpdateAvailable
+import ViewHelpers
 
 
 shuffleMobstersCmd : Roster.RosterData -> Cmd Msg
@@ -105,26 +106,6 @@ startMobbingShortcut onMac =
 -- continue view 92
 
 
-continueButtonId : String
-continueButtonId =
-    "continue-button"
-
-
-blockButton : String -> Msg -> String -> Html Msg
-blockButton displayText onClickMsg tooltipText =
-    div [ Attr.class "row", style [ "padding-bottom" => "1.333em" ] ]
-        [ button
-            [ onClick onClickMsg
-            , Attr.class "btn btn-info btn-lg btn-block"
-            , class [ LargeButtonText, BufferTop, TooltipContainer, Title ]
-            , Attr.id continueButtonId
-            ]
-            [ div [] [ text displayText ]
-            , div [ class [ Tooltip ] ] [ text tooltipText ]
-            ]
-        ]
-
-
 continueView : Bool -> Model -> Html Msg
 continueView showRotation model =
     let
@@ -148,7 +129,7 @@ continueView showRotation model =
             [ View.IntervalsToBreak.view model.intervalsSinceBreak model.settings.intervalsPerBreak
             , nextDriverNavigatorView model
             , div [ class [ BufferTop ] ] [ mainView ]
-            , blockButton "Continue" Msg.StartTimer (startMobbingShortcut model.onMac)
+            , ViewHelpers.blockButton "Continue" Msg.StartTimer (startMobbingShortcut model.onMac) continueButtonId
             ]
 
 
@@ -243,7 +224,7 @@ configureView model =
             , Bootstrap.smallButton "Install Mob Git Commit Script" (Msg.SendIpc Ipc.ShowScriptInstallInstructions Encode.null) Bootstrap.Primary FA.Github
             , Bootstrap.smallButton "Learn to Mob Game" Msg.StartRpgMode Bootstrap.Success FA.Gamepad
             ]
-        , div [ style [ "margin-top" => "50px" ] ] [ blockButton "Start Mobbing" Msg.StartTimer (startMobbingShortcut model.onMac) ]
+        , div [ style [ "margin-top" => "50px" ] ] [ ViewHelpers.blockButton "Start Mobbing" Msg.StartTimer (startMobbingShortcut model.onMac) continueButtonId ]
         ]
 
 
@@ -732,6 +713,11 @@ blurContinueButton =
     continueButtonId
         |> Dom.blur
         |> Task.attempt Msg.DomResult
+
+
+continueButtonId : String
+continueButtonId =
+    "continue-button"
 
 
 
