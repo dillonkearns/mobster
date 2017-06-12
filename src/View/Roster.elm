@@ -197,7 +197,7 @@ newMobsterRowView inRotateView quickRotateState newMobsterDisabled =
     in
     tr [ Attr.class rowClass ]
         [ td [ mobsterCellStyle2, Attr.colspan 100 ]
-            [ div [ Attr.class "row" ]
+            [ div [ Attr.class "row", onClick Msg.ShowRotationScreen, style [ "cursor" => "text" ] ]
                 [ div [ Attr.class "col-md-10" ] [ quickRotateQueryInputView inRotateView quickRotateState.query ]
                 , div [ Attr.class "col-md-2" ] [ span [ Attr.class "fa fa-user-plus text-success" ] [] ]
                 ]
@@ -286,7 +286,7 @@ quickRotateQueryInputView inRotateView quickRotateQuery =
         , if inRotateView then
             noOpAttribute
           else
-            onFocus Msg.ToggleRotationScreen
+            onFocus Msg.ShowRotationScreen
         ]
         []
 

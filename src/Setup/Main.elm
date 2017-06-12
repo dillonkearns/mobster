@@ -373,6 +373,17 @@ update msg model =
                 _ ->
                     model ! []
 
+        Msg.ShowRotationScreen ->
+            case model.screenState of
+                Continue showRotation ->
+                    { model | screenState = Continue True } ! [ focusQuickRotateInput ]
+
+                Configure ->
+                    model ! [ focusQuickRotateInput ]
+
+                _ ->
+                    model ! []
+
         Msg.StartTimer ->
             let
                 nextScreenState =
