@@ -22,7 +22,7 @@ decoder =
         |> required "timerDuration" Decode.int
         |> optional "breakDuration" Decode.int 5
         |> required "intervalsPerBreak" Decode.int
-        |> required "rosterData" Roster.Data.decoder
+        |> required "mobsterData" Roster.Data.decoder
         |> optional "showHideShortcut" Decode.string "K"
 
 
@@ -37,7 +37,7 @@ encoder settingsData =
         [ "timerDuration" => Encode.int settingsData.timerDuration
         , "breakDuration" => Encode.int settingsData.breakDuration
         , "intervalsPerBreak" => Encode.int settingsData.intervalsPerBreak
-        , "rosterData" => Roster.Data.encoder settingsData.rosterData
+        , "mobsterData" => Roster.Data.encoder settingsData.rosterData
         , "showHideShortcut" => Encode.string settingsData.showHideShortcut
         ]
 

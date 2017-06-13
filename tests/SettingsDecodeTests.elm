@@ -15,7 +15,7 @@ all =
         [ describeDecoder "Settings"
             Setup.Settings.decoder
             [ ( """{
-                      "rosterData": {
+                      "mobsterData": {
                         "mobsters": [],
                         "inactiveMobsters": [],
                         "nextDriver": 0
@@ -29,7 +29,7 @@ all =
         , describeDecoder "RosterData"
             Setup.Settings.decoder
             [ ( """{
-                      "rosterData": {
+                      "mobsterData": {
                         "mobsters": ["Uhura", "Sulu"],
                         "inactiveMobsters": ["Kirk", "Spock"],
                         "nextDriver": 0
