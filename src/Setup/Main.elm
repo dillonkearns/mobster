@@ -59,17 +59,17 @@ changeTip =
     Random.generate Msg.NewTip Tip.random
 
 
-startTimerFlags : Bool -> { model | settings : Settings.Data } -> Encode.Value
-startTimerFlags isBreak model =
+startTimerFlags : Bool -> Settings.Data -> Encode.Value
+startTimerFlags isBreak settings =
     let
         { driver, navigator } =
-            Presenter.nextDriverNavigator model.settings.rosterData
+            Presenter.nextDriverNavigator settings.rosterData
 
         minutes =
             if isBreak then
-                model.settings.breakDuration
+                settings.breakDuration
             else
-                model.settings.timerDuration
+                settings.timerDuration
     in
     Timer.Flags.encode
         { minutes = minutes
@@ -407,7 +407,7 @@ update msg model =
                     startTimerUpdate =
                         updatedModel
                             ! [ changeTip, blurContinueButton ]
-                            |> withIpcMsg Ipc.StartTimer (startTimerFlags False model)
+                            |> startTimer
                 in
                 case model.screenState of
                     Rpg rpgState ->
@@ -624,15 +624,11 @@ startBreak model =
     in
     updatedModel
         ! [ changeTip ]
-        |> withIpcMsg Ipc.StartTimer (startTimerFlags True model)
+        |> startBreakTimer
 
 
 type alias Thingy model =
     { model | settings : Settings.Data }
-
-
-
--- performRosterOperation : MobsterOperation -> Thingy model -> ( Thingy model, Cmd Msg )
 
 
 performRosterOperation :
@@ -677,6 +673,16 @@ sendIpcCmd ipcMsg payload =
 withIpcMsg : Ipc.Msg -> Encode.Value -> ( model, Cmd Msg ) -> ( model, Cmd Msg )
 withIpcMsg msgIpc valueEncode ( model, cmd ) =
     model ! [ cmd, sendIpcCmd msgIpc valueEncode ]
+
+
+startTimer : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+startTimer (( model, cmd ) as msgAndCmd) =
+    msgAndCmd |> withIpcMsg Ipc.StartTimer (startTimerFlags False model.settings)
+
+
+startBreakTimer : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+startBreakTimer (( model, cmd ) as msgAndCmd) =
+    msgAndCmd |> withIpcMsg Ipc.StartTimer (startTimerFlags True model.settings)
 
 
 rosterViewIsShowing : ScreenState -> Bool
