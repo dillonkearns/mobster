@@ -59,23 +59,27 @@ changeTip =
     Random.generate Msg.NewTip Tip.random
 
 
-startTimerFlags : Bool -> Settings.Data -> Encode.Value
-startTimerFlags isBreak settings =
+timerFlags : Settings.Data -> Encode.Value
+timerFlags settings =
     let
         { driver, navigator } =
             Presenter.nextDriverNavigator settings.rosterData
-
-        minutes =
-            if isBreak then
-                settings.breakDuration
-            else
-                settings.timerDuration
     in
     Timer.Flags.encode
-        { minutes = minutes
+        { minutes = settings.timerDuration
         , driver = driver.name
         , navigator = navigator.name
-        , isBreak = isBreak
+        , isBreak = False
+        }
+
+
+breakTimerFlags : Int -> Encode.Value
+breakTimerFlags breakDuration =
+    Timer.Flags.encode
+        { minutes = breakDuration
+        , driver = ""
+        , navigator = ""
+        , isBreak = True
         }
 
 
@@ -673,12 +677,12 @@ withIpcMsg msgIpc valueEncode ( model, cmd ) =
 
 startTimer : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 startTimer (( model, cmd ) as msgAndCmd) =
-    msgAndCmd |> withIpcMsg Ipc.StartTimer (startTimerFlags False model.settings)
+    msgAndCmd |> withIpcMsg Ipc.StartTimer (timerFlags model.settings)
 
 
 startBreakTimer : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 startBreakTimer (( model, cmd ) as msgAndCmd) =
-    msgAndCmd |> withIpcMsg Ipc.StartTimer (startTimerFlags True model.settings)
+    msgAndCmd |> withIpcMsg Ipc.StartTimer (breakTimerFlags model.settings.breakDuration)
 
 
 rosterViewIsShowing : ScreenState -> Bool
