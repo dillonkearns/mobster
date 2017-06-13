@@ -627,10 +627,6 @@ startBreak model =
         |> startBreakTimer
 
 
-type alias Thingy model =
-    { model | settings : Settings.Data }
-
-
 performRosterOperation :
     MobsterOperation
     -> { model | settings : Settings.Data, screenState : ScreenState, quickRotateState : QuickRotate.State }
