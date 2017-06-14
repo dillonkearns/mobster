@@ -121,31 +121,33 @@ timerDoneCommand timerType originalDurationSeconds =
             timerDone originalDurationSeconds
 
 
+initialModel : IncomingFlags -> Model
+initialModel flags =
+    let
+        secondsLeft =
+            if flags.isDev then
+                -- just show timer for one second no matter what it's set to
+                1
+            else
+                flags.minutes * 60
+
+        timerType =
+            if flags.isBreak then
+                BreakTimer
+            else
+                RegularTimer { driver = flags.driver, navigator = flags.navigator }
+    in
+    { secondsLeft = secondsLeft
+    , originalDurationSeconds = secondsLeft
+    , timerType = timerType
+    }
+
+
 init : Encode.Value -> ( Model, Cmd msg )
 init flagsJson =
     case Decode.decodeValue Timer.Flags.decoder flagsJson of
         Ok flags ->
-            let
-                secondsLeft =
-                    if flags.isDev then
-                        -- just show timer for one second no matter what it's set to
-                        1
-                    else
-                        flags.minutes * 60
-
-                timerType =
-                    if flags.isBreak then
-                        BreakTimer
-                    else
-                        RegularTimer { driver = flags.driver, navigator = flags.navigator }
-
-                initialModel =
-                    { secondsLeft = secondsLeft
-                    , originalDurationSeconds = secondsLeft
-                    , timerType = timerType
-                    }
-            in
-            ( initialModel, Cmd.none )
+            initialModel flags ! []
 
         Err _ ->
             Debug.crash "Failed to decode flags"
