@@ -5,12 +5,24 @@ import Html.Attributes exposing (class, src, style)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Time exposing (..)
-import Timer.Flags exposing (IncomingFlags)
+import Timer.Flags exposing (..)
 import Timer.Timer exposing (..)
 
 
+type TimerType
+    = BreakTimer
+    | RegularTimer DriverNavigator
+
+
+type alias DriverNavigator =
+    { driver : String, navigator : String }
+
+
 type alias Model =
-    { driver : String, navigator : String, secondsLeft : Int, originalDurationSeconds : Int, isBreak : Bool }
+    { secondsLeft : Int
+    , originalDurationSeconds : Int
+    , timerType : TimerType
+    }
 
 
 type Msg
@@ -49,20 +61,22 @@ coffeeIcon =
     div [ style [ ( "font-size", "50px" ) ] ] [ i [ class "text-success fa fa-coffee" ] [] ]
 
 
-activeMobsters : Model -> Html msg
-activeMobsters model =
+activeMobsters : DriverNavigator -> Html msg
+activeMobsters driverNavigator =
     div [ style [ ( "margin-top", "8px" ) ] ]
-        [ driverView model.driver
-        , navigatorView model.navigator
+        [ driverView driverNavigator.driver
+        , navigatorView driverNavigator.navigator
         ]
 
 
 mainContent : Model -> Html msg
 mainContent model =
-    if model.isBreak then
-        coffeeIcon
-    else
-        activeMobsters model
+    case model.timerType of
+        BreakTimer ->
+            coffeeIcon
+
+        RegularTimer driverNavigator ->
+            activeMobsters driverNavigator
 
 
 view : Model -> Html msg
@@ -89,18 +103,20 @@ update msg model =
             in
             { model | secondsLeft = updatedSecondsLeft }
                 ! (if timerComplete updatedSecondsLeft then
-                    [ timerDoneCommand model.isBreak model.originalDurationSeconds ]
+                    [ timerDoneCommand model.timerType model.originalDurationSeconds ]
                    else
                     []
                   )
 
 
-timerDoneCommand : Bool -> Int -> Cmd msg
-timerDoneCommand isBreak originalDurationSeconds =
-    if isBreak then
-        breakTimerDone originalDurationSeconds
-    else
-        timerDone originalDurationSeconds
+timerDoneCommand : TimerType -> Int -> Cmd msg
+timerDoneCommand timerType originalDurationSeconds =
+    case timerType of
+        BreakTimer ->
+            breakTimerDone originalDurationSeconds
+
+        RegularTimer _ ->
+            timerDone originalDurationSeconds
 
 
 init : Encode.Value -> ( Model, Cmd msg )
@@ -114,8 +130,20 @@ init flagsJson =
                         1
                     else
                         flags.minutes * 60
+
+                timerType =
+                    if flags.isBreak then
+                        BreakTimer
+                    else
+                        RegularTimer { driver = flags.driver, navigator = flags.navigator }
+
+                initialModel =
+                    { secondsLeft = secondsLeft
+                    , originalDurationSeconds = secondsLeft
+                    , timerType = timerType
+                    }
             in
-            ( { secondsLeft = secondsLeft, driver = flags.driver, navigator = flags.navigator, originalDurationSeconds = secondsLeft, isBreak = flags.isBreak }, Cmd.none )
+            ( initialModel, Cmd.none )
 
         Err _ ->
             Debug.crash "Failed to decode flags"
