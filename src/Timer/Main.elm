@@ -71,8 +71,8 @@ activeMobsters driverNavigator =
         ]
 
 
-mainContent : Model -> Html msg
-mainContent model =
+driverNavigatorView : Model -> Html msg
+driverNavigatorView model =
     case model.timerType of
         BreakTimer ->
             coffeeIcon
@@ -86,7 +86,7 @@ view model =
     div [ class "text-center" ]
         [ h1 [ style [ ( "margin", "0px" ), ( "margin-top", "10px" ) ] ]
             [ text (Timer.timerToString (Timer.secondsToTimer model.secondsLeft)) ]
-        , mainContent model
+        , driverNavigatorView model
         ]
 
 
