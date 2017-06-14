@@ -35,20 +35,22 @@ port timerDone : Int -> Cmd msg
 port breakTimerDone : Int -> Cmd msg
 
 
-driverView : String -> Html msg
-driverView name =
+roleView : String -> String -> Html msg
+roleView name iconPath =
     p []
-        [ iconView "./assets/driver-icon.png"
+        [ iconView navigatorIcon
         , text name
         ]
 
 
-navigatorView : String -> Html msg
-navigatorView name =
-    p []
-        [ iconView "./assets/navigator-icon.png"
-        , text name
-        ]
+driverIcon : String
+driverIcon =
+    "./assets/driver-icon.png"
+
+
+navigatorIcon : String
+navigatorIcon =
+    "./assets/navigator-icon.png"
 
 
 iconView : String -> Html msg
@@ -64,8 +66,8 @@ coffeeIcon =
 activeMobsters : DriverNavigator -> Html msg
 activeMobsters driverNavigator =
     div [ style [ ( "margin-top", "8px" ) ] ]
-        [ driverView driverNavigator.driver
-        , navigatorView driverNavigator.navigator
+        [ roleView driverNavigator.driver driverIcon
+        , roleView driverNavigator.navigator navigatorIcon
         ]
 
 
