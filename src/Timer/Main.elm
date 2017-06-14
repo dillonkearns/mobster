@@ -1,4 +1,4 @@
-port module Timer.Main exposing (main, updateTimer)
+port module Timer.Main exposing (main)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, src, style)
@@ -6,7 +6,7 @@ import Json.Decode as Decode
 import Json.Encode as Encode
 import Time exposing (..)
 import Timer.Flags exposing (..)
-import Timer.Timer exposing (..)
+import Timer.Timer as Timer
 
 
 type TimerType
@@ -85,14 +85,9 @@ view : Model -> Html msg
 view model =
     div [ class "text-center" ]
         [ h1 [ style [ ( "margin", "0px" ), ( "margin-top", "10px" ) ] ]
-            [ text (timerToString (secondsToTimer model.secondsLeft)) ]
+            [ text (Timer.timerToString (Timer.secondsToTimer model.secondsLeft)) ]
         , mainContent model
         ]
-
-
-updateTimer : Int -> Int
-updateTimer seconds =
-    seconds - 1
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -101,10 +96,10 @@ update msg model =
         Tick time ->
             let
                 updatedSecondsLeft =
-                    updateTimer model.secondsLeft
+                    Timer.updateTimer model.secondsLeft
             in
             { model | secondsLeft = updatedSecondsLeft }
-                ! (if timerComplete updatedSecondsLeft then
+                ! (if Timer.timerComplete updatedSecondsLeft then
                     [ timerDoneCommand model.timerType model.originalDurationSeconds ]
                    else
                     []
@@ -155,15 +150,10 @@ init flagsJson =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if timerComplete model.secondsLeft then
+    if Timer.timerComplete model.secondsLeft then
         Sub.none
     else
         every second Tick
-
-
-timerComplete : Int -> Bool
-timerComplete secondsLeft =
-    secondsLeft <= 0
 
 
 main : Program Decode.Value Model Msg

@@ -5,6 +5,16 @@ type alias Timer =
     { minutes : Int, seconds : Int }
 
 
+updateTimer : Int -> Int
+updateTimer seconds =
+    seconds - 1
+
+
+timerComplete : Int -> Bool
+timerComplete secondsLeft =
+    secondsLeft <= 0
+
+
 secondsToTimer : Int -> Timer
 secondsToTimer seconds =
     Timer (seconds // 60) (rem seconds 60)
