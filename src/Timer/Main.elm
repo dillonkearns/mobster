@@ -9,6 +9,13 @@ import Timer.Flags exposing (..)
 import Timer.Timer as Timer
 
 
+type alias Model =
+    { secondsLeft : Int
+    , originalDurationSeconds : Int
+    , timerType : TimerType
+    }
+
+
 type TimerType
     = BreakTimer
     | RegularTimer DriverNavigator
@@ -16,13 +23,6 @@ type TimerType
 
 type alias DriverNavigator =
     { driver : String, navigator : String }
-
-
-type alias Model =
-    { secondsLeft : Int
-    , originalDurationSeconds : Int
-    , timerType : TimerType
-    }
 
 
 type Msg
