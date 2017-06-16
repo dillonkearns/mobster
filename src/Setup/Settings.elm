@@ -20,10 +20,10 @@ decoder : Decode.Decoder Data
 decoder =
     Json.Decode.Pipeline.decode Data
         |> required "timerDuration" Decode.int
-        |> optional "breakDuration" Decode.int 5
+        |> required "breakDuration" Decode.int
         |> required "intervalsPerBreak" Decode.int
         |> required "mobsterData" Roster.Data.decoder
-        |> optional "showHideShortcut" Decode.string "K"
+        |> required "showHideShortcut" Decode.string
 
 
 decode : Encode.Value -> Result String Data
