@@ -1,8 +1,8 @@
 module TimerFlagsTests exposing (all)
 
-import Test exposing (..)
 import Expect
 import Json.Decode as Decode
+import Test exposing (..)
 import Timer.Flags
 
 
@@ -14,10 +14,10 @@ all =
                 flags =
                     { minutes = 123, driver = "Sulu", navigator = "Kirk", isBreak = False }
             in
-                flags
-                    |> Timer.Flags.encode
-                    |> Decode.decodeValue Timer.Flags.decoder
-                    |> Expect.equal
-                        (Ok
-                            { minutes = 123, driver = "Sulu", navigator = "Kirk", isBreak = False, isDev = False }
-                        )
+            flags
+                |> Timer.Flags.encodeRegularTimer
+                |> Decode.decodeValue Timer.Flags.decoder
+                |> Expect.equal
+                    (Ok
+                        { minutes = 123, driver = "Sulu", navigator = "Kirk", isBreak = False, isDev = False }
+                    )

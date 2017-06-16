@@ -15,20 +15,27 @@ type alias IncomingFlags =
     }
 
 
-encode :
+encodeRegularTimer :
     { outgoingFlags
         | driver : String
-        , isBreak : Bool
         , minutes : Int
         , navigator : String
     }
     -> Encode.Value
-encode flags =
+encodeRegularTimer flags =
     Encode.object
         [ "minutes" => Encode.int flags.minutes
         , "driver" => Encode.string flags.driver
         , "navigator" => Encode.string flags.navigator
-        , "isBreak" => Encode.bool flags.isBreak
+        , "isBreak" => Encode.bool False
+        ]
+
+
+encodeBreak : Int -> Encode.Value
+encodeBreak breakDurationMinutes =
+    Encode.object
+        [ "minutes" => Encode.int breakDurationMinutes
+        , "isBreak" => Encode.bool True
         ]
 
 
@@ -36,7 +43,7 @@ decoder : Json.Decode.Decoder IncomingFlags
 decoder =
     Pipeline.decode IncomingFlags
         |> required "minutes" Json.Decode.int
-        |> required "driver" Json.Decode.string
-        |> required "navigator" Json.Decode.string
+        |> optional "driver" Json.Decode.string ""
+        |> optional "navigator" Json.Decode.string ""
         |> required "isBreak" Json.Decode.bool
         |> optional "isDev" Json.Decode.bool False

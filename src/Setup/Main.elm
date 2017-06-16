@@ -59,30 +59,6 @@ changeTip =
     Random.generate Msg.NewTip Tip.random
 
 
-timerFlags : Settings.Data -> Encode.Value
-timerFlags settings =
-    let
-        { driver, navigator } =
-            Presenter.nextDriverNavigator settings.rosterData
-    in
-    Timer.Flags.encode
-        { minutes = settings.timerDuration
-        , driver = driver.name
-        , navigator = navigator.name
-        , isBreak = False
-        }
-
-
-breakTimerFlags : Int -> Encode.Value
-breakTimerFlags breakDuration =
-    Timer.Flags.encode
-        { minutes = breakDuration
-        , driver = ""
-        , navigator = ""
-        , isBreak = True
-        }
-
-
 
 -- cross-page view stuff 37
 
@@ -586,16 +562,20 @@ update msg model =
                                 (Msg.UpdateRosterData (MobsterOperation.Add newMobster))
 
         Msg.QuickRotateMove direction ->
+            let
+                inactiveMobsterNames =
+                    model.settings.rosterData.inactiveMobsters |> List.map .name
+            in
             case direction of
                 Msg.Next ->
                     { model
-                        | quickRotateState = QuickRotate.next (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState
+                        | quickRotateState = QuickRotate.next inactiveMobsterNames model.quickRotateState
                     }
                         ! []
 
                 Msg.Previous ->
                     { model
-                        | quickRotateState = QuickRotate.previous (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState
+                        | quickRotateState = QuickRotate.previous inactiveMobsterNames model.quickRotateState
                     }
                         ! []
 
@@ -680,9 +660,22 @@ startTimer (( model, cmd ) as msgAndCmd) =
     msgAndCmd |> withIpcMsg Ipc.StartTimer (timerFlags model.settings)
 
 
+timerFlags : Settings.Data -> Encode.Value
+timerFlags settings =
+    let
+        { driver, navigator } =
+            Presenter.nextDriverNavigator settings.rosterData
+    in
+    Timer.Flags.encodeRegularTimer
+        { minutes = settings.timerDuration
+        , driver = driver.name
+        , navigator = navigator.name
+        }
+
+
 startBreakTimer : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 startBreakTimer (( model, cmd ) as msgAndCmd) =
-    msgAndCmd |> withIpcMsg Ipc.StartTimer (breakTimerFlags model.settings.breakDuration)
+    msgAndCmd |> withIpcMsg Ipc.StartTimer (Timer.Flags.encodeBreak model.settings.breakDuration)
 
 
 rosterViewIsShowing : ScreenState -> Bool
