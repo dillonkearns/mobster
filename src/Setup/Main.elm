@@ -285,12 +285,16 @@ view model =
 -- update function helpers 34
 
 
-resetBreakData : Model -> Model
+resetBreakData :
+    { model | secondsSinceBreak : Int, intervalsSinceBreak : Int }
+    -> { model | secondsSinceBreak : Int, intervalsSinceBreak : Int }
 resetBreakData model =
     { model | secondsSinceBreak = 0, intervalsSinceBreak = 0 }
 
 
-resetIfAfterBreak : Model -> Model
+resetIfAfterBreak :
+    { model | secondsSinceBreak : Int, intervalsSinceBreak : Int, settings : Settings.Data }
+    -> { model | secondsSinceBreak : Int, intervalsSinceBreak : Int, settings : Settings.Data }
 resetIfAfterBreak model =
     let
         timeForBreak =
@@ -302,13 +306,18 @@ resetIfAfterBreak model =
         model
 
 
-saveActiveMobsters : ( { model | settings : Settings.Data }, Cmd Msg ) -> ( { model | settings : Settings.Data }, Cmd Msg )
+saveActiveMobsters :
+    ( { model | settings : Settings.Data }, Cmd Msg )
+    -> ( { model | settings : Settings.Data }, Cmd Msg )
 saveActiveMobsters (( model, msg ) as updateResult) =
     updateResult
         |> withIpcMsg Ipc.SaveActiveMobstersFile (Encode.string <| Roster.currentMobsterNames model.settings.rosterData)
 
 
-updateSettings : (Settings.Data -> Settings.Data) -> { model | settings : Settings.Data } -> ( { model | settings : Settings.Data }, Cmd Msg )
+updateSettings :
+    (Settings.Data -> Settings.Data)
+    -> { model | settings : Settings.Data }
+    -> ( { model | settings : Settings.Data }, Cmd Msg )
 updateSettings settingsUpdater ({ settings } as model) =
     let
         updatedSettings =
