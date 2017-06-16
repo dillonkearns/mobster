@@ -748,20 +748,28 @@ init { onMac, settings } =
         decodedSettings =
             Settings.decode settings
 
-        initialSettings =
+        ( initialSettings, maybeDecodeError ) =
             case decodedSettings of
                 Ok settings ->
-                    settings
+                    ( settings, Nothing )
 
                 Err errorString ->
                     let
                         _ =
                             Debug.log "init failed to decode settings" errorString
                     in
-                    Settings.initial
+                    ( Settings.initial, Just errorString )
+
+        notifyIfDecodeFailed =
+            case maybeDecodeError of
+                Just errorString ->
+                    sendIpcCmd Ipc.NotifySettingsDecodeFailed (Encode.string errorString)
+
+                Nothing ->
+                    Cmd.none
     in
     initialModel initialSettings onMac
-        ! []
+        ! [ notifyIfDecodeFailed ]
         |> saveActiveMobsters
         |> Update.Extra.andThen update
             (Msg.ChangeInput (Msg.StringField Msg.ShowHideShortcut) initialSettings.showHideShortcut)

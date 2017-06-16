@@ -11,3 +11,4 @@ type Msg
     | OpenExternalUrl
     | StartTimer
     | SaveActiveMobstersFile
+    | NotifySettingsDecodeFailed

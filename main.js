@@ -167,6 +167,11 @@ ipcMain.on('ChangeShortcut', (event, payload) => {
     setShowHideShortcut(payload)
   }
 })
+
+ipcMain.on('NotifySettingsDecodeFailed', (event, payload) => {
+  bugsnag.notify('settings-decode-failure', payload)
+})
+
 ipcMain.on('get-active-mobsters-path', event => {
   event.returnValue = currentMobstersFilePath
 })
