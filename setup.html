@@ -16,7 +16,7 @@
     <style>
       @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
       @import url('https://fonts.googleapis.com/css?family=Dosis');
-      
+
       html,body {
         -webkit-user-select: none;
         user-select: none;
@@ -151,7 +151,8 @@ console.log(`Running version ${version}`)
 
 let settings = JSON.parse(window.localStorage.getItem('settings'))
 let onMac = /Mac/.test(navigator.platform)
-let setup = Elm.Setup.Main.fullscreen({ settings, onMac })
+let isDev = require('electron-is-dev')
+let setup = Elm.Setup.Main.fullscreen({ settings, onMac, isDev })
 
 setup.ports.selectDuration.subscribe(function(id) {
   document.getElementById(id).select()

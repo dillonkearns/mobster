@@ -742,8 +742,12 @@ continueButtonId =
 -- elm boilerplate 73
 
 
-init : { onMac : Bool, settings : Decode.Value } -> ( Model, Cmd Msg )
-init { onMac, settings } =
+type alias Flags =
+    { onMac : Bool, isDev : Bool, settings : Decode.Value }
+
+
+init : Flags -> ( Model, Cmd Msg )
+init { onMac, isDev, settings } =
     let
         decodedSettings =
             Settings.decode settings
@@ -754,11 +758,10 @@ init { onMac, settings } =
                     ( settings, Nothing )
 
                 Err errorString ->
-                    let
-                        _ =
-                            Debug.log "init failed to decode settings" errorString
-                    in
-                    ( Settings.initial, Just errorString )
+                    if isDev then
+                        Debug.crash ("init failed to decode settings:\n" ++ errorString)
+                    else
+                        ( Settings.initial, Just errorString )
 
         notifyIfDecodeFailed =
             case maybeDecodeError of
@@ -828,7 +831,7 @@ initialModel settings onMac =
     }
 
 
-main : Program { onMac : Bool, settings : Decode.Value } Model Msg
+main : Program Flags Model Msg
 main =
     Html.programWithFlags
         { init = init
