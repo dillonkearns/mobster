@@ -6,8 +6,14 @@ const {
   Tray,
   BrowserWindow,
   dialog,
-  shell
+  shell,
+  remote
 } = require('electron')
+const fs = require('fs')
+
+const transparencyDisabled = fs.existsSync(
+  `${app.getPath('userData')}/NO_TRANSPARENCY`
+)
 const autoUpdater = require('electron-updater').autoUpdater
 autoUpdater.requestHeaders = { 'Cache-Control': 'no-cache' }
 require('electron-debug')({
@@ -21,7 +27,6 @@ const url = require('url')
 const log = require('electron-log')
 const assetsDirectory = path.join(__dirname, 'assets')
 const { version } = require('./package')
-const fs = require('fs')
 const osascript = require('node-osascript')
 const appDataPath = app.getPath('userData')
 currentMobstersFilePath = path.join(appDataPath, 'active-mobsters')
@@ -121,10 +126,7 @@ function returnFocus() {
 }
 
 function startTimer(flags) {
-  timerWindow = new BrowserWindow({
-    transparent: true,
-    frame: false,
-    alwaysOnTop: true,
+  timerWindow = newTransparentOnTopWindow({
     width: timerWidth,
     height: timerHeight,
     focusable: false
@@ -184,10 +186,7 @@ function closeTimer() {
 }
 
 function createWindow() {
-  mainWindow = new BrowserWindow({
-    transparent: true,
-    frame: false,
-    alwaysOnTop: true,
+  mainWindow = newTransparentOnTopWindow({
     icon: `${assetsDirectory}/icon.ico`
   })
 
@@ -293,6 +292,19 @@ const createTray = () => {
   tray.on('right-click', onClickTrayIcon)
   tray.on('double-click', onClickTrayIcon)
   tray.on('click', onClickTrayIcon)
+}
+
+function newTransparentOnTopWindow(additionalOptions) {
+  return new BrowserWindow(
+    Object.assign(
+      {
+        transparent: !transparencyDisabled,
+        frame: false,
+        alwaysOnTop: true
+      },
+      additionalOptions
+    )
+  )
 }
 
 function showScripts() {
