@@ -145,9 +145,13 @@ function startTimer(flags) {
     event.returnValue = flags
   })
 
+  let timerFile = transparencyDisabled
+    ? 'opaque-timer.html'
+    : 'transparent-timer.html'
+
   timerWindow.loadURL(
     url.format({
-      pathname: path.join(__dirname, 'timer.html'),
+      pathname: path.join(__dirname, timerFile),
       protocol: 'file:',
       slashes: true
     })
