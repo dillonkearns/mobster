@@ -1,4 +1,4 @@
-module TimerFlagsTests exposing (all)
+module TimerFlagsTests exposing (suite)
 
 import Expect
 import Json.Decode as Decode
@@ -6,8 +6,8 @@ import Test exposing (..)
 import Timer.Flags
 
 
-all : Test
-all =
+suite : Test
+suite =
     test "decoder parses same object as the encoder generates" <|
         \() ->
             let

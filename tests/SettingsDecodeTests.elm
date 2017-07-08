@@ -1,4 +1,4 @@
-module SettingsDecodeTests exposing (all)
+module SettingsDecodeTests exposing (suite)
 
 import Expect
 import Json.Decode as Decode
@@ -9,8 +9,8 @@ import Test.Extra exposing (..)
 import TestHelpers exposing (toMobsters)
 
 
-all : Test
-all =
+suite : Test
+suite =
     describe "decoders"
         [ describeDecoder "Settings"
             Setup.Settings.decoder
@@ -40,16 +40,11 @@ all =
                       "showHideShortcut": "foo"
                     }""", DecodesTo (Setup.Settings.Data 5 5 6 { empty | mobsters = [ "Uhura", "Sulu" ] |> toMobsters, inactiveMobsters = [ "Kirk", "Spock" ] |> toMobsters } "foo") )
             ]
-        , reverseDecoder
+        , test "decoder is able to parse fields generated in encoder" <|
+            \() ->
+                Setup.Settings.Data 5 5 6 { empty | mobsters = [ "Uhura", "Sulu" ] |> toMobsters, inactiveMobsters = [ "Kirk", "Spock" ] |> toMobsters } "foo"
+                    |> Setup.Settings.encoder
+                    |> Decode.decodeValue Setup.Settings.decoder
+                    |> Expect.equal
+                        (Ok (Setup.Settings.Data 5 5 6 { empty | mobsters = [ "Uhura", "Sulu" ] |> toMobsters, inactiveMobsters = [ "Kirk", "Spock" ] |> toMobsters } "foo"))
         ]
-
-
-reverseDecoder : Test
-reverseDecoder =
-    test "decoder is able to parse fields generated in encoder" <|
-        \() ->
-            Setup.Settings.Data 5 5 6 { empty | mobsters = [ "Uhura", "Sulu" ] |> toMobsters, inactiveMobsters = [ "Kirk", "Spock" ] |> toMobsters } "foo"
-                |> Setup.Settings.encoder
-                |> Decode.decodeValue Setup.Settings.decoder
-                |> Expect.equal
-                    (Ok (Setup.Settings.Data 5 5 6 { empty | mobsters = [ "Uhura", "Sulu" ] |> toMobsters, inactiveMobsters = [ "Kirk", "Spock" ] |> toMobsters } "foo"))

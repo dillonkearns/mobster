@@ -1,12 +1,12 @@
-module BreakTests exposing (all)
+module BreakTests exposing (suite)
 
 import Test exposing (..)
 import Expect
 import Break
 
 
-all : Test
-all =
+suite : Test
+suite =
     describe "break tests"
         [ describe "timersBeforeNext"
             [ test "just had a break" <|

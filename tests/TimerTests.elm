@@ -1,12 +1,12 @@
-module TimerTests exposing (all)
+module TimerTests exposing (suite)
 
 import Expect
 import Test exposing (..)
 import Timer.Timer as Timer
 
 
-all : Test
-all =
+suite : Test
+suite =
     describe "timer"
         [ describe "convert seconds to timer"
             [ test "with minutes" <|

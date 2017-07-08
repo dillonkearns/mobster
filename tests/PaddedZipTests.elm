@@ -1,12 +1,12 @@
-module PaddedZipTests exposing (all)
+module PaddedZipTests exposing (suite)
 
 import Expect
 import List.PaddedZip
 import Test exposing (..)
 
 
-all : Test
-all =
+suite : Test
+suite =
     describe "padded zip"
         [ test "both empty lists" <|
             \() ->

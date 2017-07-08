@@ -1,12 +1,12 @@
-module ValidationsTests exposing (all)
+module ValidationsTests exposing (suite)
 
 import Test exposing (..)
 import Expect
 import Setup.Validations as Validations
 
 
-all : Test
-all =
+suite : Test
+suite =
     describe "validations"
         [ test "gives bottom of range if below min" <|
             \() ->

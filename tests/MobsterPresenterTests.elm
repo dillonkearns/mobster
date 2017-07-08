@@ -1,4 +1,4 @@
-module MobsterPresenterTests exposing (all)
+module MobsterPresenterTests exposing (suite)
 
 import Expect
 import Roster.Data as Mobster exposing (empty)
@@ -7,8 +7,8 @@ import Test exposing (..)
 import TestHelpers exposing (toMobsters)
 
 
-all : Test
-all =
+suite : Test
+suite =
     describe "get driver and navigator"
         [ test "with two mobsters" <|
             \() ->

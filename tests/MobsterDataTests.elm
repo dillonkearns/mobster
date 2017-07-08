@@ -1,4 +1,4 @@
-module MobsterDataTests exposing (all)
+module MobsterDataTests exposing (suite)
 
 import Expect
 import Roster.Data exposing (empty)
@@ -7,8 +7,8 @@ import Test.Extra exposing (..)
 import TestHelpers exposing (toMobsters)
 
 
-all : Test
-all =
+suite : Test
+suite =
     describe "mobster data"
         [ describe "containsName"
             [ test "catches exact matches" <|

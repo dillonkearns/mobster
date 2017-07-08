@@ -1,11 +1,11 @@
-module MobsterOperationTests exposing (all)
+module MobsterOperationTests exposing (addCases, benchCases, completeGoalCases, moveCases, removeCases, rotateCases, rotateInCases)
 
-import Test exposing (..)
 import Expect
 import Roster.Data as Mobster exposing (RosterData, empty)
 import Roster.Operation exposing (MobsterOperation(..), updateMoblist)
-import TestHelpers exposing (toMobsters)
 import Roster.RpgRole exposing (..)
+import Test exposing (..)
+import TestHelpers exposing (toMobsters)
 
 
 fakeExperience =
@@ -29,11 +29,6 @@ fakeExperience2 =
 createMobster : String -> Mobster.Mobster
 createMobster name =
     Mobster.Mobster name fakeExperience
-
-
-all : Test
-all =
-    describe "mobster operation" [ benchCases, rotateInCases, removeCases, rotateCases, moveCases, addCases, completeGoalCases ]
 
 
 completeGoalCases : Test
@@ -76,7 +71,7 @@ benchCases =
             { empty | mobsters = [ "Sulu" ] |> toMobsters, inactiveMobsters = [ "Spock" ] |> toMobsters }
         , testOperations "puts mobsters on bench in order they are added"
             { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] |> toMobsters }
-            [ (Bench 1), (Bench 1) ]
+            [ Bench 1, Bench 1 ]
             { empty | mobsters = [ "Kirk" ] |> toMobsters, inactiveMobsters = [ "Spock", "McCoy" ] |> toMobsters }
         ]
 
@@ -105,44 +100,42 @@ removeCases =
         ]
 
 
-rotateCase1 : Test
-rotateCase1 =
-    let
-        startList =
-            { empty | mobsters = [ "Jane Doe", "John Smith" ] |> toMobsters, nextDriver = 0 }
-    in
-        testOperation "without wrapping"
-            startList
-            NextTurn
-            { startList | nextDriver = 1 }
-
-
-rotateCase2 : Test
-rotateCase2 =
-    let
-        startList =
-            { empty | mobsters = [ "Jane Doe", "John Smith" ] |> toMobsters, nextDriver = 1 }
-    in
-        testOperation "with wrapping"
-            startList
-            NextTurn
-            { startList | nextDriver = 0 }
-
-
-rotateCase3 : Test
-rotateCase3 =
-    let
-        startList =
-            { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] |> toMobsters, nextDriver = 1 }
-    in
-        testOperation "rewind"
-            startList
-            RewindTurn
-            { startList | nextDriver = 0 }
-
-
 rotateCases : Test
 rotateCases =
+    let
+        rotateCase1 : Test
+        rotateCase1 =
+            let
+                startList =
+                    { empty | mobsters = [ "Jane Doe", "John Smith" ] |> toMobsters, nextDriver = 0 }
+            in
+            testOperation "without wrapping"
+                startList
+                NextTurn
+                { startList | nextDriver = 1 }
+
+        rotateCase2 : Test
+        rotateCase2 =
+            let
+                startList =
+                    { empty | mobsters = [ "Jane Doe", "John Smith" ] |> toMobsters, nextDriver = 1 }
+            in
+            testOperation "with wrapping"
+                startList
+                NextTurn
+                { startList | nextDriver = 0 }
+
+        rotateCase3 : Test
+        rotateCase3 =
+            let
+                startList =
+                    { empty | mobsters = [ "Kirk", "Spock", "McCoy" ] |> toMobsters, nextDriver = 1 }
+            in
+            testOperation "rewind"
+                startList
+                RewindTurn
+                { startList | nextDriver = 0 }
+    in
     describe "rotate" [ rotateCase1, rotateCase2, rotateCase3 ]
 
 
@@ -193,7 +186,7 @@ addCases =
             { empty | mobsters = [ "John Doe" ] |> toMobsters }
         , testOperations "add two things"
             Mobster.empty
-            [ (Add "Jane Doe"), (Add "John Smith") ]
+            [ Add "Jane Doe", Add "John Smith" ]
             { empty | mobsters = [ "Jane Doe", "John Smith" ] |> toMobsters, nextDriver = 0 }
         ]
 

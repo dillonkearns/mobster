@@ -1,12 +1,12 @@
-module QuickRotateTests exposing (all)
+module QuickRotateTests exposing (suite)
 
 import Expect
 import QuickRotate
 import Test exposing (describe, test, Test)
 
 
-all : Test
-all =
+suite : Test
+suite =
     describe "Quick rotate"
         [ test "all selected on init" <|
             \() ->

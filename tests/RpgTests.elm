@@ -1,4 +1,4 @@
-module RpgTests exposing (all)
+module RpgTests exposing (suite)
 
 import Expect
 import Roster.Operation
@@ -7,8 +7,8 @@ import Roster.RpgRole exposing (..)
 import Test exposing (..)
 
 
-all : Test
-all =
+suite : Test
+suite =
     describe "rpg tests"
         [ test "get new card in a fresh session" <|
             \() ->

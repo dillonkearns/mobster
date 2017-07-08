@@ -1,12 +1,12 @@
-module GlobalShortcutTests exposing (all)
+module GlobalShortcutTests exposing (suite)
 
 import Expect
 import GlobalShortcut
 import Test exposing (Test, describe, test)
 
 
-all : Test
-all =
+suite : Test
+suite =
     describe "global shortcuts"
         [ test "non-ascii characters are invalid" <|
             \() ->
