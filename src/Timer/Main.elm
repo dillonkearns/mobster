@@ -37,10 +37,7 @@ port breakTimerDone : Int -> Cmd msg
 
 roleView : String -> String -> Html msg
 roleView name iconPath =
-    p []
-        [ iconView navigatorIcon
-        , text name
-        ]
+    p [] [ iconView iconPath, text name ]
 
 
 driverIcon : String
