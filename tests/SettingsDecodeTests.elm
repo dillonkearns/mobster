@@ -1,6 +1,7 @@
-module SettingsDecodeTests exposing (suite)
+module SettingsDecodeTests exposing (fuzzTests, suite)
 
 import Expect
+import Fuzz exposing (Fuzzer)
 import Json.Decode as Decode
 import Roster.Data exposing (empty)
 import Setup.Settings
@@ -48,3 +49,23 @@ suite =
                     |> Expect.equal
                         (Ok (Setup.Settings.Data 5 5 6 { empty | mobsters = [ "Uhura", "Sulu" ] |> toMobsters, inactiveMobsters = [ "Kirk", "Spock" ] |> toMobsters } "foo"))
         ]
+
+
+settingsFuzzer : Fuzzer Setup.Settings.Data
+settingsFuzzer =
+    Fuzz.map5 Setup.Settings.Data Fuzz.int Fuzz.int Fuzz.int rosterFuzzer (Fuzz.char |> Fuzz.map toString)
+
+
+rosterFuzzer : Fuzzer Roster.Data.RosterData
+rosterFuzzer =
+    Fuzz.map3 Roster.Data.RosterData (Fuzz.list (Fuzz.string |> Fuzz.map Roster.Data.createMobster)) (Fuzz.list (Fuzz.string |> Fuzz.map Roster.Data.createMobster)) (Fuzz.constant 0)
+
+
+fuzzTests : Test
+fuzzTests =
+    Test.fuzz settingsFuzzer "settings fuzz test" <|
+        \settings ->
+            settings
+                |> Setup.Settings.encoder
+                |> Decode.decodeValue Setup.Settings.decoder
+                |> Expect.equal (Ok settings)

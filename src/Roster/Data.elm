@@ -1,4 +1,4 @@
-module Roster.Data exposing (Mobster, RosterData, containsName, currentMobsterNames, decode, decoder, empty, encoder, nextIndex, previousIndex, randomizeMobsters)
+module Roster.Data exposing (Mobster, RosterData, containsName, createMobster, currentMobsterNames, decode, decoder, empty, encoder, nextIndex, previousIndex, randomizeMobsters)
 
 import Basics.Extra exposing ((=>))
 import Json.Decode as Decode exposing (Decoder)
@@ -13,6 +13,11 @@ type alias Mobster =
     { name : String
     , rpgData : RpgData
     }
+
+
+createMobster : String -> Mobster
+createMobster name =
+    { name = name, rpgData = Rpg.init }
 
 
 type alias RosterData =
