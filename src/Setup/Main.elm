@@ -6,6 +6,8 @@ import Bootstrap
 import Break
 import Dice
 import Dom
+import Element exposing (Device)
+import Element.Attributes
 import FA
 import GlobalShortcut
 import Html exposing (..)
@@ -32,6 +34,7 @@ import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
 import Setup.Validations as Validations
 import Setup.View exposing (..)
+import Styles
 import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 import Task
 import Timer.Flags
@@ -43,6 +46,7 @@ import View.Roster
 import View.Tip
 import View.UpdateAvailable
 import ViewHelpers
+import Window
 
 
 shuffleMobstersCmd : Roster.RosterData -> Cmd Msg
@@ -264,6 +268,12 @@ shortcutInputView currentShortcut onMac =
 -- main view function 15
 
 
+getInitialWindowSize : Cmd Msg
+getInitialWindowSize =
+    Window.size
+        |> Task.perform Msg.WindowResized
+
+
 view : Model -> Html Msg
 view model =
     let
@@ -278,7 +288,20 @@ view model =
                 Rpg rpgState ->
                     Setup.Rpg.View.rpgView rpgState model.settings.rosterData
     in
-    div [] [ Navbar.view model.screenState, View.UpdateAvailable.view model.availableUpdateVersion, mainView, feedbackButton ]
+    if model.showBetaUi && model.screenState == Configure then
+        styleElementsConfigureView model
+    else
+        div [] [ Navbar.view model.screenState, View.UpdateAvailable.view model.availableUpdateVersion, mainView, feedbackButton ]
+
+
+styleElementsConfigureView : { model | device : Device } -> Html Msg
+styleElementsConfigureView model =
+    Element.viewport (Styles.stylesheet model.device) <|
+        Element.column Styles.Main
+            [ Element.Attributes.height (Element.Attributes.fill 1) ]
+            [ Styles.navbar
+            , Element.column Styles.None [ Element.Attributes.paddingXY 65 50, Element.Attributes.spacing 30, Element.Attributes.height (Element.Attributes.fill 1) ] Styles.viewTextLayout
+            ]
 
 
 
@@ -599,6 +622,12 @@ update msg model =
         Msg.Animate animMsg ->
             { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = Animation.update animMsg model.activeMobstersStyle } ! []
 
+        Msg.WindowResized windowSize ->
+            { model | device = Element.classifyDevice windowSize } ! []
+
+        Msg.ToggleBetaUi ->
+            { model | showBetaUi = not model.showBetaUi } ! []
+
 
 startBreak : Model -> ( Model, Cmd Msg )
 startBreak model =
@@ -781,7 +810,7 @@ init { onMac, isDev, settings } =
                     Cmd.none
     in
     initialModel initialSettings onMac
-        ! [ notifyIfDecodeFailed ]
+        ! [ notifyIfDecodeFailed, getInitialWindowSize ]
         |> saveActiveMobsters
         |> Update.Extra.andThen update
             (Msg.ChangeInput (Msg.StringField Msg.ShowHideShortcut) initialSettings.showHideShortcut)
@@ -817,6 +846,8 @@ type alias Model =
     , altPressed : Bool
     , dieStyle : Animation.State
     , activeMobstersStyle : Animation.State
+    , device : Device
+    , showBetaUi : Bool
     }
 
 
@@ -837,6 +868,8 @@ initialModel settings onMac =
     , altPressed = False
     , dieStyle = Animation.style [ Animation.rotate (Animation.turn 0.0) ]
     , activeMobstersStyle = Animation.style [ Animation.opacity 1 ]
+    , device = Element.Device 0 0 False False False False False
+    , showBetaUi = False
     }
 
 

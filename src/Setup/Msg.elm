@@ -9,6 +9,7 @@ import Keyboard.Combo
 import Keyboard.Extra
 import Roster.Operation exposing (MobsterOperation)
 import Setup.InputField exposing (..)
+import Window
 
 
 type Msg
@@ -43,6 +44,8 @@ type Msg
     | QuickRotateMove Direction
     | KeyPressed Bool Keyboard.Extra.Key
     | Animate Animation.Msg
+    | WindowResized Window.Size
+    | ToggleBetaUi
 
 
 type Direction
