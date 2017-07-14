@@ -283,12 +283,7 @@ function toggleMainWindow() {
 }
 
 function onClickTrayIcon() {
-  if (!timerWindow) {
-    toggleMainWindow()
-  } else {
-    closeTimer()
-    focusMainWindow()
-  }
+  showStopTimerDialog()
 }
 
 const createTray = () => {
@@ -399,22 +394,31 @@ function setupAutoUpdater() {
 }
 
 function setShowHideShortcut(shortcutString) {
-  globalShortcut.register(shortcutString, () => {
-    if (timerWindow) {
-      app.focus() // ensure that app is focused so dialog appears in foreground
-      let dialogActionIndex = dialog.showMessageBox({
-        type: 'warning',
-        buttons: ['Stop timer', 'Keep it running'],
-        message: 'Stop the timer?',
-        cancelId: 1
-      })
-      if (dialogActionIndex !== 1) {
-        closeTimer()
-        mainWindow.show()
-        mainWindow.focus()
-      }
-    } else {
-      toggleMainWindow()
+  globalShortcut.register(shortcutString, showStopTimerDialog)
+}
+
+let dialogDisplayed = false
+
+function showStopTimerDialog() {
+  if (dialogDisplayed) {
+    return
+  }
+  dialogDisplayed = true
+  if (timerWindow) {
+    app.focus() // ensure that app is focused so dialog appears in foreground
+    let dialogActionIndex = dialog.showMessageBox({
+      type: 'warning',
+      buttons: ['Stop timer', 'Keep it running'],
+      message: 'Stop the timer?',
+      cancelId: 1
+    })
+    if (dialogActionIndex !== 1) {
+      closeTimer()
+      mainWindow.show()
+      mainWindow.focus()
     }
-  })
+  } else {
+    toggleMainWindow()
+  }
+  dialogDisplayed = false
 }
