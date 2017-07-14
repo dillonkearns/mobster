@@ -827,6 +827,7 @@ subscriptions model =
         , Keyboard.Extra.ups (Msg.KeyPressed False)
         , Animation.subscription Msg.Animate [ model.dieStyle ]
         , Animation.subscription Msg.Animate [ model.activeMobstersStyle ]
+        , Window.resizes Msg.WindowResized
         ]
 
 
