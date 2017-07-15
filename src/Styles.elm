@@ -195,16 +195,18 @@ editableKeyboardKey currentKey =
     keyBase <| Element.inputText None [ width (px 30), center, verticalCenter, inlineStyle [ "text-align" => "center" ] ] currentKey
 
 
-configOptions : List (StyleElement variation)
+configOptions : StyleElement variation
 configOptions =
-    [ column None
-        [ spacing 10 ]
-        [ inputPair "Minutes" "5"
-        , inputPair "Break every 25'" "5"
-        , inputPair "Minutes per break" "5"
+    Element.column None
+        [ Element.Attributes.spacing 30 ]
+        [ column None
+            [ spacing 10 ]
+            [ inputPair "Minutes" "5"
+            , inputPair "Break every 25'" "5"
+            , inputPair "Minutes per break" "5"
+            ]
+        , column None [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey "⌘", keyboardKey "Shift", editableKeyboardKey "K" ] ]
         ]
-    , column None [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey "⌘", keyboardKey "Shift", editableKeyboardKey "K" ] ]
-    ]
 
 
 startMobbingButton : StyleElement variation

@@ -294,7 +294,7 @@ view model =
         div [] [ Navbar.view model.screenState, View.UpdateAvailable.view model.availableUpdateVersion, mainView, feedbackButton ]
 
 
-styleElementsConfigureView : { model | device : Device } -> Html Msg
+styleElementsConfigureView : Model -> Html Msg
 styleElementsConfigureView model =
     Element.viewport (Styles.stylesheet model.device) <|
         Element.column Styles.Main
@@ -302,7 +302,13 @@ styleElementsConfigureView model =
             [ Styles.navbar
             , Element.column Styles.None
                 [ Element.Attributes.paddingXY 65 50, Element.Attributes.spacing 60, Element.Attributes.height (Element.Attributes.fill 1) ]
-                [ Element.row Styles.None [] [ Element.column Styles.None [ Element.Attributes.spacing 30 ] Styles.configOptions ]
+                [ Element.row Styles.None
+                    [ Element.Attributes.spacing 50 ]
+                    [ Styles.configOptions
+                    , Element.el Styles.None [ Element.Attributes.width (Element.Attributes.fill 1) ] <|
+                        Element.html
+                            (View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle))
+                    ]
                 , Styles.startMobbingButton
                 ]
             ]
