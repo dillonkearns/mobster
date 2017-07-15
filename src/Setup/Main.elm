@@ -300,7 +300,11 @@ styleElementsConfigureView model =
         Element.column Styles.Main
             [ Element.Attributes.height (Element.Attributes.fill 1) ]
             [ Styles.navbar
-            , Element.column Styles.None [ Element.Attributes.paddingXY 65 50, Element.Attributes.spacing 30, Element.Attributes.height (Element.Attributes.fill 1) ] Styles.viewTextLayout
+            , Element.column Styles.None
+                [ Element.Attributes.paddingXY 65 50, Element.Attributes.spacing 60, Element.Attributes.height (Element.Attributes.fill 1) ]
+                [ Element.row Styles.None [] [ Element.column Styles.None [ Element.Attributes.spacing 30 ] Styles.configOptions ]
+                , Styles.startMobbingButton
+                ]
             ]
 
 
