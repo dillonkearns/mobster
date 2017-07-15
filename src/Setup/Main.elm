@@ -304,7 +304,7 @@ styleElementsConfigureView model =
                 [ Element.Attributes.paddingXY 65 50, Element.Attributes.spacing 60, Element.Attributes.height (Element.Attributes.fill 1) ]
                 [ Element.row Styles.None
                     [ Element.Attributes.spacing 50 ]
-                    [ Styles.configOptions
+                    [ Styles.configOptions model.settings
                     , Element.el Styles.None [ Element.Attributes.width (Element.Attributes.fill 1) ] <|
                         Element.html
                             (View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle))

@@ -3,8 +3,9 @@ module Styles exposing (..)
 import Color exposing (Color)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Element.Events
-import Setup.Msg
+import Element.Events exposing (onInput)
+import Setup.Msg as Msg exposing (Msg)
+import Setup.Settings as Settings
 import Style exposing (..)
 import Style.Background
 import Style.Border as Border
@@ -32,6 +33,7 @@ type Styles
     | InputLabel
     | Input
     | KeyboardKey
+    | ShortcutInput
 
 
 type NavButtonType
@@ -73,6 +75,9 @@ stylesheet device =
              -- Color.text (Color.rgb 74 242 161)
              -- Color.text (Color.rgb 255 245 211)
              -- Color.text (Color.rgb 255 220 255)
+            ]
+        , style ShortcutInput
+            [ Font.uppercase
             ]
         , style KeyboardKey
             [ Color.text Color.black
@@ -153,7 +158,7 @@ stylesheet device =
 
 
 type alias StyleElement variation =
-    Element Styles variation Setup.Msg.Msg
+    Element Styles variation Msg
 
 
 navbar : StyleElement variation
@@ -192,11 +197,19 @@ keyboardKey key =
 
 editableKeyboardKey : String -> StyleElement msg
 editableKeyboardKey currentKey =
-    keyBase <| Element.inputText None [ width (px 30), center, verticalCenter, inlineStyle [ "text-align" => "center" ] ] currentKey
+    keyBase <|
+        Element.inputText ShortcutInput
+            [ width (px 30)
+            , center
+            , verticalCenter
+            , inlineStyle [ "text-align" => "center" ]
+            , onInput (Msg.ChangeInput (Msg.StringField Msg.ShowHideShortcut))
+            ]
+            currentKey
 
 
-configOptions : StyleElement variation
-configOptions =
+configOptions : Settings.Data -> StyleElement variation
+configOptions settings =
     Element.column None
         [ Element.Attributes.spacing 30 ]
         [ column None
@@ -205,7 +218,7 @@ configOptions =
             , inputPair "Break every 25'" "5"
             , inputPair "Minutes per break" "5"
             ]
-        , column None [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey "⌘", keyboardKey "Shift", editableKeyboardKey "K" ] ]
+        , column None [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey "⌘", keyboardKey "Shift", editableKeyboardKey settings.showHideShortcut ] ]
         ]
 
 
@@ -213,7 +226,7 @@ startMobbingButton : StyleElement variation
 startMobbingButton =
     column None
         [ class "styleElementsTooltipContainer" ]
-        [ (button <| el WideButton [ padding 13, Element.Events.onClick Setup.Msg.StartTimer ] (text "Start Mobbing"))
+        [ (button <| el WideButton [ padding 13, Element.Events.onClick Msg.StartTimer ] (text "Start Mobbing"))
             |> above [ el Tooltip [ center, width (px 200), class "styleElementsTooltip" ] (text "⌘+Enter") ]
         ]
 
