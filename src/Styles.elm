@@ -157,11 +157,11 @@ stylesheet device =
         ]
 
 
-type alias StyleElement variation =
-    Element Styles variation Msg
+type alias StyleElement =
+    Element Styles Never Msg
 
 
-navbar : StyleElement variation
+navbar : StyleElement
 navbar =
     row Navbar
         [ justify, paddingXY 10 10, verticalCenter ]
@@ -175,27 +175,27 @@ navbar =
         ]
 
 
-navButtonView : String -> NavButtonType -> StyleElement variation
+navButtonView : String -> NavButtonType -> StyleElement
 navButtonView buttonText navButtonType =
     button <| el (NavButton navButtonType) [ minWidth <| px 60, height <| px 34 ] (text buttonText)
 
 
-inputPair : String -> String -> StyleElement variation
+inputPair : String -> String -> StyleElement
 inputPair label value =
     row Input [ spacing 20 ] [ Element.inputText None [ width <| px 50 ] value, el InputLabel [] <| text label ]
 
 
-keyBase : StyleElement variation -> StyleElement variation
+keyBase : StyleElement -> StyleElement
 keyBase =
     el KeyboardKey [ minWidth (px 60), minHeight (px 40), padding 5 ]
 
 
-keyboardKey : String -> StyleElement msg
+keyboardKey : String -> StyleElement
 keyboardKey key =
     keyBase <| text key
 
 
-editableKeyboardKey : String -> StyleElement msg
+editableKeyboardKey : String -> StyleElement
 editableKeyboardKey currentKey =
     keyBase <|
         Element.inputText ShortcutInput
@@ -208,7 +208,7 @@ editableKeyboardKey currentKey =
             currentKey
 
 
-configOptions : Settings.Data -> StyleElement variation
+configOptions : Settings.Data -> StyleElement
 configOptions settings =
     Element.column None
         [ Element.Attributes.spacing 30 ]
@@ -222,7 +222,7 @@ configOptions settings =
         ]
 
 
-startMobbingButton : StyleElement variation
+startMobbingButton : StyleElement
 startMobbingButton =
     column None
         [ class "styleElementsTooltipContainer" ]
@@ -231,6 +231,6 @@ startMobbingButton =
         ]
 
 
-roseIcon : StyleElement variation
+roseIcon : StyleElement
 roseIcon =
     Element.image "./assets/rose.png" None [ height (px 40), width (px 25) ] Element.empty
