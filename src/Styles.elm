@@ -333,15 +333,15 @@ navbar =
         , row None
             [ spacing 20 ]
             [ Element.image "./assets/invisible.png" None [ width (px 40), height (px 40) ] Element.empty
-            , navButtonView "Hide" Warning
-            , navButtonView "Quit" Danger
+            , navButtonView "Hide" Warning Msg.hide
+            , navButtonView "Quit" Danger Msg.quit
             ]
         ]
 
 
-navButtonView : String -> NavButtonType -> StyleElement
-navButtonView buttonText navButtonType =
-    button <| el (NavButton navButtonType) [ minWidth <| px 60, height <| px 34 ] (text buttonText)
+navButtonView : String -> NavButtonType -> Msg -> StyleElement
+navButtonView buttonText navButtonType msg =
+    button <| el (NavButton navButtonType) [ minWidth <| px 60, height <| px 34, Element.Events.onClick msg ] (text buttonText)
 
 
 inputPair : String -> String -> StyleElement

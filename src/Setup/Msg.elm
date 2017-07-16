@@ -48,6 +48,16 @@ type Msg
     | ToggleBetaUi
 
 
+hide : Msg
+hide =
+    SendIpc Ipc.Hide Encode.null
+
+
+quit : Msg
+quit =
+    SendIpc Ipc.Quit Encode.null
+
+
 type Direction
     = Previous
     | Next
