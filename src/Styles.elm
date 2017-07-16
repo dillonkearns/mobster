@@ -4,7 +4,7 @@ import Color exposing (Color)
 import Color.Mixing
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Element.Events exposing (onInput)
+import Element.Events exposing (onClick, onInput)
 import Setup.InputField as InputField exposing (IntInputField(..))
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Settings as Settings
@@ -346,34 +346,20 @@ navButtonView buttonText navButtonType msg =
     button <| el (NavButton navButtonType) [ minWidth <| px 60, height <| px 34, Element.Events.onClick msg ] (text buttonText)
 
 
-inputPair : IntInputField -> Int -> StyleElement
-inputPair inputField value =
-    let
-        label =
-            case inputField of
-                TimerDuration ->
-                    "Minutes"
-
-                BreakInterval ->
-                    -- "Break every " ++ toString (intervalsPerBreak * timerDuration) ++ "′"
-                    "TODO"
-
-                BreakDuration ->
-                    "Minutes per break"
-    in
+inputPair : IntInputField -> String -> Int -> StyleElement
+inputPair inputField label value =
     row Input
         [ spacing 20 ]
         [ numberInput value
             (Validations.inputRangeFor inputField)
             (Msg.ChangeInput (Msg.IntField inputField))
+            (toString inputField)
         , el None [] <| text label
         ]
 
 
-
-
-numberInput : Int -> ( Int, Int ) -> (String -> Msg) -> StyleElement
-numberInput value ( minValue, maxValue ) onInputMsg =
+numberInput : Int -> ( Int, Int ) -> (String -> Msg) -> String -> StyleElement
+numberInput value ( minValue, maxValue ) onInputMsg fieldId =
     Element.node "input" <|
         el None
             [ width <| px 60
@@ -383,6 +369,8 @@ numberInput value ( minValue, maxValue ) onInputMsg =
             , type_ "number"
             , value |> toString |> Element.Attributes.value
             , onInput onInputMsg
+            , onClick (Msg.SelectInputField fieldId)
+            , id fieldId
             ]
             empty
 
@@ -412,13 +400,17 @@ editableKeyboardKey currentKey =
 
 configOptions : Settings.Data -> StyleElement
 configOptions settings =
+    let
+        breakIntervalText =
+            "Break every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ "′"
+    in
     Element.column None
         [ Element.Attributes.spacing 30 ]
         [ column None
             [ spacing 10 ]
-            [ inputPair InputField.TimerDuration settings.timerDuration
-            , inputPair InputField.BreakInterval settings.intervalsPerBreak
-            , inputPair InputField.BreakDuration settings.breakDuration
+            [ inputPair InputField.TimerDuration "Minutes" settings.timerDuration
+            , inputPair InputField.BreakInterval breakIntervalText settings.intervalsPerBreak
+            , inputPair InputField.BreakDuration "Minutes per break" settings.breakDuration
             ]
         , column None [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey "⌘", keyboardKey "Shift", editableKeyboardKey settings.showHideShortcut ] ]
         ]
