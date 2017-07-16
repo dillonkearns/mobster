@@ -165,6 +165,7 @@ stylesheet device =
         , style TipTitle
             [ Font.size mediumSmallFontSize
             , Color.text tipFontColor
+            , Style.cursor "pointer"
             , Font.typeface [ "Playfair Display", "serif" ]
             , Font.uppercase
             , Font.weight 900
