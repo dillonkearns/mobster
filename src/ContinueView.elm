@@ -4,14 +4,17 @@ module ContinueView exposing (view)
 
 import Element exposing (Device)
 import Element.Attributes as Attr
+import Roster.Data exposing (RosterData)
+import Roster.Presenter
+import Setup.Settings as Settings
 import Styles exposing (StyleElement)
 import Tip exposing (Tip)
 
 
-view : { model | device : Device, tip : Tip } -> List StyleElement
-view { device, tip } =
+view : { model | device : Device, tip : Tip, settings : Settings.Data } -> List StyleElement
+view { device, tip, settings } =
     [ breakProgressView
-    , roleRow device
+    , roleRow device settings.rosterData
     , Element.hairline Styles.Hairline
     , tipView tip
     , Styles.startMobbingButton "Continue"
@@ -39,21 +42,26 @@ type Role
     | Navigator
 
 
-roleView : Device -> Role -> String -> StyleElement
-roleView device role name =
+roleView : Device -> Role -> Roster.Presenter.Mobster -> StyleElement
+roleView device role mobster =
     Element.row Styles.None
         [ Attr.spacing 20, Attr.verticalCenter, Attr.center ]
-        [ roleIcon device role, Element.el Styles.RoleViewName [] <| Element.text name ]
+        [ roleIcon device role, Element.el Styles.RoleViewName [] <| Element.text mobster.name ]
         |> Element.onRight [ Element.el Styles.None [ Attr.verticalCenter, Attr.paddingLeft 30 ] awayView ]
 
 
-roleRow : Device -> StyleElement
-roleRow device =
+roleRow : Device -> RosterData -> StyleElement
+roleRow device rosterData =
+    let
+        driverNavigator : Roster.Presenter.DriverNavigator
+        driverNavigator =
+            Roster.Presenter.nextDriverNavigator rosterData
+    in
     Element.row Styles.None
         []
         [ stepBackwardButton
-        , Element.el Styles.None [ Attr.width (Attr.fill 1) ] (roleView device Driver "Sulu")
-        , Element.el Styles.None [ Attr.width (Attr.fill 1) ] (roleView device Navigator "Kirk")
+        , Element.el Styles.None [ Attr.width (Attr.fill 1) ] (roleView device Driver driverNavigator.driver)
+        , Element.el Styles.None [ Attr.width (Attr.fill 1) ] (roleView device Navigator driverNavigator.navigator)
         , stepForwardButton
         ]
 
