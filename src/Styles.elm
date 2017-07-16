@@ -5,8 +5,10 @@ import Color.Mixing
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onInput)
+import Setup.InputField as InputField exposing (IntInputField(..))
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Settings as Settings
+import Setup.Validations as Validations
 import Style exposing (..)
 import Style.Background
 import Style.Border as Border
@@ -344,17 +346,34 @@ navButtonView buttonText navButtonType msg =
     button <| el (NavButton navButtonType) [ minWidth <| px 60, height <| px 34, Element.Events.onClick msg ] (text buttonText)
 
 
-inputPair : String -> String -> StyleElement
-inputPair label value =
+inputPair : IntInputField -> Int -> StyleElement
+inputPair inputField value =
+    let
+        label =
+            case inputField of
+                TimerDuration ->
+                    "Minutes"
+
+                BreakInterval ->
+                    -- "Break every " ++ toString (intervalsPerBreak * timerDuration) ++ "′"
+                    "TODO"
+
+                BreakDuration ->
+                    "Minutes per break"
+    in
     row Input
         [ spacing 20 ]
-        [ numberInput 5 ( 1, 10 )
+        [ numberInput value
+            (Validations.inputRangeFor inputField)
+            (Msg.ChangeInput (Msg.IntField inputField))
         , el None [] <| text label
         ]
 
 
-numberInput : Int -> ( Int, Int ) -> StyleElement
-numberInput value ( minValue, maxValue ) =
+
+
+numberInput : Int -> ( Int, Int ) -> (String -> Msg) -> StyleElement
+numberInput value ( minValue, maxValue ) onInputMsg =
     Element.node "input" <|
         el None
             [ width <| px 60
@@ -363,6 +382,7 @@ numberInput value ( minValue, maxValue ) =
             , Element.Attributes.step "1"
             , type_ "number"
             , value |> toString |> Element.Attributes.value
+            , onInput onInputMsg
             ]
             empty
 
@@ -396,9 +416,9 @@ configOptions settings =
         [ Element.Attributes.spacing 30 ]
         [ column None
             [ spacing 10 ]
-            [ inputPair "Minutes" "5"
-            , inputPair "Break every 25'" "5"
-            , inputPair "Minutes per break" "5"
+            [ inputPair InputField.TimerDuration settings.timerDuration
+            , inputPair InputField.BreakInterval settings.intervalsPerBreak
+            , inputPair InputField.BreakDuration settings.breakDuration
             ]
         , column None [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey "⌘", keyboardKey "Shift", editableKeyboardKey settings.showHideShortcut ] ]
         ]
