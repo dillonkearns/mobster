@@ -1,6 +1,7 @@
 module Styles exposing (..)
 
 import Color exposing (Color)
+import Color.Mixing
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onInput)
@@ -10,6 +11,7 @@ import Style exposing (..)
 import Style.Background
 import Style.Border as Border
 import Style.Color as Color
+import Style.Filter as Filter
 import Style.Font as Font
 
 
@@ -29,11 +31,20 @@ type Styles
     | Tooltip
     | Navbar
     | RosterTable
+    | ShortcutInput
     | AThing
-    | InputLabel
     | Input
     | KeyboardKey
-    | ShortcutInput
+    | RoleViewName
+    | AwayIcon
+    | TipBox
+    | TipTitle
+    | TipBody
+    | TipLink
+    | StepButton
+    | RoseIcon
+    | Circle CircleFill
+    | Hairline
 
 
 type NavButtonType
@@ -46,22 +57,71 @@ fonts =
     { title = [ "Anton", "helvetica", "arial", "sans-serif" ], body = [ "Open Sans Condensed", "Helvetica Neue", "helvetica", "arial", "sans-serif" ] }
 
 
-primaryColor : Color
+responsiveForWidth : Device -> ( Float, Float ) -> Float
+responsiveForWidth { width } something =
+    responsive (toFloat width) ( 600, 4000 ) something
+
+
+primaryColor : Color.Color
 primaryColor =
     Color.white
 
 
-stylesheet : Element.Device -> StyleSheet Styles variation
+type alias StyleProperty =
+    Style.Property Styles Never
+
+
+buttonGradient : Color.Mixing.Factor -> Color -> StyleProperty
+buttonGradient factor color =
+    Style.Background.gradient 30
+        [ color |> Style.Background.step
+        , color |> Color.Mixing.darken factor |> Style.Background.step
+        ]
+
+
+buttonGradients : Color.Mixing.Factor -> Color -> { main : StyleProperty, hover : StyleProperty }
+buttonGradients factor color =
+    { main = color |> buttonGradient factor
+    , hover = color |> Color.Mixing.darken 0.04 |> buttonGradient factor
+    }
+
+
+type CircleFill
+    = Filled
+    | Hollow
+
+
+circleColor : Color
+circleColor =
+    Color.rgb 0 140 255
+
+
+stylesheet : Device -> StyleSheet Styles Never
 stylesheet device =
     let
+        responsiveForWidthWith =
+            responsiveForWidth device
+
+        mediumLargeFontSize =
+            responsiveForWidthWith ( 25, 180 )
+
         mediumFontSize =
-            Element.responsive (toFloat device.width) ( 600, 1200 ) ( 28, 45 )
+            responsiveForWidthWith ( 28, 65 )
 
         mediumSmallFontSize =
-            Element.responsive (toFloat device.width) ( 600, 2000 ) ( 19, 30 )
+            responsiveForWidthWith ( 20, 60 )
 
         smallFontSize =
-            Element.responsive (toFloat device.width) ( 600, 2000 ) ( 14, 20 )
+            responsiveForWidthWith ( 10, 45 )
+
+        extraSmallFontSize =
+            responsiveForWidthWith ( 8, 38 )
+
+        tipFontColor =
+            Color.rgb 35 35 35
+
+        tipBoxColor =
+            Color.rgb 160 160 160
     in
     Style.stylesheet
         [ style None []
@@ -69,15 +129,78 @@ stylesheet device =
         , style Input
             [ Font.size mediumSmallFontSize
             ]
-        , style InputLabel
-            [--Color.text (Color.rgb 246 217 30)
-             -- Color.text (Color.rgb 0 168 251)
-             -- Color.text (Color.rgb 74 242 161)
-             -- Color.text (Color.rgb 255 245 211)
-             -- Color.text (Color.rgb 255 220 255)
+        , style Hairline
+            [ Color.text (Color.rgba 55 55 55 60)
+            , Border.all 1
+            , Border.dashed
             ]
         , style ShortcutInput
             [ Font.uppercase
+            ]
+        , style (Circle Filled)
+            [ Border.solid
+            , Border.all 2
+            , Color.background circleColor
+            , Color.border circleColor
+            , Border.rounded 50
+            ]
+        , style (Circle Hollow)
+            [ Border.solid
+            , Border.all 2
+            , Border.rounded 50
+            , Color.border circleColor
+            ]
+        , style TipBox
+            [ Color.background tipBoxColor
+            , Border.rounded 3
+            , Border.solid
+            , Border.all 2
+            , Color.border (Color.rgb 20 20 20)
+            ]
+        , style TipTitle
+            [ Font.size mediumSmallFontSize
+            , Color.text tipFontColor
+            , Font.typeface [ "Playfair Display", "serif" ]
+            , Font.uppercase
+            , Font.weight 900
+            ]
+        , style TipLink
+            [ Font.typeface [ "Droid Serif", "serif" ]
+            , Color.text tipFontColor
+            , Font.size smallFontSize
+            , Font.justify
+            , Font.underline
+            ]
+        , style TipBody
+            [ Font.typeface [ "Droid Serif", "serif" ]
+            , Color.text tipFontColor
+            , Font.size smallFontSize
+            , Font.justify
+            ]
+        , style AwayIcon
+            [ Color.text (Color.rgba 120 20 20 30)
+            , Font.size extraSmallFontSize
+            , Font.typeface fonts.body
+            , Border.rounded 10
+            , Color.background (Color.rgb 30 30 30)
+            , Color.border (Color.rgba 100 100 100 25)
+            , hover
+                [ Color.text (Color.rgba 200 20 20 255)
+                , Color.background (Color.rgb 70 70 70)
+                ]
+            ]
+        , style StepButton
+            [ Color.text <| Color.rgb 239 177 1
+            , Color.background (Color.rgb 30 30 30)
+            , Border.rounded 10
+            , Font.size extraSmallFontSize
+            , hover
+                [ Color.background (Color.rgb 70 70 70)
+                ]
+            ]
+        , style RoleViewName
+            [ Font.size mediumLargeFontSize
+            , Font.typeface fonts.body
             ]
         , style KeyboardKey
             [ Color.text Color.black
@@ -107,16 +230,21 @@ stylesheet device =
             [ Font.size mediumFontSize
             , Font.typeface fonts.title
             ]
+        , style RoseIcon
+            [ Style.filters
+                [ Filter.brightness 90
+                ]
+            ]
         , style WideButton
-            [ Font.size (Element.responsive (toFloat device.width) ( 600, 4000 ) ( 35, 100 ))
+            [ Font.size (responsiveForWidthWith ( 22, 155 ))
             , Border.none
             , Font.typeface fonts.title
-            , Style.Background.gradient 30 [ Style.Background.step <| Color.rgb 132 25 163, Style.Background.step <| Color.rgb 83 3 105 ]
+            , Color.rgb 132 25 163 |> buttonGradients 0.14 |> .main
             , Color.text primaryColor
             , Border.rounded 10
             , Font.center
             , hover
-                [ Style.Background.gradient 30 [ Style.Background.step <| Color.rgb 117 25 163, Style.Background.step <| Color.rgb 68 3 105 ]
+                [ Color.rgb 132 25 163 |> buttonGradients 0.14 |> .hover
                 ]
             ]
         , style Tooltip
@@ -126,26 +254,26 @@ stylesheet device =
             , Font.typeface fonts.body
             ]
         , style (NavButton Danger)
-            [ Font.size smallFontSize
+            [ Font.size extraSmallFontSize
             , Border.none
             , Color.text primaryColor
-            , Style.Background.gradient 30 [ Style.Background.step <| Color.rgb 194 12 12, Style.Background.step <| Color.rgb 174 12 12 ]
+            , Color.rgb 194 12 12 |> buttonGradients 0.06 |> .main
             , Border.rounded 5
             , Font.center
             , hover
-                [ Style.Background.gradient 30 [ Style.Background.step <| Color.rgb 174 2 2, Style.Background.step <| Color.rgb 154 0 0 ]
+                [ Color.rgb 194 12 12 |> buttonGradients 0.06 |> .hover
                 ]
             , Font.typeface fonts.body
             ]
         , style (NavButton Warning)
-            [ Font.size smallFontSize
+            [ Font.size extraSmallFontSize
             , Border.none
             , Color.text primaryColor
-            , Style.Background.gradient 30 [ Style.Background.step <| Color.rgb 239 177 1, Style.Background.step <| Color.rgb 244 182 11 ]
+            , Color.rgb 239 177 1 |> buttonGradients 0.06 |> .main
             , Border.rounded 5
             , Font.center
             , hover
-                [ Style.Background.gradient 30 [ Style.Background.step <| Color.rgb 219 157 1, Style.Background.step <| Color.rgb 224 162 1 ]
+                [ Color.rgb 239 177 1 |> buttonGradients 0.06 |> .hover
                 ]
             , Font.typeface fonts.body
             ]
@@ -182,7 +310,7 @@ navButtonView buttonText navButtonType =
 
 inputPair : String -> String -> StyleElement
 inputPair label value =
-    row Input [ spacing 20 ] [ Element.inputText None [ width <| px 50 ] value, el InputLabel [] <| text label ]
+    row Input [ spacing 20 ] [ Element.inputText None [ width <| px 50 ] value, el None [] <| text label ]
 
 
 keyBase : StyleElement -> StyleElement

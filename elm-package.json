@@ -22,6 +22,7 @@
         "elm-lang/svg": "2.0.0 <= v < 3.0.0",
         "elm-lang/window": "1.0.1 <= v < 2.0.0",
         "ktonon/elm-test-extra": "1.4.0 <= v < 2.0.0",
+        "mdgriffith/elm-color-mixing": "1.1.1 <= v < 2.0.0",
         "mdgriffith/elm-style-animation": "3.5.5 <= v < 4.0.0",
         "mdgriffith/style-elements": "3.2.3 <= v < 4.0.0",
         "myrho/elm-round": "1.0.0 <= v < 2.0.0",
