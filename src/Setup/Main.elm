@@ -308,7 +308,7 @@ styleElementsConfigureView model bodyElements =
     Element.viewport (Styles.stylesheet model.device) <|
         Element.column Styles.Main
             [ Element.Attributes.height (Element.Attributes.fill 1) ]
-            [ View.Navbar.view
+            [ View.Navbar.view model
             , Element.column Styles.None
                 [ Element.Attributes.paddingXY 95 50, Element.Attributes.spacing 60, Element.Attributes.height (Element.Attributes.fill 1) ]
                 bodyElements

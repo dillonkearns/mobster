@@ -4,11 +4,12 @@ import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick, onInput)
 import Setup.Msg as Msg exposing (Msg)
+import Setup.View exposing (ScreenState)
 import Styles exposing (StyleElement)
 
 
-view : StyleElement
-view =
+view : { model | screenState : ScreenState } -> StyleElement
+view { screenState } =
     row Styles.Navbar
         [ justify, paddingXY 10 10, verticalCenter ]
         [ row Styles.None [ spacing 12 ] [ roseIcon, el Styles.Logo [] (text "Mobster") ]
