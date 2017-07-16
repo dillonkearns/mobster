@@ -9,6 +9,7 @@ import Styles exposing (StyleElement)
 import Tip exposing (Tip)
 import Views.BreakProgress
 import Views.StepButton
+import Views.Tip
 
 
 view : { model | device : Device, tip : Tip, settings : Settings.Data } -> List StyleElement
@@ -16,25 +17,9 @@ view { device, tip, settings } =
     [ Views.BreakProgress.view
     , roleRow device settings.rosterData
     , Element.hairline Styles.Hairline
-    , tipView tip
+    , Views.Tip.view tip
     , Styles.startMobbingButton "Continue"
     ]
-
-
-tipView : Tip -> StyleElement
-tipView tip =
-    Element.column Styles.TipBox
-        [ Attr.width (Attr.percent 50)
-        , Attr.center
-        , Attr.padding 20
-        ]
-        [ Element.el Styles.TipTitle [ Attr.paddingBottom 15 ] <| Element.text tip.title
-        , Element.column Styles.TipBody
-            [ Attr.center, Attr.width (Attr.percent 55) ]
-            [ Element.el Styles.None [] <| Element.text tip.body
-            , Element.text tip.author |> Element.el Styles.TipLink [ Attr.target "_blank" ] |> Element.link tip.url
-            ]
-        ]
 
 
 type Role
