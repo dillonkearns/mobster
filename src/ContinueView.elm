@@ -5,30 +5,31 @@ module ContinueView exposing (view)
 import Element exposing (Device)
 import Element.Attributes as Attr
 import Styles exposing (StyleElement)
+import Tip exposing (Tip)
 
 
-view : { model | device : Device } -> List StyleElement
-view { device } =
+view : { model | device : Device, tip : Tip } -> List StyleElement
+view { device, tip } =
     [ breakProgressView
     , roleRow device
     , Element.hairline Styles.Hairline
-    , tipView
+    , tipView tip
     , Styles.startMobbingButton "Continue"
     ]
 
 
-tipView : StyleElement
-tipView =
+tipView : Tip -> StyleElement
+tipView tip =
     Element.column Styles.TipBox
         [ Attr.width (Attr.percent 50)
         , Attr.center
         , Attr.padding 20
         ]
-        [ Element.el Styles.TipTitle [ Attr.paddingBottom 15 ] <| Element.text "Driver Navigator Pattern"
+        [ Element.el Styles.TipTitle [ Attr.paddingBottom 15 ] <| Element.text tip.title
         , Element.column Styles.TipBody
             [ Attr.center, Attr.width (Attr.percent 55) ]
-            [ Element.el Styles.None [] <| Element.text "For an idea to go from your head into the computer it MUST go through someone else's hands."
-            , Element.text "Llewellyn Falco" |> Element.el Styles.TipLink [ Attr.target "_blank" ] |> Element.link "https://twitter.com/LlewellynFalco/"
+            [ Element.el Styles.None [] <| Element.text tip.body
+            , Element.text tip.author |> Element.el Styles.TipLink [ Attr.target "_blank" ] |> Element.link tip.url
             ]
         ]
 
