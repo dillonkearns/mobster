@@ -7,8 +7,8 @@ import Element.Attributes as Attr
 import Styles exposing (StyleElement)
 
 
-view : Device -> List StyleElement
-view device =
+view : { model | device : Device } -> List StyleElement
+view { device } =
     [ breakProgressView
     , roleRow device
     , Element.hairline Styles.Hairline

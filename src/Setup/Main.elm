@@ -292,7 +292,7 @@ view model =
     if model.showBetaUi && model.screenState == Configure then
         styleElementsConfigureView (configureBetaViewElements model) model
     else if model.showBetaUi && (model.screenState == Continue True || model.screenState == Continue False) then
-        styleElementsConfigureView (ContinueView.view model.device) model
+        styleElementsConfigureView (ContinueView.view model) model
     else
         div [] [ Navbar.view model.screenState, View.UpdateAvailable.view model.availableUpdateVersion, mainView, feedbackButton ]
 
