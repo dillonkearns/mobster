@@ -7,19 +7,19 @@ import Setup.Msg as Msg
 import Styles exposing (StyleElement)
 
 
-view : Device -> List StyleElement
-view device =
-    [ breakSuggestionView
+view : { model | secondsSinceBreak : Int } -> List StyleElement
+view { secondsSinceBreak } =
+    [ breakSuggestionView secondsSinceBreak
     , breakButtons
     ]
 
 
-breakSuggestionView : StyleElement
-breakSuggestionView =
+breakSuggestionView : Int -> StyleElement
+breakSuggestionView secondsSinceBreak =
     row Styles.BreakAlertBox
         [ width (fill 1), paddingXY 16 16, spacing 10, center, verticalCenter ]
         [ el Styles.None [ Element.Attributes.class "fa fa-exclamation-circle" ] empty
-        , text "How about a walk? You've been mobbing for 42 minutes."
+        , text <| "How about a walk? You've been mobbing for " ++ toString (secondsSinceBreak // 60) ++ " minutes."
         ]
 
 

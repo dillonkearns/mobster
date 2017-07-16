@@ -295,7 +295,7 @@ view model =
     else if model.showBetaUi && (model.screenState == Continue True || model.screenState == Continue False) then
         styleElementsConfigureView model <|
             if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
-                Pages.Break.view model.device
+                Pages.Break.view model
             else
                 ContinueView.view model
     else
