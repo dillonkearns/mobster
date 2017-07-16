@@ -354,7 +354,7 @@ startMobbingButton : String -> StyleElement
 startMobbingButton title =
     column None
         [ class "setupTooltipContainer" ]
-        [ (button <| el WideButton [ padding 13, Element.Events.onClick Msg.StartTimer ] (text title))
+        [ (button <| el WideButton [ padding 13, Element.Events.onClick Msg.StartTimer, Element.Attributes.id "continue-button" ] (text title))
             |> above [ el Tooltip [ center, width (px 200), class "setupTooltip" ] (text "This is a tooltip") ]
         ]
 
