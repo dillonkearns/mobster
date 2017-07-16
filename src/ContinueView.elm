@@ -7,13 +7,8 @@ import Element.Attributes as Attr
 import Styles exposing (StyleElement)
 
 
-view : Int
-view =
-    123
-
-
-continueView : Device -> List StyleElement
-continueView device =
+view : Device -> List StyleElement
+view device =
     [ breakProgressView
     , roleRow device
     , Element.hairline Styles.Hairline
