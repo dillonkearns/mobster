@@ -7,12 +7,13 @@ import Roster.Presenter
 import Setup.Settings as Settings
 import Styles exposing (StyleElement)
 import Tip exposing (Tip)
+import Views.BreakProgress
 import Views.StepButton
 
 
 view : { model | device : Device, tip : Tip, settings : Settings.Data } -> List StyleElement
 view { device, tip, settings } =
-    [ breakProgressView
+    [ Views.BreakProgress.view
     , roleRow device settings.rosterData
     , Element.hairline Styles.Hairline
     , tipView tip
@@ -86,17 +87,3 @@ roleIcon device role =
             Styles.responsiveForWidth device ( 30, 150 ) |> Attr.px
     in
     Element.image iconPath Styles.None [ Attr.height iconHeight ] Element.empty
-
-
-breakProgressView : StyleElement
-breakProgressView =
-    Element.row Styles.None
-        [ Attr.spacing 1 ]
-        [ circleView Styles.Filled
-        , circleView Styles.Hollow
-        ]
-
-
-circleView : Styles.CircleFill -> StyleElement
-circleView circleFill =
-    Element.el (Styles.Circle circleFill) [ Attr.width (Attr.px 15), Attr.height (Attr.px 15) ] Element.empty
