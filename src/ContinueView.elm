@@ -4,8 +4,11 @@ module ContinueView exposing (view)
 
 import Element exposing (Device)
 import Element.Attributes as Attr
+import Element.Events
 import Roster.Data exposing (RosterData)
+import Roster.Operation as MobsterOperation
 import Roster.Presenter
+import Setup.Msg as Msg
 import Setup.Settings as Settings
 import Styles exposing (StyleElement)
 import Tip exposing (Tip)
@@ -68,12 +71,24 @@ roleRow device rosterData =
 
 stepForwardButton : StyleElement
 stepForwardButton =
-    Element.el Styles.StepButton [ Attr.paddingXY 16 10, Attr.class "fa fa-step-forward", Attr.verticalCenter ] Element.empty
+    Element.el Styles.StepButton
+        [ Attr.paddingXY 16 10
+        , Attr.class "fa fa-step-forward"
+        , Attr.verticalCenter
+        , Element.Events.onClick (Msg.UpdateRosterData MobsterOperation.NextTurn)
+        ]
+        Element.empty
 
 
 stepBackwardButton : StyleElement
 stepBackwardButton =
-    Element.el Styles.StepButton [ Attr.paddingXY 16 10, Attr.class "fa fa-step-backward", Attr.verticalCenter ] Element.empty
+    Element.el Styles.StepButton
+        [ Attr.paddingXY 16 10
+        , Attr.class "fa fa-step-backward"
+        , Attr.verticalCenter
+        , Element.Events.onClick (Msg.UpdateRosterData MobsterOperation.RewindTurn)
+        ]
+        Element.empty
 
 
 awayView : StyleElement
