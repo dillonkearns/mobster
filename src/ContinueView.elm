@@ -15,9 +15,16 @@ import Views.StepButton
 import Views.Tip
 
 
-view : { model | device : Device, tip : Tip, settings : Settings.Data } -> List StyleElement
-view { device, tip, settings } =
-    [ Views.BreakProgress.view
+view :
+    { model
+        | device : Device
+        , tip : Tip
+        , settings : Settings.Data
+        , intervalsSinceBreak : Int
+    }
+    -> List StyleElement
+view ({ device, tip, settings } as model) =
+    [ Views.BreakProgress.view model
     , roleRow device settings.rosterData
     , Element.hairline Styles.Hairline
     , Views.Tip.view tip
