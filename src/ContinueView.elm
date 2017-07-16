@@ -21,14 +21,15 @@ view :
         , tip : Tip
         , settings : Settings.Data
         , intervalsSinceBreak : Int
+        , onMac : Bool
     }
     -> List StyleElement
-view ({ device, tip, settings } as model) =
+view ({ device, tip, settings, onMac } as model) =
     [ Views.BreakProgress.view model
     , roleRow device settings.rosterData
     , Element.hairline Styles.Hairline
     , Views.Tip.view tip
-    , Styles.startMobbingButton "Continue"
+    , Styles.startMobbingButton onMac "Continue"
     ]
 
 

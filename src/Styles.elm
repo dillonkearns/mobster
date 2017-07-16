@@ -398,10 +398,17 @@ configOptions settings =
         ]
 
 
-startMobbingButton : String -> StyleElement
-startMobbingButton title =
+startMobbingButton : Bool -> String -> StyleElement
+startMobbingButton onMac title =
+    let
+        tooltipText =
+            if onMac then
+                "⌘+Enter"
+            else
+                "Ctrl+Enter"
+    in
     column None
-        [ class "setupTooltipContainer" ]
+        [ class "styleElementsTooltipContainer" ]
         [ (button <| el WideButton [ padding 13, Element.Events.onClick Msg.StartTimer, Element.Attributes.id "continue-button" ] (text title))
-            |> above [ el Tooltip [ center, width (px 200), class "setupTooltip" ] (text "This is a tooltip") ]
+            |> above [ el Tooltip [ center, width (px 200), class "styleElementsTooltip" ] (text tooltipText) ]
         ]
