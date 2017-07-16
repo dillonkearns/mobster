@@ -309,7 +309,7 @@ styleElementsConfigureView model =
                         Element.html
                             (View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle))
                     ]
-                , Styles.startMobbingButton
+                , Styles.startMobbingButton "Start Mobbing"
                 ]
             ]
 

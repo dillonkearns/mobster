@@ -350,12 +350,12 @@ configOptions settings =
         ]
 
 
-startMobbingButton : StyleElement
-startMobbingButton =
+startMobbingButton : String -> StyleElement
+startMobbingButton title =
     column None
-        [ class "styleElementsTooltipContainer" ]
-        [ (button <| el WideButton [ padding 13, Element.Events.onClick Msg.StartTimer ] (text "Start Mobbing"))
-            |> above [ el Tooltip [ center, width (px 200), class "styleElementsTooltip" ] (text "⌘+Enter") ]
+        [ class "setupTooltipContainer" ]
+        [ (button <| el WideButton [ padding 13, Element.Events.onClick Msg.StartTimer ] (text title))
+            |> above [ el Tooltip [ center, width (px 200), class "setupTooltip" ] (text "This is a tooltip") ]
         ]
 
 
