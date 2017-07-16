@@ -20,13 +20,13 @@ view device =
 tipView : StyleElement
 tipView =
     Element.column Styles.TipBox
-        [ Attr.width (Attr.percent 40)
+        [ Attr.width (Attr.percent 50)
         , Attr.center
         , Attr.padding 20
         ]
         [ Element.el Styles.TipTitle [ Attr.paddingBottom 15 ] <| Element.text "Driver Navigator Pattern"
         , Element.column Styles.TipBody
-            [ Attr.center, Attr.paddingLeft 75, Attr.paddingRight 75 ]
+            [ Attr.center, Attr.width (Attr.percent 55) ]
             [ Element.el Styles.None [] <| Element.text "For an idea to go from your head into the computer it MUST go through someone else's hands."
             , Element.text "Llewellyn Falco" |> Element.el Styles.TipLink [ Attr.target "_blank" ] |> Element.link "https://twitter.com/LlewellynFalco/"
             ]
