@@ -8,7 +8,7 @@ import Element.Events
 import Roster.Data exposing (RosterData)
 import Roster.Operation as MobsterOperation
 import Roster.Presenter
-import Setup.Msg as Msg
+import Setup.Msg as Msg exposing (Msg)
 import Setup.Settings as Settings
 import Styles exposing (StyleElement)
 import Tip exposing (Tip)
@@ -69,26 +69,25 @@ roleRow device rosterData =
         ]
 
 
-stepForwardButton : StyleElement
-stepForwardButton =
+stepButton : String -> Msg -> StyleElement
+stepButton iconClass msg =
     Element.el Styles.StepButton
         [ Attr.paddingXY 16 10
-        , Attr.class "fa fa-step-forward"
+        , Attr.class ("fa " ++ iconClass)
         , Attr.verticalCenter
-        , Element.Events.onClick (Msg.UpdateRosterData MobsterOperation.NextTurn)
+        , Element.Events.onClick msg
         ]
         Element.empty
+
+
+stepForwardButton : StyleElement
+stepForwardButton =
+    stepButton "fa-step-forward" (Msg.UpdateRosterData MobsterOperation.NextTurn)
 
 
 stepBackwardButton : StyleElement
 stepBackwardButton =
-    Element.el Styles.StepButton
-        [ Attr.paddingXY 16 10
-        , Attr.class "fa fa-step-backward"
-        , Attr.verticalCenter
-        , Element.Events.onClick (Msg.UpdateRosterData MobsterOperation.RewindTurn)
-        ]
-        Element.empty
+    stepButton "fa-step-backward" (Msg.UpdateRosterData MobsterOperation.RewindTurn)
 
 
 awayView : StyleElement
