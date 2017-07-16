@@ -1,17 +1,13 @@
 module ContinueView exposing (view)
 
--- import Style.Attributes as Attr
-
 import Element exposing (Device)
 import Element.Attributes as Attr
-import Element.Events
 import Roster.Data exposing (RosterData)
-import Roster.Operation as MobsterOperation
 import Roster.Presenter
-import Setup.Msg as Msg exposing (Msg)
 import Setup.Settings as Settings
 import Styles exposing (StyleElement)
 import Tip exposing (Tip)
+import Views.StepButton
 
 
 view : { model | device : Device, tip : Tip, settings : Settings.Data } -> List StyleElement
@@ -62,32 +58,11 @@ roleRow device rosterData =
     in
     Element.row Styles.None
         []
-        [ stepBackwardButton
+        [ Views.StepButton.stepBackwardButton
         , Element.el Styles.None [ Attr.width (Attr.fill 1) ] (roleView device Driver driverNavigator.driver)
         , Element.el Styles.None [ Attr.width (Attr.fill 1) ] (roleView device Navigator driverNavigator.navigator)
-        , stepForwardButton
+        , Views.StepButton.stepForwardButton
         ]
-
-
-stepButton : String -> Msg -> StyleElement
-stepButton iconClass msg =
-    Element.el Styles.StepButton
-        [ Attr.paddingXY 16 10
-        , Attr.class ("fa " ++ iconClass)
-        , Attr.verticalCenter
-        , Element.Events.onClick msg
-        ]
-        Element.empty
-
-
-stepForwardButton : StyleElement
-stepForwardButton =
-    stepButton "fa-step-forward" (Msg.UpdateRosterData MobsterOperation.NextTurn)
-
-
-stepBackwardButton : StyleElement
-stepBackwardButton =
-    stepButton "fa-step-backward" (Msg.UpdateRosterData MobsterOperation.RewindTurn)
 
 
 awayView : StyleElement
