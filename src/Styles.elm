@@ -45,6 +45,9 @@ type Styles
     | RoseIcon
     | Circle CircleFill
     | Hairline
+    | BreakButton
+    | SkipBreakButton
+    | BreakAlertBox
 
 
 type NavButtonType
@@ -246,6 +249,39 @@ stylesheet device =
             , hover
                 [ Color.rgb 132 25 163 |> buttonGradients 0.14 |> .hover
                 ]
+            ]
+        , style SkipBreakButton
+            [ Font.size (responsiveForWidthWith ( 16, 120 ))
+            , Border.none
+            , Font.typeface fonts.title
+            , Color.rgb 186 186 186 |> buttonGradients 0.14 |> .main
+            , Color.text primaryColor
+            , Border.rounded 10
+            , Font.center
+            , hover
+                [ Color.rgb 186 186 186 |> buttonGradients 0.14 |> .hover
+                ]
+            ]
+        , style BreakButton
+            [ Font.size (responsiveForWidthWith ( 16, 120 ))
+            , Border.none
+            , Font.typeface fonts.title
+            , Color.rgb 8 226 108 |> buttonGradients 0.14 |> .main
+            , Color.text primaryColor
+            , Border.rounded 10
+            , Font.center
+            , hover
+                [ Color.rgb 8 226 108 |> buttonGradients 0.14 |> .hover
+                ]
+            ]
+        , style BreakAlertBox
+            [ Border.none
+            , Font.typeface fonts.body
+            , Font.size smallFontSize
+            , Color.background circleColor
+            , Color.text primaryColor
+            , Border.rounded 3
+            , Font.center
             ]
         , style Tooltip
             [ Color.background (Color.rgb 201 201 201)

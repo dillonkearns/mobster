@@ -20,6 +20,7 @@ import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard.Combo
 import Keyboard.Extra
+import Pages.Break
 import QuickRotate
 import Random
 import Roster.Data as Roster
@@ -290,15 +291,19 @@ view model =
                     Setup.Rpg.View.rpgView rpgState model.settings.rosterData
     in
     if model.showBetaUi && model.screenState == Configure then
-        styleElementsConfigureView (configureBetaViewElements model) model
+        styleElementsConfigureView model (configureBetaViewElements model)
     else if model.showBetaUi && (model.screenState == Continue True || model.screenState == Continue False) then
-        styleElementsConfigureView (ContinueView.view model) model
+        styleElementsConfigureView model <|
+            if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+                Pages.Break.view model.device
+            else
+                ContinueView.view model
     else
         div [] [ Navbar.view model.screenState, View.UpdateAvailable.view model.availableUpdateVersion, mainView, feedbackButton ]
 
 
-styleElementsConfigureView : List Styles.StyleElement -> Model -> Html Msg
-styleElementsConfigureView bodyElements model =
+styleElementsConfigureView : Model -> List Styles.StyleElement -> Html Msg
+styleElementsConfigureView model bodyElements =
     Element.viewport (Styles.stylesheet model.device) <|
         Element.column Styles.Main
             [ Element.Attributes.height (Element.Attributes.fill 1) ]
