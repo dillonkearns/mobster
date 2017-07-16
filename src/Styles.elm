@@ -328,25 +328,6 @@ type alias StyleElement =
     Element Styles Never Msg
 
 
-navbar : StyleElement
-navbar =
-    row Navbar
-        [ justify, paddingXY 10 10, verticalCenter ]
-        [ row None [ spacing 12 ] [ roseIcon, el Logo [] (text "Mobster") ]
-        , row None
-            [ spacing 20 ]
-            [ Element.image "./assets/invisible.png" None [ width (px 40), height (px 40) ] Element.empty
-            , navButtonView "Hide" Warning Msg.hide
-            , navButtonView "Quit" Danger Msg.quit
-            ]
-        ]
-
-
-navButtonView : String -> NavButtonType -> Msg -> StyleElement
-navButtonView buttonText navButtonType msg =
-    button <| el (NavButton navButtonType) [ minWidth <| px 60, height <| px 34, Element.Events.onClick msg ] (text buttonText)
-
-
 inputPair : IntInputField -> String -> Int -> StyleElement
 inputPair inputField label value =
     row Input
@@ -424,8 +405,3 @@ startMobbingButton title =
         [ (button <| el WideButton [ padding 13, Element.Events.onClick Msg.StartTimer, Element.Attributes.id "continue-button" ] (text title))
             |> above [ el Tooltip [ center, width (px 200), class "setupTooltip" ] (text "This is a tooltip") ]
         ]
-
-
-roseIcon : StyleElement
-roseIcon =
-    Element.image "./assets/rose.png" None [ height (px 40), width (px 25) ] Element.empty

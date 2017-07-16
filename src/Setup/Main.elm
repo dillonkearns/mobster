@@ -44,6 +44,7 @@ import Tip
 import Update.Extra
 import View.Break
 import View.IntervalsToBreak
+import View.Navbar
 import View.Roster
 import View.Tip
 import View.UpdateAvailable
@@ -307,7 +308,7 @@ styleElementsConfigureView model bodyElements =
     Element.viewport (Styles.stylesheet model.device) <|
         Element.column Styles.Main
             [ Element.Attributes.height (Element.Attributes.fill 1) ]
-            [ Styles.navbar
+            [ View.Navbar.view
             , Element.column Styles.None
                 [ Element.Attributes.paddingXY 95 50, Element.Attributes.spacing 60, Element.Attributes.height (Element.Attributes.fill 1) ]
                 bodyElements
