@@ -346,7 +346,20 @@ navButtonView buttonText navButtonType msg =
 
 inputPair : String -> String -> StyleElement
 inputPair label value =
-    row Input [ spacing 20 ] [ Element.inputText None [ width <| px 50 ] value, el None [] <| text label ]
+    row Input
+        [ spacing 20 ]
+        [ Element.node "input" <|
+            el None
+                [ width <| px 50
+                , Element.Attributes.min "1"
+                , Element.Attributes.max "10"
+                , Element.Attributes.step "1"
+                , type_ "number"
+                , Element.Attributes.value "5"
+                ]
+                empty
+        , el None [] <| text label
+        ]
 
 
 keyBase : StyleElement -> StyleElement
