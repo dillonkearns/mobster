@@ -2,8 +2,11 @@ module ContinueView exposing (view)
 
 import Element exposing (Device)
 import Element.Attributes as Attr
+import Element.Events
 import Roster.Data exposing (RosterData)
+import Roster.Operation as MobsterOperation
 import Roster.Presenter
+import Setup.Msg as Msg
 import Setup.Settings as Settings
 import Styles exposing (StyleElement)
 import Tip exposing (Tip)
@@ -32,7 +35,7 @@ roleView device role mobster =
     Element.row Styles.None
         [ Attr.spacing 20, Attr.verticalCenter, Attr.center ]
         [ roleIcon device role, Element.el Styles.RoleViewName [] <| Element.text mobster.name ]
-        |> Element.onRight [ Element.el Styles.None [ Attr.verticalCenter, Attr.paddingLeft 30 ] awayView ]
+        |> Element.onRight [ Element.el Styles.None [ Attr.verticalCenter, Attr.paddingLeft 30 ] (awayView mobster.index) ]
 
 
 roleRow : Device -> RosterData -> StyleElement
@@ -51,9 +54,13 @@ roleRow device rosterData =
         ]
 
 
-awayView : StyleElement
-awayView =
-    Element.el Styles.AwayIcon [ Attr.paddingXY 16 10 ] <|
+awayView : Int -> StyleElement
+awayView index =
+    Element.el Styles.AwayIcon
+        [ Attr.paddingXY 16 10
+        , Element.Events.onClick <| Msg.UpdateRosterData (MobsterOperation.Bench index)
+        ]
+    <|
         Element.text "✖ Away"
 
 
