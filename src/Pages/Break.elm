@@ -38,7 +38,7 @@ breakButtons =
         -- |> above [ el Tooltip [ center, width (px 200), class "setupTooltip" ] (text "This is a tooltip") ]
         , button <|
             el Styles.BreakButton
-                [ padding 13, width (fill 2), Element.Events.onClick Msg.StartBreak ]
+                [ padding 13, width (fill 3), Element.Events.onClick Msg.StartBreak ]
                 (row Styles.None
                     [ spacing 20, center ]
                     [ text "Take a Break"
