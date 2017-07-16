@@ -348,18 +348,23 @@ inputPair : String -> String -> StyleElement
 inputPair label value =
     row Input
         [ spacing 20 ]
-        [ Element.node "input" <|
-            el None
-                [ width <| px 50
-                , Element.Attributes.min "1"
-                , Element.Attributes.max "10"
-                , Element.Attributes.step "1"
-                , type_ "number"
-                , Element.Attributes.value "5"
-                ]
-                empty
+        [ numberInput 5 ( 1, 10 )
         , el None [] <| text label
         ]
+
+
+numberInput : Int -> ( Int, Int ) -> StyleElement
+numberInput value ( minValue, maxValue ) =
+    Element.node "input" <|
+        el None
+            [ width <| px 60
+            , minValue |> toString |> Element.Attributes.min
+            , maxValue |> toString |> Element.Attributes.max
+            , Element.Attributes.step "1"
+            , type_ "number"
+            , value |> toString |> Element.Attributes.value
+            ]
+            empty
 
 
 keyBase : StyleElement -> StyleElement
