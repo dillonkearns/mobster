@@ -1,5 +1,4 @@
-const electron = require('electron')
-const {
+import {
   ipcMain,
   globalShortcut,
   app,
@@ -7,8 +6,9 @@ const {
   BrowserWindow,
   dialog,
   shell,
-  remote
-} = require('electron')
+  remote,
+  screen
+} from 'electron'
 const fs = require('fs')
 
 const transparencyDisabled = fs.existsSync(
@@ -29,7 +29,7 @@ const assetsDirectory = path.join(__dirname, 'assets')
 const { version } = require('./package')
 const osascript = require('node-osascript')
 const appDataPath = app.getPath('userData')
-currentMobstersFilePath = path.join(appDataPath, 'active-mobsters')
+let currentMobstersFilePath = path.join(appDataPath, 'active-mobsters')
 const bugsnag = require('bugsnag')
 const isDev = require('electron-is-dev')
 log.info(`Running version ${version}`)
@@ -42,6 +42,7 @@ bugsnag.register('032040bba551785c7846442332cc067f', {
   appVersion: version,
   releaseStage: releaseStage
 })
+
 
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
   // Someone tried to run a second instance, we should focus our window.
@@ -110,12 +111,12 @@ function hideMainWindow() {
 }
 
 function positionWindowLeft(window) {
-  let { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+  let { width, height } = screen.getPrimaryDisplay().workAreaSize
   window.setPosition(0, height - timerHeight)
 }
 
 function positionWindowRight(window) {
-  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize
   window.setPosition(width - timerWidth, height - timerHeight)
 }
 
@@ -159,7 +160,7 @@ function startTimer(flags) {
 }
 
 ipcMain.on('timer-mouse-hover', event => {
-  ;[x, y] = timerWindow.getPosition()
+  let [x, y] = timerWindow.getPosition()
   if (x === 0) {
     positionWindowRight(timerWindow)
   } else {
@@ -205,7 +206,7 @@ function createWindow() {
   }, 1000)
   mainWindow.maximize()
 
-  electron.screen.on('display-metrics-changed', function() {
+  screen.on('display-metrics-changed', function() {
     mainWindow.maximize()
   })
 
@@ -382,7 +383,7 @@ function setupAutoUpdater() {
   if (!isDev) {
     autoUpdater.checkForUpdates()
     log.info('About to set up interval')
-    function myCheckForUpdates() {
+    let myCheckForUpdates = () => {
       log.info('About to check for updates on interval')
 
       if (checkForUpdates) {

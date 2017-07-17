@@ -4,7 +4,7 @@
   "description": "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
   "scripts": {
-    "start": "npm test && npm run build && electron .",
+    "start": "npm run types && npm test && npm run build && electron .",
     "build": "elm make src/timer/Main.elm src/setup/Main.elm --output elm.js && elm css src/Stylesheets.elm",
     "test-watch": "yarn test; fswatch -0 src tests -e '.*' -i \\.elm$ | xargs -0 -n1 -I{} yarn test",
     "test": "clear && echo 'running tests' && elm-test",
@@ -13,7 +13,8 @@
     "dist-win": "build --win",
     "dist-linux": "build --linux",
     "dist": "build --mac --win --linux",
-    "release": "build --mac --win --linux"
+    "release": "build --mac --win --linux",
+    "types": "tsc"
   },
   "build": {
     "appId": "com.dillonkearns.mobster",
@@ -46,6 +47,7 @@
     "highlight.js": "^9.10.0",
     "jquery": "^3.1.1",
     "ms": "^0.7.2",
-    "node-osascript": "^2.0.0"
+    "node-osascript": "^2.0.0",
+    "typescript": "^2.4.1"
   }
 }
