@@ -65,7 +65,7 @@ const returnFocusOsascript = `tell application "System Events"
 end tell`
 
 function returnFocusMac() {
-  osascript.execute(returnFocusOsascript, function(err, result, raw) {
+  osascript.execute(returnFocusOsascript, function (err, result, raw) {
     if (err) {
       return console.error(err)
     }
@@ -74,7 +74,7 @@ function returnFocusMac() {
 }
 
 function writeToFile(filePath, fileContents) {
-  fs.writeFile(filePath, fileContents, function(err) {
+  fs.writeFile(filePath, fileContents, function (err) {
     if (err) {
       console.log(err)
     }
@@ -133,10 +133,10 @@ function startTimer(flags) {
     focusable: false
   })
 
-  timerWindow.webContents.on('crashed', function() {
+  timerWindow.webContents.on('crashed', function () {
     bugsnag.notify('crashed', 'timerWindow crashed')
   })
-  timerWindow.on('unresponsive', function() {
+  timerWindow.on('unresponsive', function () {
     bugsnag.notify('unresponsive', 'timerWindow unresponsive')
   })
 
@@ -195,10 +195,10 @@ function createWindow() {
     icon: `${assetsDirectory}/icon.ico`
   })
 
-  mainWindow.webContents.on('crashed', function() {
+  mainWindow.webContents.on('crashed', function () {
     bugsnag.notify('crashed', 'mainWindow crashed')
   })
-  mainWindow.on('unresponsive', function() {
+  mainWindow.on('unresponsive', function () {
     bugsnag.notify('unresponsive', 'mainWindow unresponsive')
   })
   setTimeout(() => {
@@ -206,7 +206,7 @@ function createWindow() {
   }, 1000)
   mainWindow.maximize()
 
-  screen.on('display-metrics-changed', function() {
+  screen.on('display-metrics-changed', function () {
     mainWindow.maximize()
   })
 
@@ -267,7 +267,7 @@ function createWindow() {
   })
 
   // Emitted when the window is closed.
-  mainWindow.on('closed', function() {
+  mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
@@ -340,7 +340,7 @@ function onReady() {
 app.on('ready', onReady)
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function() {
+app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
@@ -348,7 +348,7 @@ app.on('window-all-closed', function() {
   }
 })
 
-app.on('activate', function() {
+app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
