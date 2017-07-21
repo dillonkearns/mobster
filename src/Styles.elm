@@ -59,7 +59,9 @@ type NavButtonType
 
 fonts : { title : List String, body : List String }
 fonts =
-    { title = [ "Anton", "helvetica", "arial", "sans-serif" ], body = [ "Open Sans Condensed", "Helvetica Neue", "helvetica", "arial", "sans-serif" ] }
+    { title = [ "Anton", "helvetica", "arial", "sans-serif" ]
+    , body = [ "Open Sans Condensed", "Helvetica Neue", "helvetica", "arial", "sans-serif" ]
+    }
 
 
 responsiveForWidth : Device -> ( Float, Float ) -> Float
