@@ -20,10 +20,8 @@ require('electron-debug')({
   enabled: true // enable debug shortcuts in prod build
 })
 
-const child_process = require('child_process')
-const ms = require('ms')
 import * as path from 'path'
-const url = require('url')
+import * as url from 'url'
 const log = require('electron-log')
 const assetsDirectory = path.join(__dirname, 'assets')
 const { version } = require('./package')
