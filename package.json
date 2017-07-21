@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run types && npm test && npm run build && electron .",
     "build": "elm make src/timer/Main.elm src/setup/Main.elm --output elm.js && elm css src/Stylesheets.elm",
-    "test-watch": "yarn test; fswatch -0 src tests -e '.*' -i \\.elm$ | xargs -0 -n1 -I{} yarn test",
+    "test-watch": "npm test; fswatch -0 src tests -e '.*' -i \\.elm$ | xargs -0 -n1 -I{} npm test",
     "test": "clear && echo 'running tests' && elm-test",
     "pack": "build --dir",
     "dist-mac": "build --mac",
@@ -26,12 +26,7 @@
     }
   },
   "repository": "https://github.com/dillonkearns/mobster",
-  "keywords": [
-    "Electron",
-    "mob programming",
-    "timer",
-    "Agile"
-  ],
+  "keywords": ["Electron", "mob programming", "timer", "Agile"],
   "author": "Dillon Kearns",
   "license": "MIT",
   "devDependencies": {
