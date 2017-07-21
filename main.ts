@@ -9,7 +9,7 @@ import {
   remote,
   screen
 } from 'electron'
-const fs = require('fs')
+import * as fs from 'fs'
 
 const transparencyDisabled = fs.existsSync(
   `${app.getPath('userData')}/NO_TRANSPARENCY`
@@ -22,14 +22,14 @@ require('electron-debug')({
 
 const child_process = require('child_process')
 const ms = require('ms')
-const path = require('path')
+import * as path from 'path'
 const url = require('url')
 const log = require('electron-log')
 const assetsDirectory = path.join(__dirname, 'assets')
 const { version } = require('./package')
 const osascript = require('node-osascript')
 const appDataPath = app.getPath('userData')
-let currentMobstersFilePath = path.join(appDataPath, 'active-mobsters')
+let currentMobstersFilePath: string = path.join(appDataPath, 'active-mobsters')
 const bugsnag = require('bugsnag')
 const isDev = require('electron-is-dev')
 log.info(`Running version ${version}`)
@@ -64,7 +64,11 @@ const returnFocusOsascript = `tell application "System Events"
 end tell`
 
 function returnFocusMac() {
-  osascript.execute(returnFocusOsascript, function(err, result, raw) {
+  osascript.execute(returnFocusOsascript, function(
+    err: any,
+    result: any,
+    raw: any
+  ) {
     if (err) {
       return console.error(err)
     }
@@ -72,7 +76,7 @@ function returnFocusMac() {
   })
 }
 
-function writeToFile(filePath, fileContents) {
+function writeToFile(filePath: string, fileContents: string) {
   fs.writeFile(filePath, fileContents, function(err) {
     if (err) {
       console.log(err)
@@ -80,13 +84,15 @@ function writeToFile(filePath, fileContents) {
   })
 }
 
-function updateMobsterNamesFile(currentMobsterNames) {
+function updateMobsterNamesFile(currentMobsterNames: string) {
   writeToFile(currentMobstersFilePath, currentMobsterNames)
 }
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow, timerWindow, tray
+let mainWindow: Electron.BrowserWindow,
+  timerWindow: Electron.BrowserWindow,
+  tray: Electron.Tray
 
 const timerHeight = 130
 const timerWidth = 150
@@ -109,12 +115,12 @@ function hideMainWindow() {
   returnFocus()
 }
 
-function positionWindowLeft(window) {
+function positionWindowLeft(window: Electron.BrowserWindow) {
   let { width, height } = screen.getPrimaryDisplay().workAreaSize
   window.setPosition(0, height - timerHeight)
 }
 
-function positionWindowRight(window) {
+function positionWindowRight(window: Electron.BrowserWindow) {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
   window.setPosition(width - timerWidth, height - timerHeight)
 }
@@ -125,7 +131,7 @@ function returnFocus() {
   }
 }
 
-function startTimer(flags) {
+function startTimer(flags: any) {
   timerWindow = newTransparentOnTopWindow({
     width: timerWidth,
     height: timerHeight,
@@ -141,7 +147,7 @@ function startTimer(flags) {
 
   positionWindowRight(timerWindow)
 
-  ipcMain.once('timer-flags', event => {
+  ipcMain.once('timer-flags', (event: any) => {
     event.returnValue = flags
   })
 
@@ -158,7 +164,7 @@ function startTimer(flags) {
   )
 }
 
-ipcMain.on('timer-mouse-hover', event => {
+ipcMain.on('timer-mouse-hover', (event: any) => {
   let [x, y] = timerWindow.getPosition()
   if (x === 0) {
     positionWindowRight(timerWindow)
@@ -167,18 +173,18 @@ ipcMain.on('timer-mouse-hover', event => {
   }
 })
 
-ipcMain.on('ChangeShortcut', (event, payload) => {
+ipcMain.on('ChangeShortcut', (event: any, payload: any) => {
   globalShortcut.unregisterAll()
   if (payload !== '') {
     setShowHideShortcut(payload)
   }
 })
 
-ipcMain.on('NotifySettingsDecodeFailed', (event, payload) => {
+ipcMain.on('NotifySettingsDecodeFailed', (event: any, payload: any) => {
   bugsnag.notify('settings-decode-failure', payload)
 })
 
-ipcMain.on('get-active-mobsters-path', event => {
+ipcMain.on('get-active-mobsters-path', (event: any) => {
   event.returnValue = currentMobstersFilePath
 })
 
@@ -217,47 +223,50 @@ function createWindow() {
     })
   )
 
-  ipcMain.on('StartTimer', (event, flags) => {
+  ipcMain.on('StartTimer', (event: any, flags: any) => {
     startTimer(flags)
     hideMainWindow()
   })
 
-  ipcMain.on('SaveActiveMobstersFile', (event, currentMobsterNames) => {
-    updateMobsterNamesFile(currentMobsterNames)
-  })
+  ipcMain.on(
+    'SaveActiveMobstersFile',
+    (event: any, currentMobsterNames: any) => {
+      updateMobsterNamesFile(currentMobsterNames)
+    }
+  )
 
-  ipcMain.on('OpenExternalUrl', (event, url) => {
+  ipcMain.on('OpenExternalUrl', (event: any, url: any) => {
     hideMainWindow()
     shell.openExternal(url)
   })
 
-  ipcMain.on('timer-done', (event, timeElapsed) => {
+  ipcMain.on('timer-done', (event: any, timeElapsed: any) => {
     closeTimer()
     mainWindow.webContents.send('timer-done', timeElapsed)
     focusMainWindow()
   })
 
-  ipcMain.on('break-done', (event, timeElapsed) => {
+  ipcMain.on('break-done', (event: any, timeElapsed: any) => {
     closeTimer()
     mainWindow.webContents.send('break-done', timeElapsed)
     focusMainWindow()
   })
 
-  ipcMain.on('Quit', event => {
+  ipcMain.on('Quit', (event: any) => {
     app.quit()
   })
 
-  ipcMain.on('ShowFeedbackForm', event => {
+  ipcMain.on('ShowFeedbackForm', (event: any) => {
     new BrowserWindow({ show: true, frame: true, alwaysOnTop: true }).loadURL(
       'https://dillonkearns.typeform.com/to/k9P6iV'
     )
   })
 
-  ipcMain.on('ShowScriptInstallInstructions', event => {
+  ipcMain.on('ShowScriptInstallInstructions', (event: any) => {
     showScripts()
   })
 
-  ipcMain.on('Hide', event => {
+  ipcMain.on('Hide', (event: any) => {
     toggleMainWindow()
   })
 
@@ -293,7 +302,7 @@ const createTray = () => {
   tray.on('click', onClickTrayIcon)
 }
 
-function newTransparentOnTopWindow(additionalOptions) {
+function newTransparentOnTopWindow(additionalOptions: any) {
   return new BrowserWindow(
     Object.assign(
       {
@@ -361,7 +370,7 @@ function setupAutoUpdater() {
     log.info('checking-for-update')
   })
 
-  autoUpdater.on('error', (ev, err) => {
+  autoUpdater.on('error', (ev: any, err: any) => {
     checkForUpdates = true
   })
 
@@ -370,7 +379,7 @@ function setupAutoUpdater() {
     checkForUpdates = false
   })
 
-  autoUpdater.on('update-downloaded', versionInfo => {
+  autoUpdater.on('update-downloaded', (versionInfo: any) => {
     log.info('update-downloaded: ', versionInfo)
     mainWindow.webContents.send('update-downloaded', versionInfo)
   })
@@ -393,7 +402,7 @@ function setupAutoUpdater() {
   }
 }
 
-function setShowHideShortcut(shortcutString) {
+function setShowHideShortcut(shortcutString: Electron.Accelerator) {
   globalShortcut.register(shortcutString, showStopTimerDialog)
 }
 

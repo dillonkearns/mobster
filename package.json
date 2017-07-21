@@ -35,11 +35,14 @@
   "author": "Dillon Kearns",
   "license": "MIT",
   "devDependencies": {
+    "@types/bugsnag": "^2.5.28",
+    "@types/node": "^8.0.14",
     "devtron": "^1.4.0",
     "electron": "^1.7.5",
     "electron-builder": "^11.7.0",
     "elm-css": "^0.6.0",
-    "elm-test": "^0.18.7"
+    "elm-test": "^0.18.7",
+    "typescript": "^2.4.1"
   },
   "dependencies": {
     "bugsnag": "^1.9.1",
@@ -52,7 +55,6 @@
     "highlight.js": "^9.10.0",
     "jquery": "^3.1.1",
     "ms": "^0.7.2",
-    "node-osascript": "^2.0.0",
-    "typescript": "^2.4.1"
+    "node-osascript": "^2.0.0"
   }
 }

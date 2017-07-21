@@ -2,11 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es6",
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "sourceMap": false
   },
-  "exclude": [
-    "node_modules",
-    "typings"
-  ]
+  "exclude": ["node_modules", "typings"]
 }
