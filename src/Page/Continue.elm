@@ -1,4 +1,4 @@
-module ContinueView exposing (view)
+module Page.Continue exposing (view)
 
 import Element exposing (Device)
 import Element.Attributes as Attr

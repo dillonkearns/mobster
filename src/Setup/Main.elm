@@ -4,7 +4,6 @@ import Animation exposing (Step)
 import Basics.Extra exposing ((=>))
 import Bootstrap
 import Break
-import ContinueView
 import Dice
 import Dom
 import Element exposing (Device)
@@ -20,6 +19,7 @@ import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard.Combo
 import Keyboard.Extra
+import Page.Continue
 import Pages.Break
 import QuickRotate
 import Random
@@ -298,7 +298,7 @@ view model =
             if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
                 Pages.Break.view model
             else
-                ContinueView.view model
+                Page.Continue.view model
     else
         div [] [ Navbar.view model.screenState, View.UpdateAvailable.view model.availableUpdateVersion, mainView, feedbackButton ]
 
