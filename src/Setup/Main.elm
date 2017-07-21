@@ -319,7 +319,7 @@ configureBetaViewElements : Model -> List Styles.StyleElement
 configureBetaViewElements model =
     [ Element.row Styles.None
         [ Element.Attributes.spacing 50 ]
-        [ Styles.configOptions model.settings
+        [ Styles.configOptions model.onMac model.settings
         , Element.el Styles.None [ Element.Attributes.width (Element.Attributes.fill 1) ] <|
             Element.html
                 (View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle))

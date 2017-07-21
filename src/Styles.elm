@@ -380,8 +380,8 @@ editableKeyboardKey currentKey =
             currentKey
 
 
-configOptions : Settings.Data -> StyleElement
-configOptions settings =
+configOptions : Bool -> Settings.Data -> StyleElement
+configOptions onMac settings =
     let
         breakIntervalText =
             "Break every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ "′"
@@ -394,8 +394,16 @@ configOptions settings =
             , inputPair InputField.BreakInterval breakIntervalText settings.intervalsPerBreak
             , inputPair InputField.BreakDuration "Minutes per break" settings.breakDuration
             ]
-        , column None [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey "⌘", keyboardKey "Shift", editableKeyboardKey settings.showHideShortcut ] ]
+        , column None [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey (ctrlKey onMac), keyboardKey "Shift", editableKeyboardKey settings.showHideShortcut ] ]
         ]
+
+
+ctrlKey : Bool -> String
+ctrlKey onMac =
+    if onMac then
+        "⌘"
+    else
+        "Ctrl"
 
 
 startMobbingButton : Bool -> String -> StyleElement
