@@ -38,14 +38,14 @@ document.addEventListener('DOMContentLoaded', function(event) {
   ipcRenderer.on('break-done', function(event: any, elapsedSeconds: any) {
     setup.ports.breakDone.send(elapsedSeconds)
   })
-  // $(() => {
-  //   $('.invisible-trigger').hover(
-  //     () => {
-  //       $('body').addClass('transparent')
-  //     },
-  //     () => {
-  //       $('body').removeClass('transparent')
-  //     }
-  //   )
-  // })
+  $(() => {
+    $('.invisible-trigger').hover(
+      () => {
+        $('body').addClass('transparent')
+      },
+      () => {
+        $('body').removeClass('transparent')
+      }
+    )
+  })
 })
