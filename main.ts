@@ -213,21 +213,20 @@ function createWindow() {
     mainWindow.maximize()
   })
 
-  mainWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, 'setup.html'),
-      protocol: 'file:'
-    })
-    // url.format({
-    //   // pathname: path.join(__dirname, 'setup.html'),
-    //   hostname: 'localhost',
-    //   pathname: 'setup.html',
-    //   // protocol: 'file:',
-    //   port: '8080',
-    //   protocol: 'http',
-    //   slashes: true
-    // })
-  )
+  let prodUrl = url.format({
+    pathname: path.join(__dirname, 'setup.prod.html'),
+    protocol: 'file:'
+  })
+  let devUrl = url.format({
+    hostname: 'localhost',
+    pathname: 'setup.dev.html',
+    port: '8080',
+    protocol: 'http',
+    slashes: true
+  })
+  let nodeDevEnv = process.env.NODE_ENV === 'dev'
+
+  mainWindow.loadURL(nodeDevEnv ? devUrl : prodUrl)
 
   ipcMain.on('StartTimer', (event: any, flags: any) => {
     startTimer(flags)

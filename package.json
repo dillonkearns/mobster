@@ -4,7 +4,8 @@
   "description": "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
   "scripts": {
-    "start": "npm run types && npm test && npm run build && electron .",
+    "start": "NODE_ENV=dev concurrently --kill-others 'npm run dev' 'npm run types && npm test && npm run build && electron .'",
+    "startprod": "NODE_ENV=production npm test && npm run types && npm run production && electron .",
     "dev": "webpack-dev-server --hot",
     "production": "webpack -p --env.production",
     "build": "elm make src/timer/Main.elm src/setup/Main.elm --output elm.js && elm css src/Stylesheets.elm",
@@ -36,6 +37,7 @@
     "@types/jquery": "^3.2.9",
     "@types/node": "^8.0.14",
     "@types/webpack": "^3.0.4",
+    "concurrently": "^3.5.0",
     "devtron": "^1.4.0",
     "electron": "^1.7.5",
     "electron-builder": "^11.7.0",
