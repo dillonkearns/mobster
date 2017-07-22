@@ -24,7 +24,7 @@ import * as path from 'path'
 import * as url from 'url'
 const log = require('electron-log')
 const assetsDirectory = path.join(__dirname, 'assets')
-const { version } = require('./package')
+const { version } = require('./package.json')
 const osascript = require('node-osascript')
 const appDataPath = app.getPath('userData')
 let currentMobstersFilePath: string = path.join(appDataPath, 'active-mobsters')
@@ -216,9 +216,17 @@ function createWindow() {
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, 'setup.html'),
-      protocol: 'file:',
-      slashes: true
+      protocol: 'file:'
     })
+    // url.format({
+    //   // pathname: path.join(__dirname, 'setup.html'),
+    //   hostname: 'localhost',
+    //   pathname: 'setup.html',
+    //   // protocol: 'file:',
+    //   port: '8080',
+    //   protocol: 'http',
+    //   slashes: true
+    // })
   )
 
   ipcMain.on('StartTimer', (event: any, flags: any) => {
