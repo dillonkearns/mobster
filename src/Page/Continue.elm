@@ -1,7 +1,7 @@
 module Page.Continue exposing (view)
 
 import Element exposing (Device)
-import Element.Attributes as Attr
+import Element.Attributes as Attr exposing (spacing)
 import Element.Events
 import Roster.Data exposing (RosterData)
 import Roster.Operation as MobsterOperation
@@ -25,9 +25,12 @@ view :
     }
     -> List StyleElement
 view ({ device, tip, settings, onMac } as model) =
-    [ Views.BreakProgress.view model
-    , roleRow device settings.rosterData
-    , Element.hairline Styles.Hairline
+    [ Element.column Styles.None
+        []
+        [ Views.BreakProgress.view model
+        , Element.el Styles.None [ Attr.paddingTop 10, Attr.paddingBottom 20 ] <| roleRow device settings.rosterData
+        , Element.hairline Styles.Hairline
+        ]
     , Views.Tip.view tip
     , Styles.startMobbingButton onMac "Continue"
     ]
