@@ -29,12 +29,12 @@ const osascript = require('node-osascript')
 const appDataPath = app.getPath('userData')
 let currentMobstersFilePath: string = path.join(appDataPath, 'active-mobsters')
 const bugsnag = require('bugsnag')
-const isDev = require('electron-is-dev')
+const isLocal = require('electron-is-dev')
 log.info(`Running version ${version}`)
 
 let checkForUpdates = true
 
-let releaseStage = isDev ? 'development' : 'production'
+let releaseStage = isLocal ? 'development' : 'production'
 bugsnag.register('032040bba551785c7846442332cc067f', {
   autoNotify: true,
   appVersion: version,
@@ -400,7 +400,7 @@ function setupAutoUpdater() {
     log.info('update-not-available')
   })
 
-  if (!isDev) {
+  if (!isLocal) {
     autoUpdater.checkForUpdates()
     log.info('About to set up interval')
     let myCheckForUpdates = () => {

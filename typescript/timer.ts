@@ -2,7 +2,7 @@ const Elm = require('../src/Timer/Main.elm')
 const { ipcRenderer } = require('electron')
 
 let flags = ipcRenderer.sendSync('timer-flags')
-flags.isDev = require('electron-is-dev')
+flags.isDev = process.env.NODE_ENV === 'dev'
 
 document.addEventListener('DOMContentLoaded', function(event) {
   let timer = Elm.Timer.Main.fullscreen(flags)

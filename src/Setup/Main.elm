@@ -805,11 +805,11 @@ continueButtonId =
 
 
 type alias Flags =
-    { onMac : Bool, isDev : Bool, settings : Decode.Value }
+    { onMac : Bool, isLocal : Bool, settings : Decode.Value }
 
 
 init : Flags -> ( Model, Cmd Msg )
-init { onMac, isDev, settings } =
+init { onMac, isLocal, settings } =
     let
         decodedSettings =
             Settings.decode settings
@@ -820,7 +820,7 @@ init { onMac, isDev, settings } =
                     ( settings, Nothing )
 
                 Err errorString ->
-                    if isDev then
+                    if isLocal then
                         Debug.crash ("init failed to decode settings:\n" ++ errorString)
                     else
                         ( Settings.initial, Just errorString )

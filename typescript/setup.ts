@@ -6,14 +6,14 @@ const { version } = require('../package.json')
 console.log(`Running version ${version}`)
 let settings = JSON.parse(window.localStorage.getItem('settings'))
 let onMac = /Mac/.test(navigator.platform)
-let isDev = require('electron-is-dev')
+let isLocal = require('electron-is-dev')
 console.log('Its running!!!!!!!!!!!!!!!!!!!!!!!!!')
 
 document.addEventListener('DOMContentLoaded', function(event) {
   const div = document.getElementById('main')
   // let setup = Elm.Increment.embed(div)
 
-  let setup = Elm.Setup.Main.fullscreen({ settings, onMac, isDev })
+  let setup = Elm.Setup.Main.fullscreen({ settings, onMac, isLocal })
   setup.ports.selectDuration.subscribe(function(id: string) {
     let inputElement: any = document.getElementById(id)
     inputElement.select()
