@@ -155,7 +155,7 @@ function startTimer(flags: any) {
 
   timerWindow.loadURL(
     url.format({
-      pathname: path.join(__dirname, timerFile),
+      pathname: path.join(__dirname, 'pages', timerFile),
       protocol: 'file:',
       slashes: true
     })
