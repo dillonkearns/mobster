@@ -149,17 +149,24 @@ function startTimer(flags: any) {
     event.returnValue = flags
   })
 
-  let timerFile = transparencyDisabled
-    ? 'opaque-timer.html'
-    : 'transparent-timer.html'
+  let timerFile = transparencyDisabled ? 'opaque-timer' : 'transparent-timer'
 
-  timerWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, 'pages', timerFile),
-      protocol: 'file:',
-      slashes: true
-    })
-  )
+  let timerPathName = path.join('pages', timerFile)
+
+  let nodeDevEnv = process.env.NODE_ENV === 'dev'
+  let timerProdUrl = url.format({
+    pathname: path.join(__dirname, 'pages', `${timerFile}.prod.html`),
+    protocol: 'file:'
+  })
+  let timerDevUrl = url.format({
+    hostname: 'localhost',
+    pathname: path.join('pages', `${timerFile}.dev.html`),
+    port: '8080',
+    protocol: 'http',
+    slashes: true
+  })
+  console.log('timer file name:', nodeDevEnv ? timerDevUrl : timerProdUrl)
+  timerWindow.loadURL(nodeDevEnv ? timerDevUrl : timerProdUrl)
 }
 
 ipcMain.on('timer-mouse-hover', (event: any) => {

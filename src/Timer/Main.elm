@@ -42,12 +42,12 @@ roleView name iconPath =
 
 driverIcon : String
 driverIcon =
-    "./assets/driver-icon.png"
+    "../assets/driver-icon.png"
 
 
 navigatorIcon : String
 navigatorIcon =
-    "./assets/navigator-icon.png"
+    "../assets/navigator-icon.png"
 
 
 iconView : String -> Html msg
