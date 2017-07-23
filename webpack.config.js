@@ -3,11 +3,14 @@ const path = require('path')
 
 module.exports = function(env) {
   return {
-    entry: './typescript/setup.ts',
+    entry: {
+      setup: './typescript/setup.ts',
+      timer: './typescript/timer.ts'
+    },
     target: 'electron-renderer',
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: 'bundle.js',
+      filename: '[name].bundle.js',
       publicPath: '/'
     },
     module: {
