@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
   })
   setup.ports.sendIpc.subscribe(function([message, data]: any) {
     console.log('sendIpc', message, data)
-    ipcRenderer.send(message, data)
+    ipcRenderer.send('elm-electron-ipc', { message, data })
   })
   setup.ports.saveSettings.subscribe(function(settings: any) {
     window.localStorage.setItem('settings', JSON.stringify(settings))

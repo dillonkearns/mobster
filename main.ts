@@ -10,6 +10,7 @@ import {
   screen
 } from 'electron'
 import * as fs from 'fs'
+import { Ipc, ElmIpc } from './typescript/ipc'
 
 const transparencyDisabled = fs.existsSync(
   `${app.getPath('userData')}/NO_TRANSPARENCY`
@@ -178,17 +179,6 @@ ipcMain.on('timer-mouse-hover', (event: any) => {
   }
 })
 
-ipcMain.on('ChangeShortcut', (event: any, payload: any) => {
-  globalShortcut.unregisterAll()
-  if (payload !== '') {
-    setShowHideShortcut(payload)
-  }
-})
-
-ipcMain.on('NotifySettingsDecodeFailed', (event: any, payload: any) => {
-  bugsnag.notify('settings-decode-failure', payload)
-})
-
 ipcMain.on('get-active-mobsters-path', (event: any) => {
   event.returnValue = currentMobstersFilePath
 })
@@ -235,22 +225,40 @@ function createWindow() {
 
   mainWindow.loadURL(nodeDevEnv ? devUrl : prodUrl)
 
-  ipcMain.on('StartTimer', (event: any, flags: any) => {
-    startTimer(flags)
-    hideMainWindow()
-  })
-
-  ipcMain.on(
-    'SaveActiveMobstersFile',
-    (event: any, currentMobsterNames: any) => {
-      updateMobsterNamesFile(currentMobsterNames)
+  function onIpcMessage(ipc: ElmIpc): void {
+    if (ipc.message === 'ShowFeedbackForm') {
+      new BrowserWindow({ show: true, frame: true, alwaysOnTop: true }).loadURL(
+        'https://dillonkearns.typeform.com/to/k9P6iV'
+      )
+    } else if (ipc.message === 'ShowScriptInstallInstructions') {
+      showScripts()
+    } else if (ipc.message === 'Hide') {
+      toggleMainWindow()
+    } else if (ipc.message === 'Quit') {
+      app.quit()
+    } else if (ipc.message === 'QuitAndInstall') {
+      autoUpdater.quitAndInstall()
+    } else if (ipc.message === 'ChangeShortcut') {
+      globalShortcut.unregisterAll()
+      if (ipc.data !== '') {
+        setShowHideShortcut(ipc.data)
+      }
+    } else if (ipc.message === 'OpenExternalUrl') {
+      hideMainWindow()
+      shell.openExternal(ipc.data)
+    } else if (ipc.message === 'StartTimer') {
+      startTimer(ipc.data)
+      hideMainWindow()
+    } else if (ipc.message === 'SaveActiveMobstersFile') {
+      updateMobsterNamesFile(ipc.data)
+    } else if (ipc.message === 'NotifySettingsDecodeFailed') {
+      bugsnag.notify('settings-decode-failure', ipc.data)
+    } else {
+      const exhaustiveCheck: never = ipc
     }
-  )
+  }
 
-  ipcMain.on('OpenExternalUrl', (event: any, url: any) => {
-    hideMainWindow()
-    shell.openExternal(url)
-  })
+  Ipc.setupIpcMessageHandler(onIpcMessage)
 
   ipcMain.on('timer-done', (event: any, timeElapsed: any) => {
     closeTimer()
@@ -262,28 +270,6 @@ function createWindow() {
     closeTimer()
     mainWindow.webContents.send('break-done', timeElapsed)
     focusMainWindow()
-  })
-
-  ipcMain.on('Quit', (event: any) => {
-    app.quit()
-  })
-
-  ipcMain.on('ShowFeedbackForm', (event: any) => {
-    new BrowserWindow({ show: true, frame: true, alwaysOnTop: true }).loadURL(
-      'https://dillonkearns.typeform.com/to/k9P6iV'
-    )
-  })
-
-  ipcMain.on('ShowScriptInstallInstructions', (event: any) => {
-    showScripts()
-  })
-
-  ipcMain.on('Hide', (event: any) => {
-    toggleMainWindow()
-  })
-
-  ipcMain.on('QuitAndInstall', () => {
-    autoUpdater.quitAndInstall()
   })
 
   // Emitted when the window is closed.
