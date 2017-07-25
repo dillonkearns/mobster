@@ -87,6 +87,12 @@ function updateMobsterNamesFile(currentMobsterNames: string) {
   writeToFile(currentMobstersFilePath, currentMobsterNames)
 }
 
+function showFeedbackForm() {
+  new BrowserWindow({ show: true, frame: true, alwaysOnTop: true }).loadURL(
+    'https://dillonkearns.typeform.com/to/k9P6iV'
+  )
+}
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow: Electron.BrowserWindow,
@@ -227,9 +233,7 @@ function createWindow() {
 
   function onIpcMessage(ipc: ElmIpc): void {
     if (ipc.message === 'ShowFeedbackForm') {
-      new BrowserWindow({ show: true, frame: true, alwaysOnTop: true }).loadURL(
-        'https://dillonkearns.typeform.com/to/k9P6iV'
-      )
+      showFeedbackForm()
     } else if (ipc.message === 'ShowScriptInstallInstructions') {
       showScripts()
     } else if (ipc.message === 'Hide') {
