@@ -3,6 +3,7 @@ module View.Navbar exposing (view)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick, onInput)
+import Ipc
 import Setup.Msg as Msg exposing (Msg)
 import Setup.View exposing (ScreenState(Configure))
 import Styles exposing (StyleElement)
@@ -21,8 +22,8 @@ view { screenState } =
             [ spacing 20 ]
             [ cogButton
             , Element.image "./assets/invisible.png" Styles.None [ width (px 40), height (px 40) ] Element.empty
-            , navButtonView "Hide" Styles.Warning Msg.hide
-            , navButtonView "Quit" Styles.Danger Msg.quit
+            , navButtonView "Hide" Styles.Warning (Msg.SendIpc Ipc.Hide)
+            , navButtonView "Quit" Styles.Danger (Msg.SendIpc Ipc.Quit)
             ]
         ]
 

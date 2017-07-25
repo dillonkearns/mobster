@@ -47,16 +47,6 @@ type Msg
     | ToggleBetaUi
 
 
-hide : Msg
-hide =
-    SendIpc Ipc.Hide
-
-
-quit : Msg
-quit =
-    SendIpc Ipc.Quit
-
-
 type Direction
     = Previous
     | Next
