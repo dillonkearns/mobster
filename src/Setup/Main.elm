@@ -73,7 +73,7 @@ changeTip =
 feedbackButton : Html Msg
 feedbackButton =
     div []
-        [ a [ onClick <| Msg.SendIpc Ipc.ShowFeedbackForm Encode.null, style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
+        [ a [ onClick <| Msg.SendIpc Ipc.ShowFeedbackForm, style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
 
 
 ctrlKey : Bool -> String
@@ -208,7 +208,7 @@ configureView model =
             ]
         , div []
             [ h3 [] [ text "Getting Started" ]
-            , Bootstrap.smallButton "Install Mob Git Commit Script" (Msg.SendIpc Ipc.ShowScriptInstallInstructions Encode.null) Bootstrap.Primary FA.Github
+            , Bootstrap.smallButton "Install Mob Git Commit Script" (Msg.SendIpc Ipc.ShowScriptInstallInstructions) Bootstrap.Primary FA.Github
             , Bootstrap.smallButton "Learn to Mob Game" Msg.StartRpgMode Bootstrap.Success FA.Gamepad
             ]
         , div [ style [ "margin-top" => "50px" ] ] [ ViewHelpers.blockButton "Start Mobbing" Msg.StartTimer (startMobbingShortcut model.onMac |> Just) continueButtonId ]
@@ -358,7 +358,7 @@ saveActiveMobsters :
     -> ( { model | settings : Settings.Data }, Cmd Msg )
 saveActiveMobsters (( model, msg ) as updateResult) =
     updateResult
-        |> withIpcMsg Ipc.SaveActiveMobstersFile (Encode.string <| Roster.currentMobsterNames model.settings.rosterData)
+        |> withIpcMsg (Ipc.SaveActiveMobstersFile (Roster.currentMobsterNames model.settings.rosterData))
 
 
 updateSettings :
@@ -548,8 +548,8 @@ update msg model =
                         _ ->
                             model ! []
 
-        Msg.SendIpc ipcMsg payload ->
-            model ! [ sendIpcCmd ipcMsg payload ]
+        Msg.SendIpc ipcMsg ->
+            model ! [ sendIpcCmd ipcMsg ]
 
         Msg.CheckRpgBox msg checkedValue ->
             update msg model
@@ -704,22 +704,24 @@ changeGlobalShortcutIfValid model newInputValue =
         model
             |> updateSettings
                 (\settings -> { settings | showHideShortcut = newInputValue })
-            |> withIpcMsg Ipc.ChangeShortcut (Encode.string shortcutString)
+            |> withIpcMsg (Ipc.ChangeShortcut shortcutString)
 
 
-sendIpcCmd : Ipc.Msg -> Encode.Value -> Cmd msg
-sendIpcCmd ipcMsg payload =
-    Setup.Ports.sendIpc ( toString ipcMsg, payload )
+sendIpcCmd : Ipc.Msg -> Cmd msg
+sendIpcCmd ipcMsg =
+    ipcMsg
+        |> Ipc.serialize
+        |> Setup.Ports.sendIpc
 
 
-withIpcMsg : Ipc.Msg -> Encode.Value -> ( model, Cmd Msg ) -> ( model, Cmd Msg )
-withIpcMsg msgIpc valueEncode ( model, cmd ) =
-    model ! [ cmd, sendIpcCmd msgIpc valueEncode ]
+withIpcMsg : Ipc.Msg -> ( model, Cmd Msg ) -> ( model, Cmd Msg )
+withIpcMsg msgIpc ( model, cmd ) =
+    model ! [ cmd, sendIpcCmd msgIpc ]
 
 
 startTimer : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 startTimer (( model, cmd ) as msgAndCmd) =
-    msgAndCmd |> withIpcMsg Ipc.StartTimer (timerFlags model.settings)
+    msgAndCmd |> withIpcMsg (Ipc.StartTimer (timerFlags model.settings))
 
 
 timerFlags : Settings.Data -> Encode.Value
@@ -737,7 +739,7 @@ timerFlags settings =
 
 startBreakTimer : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 startBreakTimer (( model, cmd ) as msgAndCmd) =
-    msgAndCmd |> withIpcMsg Ipc.StartTimer (Timer.Flags.encodeBreak model.settings.breakDuration)
+    msgAndCmd |> withIpcMsg (Ipc.StartTimer (Timer.Flags.encodeBreak model.settings.breakDuration))
 
 
 rosterViewIsShowing : ScreenState -> Bool
@@ -828,7 +830,7 @@ init { onMac, isLocal, settings } =
         notifyIfDecodeFailed =
             case maybeDecodeError of
                 Just errorString ->
-                    sendIpcCmd Ipc.NotifySettingsDecodeFailed (Encode.string errorString)
+                    sendIpcCmd (Ipc.NotifySettingsDecodeFailed errorString)
 
                 Nothing ->
                     Cmd.none

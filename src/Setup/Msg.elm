@@ -4,7 +4,6 @@ import Animation
 import Dom
 import Html5.DragDrop as DragDrop
 import Ipc
-import Json.Encode as Encode
 import Keyboard.Combo
 import Keyboard.Extra
 import Roster.Operation exposing (MobsterOperation)
@@ -39,7 +38,7 @@ type Msg
     | RotateInHotkey Int
     | RotateOutHotkey Int
     | DragDropMsg (DragDrop.Msg DragId DropArea)
-    | SendIpc Ipc.Msg Encode.Value
+    | SendIpc Ipc.Msg
     | QuickRotateAdd
     | QuickRotateMove Direction
     | KeyPressed Bool Keyboard.Extra.Key
@@ -50,12 +49,12 @@ type Msg
 
 hide : Msg
 hide =
-    SendIpc Ipc.Hide Encode.null
+    SendIpc Ipc.Hide
 
 
 quit : Msg
 quit =
-    SendIpc Ipc.Quit Encode.null
+    SendIpc Ipc.Quit
 
 
 type Direction
