@@ -67,12 +67,12 @@ roleRow device rosterData =
 
 awayView : Int -> StyleElement
 awayView index =
-    Element.el Styles.AwayIcon
+    Element.row Styles.AwayIcon
         [ Attr.paddingXY 16 10
+        , Attr.spacing 10
         , Element.Events.onClick <| Msg.UpdateRosterData (MobsterOperation.Bench index)
         ]
-    <|
-        Element.text "✖ Away"
+        [ Element.el Styles.AwayX [] <| Element.text "✖", Element.text "Away" ]
 
 
 roleIcon : Device -> Role -> StyleElement

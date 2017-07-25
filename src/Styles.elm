@@ -39,6 +39,7 @@ type Styles
     | KeyboardKey
     | RoleViewName
     | AwayIcon
+    | AwayX
     | TipBox
     | TipTitle
     | TipBody
@@ -186,16 +187,25 @@ stylesheet device =
             , Font.justify
             ]
         , style AwayIcon
-            [ Color.text (Color.rgba 120 20 20 30)
+            [ Color.text (Color.rgb 235 235 235)
             , Font.size extraSmallFontSize
             , Font.typeface fonts.body
             , Border.rounded 10
-            , Color.background (Color.rgb 30 30 30)
+
+            -- , Color.background (Color.rgb 30 30 30)
+            , Color.background (Color.rgb 70 70 70)
+
+            -- rgb(70, 69, 69)
             , Color.border (Color.rgba 100 100 100 25)
             , hover
                 [ Color.text (Color.rgba 200 20 20 255)
-                , Color.background (Color.rgb 70 70 70)
+                , Color.background (Color.rgb 50 50 50)
                 ]
+            ]
+        , style AwayX
+            [ Color.text (Color.rgba 200 20 20 255)
+            , Font.size extraSmallFontSize
+            , Font.typeface fonts.body
             ]
         , style StepButton
             [ Color.text <| Color.rgb 239 177 1
