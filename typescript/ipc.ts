@@ -3,27 +3,8 @@ import { ipcMain } from 'electron'
 class Ipc {
   static setupIpcMessageHandler(onIpcMessage: (elmIpc: ElmIpc) => any) {
     ipcMain.on('elm-electron-ipc', (event: any, payload: any) => {
-      onIpcMessage(Ipc.parseIpc(payload))
+      onIpcMessage(payload)
     })
-  }
-
-  static parseIpc(payload: any): ElmIpc {
-    if (
-      payload.message === 'ShowFeedbackForm' ||
-      payload.message === 'ShowScriptInstallInstructions' ||
-      payload.message === 'Hide' ||
-      payload.message === 'Quit' ||
-      payload.message === 'QuitAndInstall' ||
-      payload.message === 'ChangeShortcut' ||
-      payload.message === 'OpenExternalUrl' ||
-      payload.message === 'StartTimer' ||
-      payload.message === 'SaveActiveMobstersFile' ||
-      payload.message === 'NotifySettingsDecodeFailed'
-    ) {
-      return payload
-    } else {
-      throw `Unhandled ElmIpc message ${JSON.stringify(payload)}`
-    }
   }
 }
 
