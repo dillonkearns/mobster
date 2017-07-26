@@ -126,10 +126,10 @@ stylesheet device =
             responsiveForWidthWith ( 8, 38 )
 
         tipFontColor =
-            Color.rgb 35 35 35
+            Color.rgb 235 235 235
 
         tipBoxColor =
-            Color.rgb 160 160 160
+            Color.rgb 75 75 75
     in
     Style.stylesheet
         [ style None []
@@ -162,8 +162,8 @@ stylesheet device =
             [ Color.background tipBoxColor
             , Border.rounded 3
             , Border.solid
-            , Border.all 2
-            , Color.border (Color.rgb 20 20 20)
+            , Border.all 1
+            , Color.border (Color.rgb 25 25 25)
             ]
         , style TipTitle
             [ Font.size mediumSmallFontSize

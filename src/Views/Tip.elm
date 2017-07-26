@@ -12,8 +12,8 @@ import Tip exposing (Tip)
 view : Tip -> StyleElement
 view tip =
     Element.column Styles.TipBox
-        [ Attr.width (Attr.percent 50)
-        , Attr.center
+        [ Attr.center
+        , Attr.width (Attr.fill 1)
         , Attr.padding 20
         ]
         [ Element.el Styles.TipTitle
