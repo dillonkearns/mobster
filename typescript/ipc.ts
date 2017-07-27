@@ -29,31 +29,39 @@ interface ShowFeedbackForm {
 interface ShowScriptInstallInstructions {
   message: 'ShowScriptInstallInstructions'
 }
+
 interface Hide {
   message: 'Hide'
 }
+
 interface Quit {
   message: 'Quit'
 }
+
 interface QuitAndInstall {
   message: 'QuitAndInstall'
 }
+
 interface ChangeShortcut {
   message: 'ChangeShortcut'
   data: string
 }
+
 interface OpenExternalUrl {
   message: 'OpenExternalUrl'
   data: string
 }
+
 interface StartTimer {
   message: 'StartTimer'
   data: any
 }
+
 interface SaveActiveMobstersFile {
   message: 'SaveActiveMobstersFile'
   data: string
 }
+
 interface NotifySettingsDecodeFailed {
   message: 'NotifySettingsDecodeFailed'
   data: string
