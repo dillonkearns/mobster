@@ -8,7 +8,7 @@
     "startprod": "NODE_ENV=production npm test && npm run types && npm run production && electron .",
     "dev": "webpack-dev-server --hot",
     "production": "webpack -p --env.production",
-    "build": "elm make src/timer/Main.elm src/setup/Main.elm --output elm.js && elm css src/Stylesheets.elm",
+    "build": "elm css src/Stylesheets.elm",
     "test-watch": "npm test; fswatch -0 src tests -e '.*' -i \\.elm$ | xargs -0 -n1 -I{} npm test",
     "test": "clear && echo 'running tests' && elm-test",
     "pack": "build --dir",
