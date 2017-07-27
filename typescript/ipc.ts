@@ -1,3 +1,4 @@
+
 import { ipcMain } from 'electron'
 
 class Ipc {
@@ -9,18 +10,9 @@ class Ipc {
 }
 
 export { Ipc, ElmIpc }
+    
 
-type ElmIpc =
-  | ShowFeedbackForm
-  | ShowScriptInstallInstructions
-  | Hide
-  | Quit
-  | QuitAndInstall
-  | ChangeShortcut
-  | OpenExternalUrl
-  | StartTimer
-  | SaveActiveMobstersFile
-  | NotifySettingsDecodeFailed
+type ElmIpc = ShowFeedbackForm | ShowScriptInstallInstructions | Hide | Quit | QuitAndInstall | ChangeShortcut | OpenExternalUrl | StartTimer | SaveActiveMobstersFile | NotifySettingsDecodeFailed
 
 interface ShowFeedbackForm {
   message: 'ShowFeedbackForm'
@@ -43,26 +35,26 @@ interface QuitAndInstall {
 }
 
 interface ChangeShortcut {
-  message: 'ChangeShortcut'
+  message: 'ChangeShortcut',
   data: string
 }
 
 interface OpenExternalUrl {
-  message: 'OpenExternalUrl'
+  message: 'OpenExternalUrl',
   data: string
 }
 
 interface StartTimer {
-  message: 'StartTimer'
+  message: 'StartTimer',
   data: any
 }
 
 interface SaveActiveMobstersFile {
-  message: 'SaveActiveMobstersFile'
+  message: 'SaveActiveMobstersFile',
   data: string
 }
 
 interface NotifySettingsDecodeFailed {
-  message: 'NotifySettingsDecodeFailed'
+  message: 'NotifySettingsDecodeFailed',
   data: string
 }

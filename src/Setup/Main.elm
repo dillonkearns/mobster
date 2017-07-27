@@ -15,6 +15,7 @@ import Html.Attributes as Attr exposing (placeholder, src, style, target, title,
 import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit)
 import Html5.DragDrop as DragDrop
 import Ipc
+import IpcSerializer
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard.Combo
@@ -710,7 +711,7 @@ changeGlobalShortcutIfValid model newInputValue =
 sendIpcCmd : Ipc.Msg -> Cmd msg
 sendIpcCmd ipcMsg =
     ipcMsg
-        |> Ipc.serialize
+        |> IpcSerializer.serialize
         |> Setup.Ports.sendIpc
 
 
