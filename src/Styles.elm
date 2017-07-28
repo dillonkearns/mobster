@@ -217,7 +217,7 @@ stylesheet device =
                 ]
             ]
         , style RoleViewName
-            [ Font.size mediumLargeFontSize
+            [ Font.size mediumFontSize
             , Font.typeface fonts.body
             ]
         , style KeyboardKey
