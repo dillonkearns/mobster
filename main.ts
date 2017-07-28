@@ -311,17 +311,18 @@ const createTray = () => {
   tray.on('click', onClickTrayIcon)
 }
 
-function newTransparentOnTopWindow(additionalOptions: any) {
-  return new BrowserWindow(
-    Object.assign(
-      {
-        transparent: !transparencyDisabled,
-        frame: false,
-        alwaysOnTop: true
-      },
-      additionalOptions
-    )
-  )
+function newTransparentOnTopWindow(
+  additionalOptions: Electron.BrowserWindowConstructorOptions
+) {
+  const transparentWindowDefaultOptions = {
+    transparent: !transparencyDisabled,
+    frame: false,
+    alwaysOnTop: true
+  }
+  return new BrowserWindow({
+    ...transparentWindowDefaultOptions,
+    ...additionalOptions
+  })
 }
 
 function showScripts() {
