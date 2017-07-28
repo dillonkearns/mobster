@@ -77,7 +77,9 @@ primaryColor =
 
 colors : { mobButton : Color.Color }
 colors =
-    { mobButton = Color.rgb 132 25 163 }
+    -- { mobButton = Color.rgb 132 25 163 }
+    -- { mobButton = Color.rgb 17 196 238 }
+    { mobButton = circleColor }
 
 
 type alias StyleProperty =
