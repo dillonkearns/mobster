@@ -259,7 +259,7 @@ stylesheet device =
                 ]
             ]
         , style WideButton
-            [ Font.size (responsiveForWidthWith ( 22, 155 ))
+            [ Font.size (responsiveForWidthWith ( 22, 115 ))
             , Border.none
             , Font.typeface fonts.title
             , colors.mobButton |> buttonGradients 0.14 |> .main
