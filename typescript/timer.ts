@@ -7,7 +7,7 @@ flags.isDev = process.env.NODE_ENV === 'dev'
 document.addEventListener('DOMContentLoaded', function(event) {
   let timer = Elm.Timer.Main.fullscreen(flags)
 
-  document.getElementById('timer-window').addEventListener(
+  document.getElementById('timer-window')!.addEventListener(
     'mouseenter',
     function(event) {
       ipcRenderer.send('timer-mouse-hover')

@@ -5,6 +5,7 @@
     "lib": ["dom", "es6"],
     "noImplicitAny": true,
     "alwaysStrict": true,
+    "strictNullChecks": true,
     "sourceMap": false
   },
   "exclude": ["node_modules", "typings"]

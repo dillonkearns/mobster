@@ -2,7 +2,8 @@ const Elm = require('../src/Setup/Main.elm')
 import { ipcRenderer, clipboard } from 'electron'
 const { version } = require('../package.json')
 console.log(`Running version ${version}`)
-let settings = JSON.parse(window.localStorage.getItem('settings'))
+let settingsJsonString: string | null = window.localStorage.getItem('settings')
+let settings = settingsJsonString ? JSON.parse(settingsJsonString) : {}
 let onMac = /Mac/.test(navigator.platform)
 let isLocal = require('electron-is-dev')
 

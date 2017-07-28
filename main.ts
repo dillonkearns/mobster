@@ -96,7 +96,7 @@ function showFeedbackForm() {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow: Electron.BrowserWindow,
-  timerWindow: Electron.BrowserWindow,
+  timerWindow: Electron.BrowserWindow | null,
   tray: Electron.Tray
 
 const timerHeight = 130
@@ -140,7 +140,11 @@ function startTimer(flags: any) {
   timerWindow = newTransparentOnTopWindow({
     width: timerWidth,
     height: timerHeight,
-    focusable: false
+    focusable: false,
+    show: false
+  })
+  timerWindow.once('ready-to-show', () => {
+    timerWindow && timerWindow.show()
   })
 
   timerWindow.webContents.on('crashed', function() {
@@ -177,11 +181,13 @@ function startTimer(flags: any) {
 }
 
 ipcMain.on('timer-mouse-hover', (event: any) => {
-  let [x, y] = timerWindow.getPosition()
-  if (x === 0) {
-    positionWindowRight(timerWindow)
-  } else {
-    positionWindowLeft(timerWindow)
+  if (timerWindow) {
+    let [x, y] = timerWindow.getPosition()
+    if (x === 0) {
+      positionWindowRight(timerWindow)
+    } else {
+      positionWindowLeft(timerWindow)
+    }
   }
 })
 
@@ -196,9 +202,14 @@ function closeTimer() {
   }
 }
 
-function createWindow() {
+function createMainWindow() {
   mainWindow = newTransparentOnTopWindow({
-    icon: `${assetsDirectory}/icon.ico`
+    icon: `${assetsDirectory}/icon.ico`,
+    show: false
+  })
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow && mainWindow.show()
   })
 
   mainWindow.webContents.on('crashed', function() {
@@ -276,12 +287,8 @@ function createWindow() {
     focusMainWindow()
   })
 
-  // Emitted when the window is closed.
   mainWindow.on('closed', function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null
+    app.quit()
   })
 }
 
@@ -319,7 +326,7 @@ function newTransparentOnTopWindow(additionalOptions: any) {
 
 function showScripts() {
   mainWindow.hide()
-  let scriptsWindow = new BrowserWindow({
+  let scriptsWindow: Electron.BrowserWindow | null = new BrowserWindow({
     width: 1000,
     height: 800,
     frame: true,
@@ -339,7 +346,7 @@ function showScripts() {
 }
 
 function onReady() {
-  createWindow()
+  createMainWindow()
   createTray()
   setupAutoUpdater()
 }
@@ -362,7 +369,7 @@ app.on('activate', function() {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
-    createWindow()
+    createMainWindow()
   }
 })
 
