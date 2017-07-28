@@ -1,6 +1,7 @@
 module Setup.Main exposing (main)
 
 import Animation exposing (Step)
+import Animation.Messenger
 import Basics.Extra exposing ((=>))
 import Bootstrap
 import Break
@@ -311,7 +312,7 @@ styleElementsConfigureView model bodyElements =
             [ Element.Attributes.height (Element.Attributes.fill 1) ]
             [ View.Navbar.view model
             , Element.column Styles.None
-                [ Element.Attributes.paddingXY 95 50, Element.Attributes.spacing 50, Element.Attributes.height (Element.Attributes.fill 1) ]
+                [ Element.Attributes.paddingXY 110 50, Element.Attributes.spacing 65, Element.Attributes.height (Element.Attributes.fill 1) ]
                 bodyElements
             ]
 
@@ -497,7 +498,7 @@ update msg model =
 
         Msg.ShuffleMobsters ->
             (model |> Dice.animateRoll |> Dice.animateActiveMobstersShuffle)
-                ! [ shuffleMobstersCmd model.settings.rosterData ]
+                ! []
 
         Msg.TimeElapsed elapsedSeconds ->
             { model | secondsSinceBreak = model.secondsSinceBreak + elapsedSeconds, intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
@@ -645,13 +646,20 @@ update msg model =
                     model ! []
 
         Msg.Animate animMsg ->
-            { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = Animation.update animMsg model.activeMobstersStyle } ! []
+            let
+                ( newMobsterStyle, shuffleCmd ) =
+                    Animation.Messenger.update animMsg model.activeMobstersStyle
+            in
+            { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = newMobsterStyle } ! [ shuffleCmd ]
 
         Msg.WindowResized windowSize ->
             { model | device = Element.classifyDevice windowSize } ! []
 
         Msg.ToggleBetaUi ->
             { model | showBetaUi = not model.showBetaUi } ! []
+
+        Msg.RandomizeMobsters ->
+            model ! [ shuffleMobstersCmd model.settings.rosterData ]
 
 
 startBreak : Model -> ( Model, Cmd Msg )
@@ -873,7 +881,7 @@ type alias Model =
     , quickRotateState : QuickRotate.State
     , altPressed : Bool
     , dieStyle : Animation.State
-    , activeMobstersStyle : Animation.State
+    , activeMobstersStyle : Animation.Messenger.State Msg.Msg
     , device : Device
     , showBetaUi : Bool
     }

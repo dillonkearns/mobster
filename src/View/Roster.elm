@@ -1,6 +1,7 @@
 module View.Roster exposing (mobsterCellStyle, newMobsterRowView, preventAddingMobster, rotationView)
 
 import Animation
+import Animation.Messenger
 import Basics.Extra exposing ((=>))
 import Html exposing (..)
 import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
@@ -46,7 +47,7 @@ reorderButtonView mobster =
         ]
 
 
-mobsterView : DragDropModel -> Bool -> Animation.State -> Presenter.MobsterWithRole -> Html Msg
+mobsterView : DragDropModel -> Bool -> Animation.Messenger.State Msg.Msg -> Presenter.MobsterWithRole -> Html Msg
 mobsterView dragDrop showHint activeMobstersStyle mobster =
     let
         inactiveOverActiveStyle =
@@ -106,7 +107,7 @@ rotationView :
         , mobsters : List Mobster.Mobster
         , nextDriver : Int
         }
-    -> Animation.State
+    -> Animation.Messenger.State Msg.Msg
     -> List (Html.Attribute Msg)
     -> Html Msg
 rotationView dragDrop quickRotateState rosterData activeMobstersStyle diceAnimationStyle =
@@ -143,7 +144,7 @@ rosterRowsView :
         , nextDriver : Int
         , mobsters : List Mobster.Mobster
         }
-    -> Animation.State
+    -> Animation.Messenger.State Msg.Msg
     -> List (Html Msg)
 rosterRowsView dragDrop quickRotateState rosterData activeMobstersStyle =
     let

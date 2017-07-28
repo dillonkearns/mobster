@@ -1,6 +1,8 @@
 module Dice exposing (animateActiveMobstersShuffle, animateRoll)
 
 import Animation exposing (Step)
+import Animation.Messenger
+import Setup.Msg
 import Time
 
 
@@ -9,7 +11,7 @@ animateRoll model =
     { model | dieStyle = Animation.interrupt [ rollAnimation ] model.dieStyle }
 
 
-animateActiveMobstersShuffle : { a | activeMobstersStyle : Animation.State } -> { a | activeMobstersStyle : Animation.State }
+animateActiveMobstersShuffle : { a | activeMobstersStyle : Animation.Messenger.State Setup.Msg.Msg } -> { a | activeMobstersStyle : Animation.Messenger.State Setup.Msg.Msg }
 animateActiveMobstersShuffle model =
     { model
         | activeMobstersStyle =
@@ -19,9 +21,10 @@ animateActiveMobstersShuffle model =
     }
 
 
-shuffleAnimation : List Step
+shuffleAnimation : List (Animation.Messenger.Step Setup.Msg.Msg)
 shuffleAnimation =
     [ Animation.toWith easing [ Animation.opacity 0 ]
+    , Animation.Messenger.send Setup.Msg.RandomizeMobsters
     , Animation.toWith easing [ Animation.opacity 1 ]
     ]
 

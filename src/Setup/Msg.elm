@@ -31,6 +31,7 @@ type Msg
     | EnterRating Int
     | ComboMsg Keyboard.Combo.Msg
     | ShuffleMobsters
+    | RandomizeMobsters
     | TimeElapsed Int
     | BreakDone Int
     | UpdateAvailable String
