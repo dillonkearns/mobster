@@ -17,7 +17,7 @@ view { screenState } =
     in
     row Styles.Navbar
         [ justify, paddingXY 10 10, verticalCenter ]
-        [ row Styles.None [ spacing 12 ] [ roseIcon, el Styles.Logo [] (text "Mobster") ]
+        [ row Styles.None [ spacing 12, verticalCenter ] [ roseIcon, el Styles.Logo [] (text "Mobster") ]
         , row Styles.None
             [ spacing 10 ]
             [ cogButton

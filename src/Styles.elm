@@ -245,7 +245,7 @@ stylesheet device =
         , style RosterTable
             [ Color.background Color.green ]
         , style Logo
-            [ Font.size mediumFontSize
+            [ Font.size mediumSmallFontSize
             , Font.typeface fonts.title
             ]
         , style RoseIcon
