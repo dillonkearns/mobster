@@ -75,6 +75,11 @@ primaryColor =
     Color.white
 
 
+colors : { mobButton : Color.Color }
+colors =
+    { mobButton = Color.rgb 132 25 163 }
+
+
 type alias StyleProperty =
     Style.Property Styles Never
 
@@ -257,12 +262,12 @@ stylesheet device =
             [ Font.size (responsiveForWidthWith ( 22, 155 ))
             , Border.none
             , Font.typeface fonts.title
-            , Color.rgb 132 25 163 |> buttonGradients 0.14 |> .main
+            , colors.mobButton |> buttonGradients 0.14 |> .main
             , Color.text primaryColor
             , Border.rounded 10
             , Font.center
             , hover
-                [ Color.rgb 132 25 163 |> buttonGradients 0.14 |> .hover
+                [ colors.mobButton |> buttonGradients 0.14 |> .hover
                 ]
             ]
         , style SkipBreakButton
