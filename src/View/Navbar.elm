@@ -19,9 +19,9 @@ view { screenState } =
         [ justify, paddingXY 10 10, verticalCenter ]
         [ row Styles.None [ spacing 12 ] [ roseIcon, el Styles.Logo [] (text "Mobster") ]
         , row Styles.None
-            [ spacing 20 ]
+            [ spacing 10 ]
             [ cogButton
-            , Element.image "./assets/invisible.png" Styles.None [ width (px 40), height (px 40) ] Element.empty
+            , Element.image "./assets/invisible.png" Styles.None [ width (px 34), height (px 34) ] Element.empty
             , navButtonView "Hide" Styles.Warning (Msg.SendIpc Ipc.Hide)
             , navButtonView "Quit" Styles.Danger (Msg.SendIpc Ipc.Quit)
             ]
