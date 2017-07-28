@@ -61,7 +61,7 @@ type NavButtonType
 fonts : { title : List String, body : List String }
 fonts =
     { title = [ "Anton", "helvetica", "arial", "sans-serif" ]
-    , body = [ "Roboto", "Helvetica Neue", "helvetica", "arial", "sans-serif" ]
+    , body = [ "Lato", "Helvetica Neue", "helvetica", "arial", "sans-serif" ]
     }
 
 
