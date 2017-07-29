@@ -258,7 +258,7 @@ stylesheet device =
             , Font.typeface fonts.title
             , colors.mobButton |> buttonGradients 0.14 |> .main
             , Color.text primaryColor
-            , Border.rounded 10
+            , Border.rounded 6
             , Font.center
             , hover
                 [ colors.mobButton |> buttonGradients 0.14 |> .hover
