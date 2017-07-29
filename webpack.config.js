@@ -9,7 +9,7 @@ module.exports = function(env) {
     },
     target: 'electron-renderer',
     output: {
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname),
       filename: '[name].bundle.js',
       publicPath: '/'
     },
