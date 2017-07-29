@@ -77,9 +77,7 @@ primaryColor =
 
 colors : { mobButton : Color.Color }
 colors =
-    -- { mobButton = Color.rgb 132 25 163 }
-    -- { mobButton = Color.rgb 17 196 238 }
-    { mobButton = circleColor }
+    { mobButton = Color.rgb 132 25 163 }
 
 
 type alias StyleProperty =
@@ -111,6 +109,13 @@ circleColor =
     Color.rgb 0 140 255
 
 
+fontColor : { tipBody : Color.Color, tipTitle : Color.Color }
+fontColor =
+    { tipBody = Color.rgb 235 235 235
+    , tipTitle = Color.rgb 10 190 84
+    }
+
+
 stylesheet : Device -> StyleSheet Styles Never
 stylesheet device =
     let
@@ -131,9 +136,6 @@ stylesheet device =
 
         extraSmallFontSize =
             responsiveForWidthWith ( 8, 38 )
-
-        tipFontColor =
-            Color.rgb 235 235 235
 
         tipBoxColor =
             Color.rgb 75 75 75
@@ -174,22 +176,22 @@ stylesheet device =
             ]
         , style TipTitle
             [ Font.size mediumSmallFontSize
-            , Color.text tipFontColor
+            , Color.text fontColor.tipTitle
             , Style.cursor "pointer"
             , Font.typeface [ "Playfair Display", "serif" ]
             , Font.uppercase
             , Font.weight 900
             ]
         , style TipLink
-            [ Font.typeface [ "Droid Serif", "serif" ]
-            , Color.text tipFontColor
+            [ Font.typeface fonts.body
+            , Color.text fontColor.tipBody
             , Font.size smallFontSize
             , Font.justify
             , Font.underline
             ]
         , style TipBody
-            [ Font.typeface [ "Droid Serif", "serif" ]
-            , Color.text tipFontColor
+            [ Font.typeface fonts.body
+            , Color.text fontColor.tipBody
             , Font.size smallFontSize
             , Font.justify
             ]
@@ -198,11 +200,7 @@ stylesheet device =
             , Font.size extraSmallFontSize
             , Font.typeface fonts.body
             , Border.rounded 10
-
-            -- , Color.background (Color.rgb 30 30 30)
             , Color.background (Color.rgb 70 70 70)
-
-            -- rgb(70, 69, 69)
             , Color.border (Color.rgba 100 100 100 25)
             , hover
                 [ Color.text (Color.rgba 200 20 20 255)
