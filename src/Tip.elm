@@ -65,7 +65,7 @@ tips =
     , { url = "https://www.infoq.com/news/2016/06/mob-programming-zuill"
       , title = "Mob Programming"
       , body =
-            "It's not about Mob Programming"
+            "It's not about Mob Programming. It’s about discovering the principles and practices that are important in the context of the work you are doing, and the people you are working with."
       , author = "Woody Zuill"
       }
     , { url = "https://agilein3minut.es/32"
