@@ -314,7 +314,7 @@ const createTray = () => {
 function newTransparentOnTopWindow(
   additionalOptions: Electron.BrowserWindowConstructorOptions
 ) {
-  const transparentWindowDefaultOptions = {
+  const transparentWindowDefaultOptions: Electron.BrowserWindowConstructorOptions = {
     transparent: !transparencyDisabled,
     frame: false,
     alwaysOnTop: true
