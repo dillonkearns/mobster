@@ -239,7 +239,7 @@ stylesheet device =
             ]
         , style Main
             [ Color.text primaryColor
-            , Color.background (Color.rgb 40 40 40)
+            , Color.background (Color.rgb 34 34 34)
             , Font.typeface fonts.body
             , Font.size 16
             , Font.lineHeight 1.3 -- line height, given as a ratio of current font size.
