@@ -75,9 +75,9 @@ primaryColor =
     Color.white
 
 
-colors : { mobButton : Color.Color }
+colors : { mobButton : Color.Color, defaultButton : Color.Color, defaultButtonHover : Color.Color }
 colors =
-    { mobButton = Color.rgb 132 25 163 }
+    { mobButton = Color.rgb 132 25 163, defaultButton = Color.rgb 70 70 70, defaultButtonHover = Color.rgb 50 50 50 }
 
 
 type alias StyleProperty =
@@ -195,11 +195,10 @@ stylesheet device =
             , Font.size extraSmallFontSize
             , Font.typeface fonts.body
             , Border.rounded 10
-            , Color.background (Color.rgb 70 70 70)
-            , Color.border (Color.rgba 100 100 100 25)
+            , Color.background colors.defaultButton
             , hover
                 [ Color.text (Color.rgba 200 20 20 255)
-                , Color.background (Color.rgb 50 50 50)
+                , Color.background colors.defaultButtonHover
                 ]
             ]
         , style AwayX
@@ -209,11 +208,11 @@ stylesheet device =
             ]
         , style StepButton
             [ Color.text <| Color.rgb 239 177 1
-            , Color.background (Color.rgb 30 30 30)
+            , Color.background colors.defaultButton
             , Border.rounded 10
             , Font.size extraSmallFontSize
             , hover
-                [ Color.background (Color.rgb 70 70 70)
+                [ Color.background colors.defaultButtonHover
                 ]
             ]
         , style RoleViewName
