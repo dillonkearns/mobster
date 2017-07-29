@@ -41,7 +41,7 @@ settingsPageButton =
 
 navButtonView : String -> Styles.NavButtonType -> Msg -> StyleElement
 navButtonView buttonText navButtonType msg =
-    button <| el (Styles.NavButton navButtonType) [ minWidth <| px 60, height <| px 34, Element.Events.onClick msg ] (text buttonText)
+    button <| el (Styles.NavButton navButtonType) [ minWidth <| px 60, Element.Events.onClick msg ] (text buttonText)
 
 
 roseIcon : StyleElement

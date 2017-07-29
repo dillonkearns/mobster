@@ -117,7 +117,7 @@ stylesheet device =
             { mediumLarge =
                 responsiveForWidthWith ( 25, 180 )
             , medium =
-                responsiveForWidthWith ( 28, 65 )
+                responsiveForWidthWith ( 20, 120 )
             , mediumSmall =
                 responsiveForWidthWith ( 16, 80 )
             , mediumSmaller =
