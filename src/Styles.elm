@@ -298,10 +298,10 @@ stylesheet device =
             , Font.center
             ]
         , style Tooltip
-            [ Color.background (Color.rgb 201 201 201)
-            , Font.size 28
+            [ Color.background (Color.rgb 14 255 125)
+            , Font.size 23
             , opacity 0
-            , Font.typeface fonts.body
+            , Font.typeface fonts.title
             ]
         , style (NavButton Danger)
             [ Font.size extraSmallFontSize
@@ -429,5 +429,5 @@ startMobbingButton onMac title =
     column None
         [ class "styleElementsTooltipContainer" ]
         [ (button <| el WideButton [ padding 13, Element.Events.onClick Msg.StartTimer, Element.Attributes.id "continue-button" ] (text title))
-            |> above [ el Tooltip [ center, width (px 200), class "styleElementsTooltip" ] (text tooltipText) ]
+            |> above [ el Tooltip [ center, class "styleElementsTooltip" ] (text tooltipText) ]
         ]

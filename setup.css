@@ -59,7 +59,7 @@ button {
 .styleElementsTooltipContainer  .styleElementsTooltip::after {
   border-left: solid transparent 10px;
   border-right: solid transparent 10px;
-  border-top: solid rgba(201, 201, 201, 1) 10px;
+  border-top: solid rgb(14, 255, 125) 10px;
   bottom: -10px;
   content: ' ';
   height: 0;
