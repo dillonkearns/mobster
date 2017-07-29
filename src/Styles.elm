@@ -119,9 +119,9 @@ stylesheet device =
             , medium =
                 responsiveForWidthWith ( 28, 65 )
             , mediumSmall =
-                responsiveForWidthWith ( 20, 60 )
+                responsiveForWidthWith ( 16, 80 )
             , mediumSmaller =
-                responsiveForWidthWith ( 16, 50 )
+                responsiveForWidthWith ( 12, 70 )
             , small =
                 responsiveForWidthWith ( 10, 45 )
             , extraSmall =
