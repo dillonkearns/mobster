@@ -9,11 +9,14 @@ import Setup.View exposing (ScreenState(Configure))
 import Styles exposing (StyleElement)
 
 
-view : { model | screenState : ScreenState } -> StyleElement
-view { screenState } =
+view : { model | screenState : ScreenState, device : Device } -> StyleElement
+view { screenState, device } =
     let
         cogButton =
             Element.when (screenState /= Configure) settingsPageButton
+
+        iconDimensions =
+            responsive (toFloat device.width) ( 600, 4000 ) ( 24, 66 )
     in
     row Styles.Navbar
         [ justify, paddingXY 10 10, verticalCenter ]
@@ -21,7 +24,7 @@ view { screenState } =
         , row Styles.None
             [ spacing 10 ]
             [ cogButton
-            , Element.image "./assets/invisible.png" Styles.None [ width (px 34), height (px 34) ] Element.empty
+            , Element.image "./assets/invisible.png" Styles.None [ width (px iconDimensions), height (px iconDimensions) ] Element.empty
             , navButtonView "Hide" Styles.Warning (Msg.SendIpc Ipc.Hide)
             , navButtonView "Quit" Styles.Danger (Msg.SendIpc Ipc.Quit)
             ]
