@@ -155,17 +155,12 @@ stylesheet device =
             [ Font.uppercase
             ]
         , style (Circle Filled)
-            [ Border.solid
-            , Border.all 2
-            , Color.background circleColor
-            , Color.border circleColor
-            , Border.rounded 50
+            [ Color.background circleColor
+            , Border.rounded 3
             ]
         , style (Circle Hollow)
-            [ Border.solid
-            , Border.all 2
-            , Border.rounded 50
-            , Color.border circleColor
+            [ Border.rounded 3
+            , Color.background (Color.rgba 80 80 80 60)
             ]
         , style TipBox
             [ Color.background tipBoxColor

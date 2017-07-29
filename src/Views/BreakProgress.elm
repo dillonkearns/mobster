@@ -11,7 +11,7 @@ import Styles exposing (StyleElement)
 
 circleView : Styles.CircleFill -> StyleElement
 circleView circleFill =
-    Element.el (Styles.Circle circleFill) [ Attr.width (Attr.px 15), Attr.height (Attr.px 15) ] Element.empty
+    Element.el (Styles.Circle circleFill) [ Attr.width (Attr.px 12), Attr.height (Attr.px 18) ] Element.empty
 
 
 view : { model | intervalsSinceBreak : Int, settings : Settings.Data } -> Styles.StyleElement
@@ -33,7 +33,7 @@ view { intervalsSinceBreak, settings } =
     in
     Element.row
         Styles.None
-        [ Attr.spacing 1
+        [ Attr.spacing 0
         , Element.Events.onClick Msg.ResetBreakData
         ]
         intervalBadges
