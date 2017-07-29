@@ -104,21 +104,15 @@ type CircleFill
     | Hollow
 
 
-circleColor : Color
-circleColor =
-    Color.rgb 0 140 255
-
-
-fontColor : { tipBody : Color.Color, tipTitle : Color.Color }
-fontColor =
-    { tipBody = Color.rgb 235 235 235
-    , tipTitle = Color.rgb 10 190 84
-    }
-
-
 stylesheet : Device -> StyleSheet Styles Never
 stylesheet device =
     let
+        fontColor =
+            { tipBody = Color.rgb 235 235 235
+            , tipTitle = Color.rgb 10 190 84
+            , circle = Color.rgb 0 140 255
+            }
+
         fonts =
             { mediumLarge =
                 responsiveForWidthWith ( 25, 180 )
@@ -155,7 +149,7 @@ stylesheet device =
             [ Font.uppercase
             ]
         , style (Circle Filled)
-            [ Color.background circleColor
+            [ Color.background fontColor.circle
             , Border.rounded 3
             ]
         , style (Circle Hollow)
@@ -292,7 +286,7 @@ stylesheet device =
             [ Border.none
             , Font.typeface typefaces.body
             , Font.size fonts.small
-            , Color.background circleColor
+            , Color.background fontColor.circle
             , Color.text primaryColor
             , Border.rounded 3
             , Font.center
