@@ -131,6 +131,9 @@ stylesheet device =
         mediumSmallFontSize =
             responsiveForWidthWith ( 20, 60 )
 
+        mediumSmallerFontSize =
+            responsiveForWidthWith ( 16, 50 )
+
         smallFontSize =
             responsiveForWidthWith ( 10, 45 )
 
@@ -144,7 +147,7 @@ stylesheet device =
         [ style None []
         , style Debug [ Color.background (Color.rgb 74 242 161) ]
         , style Input
-            [ Font.size mediumSmallFontSize
+            [ Font.size mediumSmallerFontSize
             ]
         , style Hairline
             [ Color.text (Color.rgba 55 55 55 60)
