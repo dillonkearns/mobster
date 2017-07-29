@@ -48,5 +48,5 @@ initial =
     , breakDuration = 5
     , intervalsPerBreak = 5
     , rosterData = Roster.Data.empty
-    , showHideShortcut = "K"
+    , showHideShortcut = "L"
     }
