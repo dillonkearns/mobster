@@ -58,8 +58,8 @@ type NavButtonType
     | Warning
 
 
-fonts : { title : List String, body : List String }
-fonts =
+typefaces : { title : List String, body : List String }
+typefaces =
     { title = [ "Anton", "helvetica", "arial", "sans-serif" ]
     , body = [ "Lato", "Helvetica Neue", "helvetica", "arial", "sans-serif" ]
     }
@@ -119,26 +119,23 @@ fontColor =
 stylesheet : Device -> StyleSheet Styles Never
 stylesheet device =
     let
+        fonts =
+            { mediumLarge =
+                responsiveForWidthWith ( 25, 180 )
+            , medium =
+                responsiveForWidthWith ( 28, 65 )
+            , mediumSmall =
+                responsiveForWidthWith ( 20, 60 )
+            , mediumSmaller =
+                responsiveForWidthWith ( 16, 50 )
+            , small =
+                responsiveForWidthWith ( 10, 45 )
+            , extraSmall =
+                responsiveForWidthWith ( 8, 38 )
+            }
+
         responsiveForWidthWith =
             responsiveForWidth device
-
-        mediumLargeFontSize =
-            responsiveForWidthWith ( 25, 180 )
-
-        mediumFontSize =
-            responsiveForWidthWith ( 28, 65 )
-
-        mediumSmallFontSize =
-            responsiveForWidthWith ( 20, 60 )
-
-        mediumSmallerFontSize =
-            responsiveForWidthWith ( 16, 50 )
-
-        smallFontSize =
-            responsiveForWidthWith ( 10, 45 )
-
-        extraSmallFontSize =
-            responsiveForWidthWith ( 8, 38 )
 
         tipBoxColor =
             Color.rgb 75 75 75
@@ -147,7 +144,7 @@ stylesheet device =
         [ style None []
         , style Debug [ Color.background (Color.rgb 74 242 161) ]
         , style Input
-            [ Font.size mediumSmallerFontSize
+            [ Font.size fonts.mediumSmaller
             ]
         , style Hairline
             [ Color.text (Color.rgba 55 55 55 60)
@@ -173,7 +170,7 @@ stylesheet device =
             , Color.border (Color.rgb 25 25 25)
             ]
         , style TipTitle
-            [ Font.size mediumSmallFontSize
+            [ Font.size fonts.mediumSmall
             , Color.text fontColor.tipTitle
             , Style.cursor "pointer"
             , Font.typeface [ "Playfair Display", "serif" ]
@@ -181,22 +178,22 @@ stylesheet device =
             , Font.weight 900
             ]
         , style TipLink
-            [ Font.typeface fonts.body
+            [ Font.typeface typefaces.body
             , Color.text fontColor.tipBody
-            , Font.size smallFontSize
+            , Font.size fonts.small
             , Font.justify
             , Font.underline
             ]
         , style TipBody
-            [ Font.typeface fonts.body
+            [ Font.typeface typefaces.body
             , Color.text fontColor.tipBody
-            , Font.size smallFontSize
+            , Font.size fonts.small
             , Font.justify
             ]
         , style AwayIcon
             [ Color.text (Color.rgb 235 235 235)
-            , Font.size extraSmallFontSize
-            , Font.typeface fonts.body
+            , Font.size fonts.extraSmall
+            , Font.typeface typefaces.body
             , Border.rounded 10
             , Color.background colors.defaultButton
             , hover
@@ -206,21 +203,21 @@ stylesheet device =
             ]
         , style AwayX
             [ Color.text (Color.rgba 200 20 20 255)
-            , Font.size extraSmallFontSize
-            , Font.typeface fonts.body
+            , Font.size fonts.extraSmall
+            , Font.typeface typefaces.body
             ]
         , style StepButton
             [ Color.text <| Color.rgb 239 177 1
             , Color.background colors.defaultButton
             , Border.rounded 10
-            , Font.size extraSmallFontSize
+            , Font.size fonts.extraSmall
             , hover
                 [ Color.background colors.defaultButtonHover
                 ]
             ]
         , style RoleViewName
-            [ Font.size mediumFontSize
-            , Font.typeface fonts.body
+            [ Font.size fonts.medium
+            , Font.typeface typefaces.body
             ]
         , style KeyboardKey
             [ Color.text Color.black
@@ -230,14 +227,14 @@ stylesheet device =
             , Font.center
             , Border.solid
             , Border.all 1
-            , Font.size smallFontSize
+            , Font.size fonts.small
             , Color.border (Color.rgb 170 170 170)
             , Font.typeface [ "Consolas", "Lucida Console", "monospace" ]
             ]
         , style Main
             [ Color.text primaryColor
             , Color.background (Color.rgb 34 34 34)
-            , Font.typeface fonts.body
+            , Font.typeface typefaces.body
             , Font.size 16
             , Font.lineHeight 1.3 -- line height, given as a ratio of current font size.
             ]
@@ -247,8 +244,8 @@ stylesheet device =
         , style RosterTable
             [ Color.background Color.green ]
         , style Logo
-            [ Font.size mediumSmallFontSize
-            , Font.typeface fonts.title
+            [ Font.size fonts.mediumSmall
+            , Font.typeface typefaces.title
             ]
         , style RoseIcon
             [ Style.filters
@@ -258,7 +255,7 @@ stylesheet device =
         , style WideButton
             [ Font.size (responsiveForWidthWith ( 22, 115 ))
             , Border.none
-            , Font.typeface fonts.title
+            , Font.typeface typefaces.title
             , colors.mobButton |> buttonGradients 0.14 |> .main
             , Color.text primaryColor
             , Border.rounded 6
@@ -270,7 +267,7 @@ stylesheet device =
         , style SkipBreakButton
             [ Font.size (responsiveForWidthWith ( 16, 120 ))
             , Border.none
-            , Font.typeface fonts.title
+            , Font.typeface typefaces.title
             , Color.rgb 186 186 186 |> buttonGradients 0.14 |> .main
             , Color.text primaryColor
             , Border.rounded 10
@@ -282,7 +279,7 @@ stylesheet device =
         , style BreakButton
             [ Font.size (responsiveForWidthWith ( 16, 120 ))
             , Border.none
-            , Font.typeface fonts.title
+            , Font.typeface typefaces.title
             , Color.rgb 8 226 108 |> buttonGradients 0.14 |> .main
             , Color.text primaryColor
             , Border.rounded 10
@@ -293,8 +290,8 @@ stylesheet device =
             ]
         , style BreakAlertBox
             [ Border.none
-            , Font.typeface fonts.body
-            , Font.size smallFontSize
+            , Font.typeface typefaces.body
+            , Font.size fonts.small
             , Color.background circleColor
             , Color.text primaryColor
             , Border.rounded 3
@@ -304,10 +301,10 @@ stylesheet device =
             [ Color.background (Color.rgb 14 255 125)
             , Font.size 23
             , opacity 0
-            , Font.typeface fonts.title
+            , Font.typeface typefaces.title
             ]
         , style (NavButton Danger)
-            [ Font.size extraSmallFontSize
+            [ Font.size fonts.extraSmall
             , Border.none
             , Color.text primaryColor
             , Color.rgb 194 12 12 |> buttonGradients 0.06 |> .main
@@ -316,10 +313,10 @@ stylesheet device =
             , hover
                 [ Color.rgb 194 12 12 |> buttonGradients 0.06 |> .hover
                 ]
-            , Font.typeface fonts.body
+            , Font.typeface typefaces.body
             ]
         , style (NavButton Warning)
-            [ Font.size extraSmallFontSize
+            [ Font.size fonts.extraSmall
             , Border.none
             , Color.text primaryColor
             , Color.rgb 239 177 1 |> buttonGradients 0.06 |> .main
@@ -328,11 +325,11 @@ stylesheet device =
             , hover
                 [ Color.rgb 239 177 1 |> buttonGradients 0.06 |> .hover
                 ]
-            , Font.typeface fonts.body
+            , Font.typeface typefaces.body
             ]
         , style NavOption
             [ Font.size 12
-            , Font.typeface fonts.body
+            , Font.typeface typefaces.body
             , Color.text (Color.rgb 255 179 116)
             ]
         ]
