@@ -312,7 +312,7 @@ styleElementsConfigureView model bodyElements =
             [ Element.Attributes.height (Element.Attributes.fill 1) ]
             [ View.Navbar.view model
             , Element.column Styles.None
-                [ Element.Attributes.paddingXY 110 50, Element.Attributes.spacing 65, Element.Attributes.height (Element.Attributes.fill 1) ]
+                [ Element.Attributes.paddingXY 110 50, Element.Attributes.spacing 30, Element.Attributes.height (Element.Attributes.fill 1) ]
                 bodyElements
             ]
 
