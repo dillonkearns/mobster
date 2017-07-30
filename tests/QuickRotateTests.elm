@@ -105,18 +105,21 @@ suite =
                 \() ->
                     QuickRotate.init
                         |> QuickRotate.update "query" [ "query1", "query2", "def" ]
+                        |> .selection
                         |> QuickRotate.selectionTypeFor 0 [ 0, 1 ]
                         |> Expect.equal QuickRotate.Selected
             , test "matches" <|
                 \() ->
                     QuickRotate.init
                         |> QuickRotate.update "query" [ "query1", "query2", "def" ]
+                        |> .selection
                         |> QuickRotate.selectionTypeFor 1 [ 0, 1 ]
                         |> Expect.equal QuickRotate.Matches
             , test "no match" <|
                 \() ->
                     QuickRotate.init
                         |> QuickRotate.update "query" [ "query1", "query2", "def" ]
+                        |> .selection
                         |> QuickRotate.selectionTypeFor 2 [ 0, 1 ]
                         |> Expect.equal QuickRotate.NoMatch
             ]

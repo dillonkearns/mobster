@@ -15,10 +15,12 @@ type EntrySelection
     | NoMatch
 
 
-selectionTypeFor : Int -> List Int -> State -> EntrySelection
-selectionTypeFor index matches state =
-    if Index index == state.selection then
+selectionTypeFor : Int -> List Int -> Selection -> EntrySelection
+selectionTypeFor index matches selection =
+    if Index index == selection then
         Selected
+    else if selection == All then
+        NoMatch
     else
         let
             match =
