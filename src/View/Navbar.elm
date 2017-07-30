@@ -24,7 +24,7 @@ view { screenState, device } =
         , row Styles.None
             [ spacing 10 ]
             [ cogButton
-            , Element.image "./assets/invisible.png" Styles.None [ width (px iconDimensions), height (px iconDimensions) ] Element.empty
+            , Element.image "./assets/invisible.png" Styles.None [ class "invisible-trigger", width (px iconDimensions), height (px iconDimensions) ] Element.empty
             , navButtonView "Hide" Styles.Warning (Msg.SendIpc Ipc.Hide)
             , navButtonView "Quit" Styles.Danger (Msg.SendIpc Ipc.Quit)
             ]
