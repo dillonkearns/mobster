@@ -171,9 +171,8 @@ stylesheet device =
             [ Font.size fonts.mediumSmall
             , Color.text fontColor.tipTitle
             , Style.cursor "pointer"
-            , Font.typeface [ "Playfair Display", "serif" ]
-            , Font.uppercase
-            , Font.weight 900
+            , Font.typeface typefaces.body
+            , Font.bold
             ]
         , style TipLink
             [ Font.typeface typefaces.body
