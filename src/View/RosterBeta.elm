@@ -7,6 +7,7 @@ import Element.Events
 import Json.Decode
 import QuickRotate
 import Roster.Data as Mobster
+import Roster.Operation
 import Roster.Presenter
 import Roster.Rpg
 import Setup.Msg as Msg exposing (..)
@@ -91,7 +92,24 @@ activeView quickRotateState rosterData activeMobstersStyle =
 
 activeMobsterView : Roster.Presenter.MobsterWithRole -> StyleElement
 activeMobsterView mobster =
-    rosterItem mobster.name mobster.role
+    let
+        roleIcon =
+            case mobster.role of
+                Just Roster.Presenter.Driver ->
+                    Element.image "./assets/driver-icon.png" Styles.None [ Attr.width (Attr.px 15), Attr.height (Attr.px 15) ] Element.empty
+
+                Just Roster.Presenter.Navigator ->
+                    Element.image "./assets/navigator-icon.png" Styles.None [ Attr.width (Attr.px 15), Attr.height (Attr.px 15) ] Element.empty
+
+                Nothing ->
+                    Element.empty
+    in
+    Element.row (Styles.RosterEntry mobster.role)
+        [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
+        [ roleIcon
+        , Element.text mobster.name
+        , benchButton mobster.index
+        ]
 
 
 rosterInput : String -> StyleElement
@@ -142,25 +160,13 @@ quickRotateQueryId =
     "quick-rotate-query"
 
 
-rosterItem : String -> Maybe Roster.Presenter.Role -> StyleElement
-rosterItem name entryType =
-    let
-        roleIcon =
-            case entryType of
-                Just Roster.Presenter.Driver ->
-                    Element.image "./assets/driver-icon.png" Styles.None [ Attr.width (Attr.px 15), Attr.height (Attr.px 15) ] Element.empty
-
-                Just Roster.Presenter.Navigator ->
-                    Element.image "./assets/navigator-icon.png" Styles.None [ Attr.width (Attr.px 15), Attr.height (Attr.px 15) ] Element.empty
-
-                Nothing ->
-                    Element.empty
-    in
-    Element.row (Styles.RosterEntry entryType)
-        [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
-        [ roleIcon
-        , Element.text (name ++ " ×")
+benchButton : Int -> StyleElement
+benchButton mobsterIndex =
+    Element.el Styles.None
+        [ Element.Events.onClick (Msg.UpdateRosterData (Roster.Operation.Bench mobsterIndex))
         ]
+    <|
+        Element.text "×"
 
 
 inactiveRosterItem : String -> StyleElement
