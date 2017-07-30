@@ -162,7 +162,7 @@ quickRotateQueryId =
 
 benchButton : Int -> StyleElement
 benchButton mobsterIndex =
-    Element.el Styles.None
+    Element.el Styles.DeleteButton
         [ Element.Events.onClick (Msg.UpdateRosterData (Roster.Operation.Bench mobsterIndex))
         ]
     <|

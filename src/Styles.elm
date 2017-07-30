@@ -16,6 +16,8 @@ import Style.Border as Border
 import Style.Color as Color
 import Style.Filter as Filter
 import Style.Font as Font
+import Style.Transition
+import Time
 
 
 (=>) : a -> b -> ( a, b )
@@ -57,6 +59,7 @@ type Styles
     | RosterInput
     | RosterEntry (Maybe Roster.Presenter.Role)
     | InactiveRosterEntry
+    | DeleteButton
 
 
 type NavButtonType
@@ -374,6 +377,21 @@ stylesheet device =
             , hover
                 [ Color.background (Color.rgb 60 53 53)
                 ]
+            ]
+        , style DeleteButton
+            [ Color.text Color.white
+            , Style.Transition.transitions
+                [ { delay = 0
+                  , duration = Time.millisecond * 500
+                  , easing = "ease"
+                  , props = [ "all" ]
+                  }
+                ]
+            , hover
+                [ Color.text (Color.rgb 194 12 12)
+                , Font.bold
+                ]
+            , Style.cursor "pointer"
             ]
         , style Roster
             [ Border.solid
