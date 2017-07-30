@@ -48,6 +48,7 @@ import View.Break
 import View.IntervalsToBreak
 import View.Navbar
 import View.Roster
+import View.RosterBeta
 import View.Tip
 import View.UpdateAvailable
 import ViewHelpers
@@ -323,8 +324,10 @@ configureBetaViewElements model =
         [ Element.Attributes.spacing 50 ]
         [ Styles.configOptions model.onMac model.settings
         , Element.el Styles.None [ Element.Attributes.width (Element.Attributes.fill 1) ] <|
-            Element.html
-                (View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle))
+            View.RosterBeta.view model.quickRotateState model.settings.rosterData model.activeMobstersStyle
+
+        -- Element.html
+        --     (View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle))
         ]
     , Styles.startMobbingButton model.onMac "Start Mobbing"
     ]

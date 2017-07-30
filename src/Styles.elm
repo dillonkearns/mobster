@@ -5,6 +5,7 @@ import Color.Mixing
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick, onInput)
+import Roster.Presenter
 import Setup.InputField as InputField exposing (IntInputField(..))
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Settings as Settings
@@ -52,6 +53,10 @@ type Styles
     | BreakButton
     | SkipBreakButton
     | BreakAlertBox
+    | Roster
+    | RosterInput
+    | RosterEntry (Maybe Roster.Presenter.Role)
+    | InactiveRosterEntry
 
 
 type NavButtonType
@@ -329,7 +334,66 @@ stylesheet device =
             , Font.typeface typefaces.body
             , Color.text (Color.rgb 255 179 116)
             ]
+        , style RosterInput
+            [ Color.background (Color.rgba 0 0 0 0)
+            , Color.text Color.white
+            , Font.typeface typefaces.body
+            ]
+        , style (RosterEntry (Just Roster.Presenter.Driver))
+            [ Color.background fontColor.circle
+            , Border.rounded rosterItemRounding
+            , Color.text Color.white
+            , Font.typeface typefaces.body
+            , hover
+                [ Color.background (Color.rgb 0 95 210)
+                ]
+            ]
+        , style (RosterEntry (Just Roster.Presenter.Navigator))
+            [ Color.background (Color.rgb 140 133 133)
+
+            -- [ Color.background circleColor
+            -- [ Color.background (Color.rgb 0 95 210)
+            , Border.rounded rosterItemRounding
+            , Color.text Color.white
+            , Font.typeface typefaces.body
+            , hover
+                [ Color.background (Color.rgb 90 83 83)
+                ]
+            ]
+        , style (RosterEntry Nothing)
+            [ Color.background (Color.rgb 140 133 133)
+            , Border.rounded rosterItemRounding
+            , Color.text Color.white
+            , Font.typeface typefaces.body
+            , hover
+                [ Color.background (Color.rgb 90 83 83)
+                ]
+            ]
+        , style InactiveRosterEntry
+            [ Color.background (Color.rgb 80 73 73)
+            , Border.rounded rosterItemRounding
+            , Color.text Color.white
+            , Font.typeface typefaces.body
+            , hover
+                [ Color.background (Color.rgb 60 53 53)
+                ]
+            ]
+        , style Roster
+            [ Border.solid
+            , Border.bottom 2
+
+            -- , Border.all 2
+            , Color.border fontColor.circle
+            , Font.typeface typefaces.body
+
+            -- , Color.background (Color.rgb 180 180 180)
+            ]
         ]
+
+
+rosterItemRounding : Float
+rosterItemRounding =
+    4
 
 
 type alias StyleElement =
