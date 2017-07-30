@@ -350,9 +350,6 @@ stylesheet device =
             ]
         , style (RosterEntry (Just Roster.Presenter.Navigator))
             [ Color.background (Color.rgb 140 133 133)
-
-            -- [ Color.background circleColor
-            -- [ Color.background (Color.rgb 0 95 210)
             , Border.rounded rosterItemRounding
             , Color.text Color.white
             , Font.typeface typefaces.body
@@ -381,12 +378,8 @@ stylesheet device =
         , style Roster
             [ Border.solid
             , Border.bottom 2
-
-            -- , Border.all 2
             , Color.border fontColor.circle
             , Font.typeface typefaces.body
-
-            -- , Color.background (Color.rgb 180 180 180)
             ]
         ]
 
