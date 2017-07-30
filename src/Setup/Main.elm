@@ -776,7 +776,7 @@ focusQuickRotateInput =
 
 focusQuickRotateInputIfVisible : ( { model | screenState : ScreenState }, Cmd Msg ) -> ( { model | screenState : ScreenState }, Cmd Msg )
 focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
-    if model.screenState == Continue True then
+    if model.screenState == Continue True || model.screenState == Configure then
         model ! [ cmd, focusQuickRotateInput ]
     else
         updateResult
