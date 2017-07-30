@@ -128,12 +128,18 @@ rosterInput query =
     Element.inputText Styles.RosterInput
         [ Attr.placeholder "+ Mobster"
         , Attr.verticalCenter
+        , Attr.id quickRotateQueryId
         , Attr.height (Attr.percent 100)
         , Attr.width (Attr.fill 1)
         , Element.Events.onInput (ChangeInput (StringField QuickRotateQuery))
         , Element.Events.onWithOptions "keydown" options dec
         ]
         query
+
+
+quickRotateQueryId : String
+quickRotateQueryId =
+    "quick-rotate-query"
 
 
 rosterItem : String -> Maybe Roster.Presenter.Role -> StyleElement
