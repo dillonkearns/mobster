@@ -2,7 +2,7 @@ module QuickRotateTests exposing (suite)
 
 import Expect
 import QuickRotate
-import Test exposing (describe, test, Test)
+import Test exposing (Test, describe, test)
 
 
 suite : Test
@@ -47,7 +47,7 @@ suite =
             \() ->
                 { query = "query", selection = QuickRotate.Index 2 }
                     |> QuickRotate.next [ "asdf", "query1", "query2" ]
-                    |> Expect.equal { query = "query", selection = (QuickRotate.New "query") }
+                    |> Expect.equal { query = "query", selection = QuickRotate.New "query" }
         , test "previous rotates back to new first" <|
             \() ->
                 QuickRotate.init
@@ -100,4 +100,24 @@ suite =
                     |> QuickRotate.update "query" [ "query1", "query2", "def" ]
                     |> QuickRotate.matches [ "query1", "query2", "def" ]
                     |> Expect.equal [ 0, 1 ]
+        , describe "selection"
+            [ test "selected" <|
+                \() ->
+                    QuickRotate.init
+                        |> QuickRotate.update "query" [ "query1", "query2", "def" ]
+                        |> QuickRotate.selectionTypeFor 0 [ 0, 1 ]
+                        |> Expect.equal QuickRotate.Selected
+            , test "matches" <|
+                \() ->
+                    QuickRotate.init
+                        |> QuickRotate.update "query" [ "query1", "query2", "def" ]
+                        |> QuickRotate.selectionTypeFor 1 [ 0, 1 ]
+                        |> Expect.equal QuickRotate.Matches
+            , test "no match" <|
+                \() ->
+                    QuickRotate.init
+                        |> QuickRotate.update "query" [ "query1", "query2", "def" ]
+                        |> QuickRotate.selectionTypeFor 2 [ 0, 1 ]
+                        |> Expect.equal QuickRotate.NoMatch
+            ]
         ]

@@ -9,6 +9,28 @@ type Selection
     | Index Int
 
 
+type EntrySelection
+    = Matches
+    | Selected
+    | NoMatch
+
+
+selectionTypeFor : Int -> List Int -> State -> EntrySelection
+selectionTypeFor index matches state =
+    if Index index == state.selection then
+        Selected
+    else
+        let
+            match =
+                matches
+                    |> List.member index
+        in
+        if match then
+            Matches
+        else
+            NoMatch
+
+
 type alias State =
     { selection : Selection
     , query : String
