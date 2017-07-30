@@ -436,12 +436,26 @@ stylesheet device =
             , Border.bottom 2
             , Color.border fontColor.circle
             , Font.typeface typefaces.body
+            , Style.Transition.transitions
+                [ { delay = 0
+                  , duration = Time.millisecond * 500
+                  , easing = "ease"
+                  , props = [ "all" ]
+                  }
+                ]
             ]
         , style (Roster False)
             [ Border.solid
             , Border.bottom 2
             , Color.border (Color.rgb 140 133 133)
             , Font.typeface typefaces.body
+            , Style.Transition.transitions
+                [ { delay = 0
+                  , duration = Time.millisecond * 500
+                  , easing = "ease"
+                  , props = [ "all" ]
+                  }
+                ]
             ]
         ]
 
