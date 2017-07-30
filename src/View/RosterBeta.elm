@@ -9,6 +9,7 @@ import Roster.Presenter
 import Roster.Rpg
 import Setup.Msg as Msg exposing (..)
 import Styles exposing (StyleElement)
+import View.Roster
 
 
 view :
@@ -22,30 +23,71 @@ view :
     -> Animation.Messenger.State Msg.Msg
     -> StyleElement
 view quickRotateState rosterData activeMobstersStyle =
+    let
+        inactiveMobsters =
+            rosterData.inactiveMobsters
+
+        matches =
+            QuickRotate.matches (inactiveMobsters |> List.map .name) quickRotateState
+
+        mobsters =
+            Roster.Presenter.mobsters rosterData
+
+        newMobsterDisabled =
+            View.Roster.preventAddingMobster rosterData.mobsters quickRotateState.query
+    in
     Element.column Styles.None
         []
         [ Element.text "Active"
-        , Element.row Styles.Roster
-            [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-            [ rosterItem "Uhura" Nothing
-            , rosterItem "Scotty" Nothing
-            , rosterItem "Kirk" (Just Roster.Presenter.Driver)
-            , rosterItem "Spock" (Just Roster.Presenter.Navigator)
-            , rosterInput
-            ]
+        , activeView quickRotateState rosterData activeMobstersStyle
         , Element.text "Inactive"
         , Element.row Styles.Roster
             [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-            [ inactiveRosterItem "McCoy"
-            , inactiveRosterItem "Chekov"
-            , inactiveRosterItem "Sulu"
-            ]
+            (List.indexedMap (inactiveMobsterView quickRotateState.query quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
         ]
+
+
+inactiveMobsterView : String -> QuickRotate.Selection -> List Int -> Int -> String -> StyleElement
+inactiveMobsterView quickRotateQuery quickRotateSelection matches mobsterIndex inactiveMobster =
+    inactiveRosterItem inactiveMobster
+
+
+activeView :
+    { query : String, selection : QuickRotate.Selection }
+    ->
+        { inactiveMobsters :
+            List { rpgData : Roster.Rpg.RpgData, name : String }
+        , nextDriver : Int
+        , mobsters : List Mobster.Mobster
+        }
+    -> Animation.Messenger.State Msg.Msg
+    -> StyleElement
+activeView quickRotateState rosterData activeMobstersStyle =
+    let
+        inactiveMobsters =
+            rosterData.inactiveMobsters
+
+        matches =
+            QuickRotate.matches (inactiveMobsters |> List.map .name) quickRotateState
+
+        activeMobsters =
+            Roster.Presenter.mobsters rosterData
+
+        newMobsterDisabled =
+            View.Roster.preventAddingMobster rosterData.mobsters quickRotateState.query
+    in
+    Element.row Styles.Roster
+        [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
+        (List.map activeMobsterView activeMobsters)
+
+
+activeMobsterView : Roster.Presenter.MobsterWithRole -> StyleElement
+activeMobsterView mobster =
+    rosterItem mobster.name mobster.role
 
 
 rosterInput : StyleElement
 rosterInput =
-    -- el Debug [] <|
     Element.inputText Styles.RosterInput [ Attr.placeholder "+ Mobster", Attr.verticalCenter, Attr.height (Attr.percent 100), Attr.width (Attr.fill 1) ] ""
 
 
@@ -66,7 +108,7 @@ rosterItem name entryType =
     Element.row (Styles.RosterEntry entryType)
         [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
         [ roleIcon
-        , Element.text (name ++ " ✖")
+        , Element.text (name ++ " ×")
         ]
 
 
@@ -75,5 +117,5 @@ inactiveRosterItem name =
     Element.row Styles.InactiveRosterEntry
         [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
         [ Element.text name
-        , Element.text " ✖"
+        , Element.text " ×"
         ]
