@@ -57,8 +57,12 @@ view quickRotateState rosterData activeMobstersStyle =
 
 
 inactiveMobsterView : String -> QuickRotate.Selection -> List Int -> Int -> String -> StyleElement
-inactiveMobsterView quickRotateQuery quickRotateSelection matches mobsterIndex inactiveMobster =
-    inactiveRosterItem inactiveMobster
+inactiveMobsterView quickRotateQuery quickRotateSelection matches mobsterIndex mobsterName =
+    Element.row Styles.InactiveRosterEntry
+        [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
+        [ Element.text mobsterName
+        , removeButton mobsterIndex
+        ]
 
 
 activeView :
@@ -169,10 +173,10 @@ benchButton mobsterIndex =
         Element.text "×"
 
 
-inactiveRosterItem : String -> StyleElement
-inactiveRosterItem name =
-    Element.row Styles.InactiveRosterEntry
-        [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
-        [ Element.text name
-        , Element.text " ×"
+removeButton : Int -> StyleElement
+removeButton mobsterIndex =
+    Element.el Styles.DeleteButton
+        [ Element.Events.onClick (Msg.UpdateRosterData (Roster.Operation.Remove mobsterIndex))
         ]
+    <|
+        Element.text "×"
