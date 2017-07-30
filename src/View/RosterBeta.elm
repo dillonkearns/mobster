@@ -49,7 +49,7 @@ view quickRotateState rosterData activeMobstersStyle =
         , Element.column Styles.None
             []
             [ el Styles.PlainBody [] <| Element.text "Inactive"
-            , Element.wrappedRow Styles.Roster
+            , Element.wrappedRow (Styles.Roster False)
                 [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
                 (List.indexedMap (inactiveMobsterView quickRotateState.query quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
             ]
@@ -93,7 +93,7 @@ activeView quickRotateState rosterData activeMobstersStyle =
         newMobsterDisabled =
             View.Roster.preventAddingMobster rosterData.mobsters quickRotateState.query
     in
-    Element.wrappedRow Styles.Roster
+    Element.wrappedRow (Styles.Roster True)
         [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
         (List.map activeMobsterView activeMobsters ++ [ rosterInput quickRotateState.query quickRotateState.selection ])
 

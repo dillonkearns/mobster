@@ -55,7 +55,7 @@ type Styles
     | BreakButton
     | SkipBreakButton
     | BreakAlertBox
-    | Roster
+    | Roster Bool
     | RosterInput Bool
     | RosterEntry (Maybe Roster.Presenter.Role)
     | InactiveRosterEntry QuickRotate.EntrySelection
@@ -431,10 +431,16 @@ stylesheet device =
                 ]
             , Style.cursor "pointer"
             ]
-        , style Roster
+        , style (Roster True)
             [ Border.solid
             , Border.bottom 2
             , Color.border fontColor.circle
+            , Font.typeface typefaces.body
+            ]
+        , style (Roster False)
+            [ Border.solid
+            , Border.bottom 2
+            , Color.border (Color.rgb 140 133 133)
             , Font.typeface typefaces.body
             ]
         ]
