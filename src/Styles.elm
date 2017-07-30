@@ -42,6 +42,7 @@ type Styles
     | AwayX
     | TipBox
     | TipTitle
+    | PlainBody
     | TipBody
     | TipLink
     | StepButton
@@ -162,6 +163,9 @@ stylesheet device =
             , Border.solid
             , Border.all 1
             , Color.border (Color.rgb 25 25 25)
+            ]
+        , style PlainBody
+            [ Font.size fonts.small
             ]
         , style TipTitle
             [ Font.size fonts.mediumSmall
@@ -399,7 +403,7 @@ configOptions onMac settings =
             , inputPair InputField.BreakInterval breakIntervalText settings.intervalsPerBreak
             , inputPair InputField.BreakDuration "Minutes per break" settings.breakDuration
             ]
-        , column None [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey (ctrlKey onMac), keyboardKey "Shift", editableKeyboardKey settings.showHideShortcut ] ]
+        , column PlainBody [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey (ctrlKey onMac), keyboardKey "Shift", editableKeyboardKey settings.showHideShortcut ] ]
         ]
 
 
