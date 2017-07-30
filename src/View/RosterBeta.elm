@@ -3,6 +3,8 @@ module View.RosterBeta exposing (view)
 import Animation.Messenger
 import Element
 import Element.Attributes as Attr
+import Element.Events
+import Json.Decode
 import QuickRotate
 import Roster.Data as Mobster
 import Roster.Presenter
@@ -84,7 +86,7 @@ activeView quickRotateState rosterData activeMobstersStyle =
     in
     Element.wrappedRow Styles.Roster
         [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-        (List.map activeMobsterView activeMobsters ++ [ rosterInput ])
+        (List.map activeMobsterView activeMobsters ++ [ rosterInput quickRotateState.query ])
 
 
 activeMobsterView : Roster.Presenter.MobsterWithRole -> StyleElement
@@ -92,15 +94,46 @@ activeMobsterView mobster =
     rosterItem mobster.name mobster.role
 
 
-rosterInput : StyleElement
-rosterInput =
+rosterInput : String -> StyleElement
+rosterInput query =
+    let
+        dec =
+            Json.Decode.map
+                (\code ->
+                    if code == 38 then
+                        Ok (QuickRotateMove Previous)
+                    else if code == 9 || code == 40 then
+                        Ok (QuickRotateMove Next)
+                    else if code == 13 then
+                        Ok QuickRotateAdd
+                    else
+                        Err "not handling that key"
+                )
+                Element.Events.keyCode
+                |> Json.Decode.andThen
+                    fromResult
+
+        fromResult : Result String a -> Json.Decode.Decoder a
+        fromResult result =
+            case result of
+                Ok val ->
+                    Json.Decode.succeed val
+
+                Err reason ->
+                    Json.Decode.fail reason
+
+        options =
+            { preventDefault = True, stopPropagation = False }
+    in
     Element.inputText Styles.RosterInput
         [ Attr.placeholder "+ Mobster"
         , Attr.verticalCenter
         , Attr.height (Attr.percent 100)
         , Attr.width (Attr.fill 1)
+        , Element.Events.onInput (ChangeInput (StringField QuickRotateQuery))
+        , Element.Events.onWithOptions "keydown" options dec
         ]
-        ""
+        query
 
 
 rosterItem : String -> Maybe Roster.Presenter.Role -> StyleElement
