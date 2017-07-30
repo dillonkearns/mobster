@@ -28,7 +28,6 @@ import Time
 
 type Styles
     = None
-    | Debug
     | Main
     | Logo
     | NavOption
@@ -57,7 +56,7 @@ type Styles
     | SkipBreakButton
     | BreakAlertBox
     | Roster
-    | RosterInput
+    | RosterInput Bool
     | RosterEntry (Maybe Roster.Presenter.Role)
     | InactiveRosterEntry QuickRotate.EntrySelection
     | DeleteButton
@@ -146,7 +145,6 @@ stylesheet device =
     in
     Style.stylesheet
         [ style None []
-        , style Debug [ Color.background (Color.rgb 74 242 161) ]
         , style Input
             [ Font.size fonts.mediumSmaller
             ]
@@ -338,7 +336,12 @@ stylesheet device =
             , Font.typeface typefaces.body
             , Color.text (Color.rgb 255 179 116)
             ]
-        , style RosterInput
+        , style (RosterInput True)
+            [ Color.background (Color.rgba 0 0 0 0)
+            , Color.text Color.white
+            , Font.typeface typefaces.body
+            ]
+        , style (RosterInput False)
             [ Color.background (Color.rgba 0 0 0 0)
             , Color.text Color.white
             , Font.typeface typefaces.body

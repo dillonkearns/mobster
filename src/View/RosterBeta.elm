@@ -95,7 +95,7 @@ activeView quickRotateState rosterData activeMobstersStyle =
     in
     Element.wrappedRow Styles.Roster
         [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-        (List.map activeMobsterView activeMobsters ++ [ rosterInput quickRotateState.query ])
+        (List.map activeMobsterView activeMobsters ++ [ rosterInput quickRotateState.query quickRotateState.selection ])
 
 
 activeMobsterView : Roster.Presenter.MobsterWithRole -> StyleElement
@@ -120,9 +120,17 @@ activeMobsterView mobster =
         ]
 
 
-rosterInput : String -> StyleElement
-rosterInput query =
+rosterInput : String -> QuickRotate.Selection -> StyleElement
+rosterInput query selection =
     let
+        highlightSelection =
+            case selection of
+                QuickRotate.New _ ->
+                    True
+
+                _ ->
+                    False
+
         dec =
             Json.Decode.map
                 (\code ->
@@ -151,7 +159,7 @@ rosterInput query =
         options =
             { preventDefault = True, stopPropagation = False }
     in
-    Element.inputText Styles.RosterInput
+    Element.inputText (Styles.RosterInput highlightSelection)
         [ Attr.placeholder "+ Mobster"
         , Attr.verticalCenter
         , Attr.id quickRotateQueryId
