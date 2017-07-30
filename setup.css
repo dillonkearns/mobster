@@ -26,6 +26,10 @@ h3,
   font-size: 2.0em;
 }
 
+input {
+  outline: none !important;
+}
+
 .styleElementsTooltipContainer {
   transform: translateZ(0);
 }
