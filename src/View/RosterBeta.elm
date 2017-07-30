@@ -1,7 +1,7 @@
 module View.RosterBeta exposing (view)
 
 import Animation.Messenger
-import Element
+import Element exposing (el)
 import Element.Attributes as Attr
 import Element.Events
 import Json.Decode
@@ -43,12 +43,12 @@ view quickRotateState rosterData activeMobstersStyle =
         [ Attr.spacing 30 ]
         [ Element.column Styles.None
             []
-            [ Element.text "Active"
+            [ el Styles.PlainBody [] <| Element.text "Active"
             , activeView quickRotateState rosterData activeMobstersStyle
             ]
         , Element.column Styles.None
             []
-            [ Element.text "Inactive"
+            [ el Styles.PlainBody [] <| Element.text "Inactive"
             , Element.wrappedRow Styles.Roster
                 [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
                 (List.indexedMap (inactiveMobsterView quickRotateState.query quickRotateState.selection matches) (inactiveMobsters |> List.map .name))

@@ -345,6 +345,7 @@ stylesheet device =
         , style (RosterEntry (Just Roster.Presenter.Driver))
             [ Color.background fontColor.circle
             , Border.rounded rosterItemRounding
+            , Font.size fonts.small
             , Color.text Color.white
             , Font.typeface typefaces.body
             , hover
@@ -355,6 +356,7 @@ stylesheet device =
             [ Color.background (Color.rgb 140 133 133)
             , Border.rounded rosterItemRounding
             , Color.text Color.white
+            , Font.size fonts.small
             , Font.typeface typefaces.body
             , hover
                 [ Color.background (Color.rgb 90 83 83)
@@ -364,6 +366,7 @@ stylesheet device =
             [ Color.background (Color.rgb 140 133 133)
             , Border.rounded rosterItemRounding
             , Color.text Color.white
+            , Font.size fonts.small
             , Font.typeface typefaces.body
             , hover
                 [ Color.background (Color.rgb 90 83 83)
@@ -373,6 +376,7 @@ stylesheet device =
             [ Color.background (Color.rgb 80 73 73)
             , Border.rounded rosterItemRounding
             , Color.text Color.white
+            , Font.size fonts.small
             , Font.typeface typefaces.body
             , hover
                 [ Color.background (Color.rgb 60 53 53)
