@@ -94,7 +94,13 @@ activeMobsterView mobster =
 
 rosterInput : StyleElement
 rosterInput =
-    Element.inputText Styles.RosterInput [ Attr.placeholder "+ Mobster", Attr.verticalCenter, Attr.height (Attr.percent 100), Attr.width (Attr.fill 1) ] ""
+    Element.inputText Styles.RosterInput
+        [ Attr.placeholder "+ Mobster"
+        , Attr.verticalCenter
+        , Attr.height (Attr.percent 100)
+        , Attr.width (Attr.fill 1)
+        ]
+        ""
 
 
 rosterItem : String -> Maybe Roster.Presenter.Role -> StyleElement
