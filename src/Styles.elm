@@ -410,6 +410,7 @@ stylesheet device =
             , Font.typeface typefaces.body
             , hover
                 [ Color.background (Color.rgb 60 53 53)
+                , Color.border (Color.rgb 60 53 53)
                 ]
             ]
         , style DeleteButton
