@@ -5,6 +5,7 @@ import Color.Mixing
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick, onInput)
+import QuickRotate
 import Roster.Presenter
 import Setup.InputField as InputField exposing (IntInputField(..))
 import Setup.Msg as Msg exposing (Msg)
@@ -58,7 +59,7 @@ type Styles
     | Roster
     | RosterInput
     | RosterEntry (Maybe Roster.Presenter.Role)
-    | InactiveRosterEntry
+    | InactiveRosterEntry QuickRotate.EntrySelection
     | DeleteButton
 
 
@@ -372,10 +373,39 @@ stylesheet device =
                 [ Color.background (Color.rgb 90 83 83)
                 ]
             ]
-        , style InactiveRosterEntry
+        , style (InactiveRosterEntry QuickRotate.Selected)
+            [ Color.background (Color.rgb 0 140 255)
+            , Border.rounded rosterItemRounding
+            , Color.text Color.white
+            , Font.size fonts.small
+            , Color.border (Color.rgb 233 224 103)
+            , Border.solid
+            , Border.all 1
+            , Font.typeface typefaces.body
+            , hover
+                [ Color.background (Color.rgb 60 53 53)
+                ]
+            ]
+        , style (InactiveRosterEntry QuickRotate.Matches)
+            [ Color.background (Color.rgb 0 50 95)
+            , Border.rounded rosterItemRounding
+            , Color.border (Color.rgb 233 224 103)
+            , Border.solid
+            , Border.all 1
+            , Color.text Color.white
+            , Font.size fonts.small
+            , Font.typeface typefaces.body
+            , hover
+                [ Color.background (Color.rgb 60 53 53)
+                ]
+            ]
+        , style (InactiveRosterEntry QuickRotate.NoMatch)
             [ Color.background (Color.rgb 80 73 73)
             , Border.rounded rosterItemRounding
             , Color.text Color.white
+            , Color.border (Color.rgb 80 73 73)
+            , Border.solid
+            , Border.all 1
             , Font.size fonts.small
             , Font.typeface typefaces.body
             , hover

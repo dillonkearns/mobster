@@ -58,7 +58,20 @@ view quickRotateState rosterData activeMobstersStyle =
 
 inactiveMobsterView : String -> QuickRotate.Selection -> List Int -> Int -> String -> StyleElement
 inactiveMobsterView quickRotateQuery quickRotateSelection matches mobsterIndex mobsterName =
-    Element.row Styles.InactiveRosterEntry
+    let
+        isSelected =
+            quickRotateSelection == QuickRotate.Index mobsterIndex
+
+        useSelectedClass =
+            isSelected || (isMatch && quickRotateQuery /= "")
+
+        isMatch =
+            List.member mobsterIndex matches
+
+        selectionType =
+            QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
+    in
+    Element.row (Styles.InactiveRosterEntry selectionType)
         [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
         [ Element.text mobsterName
         , removeButton mobsterIndex
