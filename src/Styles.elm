@@ -470,7 +470,7 @@ configOptions onMac settings =
             "Break every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ "′"
     in
     Element.column None
-        [ Element.Attributes.spacing 30 ]
+        [ Element.Attributes.spacing 30, Element.Attributes.width (Element.Attributes.percent 30) ]
         [ column None
             [ spacing 10 ]
             [ inputPair InputField.TimerDuration "Minutes" settings.timerDuration

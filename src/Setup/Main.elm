@@ -321,9 +321,9 @@ styleElementsConfigureView model bodyElements =
 configureBetaViewElements : Model -> List Styles.StyleElement
 configureBetaViewElements model =
     [ Element.row Styles.None
-        [ Element.Attributes.spacing 120 ]
+        [ Element.Attributes.spacing 50 ]
         [ Styles.configOptions model.onMac model.settings
-        , Element.el Styles.None [ Element.Attributes.width (Element.Attributes.fill 1) ] <|
+        , Element.el Styles.None [ Element.Attributes.width (Element.Attributes.percent 70) ] <|
             View.RosterBeta.view model.quickRotateState model.settings.rosterData model.activeMobstersStyle
 
         -- Element.html
