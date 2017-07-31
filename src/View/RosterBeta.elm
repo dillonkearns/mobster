@@ -1,5 +1,6 @@
 module View.RosterBeta exposing (view)
 
+import Animation
 import Animation.Messenger
 import Element exposing (el)
 import Element.Attributes as Attr
@@ -24,8 +25,27 @@ view :
         , nextDriver : Int
         }
     -> Animation.Messenger.State Msg.Msg
+    -> Animation.State
     -> StyleElement
-view quickRotateState rosterData activeMobstersStyle =
+view quickRotateState rosterData activeMobstersStyle dieAnimation =
+    Element.row Styles.None
+        []
+        [ rosterView quickRotateState rosterData activeMobstersStyle
+        , shuffleDie dieAnimation
+        ]
+
+
+rosterView :
+    { query : String, selection : QuickRotate.Selection }
+    ->
+        { inactiveMobsters :
+            List { name : String, rpgData : Roster.Rpg.RpgData }
+        , mobsters : List Mobster.Mobster
+        , nextDriver : Int
+        }
+    -> Animation.Messenger.State Msg.Msg
+    -> StyleElement
+rosterView quickRotateState rosterData activeMobstersStyle =
     let
         inactiveMobsters =
             rosterData.inactiveMobsters
@@ -48,7 +68,7 @@ view quickRotateState rosterData activeMobstersStyle =
                     False
     in
     Element.column Styles.None
-        [ Attr.spacing 30 ]
+        [ Attr.spacing 30, Attr.width (Attr.fill 1) ]
         [ Element.column Styles.None
             []
             [ el Styles.PlainBody [] <| Element.text "Active"
@@ -208,3 +228,15 @@ removeButton mobsterIndex =
         ]
     <|
         Element.text "×"
+
+
+shuffleDie :
+    Animation.State
+    -> StyleElement
+shuffleDie animationStyle =
+    Element.image "./assets/dice.png"
+        Styles.ShuffleDie
+        (List.map (\attr -> Attr.toAttr attr) (Animation.render animationStyle)
+            ++ [ Element.Events.onClick Msg.ShuffleMobsters, Attr.height (Attr.px 25), Attr.width (Attr.px 25) ]
+        )
+        Element.empty

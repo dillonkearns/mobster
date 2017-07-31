@@ -60,6 +60,7 @@ type Styles
     | RosterEntry (Maybe Roster.Presenter.Role)
     | InactiveRosterEntry QuickRotate.EntrySelection
     | DeleteButton
+    | ShuffleDie
 
 
 type NavButtonType
@@ -416,6 +417,8 @@ stylesheet device =
                 , Color.border (Color.rgb 60 53 53)
                 ]
             ]
+        , style ShuffleDie
+            []
         , style DeleteButton
             [ Color.text Color.white
             , Style.Transition.transitions

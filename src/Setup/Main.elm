@@ -323,11 +323,9 @@ configureBetaViewElements model =
     [ Element.row Styles.None
         [ Element.Attributes.spacing 50 ]
         [ Styles.configOptions model.onMac model.settings
-        , Element.el Styles.None [ Element.Attributes.width (Element.Attributes.percent 70) ] <|
-            View.RosterBeta.view model.quickRotateState model.settings.rosterData model.activeMobstersStyle
-
-        -- Element.html
-        --     (View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle))
+        , Element.el Styles.None
+            [ Element.Attributes.width (Element.Attributes.percent 70) ]
+            (View.RosterBeta.view model.quickRotateState model.settings.rosterData model.activeMobstersStyle model.dieStyle)
         ]
     , Styles.startMobbingButton model.onMac "Start Mobbing"
     ]
