@@ -131,11 +131,11 @@ activeView quickRotateState rosterData activeMobstersStyle =
     in
     Element.wrappedRow (Styles.Roster highlighted)
         [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-        (List.map activeMobsterView activeMobsters ++ [ rosterInput quickRotateState.query quickRotateState.selection ])
+        (List.map (activeMobsterView activeMobstersStyle) activeMobsters ++ [ rosterInput quickRotateState.query quickRotateState.selection ])
 
 
-activeMobsterView : Roster.Presenter.MobsterWithRole -> StyleElement
-activeMobsterView mobster =
+activeMobsterView : Animation.Messenger.State Msg.Msg -> Roster.Presenter.MobsterWithRole -> StyleElement
+activeMobsterView activeMobstersStyle mobster =
     let
         roleIcon =
             case mobster.role of
@@ -149,7 +149,9 @@ activeMobsterView mobster =
                     Element.empty
     in
     Element.row (Styles.RosterEntry mobster.role)
-        [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
+        (List.map (\attr -> Attr.toAttr attr) (Animation.render activeMobstersStyle)
+            ++ [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
+        )
         [ roleIcon
         , Element.text mobster.name
         , benchButton mobster.index
