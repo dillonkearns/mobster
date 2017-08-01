@@ -61,6 +61,7 @@ type Styles
     | InactiveRosterEntry QuickRotate.EntrySelection
     | DeleteButton
     | ShuffleDie
+    | ShuffleDieContainer
 
 
 type NavButtonType
@@ -420,6 +421,9 @@ stylesheet device =
         , style ShuffleDie
             [ Style.opacity 0.5
             , hover [ Style.opacity 1 ]
+            ]
+        , style ShuffleDieContainer
+            [ Color.background (Color.rgb 48 48 48)
             ]
         , style DeleteButton
             [ Color.text Color.white
