@@ -388,7 +388,7 @@ stylesheet device =
             , Border.all 1
             , Font.typeface typefaces.body
             , hover
-                [ Color.background (Color.rgb 60 53 53)
+                [ Color.background (Color.rgb 140 133 133)
                 ]
             ]
         , style (InactiveRosterEntry QuickRotate.Matches)
@@ -401,7 +401,7 @@ stylesheet device =
             , Font.size fonts.small
             , Font.typeface typefaces.body
             , hover
-                [ Color.background (Color.rgb 60 53 53)
+                [ Color.background (Color.rgb 140 133 133)
                 ]
             ]
         , style (InactiveRosterEntry QuickRotate.NoMatch)
@@ -414,7 +414,7 @@ stylesheet device =
             , Font.size fonts.small
             , Font.typeface typefaces.body
             , hover
-                [ Color.background (Color.rgb 60 53 53)
+                [ Color.background (Color.rgb 140 133 133)
                 , Color.border (Color.rgb 60 53 53)
                 ]
             ]
