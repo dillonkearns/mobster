@@ -418,7 +418,9 @@ stylesheet device =
                 ]
             ]
         , style ShuffleDie
-            []
+            [ Style.opacity 0.5
+            , hover [ Style.opacity 1 ]
+            ]
         , style DeleteButton
             [ Color.text Color.white
             , Style.Transition.transitions
