@@ -91,7 +91,11 @@ inactiveMobsterView quickRotateQuery quickRotateSelection matches mobsterIndex m
             QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
     in
     Element.row (Styles.InactiveRosterEntry selectionType)
-        [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
+        [ Attr.padding 6
+        , Attr.verticalCenter
+        , Attr.spacing 4
+        , Element.Events.onClick (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
+        ]
         [ Element.text mobsterName
         , removeButton mobsterIndex
         ]
