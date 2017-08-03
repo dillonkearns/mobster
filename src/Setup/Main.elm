@@ -51,6 +51,7 @@ import View.Roster
 import View.RosterBeta
 import View.Tip
 import View.UpdateAvailable
+import View.UpdateAvailableBeta
 import ViewHelpers
 import Window
 
@@ -314,7 +315,7 @@ styleElementsConfigureView model bodyElements =
             [ View.Navbar.view model
             , Element.column Styles.None
                 [ Element.Attributes.paddingXY 110 50, Element.Attributes.spacing 30, Element.Attributes.height (Element.Attributes.fill 1) ]
-                bodyElements
+                (View.UpdateAvailableBeta.view model.availableUpdateVersion :: bodyElements)
             ]
 
 

@@ -62,6 +62,8 @@ type Styles
     | DeleteButton
     | ShuffleDie
     | ShuffleDieContainer
+    | UpdateAlertBox
+    | UpdateNow
 
 
 type NavButtonType
@@ -421,6 +423,16 @@ stylesheet device =
         , style ShuffleDie
             [ Style.opacity 0.5
             , hover [ Style.opacity 1 ]
+            ]
+        , style UpdateAlertBox
+            [ Color.background (Color.rgb 0 188 140)
+            , Font.size fonts.extraSmall
+            , Border.rounded 3
+            ]
+        , style UpdateNow
+            [ Style.cursor "pointer"
+            , Font.underline
+            , Font.bold
             ]
         , style ShuffleDieContainer
             [ Color.background (Color.rgb 48 48 48)
