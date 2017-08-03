@@ -221,10 +221,7 @@ quickRotateQueryId =
 benchButton : Int -> StyleElement
 benchButton mobsterIndex =
     Element.el Styles.DeleteButton
-        [ Element.Events.onWithOptions "click"
-            { stopPropagation = True, preventDefault = False }
-            (Json.Decode.succeed (Msg.UpdateRosterData (Roster.Operation.Bench mobsterIndex)))
-        ]
+        [ onClickWithoutPropagation (Msg.UpdateRosterData (Roster.Operation.Bench mobsterIndex)) ]
     <|
         Element.text "×"
 
@@ -232,12 +229,16 @@ benchButton mobsterIndex =
 removeButton : Int -> StyleElement
 removeButton mobsterIndex =
     Element.el Styles.DeleteButton
-        [ Element.Events.onWithOptions "click"
-            { stopPropagation = True, preventDefault = False }
-            (Json.Decode.succeed (Msg.UpdateRosterData (Roster.Operation.Remove mobsterIndex)))
-        ]
+        [ onClickWithoutPropagation (Msg.UpdateRosterData (Roster.Operation.Remove mobsterIndex)) ]
     <|
         Element.text "×"
+
+
+onClickWithoutPropagation : msg -> Element.Attribute Never msg
+onClickWithoutPropagation msgConstructor =
+    Element.Events.onWithOptions "click"
+        { stopPropagation = True, preventDefault = False }
+        (Json.Decode.succeed msgConstructor)
 
 
 shuffleDie :
