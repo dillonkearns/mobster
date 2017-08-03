@@ -44,8 +44,8 @@ bugsnag.register('032040bba551785c7846442332cc067f', {
 
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
   // Someone tried to run a second instance, we should focus our window.
-  if (mainWindow) {
-    focusMainWindow()
+  if (displayManager) {
+    displayManager.showMain()
   }
 })
 if (shouldQuit) {
@@ -95,9 +95,9 @@ function showFeedbackForm() {
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow: Electron.BrowserWindow,
-  timerWindow: Electron.BrowserWindow | null,
-  tray: Electron.Tray
+let timerWindow: Electron.BrowserWindow | null,
+  tray: Electron.Tray,
+  displayManager: DisplayManager
 
 const timerHeight = 130
 const timerWidth = 150
@@ -105,19 +105,199 @@ const timerWidth = 150
 const onMac = /^darwin/.test(process.platform)
 const onWindows = /^win/.test(process.platform)
 
-function focusMainWindow() {
-  // TODO: workaround - remove once
-  // https://github.com/electron/electron/issues/2867#issuecomment-264312493 has been resolved
-  if (onWindows) {
-    mainWindow.minimize()
-  }
-  mainWindow.show()
-  mainWindow.focus()
-}
+class DisplayManager {
+  private mainWindow: Electron.BrowserWindow
+  private secondaryWindows: Electron.BrowserWindow[]
+  private scriptsWindow: Electron.BrowserWindow | null
 
-function hideMainWindow() {
-  mainWindow.hide()
-  returnFocus()
+  constructor() {
+    this.createMainWindow()
+  }
+
+  showMain() {
+    if (!this.mainWindow.isVisible()) {
+      this.showMainWindow()
+      this.createSecondaryWindows()
+    }
+  }
+
+  getMainWindow() {
+    return this.mainWindow
+  }
+
+  hideMain() {
+    this.hideMainWindow()
+    this.closeSecondaryWindows()
+    returnFocus()
+  }
+
+  hideMainKeepFocus() {
+    this.hideMainWindow()
+    this.closeSecondaryWindows()
+  }
+
+  toggleMain() {
+    if (this.mainWindow.isVisible()) {
+      this.hideMain()
+    } else {
+      this.showMain()
+    }
+  }
+
+  private hideMainWindow() {
+    this.mainWindow.hide()
+  }
+
+  private showMainWindow() {
+    // TODO: workaround - remove once
+    // https://github.com/electron/electron/issues/2867#issuecomment-264312493 has been resolved
+    if (onWindows) {
+      this.mainWindow.minimize()
+    }
+    this.mainWindow.show()
+    this.mainWindow.focus()
+  }
+
+  private createSecondaryWindows() {
+    let displays: Electron.Display[] = screen
+      .getAllDisplays()
+      .filter(display => display.id !== screen.getPrimaryDisplay().id)
+    this.secondaryWindows = displays.map(display =>
+      this.createSecondaryWindow(display)
+    )
+  }
+
+  private closeSecondaryWindows() {
+    this.secondaryWindows.forEach(secondaryWindow => secondaryWindow.close())
+    this.secondaryWindows = []
+  }
+
+  createSecondaryWindow(display: Electron.Display) {
+    let secondaryWindow: Electron.BrowserWindow = new BrowserWindow({
+      frame: false,
+      backgroundColor: '#222222',
+      alwaysOnTop: true
+    })
+    secondaryWindow.setBounds(display.bounds)
+    return secondaryWindow
+  }
+
+  showScripts() {
+    this.scriptsWindow = new BrowserWindow({
+      width: 1000,
+      height: 800,
+      frame: true,
+      icon: `${assetsDirectory}/icon.ico`,
+      show: false
+    })
+    this.scriptsWindow.loadURL(
+      url.format({
+        pathname: path.join(__dirname, 'script-install-instructions.html'),
+        protocol: 'file:',
+        slashes: true
+      })
+    )
+    this.scriptsWindow.once('ready-to-show', () => {
+      if (this.scriptsWindow) {
+        this.hideMainKeepFocus()
+        this.scriptsWindow.show()
+      }
+    })
+
+    this.scriptsWindow.on('closed', () => {
+      this.scriptsWindow = null
+      this.showMain()
+    })
+  }
+
+  private createMainWindow() {
+    this.mainWindow = newTransparentOnTopWindow({
+      icon: `${assetsDirectory}/icon.ico`,
+      show: false
+    })
+
+    this.mainWindow.once('ready-to-show', () => {
+      this.mainWindow && this.mainWindow.show()
+      this.createSecondaryWindows()
+    })
+
+    this.mainWindow.webContents.on('crashed', function() {
+      bugsnag.notify('crashed', 'mainWindow crashed')
+    })
+    this.mainWindow.on('unresponsive', function() {
+      bugsnag.notify('unresponsive', 'mainWindow unresponsive')
+    })
+    setTimeout(() => {
+      this.mainWindow.setAlwaysOnTop(true) // delay to workaround https://github.com/electron/electron/issues/8287
+    }, 1000)
+    this.mainWindow.maximize()
+
+    screen.on('display-metrics-changed', () => {
+      this.mainWindow.maximize()
+    })
+
+    let prodUrl = url.format({
+      pathname: path.join(__dirname, 'setup.prod.html'),
+      protocol: 'file:'
+    })
+    let devUrl = url.format({
+      hostname: 'localhost',
+      pathname: 'setup.dev.html',
+      port: '8080',
+      protocol: 'http',
+      slashes: true
+    })
+    let nodeDevEnv = process.env.NODE_ENV === 'dev'
+
+    this.mainWindow.loadURL(nodeDevEnv ? devUrl : prodUrl)
+
+    Ipc.setupIpcMessageHandler((ipc: ElmIpc) => {
+      if (ipc.message === 'ShowFeedbackForm') {
+        showFeedbackForm()
+      } else if (ipc.message === 'ShowScriptInstallInstructions') {
+        this.showScripts()
+      } else if (ipc.message === 'Hide') {
+        this.toggleMain()
+      } else if (ipc.message === 'Quit') {
+        app.quit()
+      } else if (ipc.message === 'QuitAndInstall') {
+        autoUpdater.quitAndInstall()
+      } else if (ipc.message === 'ChangeShortcut') {
+        globalShortcut.unregisterAll()
+        if (ipc.data !== '') {
+          setShowHideShortcut(ipc.data)
+        }
+      } else if (ipc.message === 'OpenExternalUrl') {
+        this.hideMain()
+        shell.openExternal(ipc.data)
+      } else if (ipc.message === 'StartTimer') {
+        startTimer(ipc.data)
+        this.hideMain()
+      } else if (ipc.message === 'SaveActiveMobstersFile') {
+        updateMobsterNamesFile(ipc.data)
+      } else if (ipc.message === 'NotifySettingsDecodeFailed') {
+        bugsnag.notify('settings-decode-failure', ipc.data)
+      } else {
+        const exhaustiveCheck: never = ipc
+      }
+    })
+
+    ipcMain.on('timer-done', (event: any, timeElapsed: any) => {
+      closeTimer()
+      this.mainWindow.webContents.send('timer-done', timeElapsed)
+      this.showMain()
+    })
+
+    ipcMain.on('break-done', (event: any, timeElapsed: any) => {
+      closeTimer()
+      this.mainWindow.webContents.send('break-done', timeElapsed)
+      this.showMain()
+    })
+
+    this.mainWindow.on('closed', function() {
+      app.quit()
+    })
+  }
 }
 
 function positionWindowLeft(window: Electron.BrowserWindow) {
@@ -202,104 +382,6 @@ function closeTimer() {
   }
 }
 
-function createMainWindow() {
-  mainWindow = newTransparentOnTopWindow({
-    icon: `${assetsDirectory}/icon.ico`,
-    show: false
-  })
-
-  mainWindow.once('ready-to-show', () => {
-    mainWindow && mainWindow.show()
-  })
-
-  mainWindow.webContents.on('crashed', function() {
-    bugsnag.notify('crashed', 'mainWindow crashed')
-  })
-  mainWindow.on('unresponsive', function() {
-    bugsnag.notify('unresponsive', 'mainWindow unresponsive')
-  })
-  setTimeout(() => {
-    mainWindow.setAlwaysOnTop(true) // delay to workaround https://github.com/electron/electron/issues/8287
-  }, 1000)
-  mainWindow.maximize()
-
-  screen.on('display-metrics-changed', function() {
-    mainWindow.maximize()
-  })
-
-  let prodUrl = url.format({
-    pathname: path.join(__dirname, 'setup.prod.html'),
-    protocol: 'file:'
-  })
-  let devUrl = url.format({
-    hostname: 'localhost',
-    pathname: 'setup.dev.html',
-    port: '8080',
-    protocol: 'http',
-    slashes: true
-  })
-  let nodeDevEnv = process.env.NODE_ENV === 'dev'
-
-  mainWindow.loadURL(nodeDevEnv ? devUrl : prodUrl)
-
-  function onIpcMessage(ipc: ElmIpc): void {
-    if (ipc.message === 'ShowFeedbackForm') {
-      showFeedbackForm()
-    } else if (ipc.message === 'ShowScriptInstallInstructions') {
-      showScripts()
-    } else if (ipc.message === 'Hide') {
-      toggleMainWindow()
-    } else if (ipc.message === 'Quit') {
-      app.quit()
-    } else if (ipc.message === 'QuitAndInstall') {
-      autoUpdater.quitAndInstall()
-    } else if (ipc.message === 'ChangeShortcut') {
-      globalShortcut.unregisterAll()
-      if (ipc.data !== '') {
-        setShowHideShortcut(ipc.data)
-      }
-    } else if (ipc.message === 'OpenExternalUrl') {
-      hideMainWindow()
-      shell.openExternal(ipc.data)
-    } else if (ipc.message === 'StartTimer') {
-      startTimer(ipc.data)
-      hideMainWindow()
-    } else if (ipc.message === 'SaveActiveMobstersFile') {
-      updateMobsterNamesFile(ipc.data)
-    } else if (ipc.message === 'NotifySettingsDecodeFailed') {
-      bugsnag.notify('settings-decode-failure', ipc.data)
-    } else {
-      const exhaustiveCheck: never = ipc
-    }
-  }
-
-  Ipc.setupIpcMessageHandler(onIpcMessage)
-
-  ipcMain.on('timer-done', (event: any, timeElapsed: any) => {
-    closeTimer()
-    mainWindow.webContents.send('timer-done', timeElapsed)
-    focusMainWindow()
-  })
-
-  ipcMain.on('break-done', (event: any, timeElapsed: any) => {
-    closeTimer()
-    mainWindow.webContents.send('break-done', timeElapsed)
-    focusMainWindow()
-  })
-
-  mainWindow.on('closed', function() {
-    app.quit()
-  })
-}
-
-function toggleMainWindow() {
-  if (mainWindow.isVisible()) {
-    hideMainWindow()
-  } else {
-    focusMainWindow()
-  }
-}
-
 function onClickTrayIcon() {
   showStopTimerDialog()
 }
@@ -325,29 +407,9 @@ function newTransparentOnTopWindow(
   })
 }
 
-function showScripts() {
-  mainWindow.hide()
-  let scriptsWindow: Electron.BrowserWindow | null = new BrowserWindow({
-    width: 1000,
-    height: 800,
-    frame: true,
-    icon: `${assetsDirectory}/icon.ico`
-  })
-  scriptsWindow.loadURL(
-    url.format({
-      pathname: path.join(__dirname, 'script-install-instructions.html'),
-      protocol: 'file:',
-      slashes: true
-    })
-  )
-  scriptsWindow.on('closed', () => {
-    scriptsWindow = null
-    toggleMainWindow()
-  })
-}
-
 function onReady() {
-  createMainWindow()
+  // createMainWindow()
+  displayManager = new DisplayManager()
   createTray()
   setupAutoUpdater()
 }
@@ -369,8 +431,8 @@ app.on('window-all-closed', function() {
 app.on('activate', function() {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createMainWindow()
+  if (displayManager) {
+    displayManager.showMain()
   }
 })
 
@@ -391,7 +453,9 @@ function setupAutoUpdater() {
 
   autoUpdater.on('update-downloaded', (versionInfo: any) => {
     log.info('update-downloaded: ', versionInfo)
-    mainWindow.webContents.send('update-downloaded', versionInfo)
+    displayManager
+      .getMainWindow()
+      .webContents.send('update-downloaded', versionInfo)
   })
 
   autoUpdater.on('update-not-available', () => {
@@ -433,11 +497,10 @@ function showStopTimerDialog() {
     })
     if (dialogActionIndex !== 1) {
       closeTimer()
-      mainWindow.show()
-      mainWindow.focus()
+      displayManager.showMain()
     }
   } else {
-    toggleMainWindow()
+    displayManager.toggleMain()
   }
   dialogDisplayed = false
 }
