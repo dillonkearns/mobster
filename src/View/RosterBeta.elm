@@ -154,7 +154,11 @@ activeMobsterView activeMobstersStyle mobster =
     in
     Element.row (Styles.RosterEntry mobster.role)
         (List.map (\attr -> Attr.toAttr attr) (Animation.render activeMobstersStyle)
-            ++ [ Attr.padding 6, Attr.verticalCenter, Attr.spacing 4 ]
+            ++ [ Attr.padding 6
+               , Attr.verticalCenter
+               , Attr.spacing 4
+               , Element.Events.onClick (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
+               ]
         )
         [ roleIcon
         , Element.text mobster.name
