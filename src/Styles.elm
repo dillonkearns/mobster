@@ -235,7 +235,7 @@ stylesheet device =
             , Border.all 1
             , Font.size fonts.small
             , Color.border (Color.rgb 170 170 170)
-            , Font.typeface [ "Consolas", "Lucida Console", "monospace" ]
+            , Font.typeface [ "Droid Sans Mono", "Consolas", "Lucida Console", "monospace" ]
             ]
         , style Main
             [ Color.text primaryColor
