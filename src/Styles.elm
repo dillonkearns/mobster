@@ -88,7 +88,7 @@ primaryColor =
 
 colors : { mobButton : Color.Color, defaultButton : Color.Color, defaultButtonHover : Color.Color }
 colors =
-    { mobButton = Color.rgb 132 25 163, defaultButton = Color.rgb 70 70 70, defaultButtonHover = Color.rgb 50 50 50 }
+    { mobButton = Color.rgb 52 152 219, defaultButton = Color.rgb 70 70 70, defaultButtonHover = Color.rgb 50 50 50 }
 
 
 type alias StyleProperty =
