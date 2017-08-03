@@ -176,9 +176,10 @@ class DisplayManager {
     let secondaryWindow: Electron.BrowserWindow = new BrowserWindow({
       frame: false,
       backgroundColor: '#222222',
-      alwaysOnTop: true
+      alwaysOnTop: true,
+      focusable: false,
+      ...display.bounds
     })
-    secondaryWindow.setBounds(display.bounds)
     return secondaryWindow
   }
 
