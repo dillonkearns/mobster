@@ -125,7 +125,7 @@ export class DisplayManager {
     })
     this.scriptsWindow.loadURL(
       url.format({
-        pathname: path.join(__dirname, 'script-install-instructions.html'),
+        pathname: path.join(__dirname, '../script-install-instructions.html'),
         protocol: 'file:',
         slashes: true
       })
@@ -170,7 +170,7 @@ export class DisplayManager {
     })
 
     let prodUrl = url.format({
-      pathname: path.join(__dirname, 'setup.prod.html'),
+      pathname: path.join(__dirname, '../setup.prod.html'),
       protocol: 'file:'
     })
     let devUrl = url.format({

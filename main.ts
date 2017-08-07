@@ -146,7 +146,7 @@ function startTimer(flags: any) {
 
   let nodeDevEnv = process.env.NODE_ENV === 'dev'
   let timerProdUrl = url.format({
-    pathname: path.join(__dirname, 'pages', `${timerFile}.prod.html`),
+    pathname: path.join(__dirname, '/pages', `${timerFile}.prod.html`),
     protocol: 'file:'
   })
   let timerDevUrl = url.format({
