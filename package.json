@@ -31,18 +31,14 @@
     }
   },
   "repository": "https://github.com/dillonkearns/mobster",
-  "keywords": [
-    "Electron",
-    "mob programming",
-    "timer",
-    "Agile"
-  ],
+  "keywords": ["Electron", "mob programming", "timer", "Agile"],
   "author": "Dillon Kearns",
   "license": "MIT",
   "devDependencies": {
     "@types/bugsnag": "^2.5.28",
     "@types/jquery": "^3.2.9",
     "@types/node": "^8.0.14",
+    "@types/universal-analytics": "^0.4.0",
     "@types/webpack": "^3.0.4",
     "concurrently": "^3.5.0",
     "devtron": "^1.4.0",
@@ -68,6 +64,8 @@
     "highlight.js": "^9.10.0",
     "jquery": "^3.1.1",
     "ms": "^0.7.2",
-    "node-osascript": "^2.0.0"
+    "node-osascript": "^2.0.0",
+    "machine-uuid": "^1.0.10",
+    "universal-analytics": "^0.4.13"
   }
 }

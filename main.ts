@@ -21,6 +21,13 @@ autoUpdater.requestHeaders = { 'Cache-Control': 'no-cache' }
 require('electron-debug')({
   enabled: true // enable debug shortcuts in prod build
 })
+import * as ua from 'universal-analytics'
+let analytics: ua.Visitor
+const googleAnalyticsId = 'UA-104160912-1'
+require('machine-uuid')((uuid: string) => {
+  analytics = ua(googleAnalyticsId, uuid)
+  analytics.pageview('/').send()
+})
 
 import * as path from 'path'
 import * as url from 'url'
@@ -31,6 +38,7 @@ const appDataPath = app.getPath('userData')
 let currentMobstersFilePath: string = path.join(appDataPath, 'active-mobsters')
 const bugsnag = require('bugsnag')
 const isLocal = require('electron-is-dev')
+
 log.info(`Running version ${version}`)
 
 let checkForUpdates = true
