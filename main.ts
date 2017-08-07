@@ -28,12 +28,14 @@ const trackPage = (path: string) => {
   analytics.pageview(path).send()
 }
 
-const trackEvent = (
-  category: string,
-  action: string,
-  label: string,
+interface AnalyticsEvent {
+  category: string
+  action: string
+  label: string
   value: any
-) => {
+}
+const trackEvent = (event: AnalyticsEvent) => {
+  const { category, action, label, value } = event
   analytics.event(category, action, label, value).send()
 }
 
@@ -232,6 +234,12 @@ function onReady() {
         shell.openExternal(ipc.data)
       } else if (ipc.message === 'StartTimer') {
         startTimer(ipc.data)
+        trackEvent({
+          category: ipc.data.isBreak ? 'break' : 'timer',
+          action: 'start',
+          label: 'label',
+          value: ipc.data.minutes
+        })
         displayManager.hideMain()
       } else if (ipc.message === 'SaveActiveMobstersFile') {
         updateMobsterNamesFile(ipc.data)
