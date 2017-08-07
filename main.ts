@@ -23,10 +23,24 @@ require('electron-debug')({
 })
 import * as ua from 'universal-analytics'
 let analytics: ua.Visitor
+
+const trackPage = (path: string) => {
+  analytics.pageview(path).send()
+}
+
+const trackEvent = (
+  category: string,
+  action: string,
+  label: string,
+  value: any
+) => {
+  analytics.event(category, action, label, value).send()
+}
+
 const googleAnalyticsId = 'UA-104160912-1'
 require('machine-uuid')((uuid: string) => {
   analytics = ua(googleAnalyticsId, uuid)
-  analytics.pageview('/').send()
+  trackPage('/')
 })
 
 import * as path from 'path'
