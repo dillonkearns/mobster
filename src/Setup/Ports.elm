@@ -19,6 +19,3 @@ port breakDone : (Int -> msg) -> Sub msg
 
 
 port updateDownloaded : (String -> msg) -> Sub msg
-
-
-port onCopyMobstersShortcut : (() -> msg) -> Sub msg

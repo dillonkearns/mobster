@@ -23,9 +23,6 @@ export interface App {
     updateDownloaded: {
       send(data: string): void
     }
-    onCopyMobstersShortcut: {
-      send(data: any): void
-    }
   }
 }
 
