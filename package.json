@@ -50,6 +50,7 @@
     "elm-test": "^0.18.7",
     "elm-webpack-loader": "^4.3.1",
     "ts-loader": "^2.3.1",
+    "ts-node": "^3.3.0",
     "typescript": "^2.4.1",
     "webpack": "^3.3.0",
     "webpack-dev-server": "^2.5.1"

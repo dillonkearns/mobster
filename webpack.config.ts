@@ -1,7 +1,7 @@
-const webpack = require('webpack')
-const path = require('path')
+import * as webpack from 'webpack'
+import * as path from 'path'
 
-module.exports = function(env) {
+module.exports = function(env: any): webpack.Configuration {
   return {
     entry: {
       setup: './typescript/setup.ts',
