@@ -1,4 +1,4 @@
-const Elm = require('../src/Setup/Main.elm')
+import * as Elm from '../src/Setup/Main'
 import { ipcRenderer, clipboard } from 'electron'
 const { version } = require('../package.json')
 console.log(`Running version ${version}`)
@@ -11,15 +11,15 @@ document.addEventListener('DOMContentLoaded', function(event) {
   const div = document.getElementById('main')
 
   let setup = Elm.Setup.Main.fullscreen({ settings, onMac, isLocal })
-  setup.ports.selectDuration.subscribe(function(id: string) {
+  setup.ports.selectDuration.subscribe(function(id) {
     let inputElement: any = document.getElementById(id)
     inputElement.select()
   })
-  setup.ports.sendIpc.subscribe(function([message, data]: any) {
+  setup.ports.sendIpc.subscribe(function([message, data]) {
     console.log('sendIpc', message, data)
     ipcRenderer.send('elm-electron-ipc', { message, data })
   })
-  setup.ports.saveSettings.subscribe(function(settings: any) {
+  setup.ports.saveSettings.subscribe(function(settings) {
     window.localStorage.setItem('settings', JSON.stringify(settings))
   })
   ipcRenderer.on('update-downloaded', function(

@@ -28,6 +28,9 @@ module.exports = function(env: any): webpack.Configuration {
         },
         { test: /\.ts$/, loader: 'ts-loader' }
       ]
+    },
+    resolve: {
+      extensions: ['.js', '.ts', '.elm']
     }
   }
 }
