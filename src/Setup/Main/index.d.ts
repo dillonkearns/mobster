@@ -3,6 +3,7 @@
 // Definitions by: Dillon Kearns <https://github.com/dillonkearns>
 export as namespace Elm
 
+
 export interface App {
   ports: {
     saveSettings: {
@@ -25,15 +26,9 @@ export interface App {
     }
   }
 }
+    
 
 export namespace Setup.Main {
-  export function fullscreen(flags: {
-    onMac: boolean
-    isLocal: boolean
-    settings: any
-  }): App
-  export function embed(
-    node: HTMLElement | null,
-    flags: { onMac: boolean; isLocal: boolean; settings: any }
-  ): App
+  export function fullscreen(flags: { onMac: boolean; isLocal: boolean; settings: any }): App
+  export function embed(node: HTMLElement | null, flags: { onMac: boolean; isLocal: boolean; settings: any }): App
 }
