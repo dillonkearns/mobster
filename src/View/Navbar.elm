@@ -1,7 +1,7 @@
 module View.Navbar exposing (view)
 
 import Element exposing (..)
-import Element.Attributes exposing (..)
+import Element.Attributes as Attr exposing (..)
 import Element.Events exposing (onClick, onInput)
 import Ipc
 import Setup.Msg as Msg exposing (Msg)
@@ -10,7 +10,7 @@ import Styles exposing (StyleElement)
 
 
 view : { model | screenState : ScreenState, device : Device } -> StyleElement
-view { screenState, device } =
+view ({ screenState, device } as model) =
     let
         cogButton =
             Element.when (screenState /= Configure) settingsPageButton
@@ -20,7 +20,7 @@ view { screenState, device } =
     in
     row Styles.Navbar
         [ justify, paddingXY 10 10, verticalCenter ]
-        [ row Styles.None [ spacing 12, verticalCenter ] [ roseIcon, el Styles.Logo [] (text "Mobster") ]
+        [ row Styles.None [ spacing 12, verticalCenter ] [ roseIcon model, el Styles.Logo [] (text "Mobster") ]
         , row Styles.None
             [ spacing 10 ]
             [ cogButton
@@ -47,6 +47,10 @@ navButtonView buttonText navButtonType msg =
     button <| el (Styles.NavButton navButtonType) [ minWidth <| px 60, Element.Events.onClick msg ] (text buttonText)
 
 
-roseIcon : StyleElement
-roseIcon =
-    Element.image "./assets/rose.png" Styles.None [ height (px 40), width (px 25) ] Element.empty
+roseIcon : { model | device : Device } -> StyleElement
+roseIcon { device } =
+    let
+        ( width, height ) =
+            ( Styles.responsiveForWidth device ( 12, 40 ) |> Attr.px, Styles.responsiveForWidth device ( 18, 70 ) |> Attr.px )
+    in
+    Element.image "./assets/rose.png" Styles.None [ Attr.height height, Attr.width width ] Element.empty
