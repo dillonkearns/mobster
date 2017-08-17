@@ -568,8 +568,8 @@ ctrlKey onMac =
         "Ctrl"
 
 
-startMobbingButton : Bool -> String -> StyleElement
-startMobbingButton onMac title =
+startMobbingButton : { model | onMac : Bool, device : Element.Device } -> String -> StyleElement
+startMobbingButton { onMac, device } title =
     let
         tooltipText =
             if onMac then
@@ -579,6 +579,6 @@ startMobbingButton onMac title =
     in
     column None
         [ class "styleElementsTooltipContainer" ]
-        [ (button <| el WideButton [ padding 13, Element.Events.onClick Msg.StartTimer, Element.Attributes.id "continue-button" ] (text title))
+        [ (button <| el WideButton [ padding (responsiveForWidth device ( 10, 20 )), Element.Events.onClick Msg.StartTimer, Element.Attributes.id "continue-button" ] (text title))
             |> above [ el Tooltip [ center, class "styleElementsTooltip" ] (text tooltipText) ]
         ]

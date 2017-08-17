@@ -32,7 +32,7 @@ view ({ device, tip, settings, onMac } as model) =
         , Element.hairline Styles.Hairline
         ]
     , Views.Tip.view tip
-    , Styles.startMobbingButton onMac "Continue"
+    , Styles.startMobbingButton model "Continue"
     ]
 
 

@@ -328,7 +328,7 @@ configureBetaViewElements model =
             [ Element.Attributes.width (Element.Attributes.percent 70) ]
             (View.RosterBeta.view model model.settings.rosterData)
         ]
-    , Styles.startMobbingButton model.onMac "Start Mobbing"
+    , Styles.startMobbingButton model "Start Mobbing"
     ]
 
 
