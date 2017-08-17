@@ -1,7 +1,7 @@
 import * as webpack from 'webpack'
 import * as path from 'path'
 
-module.exports = function(env: any): webpack.Configuration {
+export default function(env: any): webpack.Configuration {
   return {
     entry: {
       setup: './typescript/setup.ts',
