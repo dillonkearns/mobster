@@ -17,21 +17,23 @@ import View.Roster
 
 
 view :
-    { query : String, selection : QuickRotate.Selection }
+    { model
+        | quickRotateState : QuickRotate.State
+        , activeMobstersStyle : Animation.Messenger.State Msg.Msg
+        , dieStyle : Animation.State
+    }
     ->
         { inactiveMobsters :
             List { name : String, rpgData : Roster.Rpg.RpgData }
         , mobsters : List Mobster.Mobster
         , nextDriver : Int
         }
-    -> Animation.Messenger.State Msg.Msg
-    -> Animation.State
     -> StyleElement
-view quickRotateState rosterData activeMobstersStyle dieAnimation =
+view { quickRotateState, dieStyle, activeMobstersStyle } rosterData =
     Element.row Styles.None
         []
         [ rosterView quickRotateState rosterData activeMobstersStyle
-        , shuffleDieContainer dieAnimation
+        , shuffleDieContainer dieStyle
         ]
 
 

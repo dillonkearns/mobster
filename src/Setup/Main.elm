@@ -326,7 +326,7 @@ configureBetaViewElements model =
         [ Styles.configOptions model.onMac model.settings
         , Element.el Styles.None
             [ Element.Attributes.width (Element.Attributes.percent 70) ]
-            (View.RosterBeta.view model.quickRotateState model.settings.rosterData model.activeMobstersStyle model.dieStyle)
+            (View.RosterBeta.view model model.settings.rosterData)
         ]
     , Styles.startMobbingButton model.onMac "Start Mobbing"
     ]
