@@ -343,12 +343,12 @@ stylesheet device =
         , style (RosterInput True)
             [ Color.background (Color.rgba 0 0 0 0)
             , Color.text Color.white
-            , Font.typeface typefaces.body
+            , Font.size fonts.small
             ]
         , style (RosterInput False)
             [ Color.background (Color.rgba 0 0 0 0)
             , Color.text Color.white
-            , Font.typeface typefaces.body
+            , Font.size fonts.small
             ]
         , style (RosterEntry (Just Roster.Presenter.Driver))
             [ Color.background fontColor.circle
