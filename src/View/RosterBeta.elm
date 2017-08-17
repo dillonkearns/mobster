@@ -2,7 +2,7 @@ module View.RosterBeta exposing (view)
 
 import Animation
 import Animation.Messenger
-import Element exposing (el)
+import Element exposing (Device, el)
 import Element.Attributes as Attr
 import Element.Events
 import Json.Decode
@@ -21,6 +21,7 @@ view :
         | quickRotateState : QuickRotate.State
         , activeMobstersStyle : Animation.Messenger.State Msg.Msg
         , dieStyle : Animation.State
+        , device : Device
     }
     ->
         { inactiveMobsters :
@@ -29,11 +30,11 @@ view :
         , nextDriver : Int
         }
     -> StyleElement
-view { quickRotateState, dieStyle, activeMobstersStyle } rosterData =
+view ({ quickRotateState, dieStyle, activeMobstersStyle } as model) rosterData =
     Element.row Styles.None
         []
         [ rosterView quickRotateState rosterData activeMobstersStyle
-        , shuffleDieContainer dieStyle
+        , shuffleDieContainer model
         ]
 
 
@@ -248,27 +249,43 @@ onClickWithoutPropagation msgConstructor =
 
 
 shuffleDie :
-    Animation.State
+    { model
+        | dieStyle : Animation.State
+        , device : Device
+    }
     -> StyleElement
-shuffleDie animationStyle =
+shuffleDie { dieStyle, device } =
+    let
+        dimension =
+            Styles.responsiveForWidth device ( 25, 60 ) |> Attr.px
+    in
     Element.image "./assets/dice.png"
         Styles.ShuffleDie
-        (List.map (\attr -> Attr.toAttr attr) (Animation.render animationStyle)
+        (List.map (\attr -> Attr.toAttr attr) (Animation.render dieStyle)
             ++ [ Element.Events.onClick Msg.ShuffleMobsters
-               , Attr.height (Attr.px 25)
-               , Attr.width (Attr.px 25)
+               , Attr.height dimension
+               , Attr.width dimension
                ]
         )
         Element.empty
 
 
-shuffleDieContainer : Animation.State -> StyleElement
-shuffleDieContainer dieAnimation =
-    Element.el Styles.ShuffleDieContainer [ Attr.width (Attr.px 60), Attr.height (Attr.px 60) ] <|
+shuffleDieContainer :
+    { model
+        | dieStyle : Animation.State
+        , device : Device
+    }
+    -> StyleElement
+shuffleDieContainer ({ dieStyle, device } as model) =
+    let
+        dimension =
+            Styles.responsiveForWidth device ( 40, 100 ) |> Attr.px
+    in
+    Element.el Styles.ShuffleDieContainer [ Attr.width dimension, Attr.height dimension ] <|
         -- The extra container is needed to center, setting it directly
         -- on the image conflicts with the style animation css
         Element.el Styles.None
             [ Attr.verticalCenter
             , Attr.center
             ]
-            (shuffleDie dieAnimation)
+            (shuffleDie model)
