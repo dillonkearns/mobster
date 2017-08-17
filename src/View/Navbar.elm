@@ -25,8 +25,8 @@ view ({ screenState, device } as model) =
             [ spacing 10 ]
             [ cogButton
             , Element.image "./assets/invisible.png" Styles.None [ class "invisible-trigger", width (px iconDimensions), height (px iconDimensions) ] Element.empty
-            , navButtonView "Hide" Styles.Warning (Msg.SendIpc Ipc.Hide)
-            , navButtonView "Quit" Styles.Danger (Msg.SendIpc Ipc.Quit)
+            , navButtonView model "Hide" Styles.Warning (Msg.SendIpc Ipc.Hide)
+            , navButtonView model "Quit" Styles.Danger (Msg.SendIpc Ipc.Quit)
             ]
         ]
 
@@ -42,9 +42,9 @@ settingsPageButton =
         Element.empty
 
 
-navButtonView : String -> Styles.NavButtonType -> Msg -> StyleElement
-navButtonView buttonText navButtonType msg =
-    button <| el (Styles.NavButton navButtonType) [ minWidth <| px 60, Element.Events.onClick msg ] (text buttonText)
+navButtonView : { model | device : Element.Device } -> String -> Styles.NavButtonType -> Msg -> StyleElement
+navButtonView { device } buttonText navButtonType msg =
+    button <| el (Styles.NavButton navButtonType) [ paddingXY (Styles.responsiveForWidth device ( 5, 20 )) 0, minWidth <| px 60, Element.Events.onClick msg ] (text buttonText)
 
 
 roseIcon : { model | device : Device } -> StyleElement
