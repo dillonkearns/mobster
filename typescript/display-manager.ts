@@ -34,7 +34,6 @@ export class DisplayManager {
 
   showMain() {
     if (!this.mainWindow.isVisible()) {
-      // this.showMainWindow()
       this.createSecondaryWindows()
     }
   }
@@ -88,28 +87,25 @@ export class DisplayManager {
       this.createSecondaryWindow(display)
     )
 
-    this.showAllWhenReady(this.mainWindow, this.secondaryWindows)
-  }
-
-  private showAllWhenReady(
-    mainWindow: Electron.BrowserWindow,
-    windows: Electron.BrowserWindow[]
-  ): void {
-    let readyToDisplay = windows.map(window => {
-      return { id: window.id, ready: false }
-    })
-    windows.forEach(window => {
-      window.once('ready-to-show', () => {
-        if (window) {
-          let entry = readyToDisplay.find(({ id }) => id === window.id)
-          entry && (entry.ready = true)
-          if (readyToDisplay.every(({ ready }) => ready)) {
-            mainWindow.show()
-            windows.forEach(window => window.show())
-          }
-        }
+    if (this.secondaryWindows.length === 0) {
+      this.mainWindow.show()
+    } else {
+      let readyToDisplay = this.secondaryWindows.map(window => {
+        return { id: window.id, ready: false }
       })
-    })
+      this.secondaryWindows.forEach(window => {
+        window.once('ready-to-show', () => {
+          if (window) {
+            let entry = readyToDisplay.find(({ id }) => id === window.id)
+            entry && (entry.ready = true)
+            if (readyToDisplay.every(({ ready }) => ready)) {
+              this.mainWindow.show()
+              this.secondaryWindows.forEach(window => window.show())
+            }
+          }
+        })
+      })
+    }
   }
 
   private showAll() {
