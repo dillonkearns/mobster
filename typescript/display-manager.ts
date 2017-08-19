@@ -213,6 +213,17 @@ export class DisplayManager {
       this.showMain()
     })
 
+    ipcMain.on('transparent-hover-stop', (event: any) => {
+      this.secondaryWindows.forEach(secondaryWindow =>
+        secondaryWindow.webContents.send('transparent-hover-stop')
+      )
+    })
+    ipcMain.on('transparent-hover-start', (event: any) => {
+      this.secondaryWindows.forEach(secondaryWindow =>
+        secondaryWindow.webContents.send('transparent-hover-start')
+      )
+    })
+
     this.mainWindow.on('closed', function() {
       app.quit()
     })

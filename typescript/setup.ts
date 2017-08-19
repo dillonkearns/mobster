@@ -39,9 +39,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
     $('.invisible-trigger').hover(
       () => {
         $('body').addClass('transparent')
+        ipcRenderer.send('transparent-hover-start')
       },
       () => {
         $('body').removeClass('transparent')
+        ipcRenderer.send('transparent-hover-stop')
       }
     )
   })

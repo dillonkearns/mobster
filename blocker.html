@@ -10,15 +10,18 @@
       }
       .transparent {
         opacity: .08 !important;
-        background-color: rgba(150, 150, 150, 0.08);
+        background-color: rgba(150, 150, 150, 0.38);
       }
     </style>
     <script type="text/javascript">
     const $ = (jQuery = require('jquery'))
-ipcRenderer.on('transparent-hover-start', function(event: any) {
+const { ipcRenderer } = require('electron')
+ipcRenderer.on('transparent-hover-start', function(event) {
+  console.log('transparent-hover-start received')
   $('body').addClass('transparent')
 })
-ipcRenderer.on('transparent-hover-stop', function(event: any) {
+ipcRenderer.on('transparent-hover-stop', function(event) {
+  console.log('transparent-hover-stop received')
   $('body').removeClass('transparent')
 })
 </script>
