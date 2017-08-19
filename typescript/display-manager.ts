@@ -34,7 +34,7 @@ export class DisplayManager {
 
   showMain() {
     if (!this.mainWindow.isVisible()) {
-      this.showMainWindow()
+      // this.showMainWindow()
       this.createSecondaryWindows()
     }
   }
@@ -80,16 +80,6 @@ export class DisplayManager {
     this.mainWindow.hide()
   }
 
-  private showMainWindow() {
-    // TODO: workaround - remove once
-    // https://github.com/electron/electron/issues/2867#issuecomment-264312493 has been resolved
-    if (onWindows) {
-      this.mainWindow.minimize()
-    }
-    this.mainWindow.show()
-    this.mainWindow.focus()
-  }
-
   private createSecondaryWindows() {
     let displays: Electron.Display[] = screen
       .getAllDisplays()
@@ -97,6 +87,34 @@ export class DisplayManager {
     this.secondaryWindows = displays.map(display =>
       this.createSecondaryWindow(display)
     )
+
+    this.showAllWhenReady(this.mainWindow, this.secondaryWindows)
+  }
+
+  private showAllWhenReady(
+    mainWindow: Electron.BrowserWindow,
+    windows: Electron.BrowserWindow[]
+  ): void {
+    let readyToDisplay = windows.map(window => {
+      return { id: window.id, ready: false }
+    })
+    windows.forEach(window => {
+      window.once('ready-to-show', () => {
+        if (window) {
+          let entry = readyToDisplay.find(({ id }) => id === window.id)
+          entry && (entry.ready = true)
+          if (readyToDisplay.every(({ ready }) => ready)) {
+            mainWindow.show()
+            windows.forEach(window => window.show())
+          }
+        }
+      })
+    })
+  }
+
+  private showAll() {
+    this.mainWindow.show()
+    this.secondaryWindows.forEach(window => window.show())
   }
 
   private closeSecondaryWindows() {
@@ -121,11 +139,6 @@ export class DisplayManager {
         slashes: true
       })
     )
-    secondaryWindow.once('ready-to-show', () => {
-      if (secondaryWindow) {
-        secondaryWindow.show()
-      }
-    })
 
     return secondaryWindow
   }
@@ -165,7 +178,7 @@ export class DisplayManager {
     })
 
     this.mainWindow.once('ready-to-show', () => {
-      this.mainWindow && this.mainWindow.show()
+      // this.mainWindow && this.mainWindow.show()
       this.createSecondaryWindows()
     })
 
