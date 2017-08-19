@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=dev concurrently --kill-others 'npm run generate-ipc && npm run webpack-dev' 'npm run build-node && npm test && npm run build-css && electron .'",
     "startprod": "NODE_ENV=production npm test && npm run build-node && npm run webpack-production && electron .",
-    "webpack-dev": "webpack-dev-server --hot",
+    "webpack-dev": "webpack-dev-server --hot --port 8080",
     "webpack-production": "webpack -p --env.production",
     "build-css": "elm-css src/Stylesheets.elm",
     "build-node": "npm run generate-ipc && npm run types",
