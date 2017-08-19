@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Mobster</title>
+    <style>
+      body {
+        background-color: #222222;
+        color: white;
+      }
+      .transparent {
+        opacity: .08 !important;
+        background-color: rgba(150, 150, 150, 0.08);
+      }
+    </style>
+    <script type="text/javascript">
+    const $ = (jQuery = require('jquery'))
+ipcRenderer.on('transparent-hover-start', function(event: any) {
+  $('body').addClass('transparent')
+})
+ipcRenderer.on('transparent-hover-stop', function(event: any) {
+  $('body').removeClass('transparent')
+})
+</script>
+  </head>
+  <body>
+  </body>
+</html>

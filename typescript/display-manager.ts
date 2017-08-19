@@ -105,13 +105,28 @@ export class DisplayManager {
   }
 
   createSecondaryWindow(display: Electron.Display) {
-    let secondaryWindow: Electron.BrowserWindow = new BrowserWindow({
-      frame: false,
-      backgroundColor: '#222222',
-      alwaysOnTop: true,
-      focusable: false,
-      ...display.bounds
+    let secondaryWindow: Electron.BrowserWindow = this.newTransparentOnTopWindow(
+      {
+        frame: false,
+        alwaysOnTop: true,
+        focusable: false,
+        show: false,
+        ...display.bounds
+      }
+    )
+    secondaryWindow.loadURL(
+      url.format({
+        pathname: path.join(__dirname, '../blocker.html'),
+        protocol: 'file:',
+        slashes: true
+      })
+    )
+    secondaryWindow.once('ready-to-show', () => {
+      if (secondaryWindow) {
+        secondaryWindow.show()
+      }
     })
+
     return secondaryWindow
   }
 
