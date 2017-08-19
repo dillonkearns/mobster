@@ -257,7 +257,7 @@ shuffleDie :
 shuffleDie { dieStyle, device } =
     let
         dimension =
-            Styles.responsiveForWidth device ( 25, 60 ) |> Attr.px
+            Styles.responsiveForWidth device ( 20, 50 ) |> Attr.px
     in
     Element.image "./assets/dice.png"
         Styles.ShuffleDie
