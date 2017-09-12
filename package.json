@@ -1,6 +1,6 @@
 {
   "name": "Mobster",
-  "version": "0.0.40",
+  "version": "0.0.41",
   "description": "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
   "scripts": {
@@ -31,7 +31,12 @@
     }
   },
   "repository": "https://github.com/dillonkearns/mobster",
-  "keywords": ["Electron", "mob programming", "timer", "Agile"],
+  "keywords": [
+    "Electron",
+    "mob programming",
+    "timer",
+    "Agile"
+  ],
   "author": "Dillon Kearns",
   "license": "MIT",
   "devDependencies": {
