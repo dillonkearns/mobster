@@ -20,7 +20,7 @@ import { Ipc, ElmIpc } from './ipc'
 
 export class DisplayManager {
   private mainWindow: Electron.BrowserWindow
-  private secondaryWindows: Electron.BrowserWindow[]
+  private secondaryWindows: Electron.BrowserWindow[] | undefined
   private scriptsWindow: Electron.BrowserWindow | null
 
   constructor(
@@ -79,6 +79,10 @@ export class DisplayManager {
     this.mainWindow.hide()
   }
 
+  private getSecondaryWindows() {
+    return this.secondaryWindows || []
+  }
+
   private createSecondaryWindows() {
     let displays: Electron.Display[] = screen
       .getAllDisplays()
@@ -87,20 +91,20 @@ export class DisplayManager {
       this.createSecondaryWindow(display)
     )
 
-    if (this.secondaryWindows.length === 0) {
+    if (this.getSecondaryWindows().length === 0) {
       this.mainWindow.show()
     } else {
-      let readyToDisplay = this.secondaryWindows.map(window => {
+      let readyToDisplay = this.getSecondaryWindows().map(window => {
         return { id: window.id, ready: false }
       })
-      this.secondaryWindows.forEach(window => {
+      this.getSecondaryWindows().forEach(window => {
         window.once('ready-to-show', () => {
           if (window) {
             let entry = readyToDisplay.find(({ id }) => id === window.id)
             entry && (entry.ready = true)
             if (readyToDisplay.every(({ ready }) => ready)) {
               this.mainWindow.show()
-              this.secondaryWindows.forEach(window => window.show())
+              this.getSecondaryWindows().forEach(window => window.show())
             }
           }
         })
@@ -110,11 +114,13 @@ export class DisplayManager {
 
   private showAll() {
     this.mainWindow.show()
-    this.secondaryWindows.forEach(window => window.show())
+    this.getSecondaryWindows().forEach(window => window.show())
   }
 
   private closeSecondaryWindows() {
-    this.secondaryWindows.forEach(secondaryWindow => secondaryWindow.close())
+    this.getSecondaryWindows().forEach(secondaryWindow =>
+      secondaryWindow.close()
+    )
     this.secondaryWindows = []
   }
 
@@ -223,12 +229,12 @@ export class DisplayManager {
     })
 
     ipcMain.on('transparent-hover-stop', (event: any) => {
-      this.secondaryWindows.forEach(secondaryWindow =>
+      this.getSecondaryWindows().forEach(secondaryWindow =>
         secondaryWindow.webContents.send('transparent-hover-stop')
       )
     })
     ipcMain.on('transparent-hover-start', (event: any) => {
-      this.secondaryWindows.forEach(secondaryWindow =>
+      this.getSecondaryWindows().forEach(secondaryWindow =>
         secondaryWindow.webContents.send('transparent-hover-start')
       )
     })
