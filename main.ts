@@ -42,6 +42,7 @@ const trackEvent = (event: AnalyticsEvent) => {
 const googleAnalyticsId = 'UA-104160912-1'
 require('machine-uuid')((uuid: string) => {
   analytics = ua(googleAnalyticsId, uuid)
+  analytics.set('ua', `${process.platform} ${require('os').release()}`)
   trackPage('/')
 })
 
