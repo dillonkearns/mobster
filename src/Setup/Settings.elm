@@ -1,7 +1,7 @@
 module Setup.Settings exposing (..)
 
 import Basics.Extra exposing ((=>))
-import Json.Decode as Decode
+import Json.Decode as Decode exposing (oneOf)
 import Json.Decode.Pipeline exposing (..)
 import Json.Encode as Encode
 import Roster.Data exposing (RosterData)
@@ -16,8 +16,13 @@ type alias Data =
     }
 
 
-decoder : Decode.Decoder Data
+decoder : Decode.Decoder (Maybe Data)
 decoder =
+    Decode.nullable settingsDecoder
+
+
+settingsDecoder : Decode.Decoder Data
+settingsDecoder =
     Json.Decode.Pipeline.decode Data
         |> required "timerDuration" Decode.int
         |> required "breakDuration" Decode.int
@@ -26,7 +31,7 @@ decoder =
         |> required "showHideShortcut" Decode.string
 
 
-decode : Encode.Value -> Result String Data
+decode : Encode.Value -> Result String (Maybe Data)
 decode data =
     Decode.decodeValue decoder data
 

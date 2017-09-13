@@ -827,16 +827,21 @@ init { onMac, isLocal, settings } =
         decodedSettings =
             Settings.decode settings
 
-        ( initialSettings, maybeDecodeError ) =
+        maybeDecodeError =
             case decodedSettings of
                 Ok settings ->
-                    ( settings, Nothing )
+                    Nothing
 
                 Err errorString ->
                     if isLocal then
                         Debug.crash ("init failed to decode settings:\n" ++ errorString)
                     else
-                        ( Settings.initial, Just errorString )
+                        Just errorString
+
+        initialSettings =
+            decodedSettings
+                |> Result.withDefault Nothing
+                |> Maybe.withDefault Settings.initial
 
         notifyIfDecodeFailed =
             case maybeDecodeError of

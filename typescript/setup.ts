@@ -3,7 +3,7 @@ import { ipcRenderer, clipboard } from 'electron'
 const { version } = require('../package.json')
 console.log(`Running version ${version}`)
 let settingsJsonString: string | null = window.localStorage.getItem('settings')
-let settings = settingsJsonString ? JSON.parse(settingsJsonString) : {}
+let settings = settingsJsonString ? JSON.parse(settingsJsonString) : null
 let onMac = /Mac/.test(navigator.platform)
 let isLocal = require('electron-is-dev')
 

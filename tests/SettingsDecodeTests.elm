@@ -25,7 +25,10 @@ suite =
                       "breakDuration": 5,
                       "intervalsPerBreak": 6,
                       "showHideShortcut": "foo"
-                    }""", DecodesTo (Setup.Settings.Data 5 5 6 Roster.Data.empty "foo") )
+                    }"""
+              , DecodesTo <| Just <| Setup.Settings.Data 5 5 6 Roster.Data.empty "foo"
+              )
+            , ( "null", DecodesTo Nothing )
             ]
         , describeDecoder "RosterData"
             Setup.Settings.decoder
@@ -39,7 +42,7 @@ suite =
                       "breakDuration": 5,
                       "intervalsPerBreak": 6,
                       "showHideShortcut": "foo"
-                    }""", DecodesTo (Setup.Settings.Data 5 5 6 { empty | mobsters = [ "Uhura", "Sulu" ] |> toMobsters, inactiveMobsters = [ "Kirk", "Spock" ] |> toMobsters } "foo") )
+                    }""", DecodesTo <| Just <| Setup.Settings.Data 5 5 6 { empty | mobsters = [ "Uhura", "Sulu" ] |> toMobsters, inactiveMobsters = [ "Kirk", "Spock" ] |> toMobsters } "foo" )
             ]
         , test "decoder is able to parse fields generated in encoder" <|
             \() ->
@@ -47,7 +50,7 @@ suite =
                     |> Setup.Settings.encoder
                     |> Decode.decodeValue Setup.Settings.decoder
                     |> Expect.equal
-                        (Ok (Setup.Settings.Data 5 5 6 { empty | mobsters = [ "Uhura", "Sulu" ] |> toMobsters, inactiveMobsters = [ "Kirk", "Spock" ] |> toMobsters } "foo"))
+                        (Ok <| Just (Setup.Settings.Data 5 5 6 { empty | mobsters = [ "Uhura", "Sulu" ] |> toMobsters, inactiveMobsters = [ "Kirk", "Spock" ] |> toMobsters } "foo"))
         ]
 
 
@@ -68,4 +71,4 @@ fuzzTests =
             settings
                 |> Setup.Settings.encoder
                 |> Decode.decodeValue Setup.Settings.decoder
-                |> Expect.equal (Ok settings)
+                |> Expect.equal (settings |> Just |> Ok)
