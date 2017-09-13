@@ -52,7 +52,7 @@ const assetsDirectory = path.join(__dirname, 'assets')
 const { version } = require('./package.json')
 const appDataPath = app.getPath('userData')
 let currentMobstersFilePath: string = path.join(appDataPath, 'active-mobsters')
-const bugsnag = require('bugsnag')
+import * as bugsnag from 'bugsnag'
 const isLocal = require('electron-is-dev')
 
 log.info(`Running version ${version}`)
@@ -128,10 +128,10 @@ function startTimer(flags: any) {
   })
 
   timerWindow.webContents.on('crashed', function() {
-    bugsnag.notify('crashed', 'timerWindow crashed')
+    bugsnag.notify('crashed', { details: 'timerWindow crashed' })
   })
   timerWindow.on('unresponsive', function() {
-    bugsnag.notify('unresponsive', 'timerWindow unresponsive')
+    bugsnag.notify('unresponsive', { details: 'timerWindow unresponsive' })
   })
 
   positionWindowRight(timerWindow)
@@ -244,7 +244,7 @@ function onReady() {
       } else if (ipc.message === 'SaveActiveMobstersFile') {
         updateMobsterNamesFile(ipc.data)
       } else if (ipc.message === 'NotifySettingsDecodeFailed') {
-        bugsnag.notify('settings-decode-failure', ipc.data)
+        bugsnag.notify('settings-decode-failure', { decodeError: ipc.data })
       } else {
         const exhaustiveCheck: never = ipc
       }
