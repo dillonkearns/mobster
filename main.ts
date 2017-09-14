@@ -229,6 +229,7 @@ function onReady() {
         globalShortcut.unregisterAll()
         if (ipc.data !== '') {
           setShowHideShortcut(ipc.data)
+          analytics.event('configure', 'change-shortcut', ipc.data).send()
         }
       } else if (ipc.message === 'OpenExternalUrl') {
         displayManager.hideMain()
@@ -236,9 +237,9 @@ function onReady() {
       } else if (ipc.message === 'StartTimer') {
         startTimer(ipc.data)
         trackEvent({
-          category: ipc.data.isBreak ? 'break' : 'timer',
-          action: 'start',
-          label: 'label',
+          category: 'timer',
+          action: ipc.data.isBreak ? 'start-break' : 'start-timer',
+          label: '',
           value: ipc.data.minutes
         })
         displayManager.hideMain()
