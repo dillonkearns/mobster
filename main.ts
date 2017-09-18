@@ -39,6 +39,15 @@ const trackEvent = (event: AnalyticsEvent) => {
   analytics.event(category, action, label, value).send()
 }
 
+const trackEventParams = (event: {
+  ec: string
+  ea: string
+  el: string | undefined
+  ev: number | undefined
+}) => {
+  analytics.event(event).send()
+}
+
 const googleAnalyticsId = 'UA-104160912-1'
 require('machine-uuid')((uuid: string) => {
   analytics = ua(googleAnalyticsId, uuid)
@@ -248,7 +257,7 @@ function onReady() {
       } else if (ipc.message === 'NotifySettingsDecodeFailed') {
         bugsnag.notify('settings-decode-failure', { decodeError: ipc.data })
       } else if (ipc.message === 'TrackEvent') {
-        trackEvent(ipc.data)
+        trackEventParams(ipc.data)
       } else if (ipc.message === 'TrackPage') {
         trackPage(ipc.data)
       } else {

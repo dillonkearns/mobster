@@ -1,5 +1,6 @@
 module Setup.Main exposing (main)
 
+import Analytics
 import Animation exposing (Step)
 import Animation.Messenger
 import Basics.Extra exposing ((=>))
@@ -464,16 +465,12 @@ update msg model =
             in
             updatedModel
                 ! []
-                |> withIpcMsg
-                    (Ipc.TrackEvent
-                        (Encode.object
-                            [ "category" => Encode.string "break"
-                            , "action" => Encode.string "skip"
-                            , "label" => Encode.string ""
-                            , "value" => Encode.int (toFloat model.secondsSinceBreak / 60.0 |> round)
-                            ]
-                        )
-                    )
+                |> Analytics.trackEvent
+                    { category = "break"
+                    , action = "skip"
+                    , label = Just ""
+                    , value = Just (toFloat model.secondsSinceBreak / 60.0 |> round)
+                    }
 
         Msg.StartBreak ->
             startBreak model
