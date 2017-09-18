@@ -36,3 +36,9 @@ serialize msg =
 
         NotifySettingsDecodeFailed string ->
             ( "NotifySettingsDecodeFailed", Encode.string string )
+
+        TrackEvent value ->
+            ( "TrackEvent", value )
+
+        TrackPage string ->
+            ( "TrackPage", Encode.string string )

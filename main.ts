@@ -247,6 +247,10 @@ function onReady() {
         updateMobsterNamesFile(ipc.data)
       } else if (ipc.message === 'NotifySettingsDecodeFailed') {
         bugsnag.notify('settings-decode-failure', { decodeError: ipc.data })
+      } else if (ipc.message === 'TrackEvent') {
+        trackEvent(ipc.data)
+      } else if (ipc.message === 'TrackPage') {
+        trackPage(ipc.data)
       } else {
         const exhaustiveCheck: never = ipc
       }

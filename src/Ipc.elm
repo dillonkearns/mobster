@@ -14,3 +14,5 @@ type Msg
     | StartTimer Encode.Value
     | SaveActiveMobstersFile String
     | NotifySettingsDecodeFailed String
+    | TrackEvent Encode.Value
+    | TrackPage String

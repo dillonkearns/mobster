@@ -12,7 +12,7 @@ class Ipc {
 export { Ipc, ElmIpc }
     
 
-type ElmIpc = ShowFeedbackForm | ShowScriptInstallInstructions | Hide | Quit | QuitAndInstall | ChangeShortcut | OpenExternalUrl | StartTimer | SaveActiveMobstersFile | NotifySettingsDecodeFailed
+type ElmIpc = ShowFeedbackForm | ShowScriptInstallInstructions | Hide | Quit | QuitAndInstall | ChangeShortcut | OpenExternalUrl | StartTimer | SaveActiveMobstersFile | NotifySettingsDecodeFailed | TrackEvent | TrackPage
 
 interface ShowFeedbackForm {
   message: 'ShowFeedbackForm'
@@ -56,5 +56,15 @@ interface SaveActiveMobstersFile {
 
 interface NotifySettingsDecodeFailed {
   message: 'NotifySettingsDecodeFailed',
+  data: string
+}
+
+interface TrackEvent {
+  message: 'TrackEvent',
+  data: any
+}
+
+interface TrackPage {
+  message: 'TrackPage',
   data: string
 }

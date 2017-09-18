@@ -462,7 +462,18 @@ update msg model =
                     { model | screenState = Continue False }
                         |> resetBreakData
             in
-            updatedModel ! []
+            updatedModel
+                ! []
+                |> withIpcMsg
+                    (Ipc.TrackEvent
+                        (Encode.object
+                            [ "category" => Encode.string "break"
+                            , "action" => Encode.string "skip"
+                            , "label" => Encode.string ""
+                            , "value" => Encode.int (toFloat model.secondsSinceBreak / 60.0 |> round)
+                            ]
+                        )
+                    )
 
         Msg.StartBreak ->
             startBreak model
