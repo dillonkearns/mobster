@@ -22,7 +22,6 @@ type Msg
     | StartRpgMode
     | UpdateRosterData MobsterOperation
     | CheckRpgBox Msg Bool
-    | AddMobster
     | DomResult (Result Dom.Error ())
     | ChangeInput InputField String
     | SelectInputField String

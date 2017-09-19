@@ -481,12 +481,6 @@ update msg model =
         Msg.OpenConfigure ->
             { model | screenState = Configure } ! []
 
-        Msg.AddMobster ->
-            if model.newMobster == "" || Roster.containsName model.newMobster model.settings.rosterData then
-                model ! []
-            else
-                update (Msg.UpdateRosterData (MobsterOperation.Add model.newMobster)) { model | newMobster = "" }
-
         Msg.DomResult _ ->
             model ! []
 
