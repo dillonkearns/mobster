@@ -52,6 +52,7 @@ const googleAnalyticsId = 'UA-104160912-1'
 require('machine-uuid')((uuid: string) => {
   analytics = ua(googleAnalyticsId, uuid)
   analytics.set('ua', `${process.platform} ${require('os').release()}`)
+  analytics.set('appVersion', version)
   trackPage('/')
 })
 
@@ -59,7 +60,8 @@ import * as path from 'path'
 import * as url from 'url'
 const log = require('electron-log')
 const assetsDirectory = path.join(__dirname, 'assets')
-const { version } = require('./package.json')
+const packageJson = require('./package.json')
+const version: string = packageJson.version
 const appDataPath = app.getPath('userData')
 let currentMobstersFilePath: string = path.join(appDataPath, 'active-mobsters')
 import * as bugsnag from 'bugsnag'
