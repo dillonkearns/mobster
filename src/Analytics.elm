@@ -1,17 +1,19 @@
-module Analytics exposing (trackEvent)
+module Analytics exposing (Event, trackEvent, trackOperation)
 
 import Basics.Extra exposing ((=>))
 import Ipc
 import IpcSerializer
 import Json.Encode as Encode
+import Roster.Operation as MobsterOperation exposing (MobsterOperation)
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Ports
 
 
-trackEvent :
+type alias Event =
     { category : String, action : String, label : Maybe String, value : Maybe Int }
-    -> ( model, Cmd Msg )
-    -> ( model, Cmd Msg )
+
+
+trackEvent : Event -> ( model, Cmd Msg ) -> ( model, Cmd Msg )
 trackEvent eventDetails modelCmd =
     modelCmd
         |> withIpcMsg
@@ -24,6 +26,50 @@ trackEvent eventDetails modelCmd =
                     ]
                 )
             )
+
+
+trackOperation : MobsterOperation -> ( model, Cmd Msg ) -> ( model, Cmd Msg )
+trackOperation mobsterOperation modelCmd =
+    modelCmd
+        |> trackEvent (operationToEvent mobsterOperation)
+
+
+operationToEvent : MobsterOperation -> Event
+operationToEvent mobsterOperation =
+    case mobsterOperation of
+        MobsterOperation.Move from to ->
+            { category = "roster", action = "move", label = Just (toString from ++ "-" ++ toString to), value = Nothing }
+
+        MobsterOperation.Remove index ->
+            { category = "roster", action = "remove", label = Nothing, value = Just index }
+
+        MobsterOperation.SetNextDriver index ->
+            { category = "roster", action = "set-next-driver", label = Nothing, value = Just index }
+
+        MobsterOperation.NextTurn ->
+            { category = "roster", action = "next-turn", label = Nothing, value = Nothing }
+
+        MobsterOperation.RewindTurn ->
+            { category = "roster", action = "rewind-turn", label = Nothing, value = Nothing }
+
+        MobsterOperation.Bench index ->
+            { category = "roster", action = "bench", label = Nothing, value = Just index }
+
+        MobsterOperation.RotateIn index ->
+            { category = "roster", action = "rotate-in", label = Nothing, value = Just index }
+
+        MobsterOperation.Add string ->
+            { category = "roster", action = "add", label = Nothing, value = Nothing }
+
+        MobsterOperation.Reorder mobsterList ->
+            { category = "roster", action = "reorder", label = Nothing, value = Nothing }
+
+        MobsterOperation.CompleteGoal mobsterIndex role goalIndex ->
+            { category = "roster"
+            , action = "complete-goal"
+            , label = Just (toString role ++ "[" ++ toString goalIndex ++ "]")
+            , value = Nothing
+            }
 
 
 withIpcMsg : Ipc.Msg -> ( model, Cmd Msg ) -> ( model, Cmd Msg )

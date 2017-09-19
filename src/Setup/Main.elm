@@ -1,6 +1,6 @@
 module Setup.Main exposing (main)
 
-import Analytics
+import Analytics exposing (trackEvent)
 import Animation exposing (Step)
 import Animation.Messenger
 import Basics.Extra exposing ((=>))
@@ -706,6 +706,7 @@ performRosterOperation operation model =
                 |> focusQuickRotateInputIfVisible
     in
     ( updatedModel |> updateQuickRotateStateIfActive, cmd )
+        |> Analytics.trackOperation operation
 
 
 changeGlobalShortcutIfValid : { model | settings : Settings.Data } -> String -> ( { model | settings : Settings.Data }, Cmd Msg )
