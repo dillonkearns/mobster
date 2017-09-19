@@ -1,4 +1,4 @@
-module Analytics exposing (Event, trackEvent, trackOperation)
+module Analytics exposing (Event, trackEvent, trackOperation, trackPage)
 
 import Basics.Extra exposing ((=>))
 import Ipc
@@ -7,6 +7,8 @@ import Json.Encode as Encode
 import Roster.Operation as MobsterOperation exposing (MobsterOperation)
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Ports
+import Setup.Rpg.View
+import Setup.View exposing (ScreenState)
 
 
 type alias Event =
@@ -70,6 +72,29 @@ operationToEvent mobsterOperation =
             , label = Just (toString role ++ "[" ++ toString goalIndex ++ "]")
             , value = Nothing
             }
+
+
+trackPage : ScreenState -> { model | showBetaUi : Bool } -> Cmd Msg
+trackPage newScreenState model =
+    sendIpcCmd (Ipc.TrackPage (screenToString newScreenState model))
+
+
+screenToString : ScreenState -> { model | showBetaUi : Bool } -> String
+screenToString newScreenState showBetaUi =
+    case newScreenState of
+        Setup.View.Configure ->
+            "configure"
+
+        Setup.View.Continue bool ->
+            "continue"
+
+        Setup.View.Rpg rpgState ->
+            case rpgState of
+                Setup.Rpg.View.Checklist ->
+                    "rpg-checklist"
+
+                Setup.Rpg.View.NextUp ->
+                    "rpg-next-up"
 
 
 withIpcMsg : Ipc.Msg -> ( model, Cmd Msg ) -> ( model, Cmd Msg )

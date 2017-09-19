@@ -394,7 +394,7 @@ update msg model =
                     model ! []
 
         Msg.StartRpgMode ->
-            { model | screenState = Rpg NextUp } ! []
+            model ! [] |> changeScreen (Rpg NextUp)
 
         Msg.ToggleRotationScreen ->
             case model.screenState of
@@ -406,7 +406,9 @@ update msg model =
                             else
                                 [ focusQuickRotateInput ]
                     in
-                    { model | screenState = Continue (not showRotation) } ! sideEffects
+                    model
+                        ! sideEffects
+                        |> changeScreen (Continue (not showRotation))
 
                 Configure ->
                     model ! [ focusQuickRotateInput ]
@@ -417,7 +419,9 @@ update msg model =
         Msg.ShowRotationScreen ->
             case model.screenState of
                 Continue showRotation ->
-                    { model | screenState = Continue True } ! [ focusQuickRotateInput ]
+                    model
+                        ! [ focusQuickRotateInput ]
+                        |> changeScreen (Continue True)
 
                 Configure ->
                     model ! [ focusQuickRotateInput ]
@@ -440,14 +444,14 @@ update msg model =
 
                     updatedModel =
                         { model
-                            | screenState = nextScreenState
-                            , combos = keyboardComboInit
+                            | combos = keyboardComboInit
                         }
                             |> resetIfAfterBreak
 
                     startTimerUpdate =
                         updatedModel
                             ! [ changeTip, blurContinueButton ]
+                            |> changeScreen nextScreenState
                             |> startTimer
                 in
                 case model.screenState of
@@ -458,13 +462,9 @@ update msg model =
                         startTimerUpdate |> Update.Extra.andThen update (Msg.UpdateRosterData MobsterOperation.NextTurn)
 
         Msg.SkipBreak ->
-            let
-                updatedModel =
-                    { model | screenState = Continue False }
-                        |> resetBreakData
-            in
-            updatedModel
+            (model |> resetBreakData)
                 ! []
+                |> changeScreen (Continue False)
                 |> Analytics.trackEvent
                     { category = "break"
                     , action = "skip"
@@ -479,7 +479,9 @@ update msg model =
             model ! [ Setup.Ports.selectDuration fieldId ]
 
         Msg.OpenConfigure ->
-            { model | screenState = Configure } ! []
+            model
+                ! []
+                |> changeScreen Configure
 
         Msg.DomResult _ ->
             model ! []
@@ -561,8 +563,9 @@ update msg model =
             update msg model
 
         Msg.ViewRpgNextUp ->
-            { model | screenState = Rpg NextUp }
+            model
                 ! []
+                |> changeScreen (Rpg NextUp)
                 |> Update.Extra.andThen update
                     (Msg.UpdateRosterData MobsterOperation.NextTurn)
 
@@ -676,14 +679,21 @@ startBreak model =
 
                 _ ->
                     Continue False
-
-        updatedModel =
-            { model | screenState = nextScreenState }
-                |> resetIfAfterBreak
     in
-    updatedModel
+    (model |> resetIfAfterBreak)
         ! [ changeTip ]
+        |> changeScreen nextScreenState
         |> startBreakTimer
+
+
+changeScreen : ScreenState -> ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+changeScreen newScreenState ( model, cmd ) =
+    ( { model | screenState = newScreenState }
+    , Cmd.batch
+        [ cmd
+        , Analytics.trackPage newScreenState model
+        ]
+    )
 
 
 performRosterOperation :
