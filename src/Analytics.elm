@@ -80,21 +80,28 @@ trackPage newScreenState model =
 
 
 screenToString : ScreenState -> { model | showBetaUi : Bool } -> String
-screenToString newScreenState showBetaUi =
-    case newScreenState of
-        Setup.View.Configure ->
-            "configure"
+screenToString newScreenState { showBetaUi } =
+    let
+        screenString =
+            case newScreenState of
+                Setup.View.Configure ->
+                    "configure"
 
-        Setup.View.Continue bool ->
-            "continue"
+                Setup.View.Continue bool ->
+                    "continue"
 
-        Setup.View.Rpg rpgState ->
-            case rpgState of
-                Setup.Rpg.View.Checklist ->
-                    "rpg-checklist"
+                Setup.View.Rpg rpgState ->
+                    case rpgState of
+                        Setup.Rpg.View.Checklist ->
+                            "rpg-checklist"
 
-                Setup.Rpg.View.NextUp ->
-                    "rpg-next-up"
+                        Setup.Rpg.View.NextUp ->
+                            "rpg-next-up"
+    in
+    if showBetaUi then
+        "beta:" ++ screenString
+    else
+        screenString
 
 
 withIpcMsg : Ipc.Msg -> ( model, Cmd Msg ) -> ( model, Cmd Msg )
