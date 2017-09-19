@@ -572,7 +572,8 @@ update msg model =
                 Msg.StringField stringField ->
                     case stringField of
                         Msg.ShowHideShortcut ->
-                            changeGlobalShortcutIfValid model newInputValue
+                            changeGlobalShortcutIfValid newInputValue ( model, Cmd.none )
+                                |> trackEvent { category = "configure", action = "change-shortcut", label = Just newInputValue, value = Nothing }
 
                         Msg.NewMobster ->
                             { model | newMobster = newInputValue } ! []
@@ -727,8 +728,8 @@ performRosterOperationUntracked operation model =
     ( updatedModel |> updateQuickRotateStateIfActive, cmd )
 
 
-changeGlobalShortcutIfValid : { model | settings : Settings.Data } -> String -> ( { model | settings : Settings.Data }, Cmd Msg )
-changeGlobalShortcutIfValid model newInputValue =
+changeGlobalShortcutIfValid : String -> ( { model | settings : Settings.Data }, Cmd Msg ) -> ( { model | settings : Settings.Data }, Cmd Msg )
+changeGlobalShortcutIfValid newInputValue ( model, cmd ) =
     if GlobalShortcut.isInvalid newInputValue then
         model ! []
     else
@@ -739,9 +740,11 @@ changeGlobalShortcutIfValid model newInputValue =
                 else
                     "CommandOrControl+Shift+" ++ newInputValue
         in
-        model
+        (model
             |> updateSettings
                 (\settings -> { settings | showHideShortcut = newInputValue })
+        )
+            |> Update.Extra.addCmd cmd
             |> withIpcMsg (Ipc.ChangeShortcut shortcutString)
 
 
@@ -881,8 +884,7 @@ init { onMac, isLocal, settings } =
     initialModel initialSettings onMac
         ! [ notifyIfDecodeFailed, getInitialWindowSize ]
         |> saveActiveMobsters
-        |> Update.Extra.andThen update
-            (Msg.ChangeInput (Msg.StringField Msg.ShowHideShortcut) initialSettings.showHideShortcut)
+        |> changeGlobalShortcutIfValid initialSettings.showHideShortcut
 
 
 subscriptions : Model -> Sub Msg

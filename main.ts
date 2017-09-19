@@ -240,7 +240,6 @@ function onReady() {
         globalShortcut.unregisterAll()
         if (ipc.data !== '') {
           setShowHideShortcut(ipc.data)
-          analytics.event('configure', 'change-shortcut', ipc.data).send()
         }
       } else if (ipc.message === 'OpenExternalUrl') {
         displayManager.hideMain()
@@ -333,8 +332,16 @@ function setupAutoUpdater() {
   }
 }
 
-function setShowHideShortcut(shortcutString: Electron.Accelerator) {
-  globalShortcut.register(shortcutString, showStopTimerDialog)
+function setShowHideShortcut(shortcutString: string) {
+  globalShortcut.register(shortcutString, () => {
+    trackEventParams({
+      ec: 'shortcut',
+      ea: 'show-hide',
+      el: shortcutString,
+      ev: undefined
+    })
+    showStopTimerDialog()
+  })
 }
 
 let dialogDisplayed = false
