@@ -564,10 +564,8 @@ update msg model =
 
         Msg.ViewRpgNextUp ->
             model
-                ! []
+                |> performRosterOperationUntracked MobsterOperation.NextTurn
                 |> changeScreen (Rpg NextUp)
-                |> Update.Extra.andThen update
-                    (Msg.UpdateRosterData MobsterOperation.NextTurn)
 
         Msg.ChangeInput inputField newInputValue ->
             case inputField of
@@ -711,6 +709,22 @@ performRosterOperation operation model =
     in
     ( updatedModel |> updateQuickRotateStateIfActive, cmd )
         |> Analytics.trackOperation operation
+
+
+performRosterOperationUntracked :
+    MobsterOperation
+    -> { model | settings : Settings.Data, screenState : ScreenState, quickRotateState : QuickRotate.State }
+    -> ( { model | settings : Settings.Data, screenState : ScreenState, quickRotateState : QuickRotate.State }, Cmd Msg )
+performRosterOperationUntracked operation model =
+    let
+        ( updatedModel, cmd ) =
+            model
+                |> updateSettings
+                    (\settings -> { settings | rosterData = MobsterOperation.updateMoblist operation model.settings.rosterData })
+                |> saveActiveMobsters
+                |> focusQuickRotateInputIfVisible
+    in
+    ( updatedModel |> updateQuickRotateStateIfActive, cmd )
 
 
 changeGlobalShortcutIfValid : { model | settings : Settings.Data } -> String -> ( { model | settings : Settings.Data }, Cmd Msg )
