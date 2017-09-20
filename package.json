@@ -46,7 +46,7 @@
     "@types/webpack": "^3.0.4",
     "concurrently": "^3.5.0",
     "devtron": "^1.4.0",
-    "electron": "^1.7.5",
+    "electron": "^1.7.6",
     "electron-builder": "^11.7.0",
     "elm-css": "^0.6.0",
     "elm-electron": "0.0.3",
