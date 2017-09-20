@@ -219,7 +219,6 @@ stylesheet device =
             , Color.background colors.defaultButton
             , Border.rounded 10
             , Font.size fonts.extraSmall
-            , Font.typeface [ "FontAwesome" ]
             , hover
                 [ Color.background colors.defaultButtonHover
                 ]

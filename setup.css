@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Anton|Droid+Sans+Mono|Lato');
 @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
 
+.fa {
+  font-family: FontAwesome !important;
+}
+
 html,
 body {
   -webkit-user-select: none;
