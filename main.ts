@@ -359,9 +359,22 @@ function showStopTimerDialog() {
       message: 'Stop the timer?',
       cancelId: 1
     })
-    if (dialogActionIndex !== 1) {
+    if (dialogActionIndex === 1) {
+      trackEventParams({
+        ec: 'stop-timer',
+        ea: 'cancel',
+        el: '',
+        ev: undefined
+      })
+    } else {
       closeTimer()
       displayManager.showMain()
+      trackEventParams({
+        ec: 'stop-timer',
+        ea: 'confirm',
+        el: '',
+        ev: undefined
+      })
     }
   } else {
     displayManager.toggleMain()
