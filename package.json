@@ -1,6 +1,6 @@
 {
   "name": "Mobster",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "description": "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
   "scripts": {
