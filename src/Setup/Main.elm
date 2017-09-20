@@ -594,16 +594,34 @@ update msg model =
                             model
                                 |> updateSettings
                                     (\settings -> { settings | intervalsPerBreak = newValueInRange })
+                                |> trackEvent
+                                    { category = "settings"
+                                    , action = "change-break-interval"
+                                    , label = Nothing
+                                    , value = Just newValueInRange
+                                    }
 
                         TimerDuration ->
                             model
                                 |> updateSettings
                                     (\settings -> { settings | timerDuration = newValueInRange })
+                                |> trackEvent
+                                    { category = "settings"
+                                    , action = "change-timer-duration"
+                                    , label = Nothing
+                                    , value = Just newValueInRange
+                                    }
 
                         BreakDuration ->
                             model
                                 |> updateSettings
                                     (\settings -> { settings | breakDuration = newValueInRange })
+                                |> trackEvent
+                                    { category = "settings"
+                                    , action = "change-break-duration"
+                                    , label = Nothing
+                                    , value = Just newValueInRange
+                                    }
 
         Msg.QuickRotateAdd ->
             case model.quickRotateState.selection of
