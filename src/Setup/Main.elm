@@ -457,9 +457,14 @@ update msg model =
                 case model.screenState of
                     Rpg rpgState ->
                         startTimerUpdate
+                            |> Analytics.trackEvent { category = "stats", action = "active-mobsters", label = Nothing, value = model.settings.rosterData.mobsters |> List.length |> Just }
+                            |> Analytics.trackEvent { category = "stats", action = "inactive-mobsters", label = Nothing, value = model.settings.rosterData.inactiveMobsters |> List.length |> Just }
 
                     _ ->
-                        startTimerUpdate |> Update.Extra.andThen update (Msg.UpdateRosterData MobsterOperation.NextTurn)
+                        startTimerUpdate
+                            |> Update.Extra.andThen update (Msg.UpdateRosterData MobsterOperation.NextTurn)
+                            |> Analytics.trackEvent { category = "stats", action = "active-mobsters", label = Nothing, value = model.settings.rosterData.mobsters |> List.length |> Just }
+                            |> Analytics.trackEvent { category = "stats", action = "inactive-mobsters", label = Nothing, value = model.settings.rosterData.inactiveMobsters |> List.length |> Just }
 
         Msg.SkipBreak ->
             (model |> resetBreakData)
