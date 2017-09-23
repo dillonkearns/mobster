@@ -30,10 +30,10 @@ view :
         , nextDriver : Int
         }
     -> StyleElement
-view ({ quickRotateState, dieStyle, activeMobstersStyle } as model) rosterData =
+view ({ quickRotateState, dieStyle, activeMobstersStyle, device } as model) rosterData =
     Element.row Styles.None
         []
-        [ rosterView quickRotateState rosterData activeMobstersStyle
+        [ rosterView quickRotateState rosterData activeMobstersStyle device
         , shuffleDieContainer model
         ]
 
@@ -47,8 +47,9 @@ rosterView :
         , nextDriver : Int
         }
     -> Animation.Messenger.State Msg.Msg
+    -> Device
     -> StyleElement
-rosterView quickRotateState rosterData activeMobstersStyle =
+rosterView quickRotateState rosterData activeMobstersStyle device =
     let
         inactiveMobsters =
             rosterData.inactiveMobsters
@@ -75,7 +76,7 @@ rosterView quickRotateState rosterData activeMobstersStyle =
         [ Element.column Styles.None
             []
             [ el Styles.PlainBody [] <| Element.text "Active"
-            , activeView quickRotateState rosterData activeMobstersStyle
+            , activeView quickRotateState rosterData activeMobstersStyle device
             ]
         , Element.column Styles.None
             []
@@ -113,8 +114,9 @@ activeView :
         , mobsters : List Mobster.Mobster
         }
     -> Animation.Messenger.State Msg.Msg
+    -> Device
     -> StyleElement
-activeView quickRotateState rosterData activeMobstersStyle =
+activeView quickRotateState rosterData activeMobstersStyle device =
     let
         inactiveMobsters =
             rosterData.inactiveMobsters
@@ -138,19 +140,27 @@ activeView quickRotateState rosterData activeMobstersStyle =
     in
     Element.wrappedRow (Styles.Roster highlighted)
         [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-        (List.map (activeMobsterView activeMobstersStyle) activeMobsters ++ [ rosterInput quickRotateState.query quickRotateState.selection ])
+        (List.map (activeMobsterView activeMobstersStyle device) activeMobsters ++ [ rosterInput quickRotateState.query quickRotateState.selection ])
 
 
-activeMobsterView : Animation.Messenger.State Msg.Msg -> Roster.Presenter.MobsterWithRole -> StyleElement
-activeMobsterView activeMobstersStyle mobster =
+activeMobsterView :
+    Animation.Messenger.State Msg.Msg
+    -> Device
+    -> Roster.Presenter.MobsterWithRole
+    -> StyleElement
+activeMobsterView activeMobstersStyle device mobster =
     let
+        iconHeight =
+            Styles.responsiveForWidth device ( 10, 40 ) |> Attr.px
+
         roleIcon =
             case mobster.role of
                 Just Roster.Presenter.Driver ->
-                    Element.image "./assets/driver-icon.png" Styles.None [ Attr.width (Attr.px 15), Attr.height (Attr.px 15) ] Element.empty
+                    -- @@ TODO
+                    Element.image "./assets/driver-icon.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
 
                 Just Roster.Presenter.Navigator ->
-                    Element.image "./assets/navigator-icon.png" Styles.None [ Attr.width (Attr.px 15), Attr.height (Attr.px 15) ] Element.empty
+                    Element.image "./assets/navigator-icon.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
 
                 Nothing ->
                     Element.empty
