@@ -62,10 +62,13 @@ coffeeIcon =
 
 activeMobsters : DriverNavigator -> Html msg
 activeMobsters driverNavigator =
-    div [ style [ ( "margin-top", "8px" ) ] ]
-        [ roleView driverNavigator.driver driverIcon
-        , roleView driverNavigator.navigator navigatorIcon
-        ]
+    if driverNavigator.driver == "" && driverNavigator.navigator == "" then
+        text ""
+    else
+        div [ style [ ( "margin-top", "8px" ) ] ]
+            [ roleView driverNavigator.driver driverIcon
+            , roleView driverNavigator.navigator navigatorIcon
+            ]
 
 
 driverNavigatorView : Model -> Html msg
