@@ -22,39 +22,8 @@ require('electron-debug')({
   enabled: true // enable debug shortcuts in prod build
 })
 import * as ua from 'universal-analytics'
-let analytics: ua.Visitor
-
-const trackPage = (path: string) => {
-  analytics.pageview(path).send()
-}
-
-interface AnalyticsEvent {
-  category: string
-  action: string
-  label: string
-  value: any
-}
-const trackEvent = (event: AnalyticsEvent) => {
-  const { category, action, label, value } = event
-  analytics.event(category, action, label, value).send()
-}
-
-const trackEventParams = (event: {
-  ec: string
-  ea: string
-  el: string | undefined
-  ev: number | undefined
-}) => {
-  analytics.event(event).send()
-}
-
-const googleAnalyticsId = 'UA-104160912-1'
-require('machine-uuid')((uuid: string) => {
-  analytics = ua(googleAnalyticsId, uuid)
-  analytics.set('ua', `${process.platform} ${require('os').release()}`)
-  analytics.set('appVersion', version)
-  trackPage('/')
-})
+import { Analytics } from './typescript/analytics'
+let analytics = new Analytics()
 
 import * as path from 'path'
 import * as url from 'url'
@@ -246,7 +215,7 @@ function onReady() {
         shell.openExternal(ipc.data)
       } else if (ipc.message === 'StartTimer') {
         startTimer(ipc.data)
-        trackEvent({
+        analytics.trackEvent({
           category: 'timer',
           action: ipc.data.isBreak ? 'start-break' : 'start-timer',
           label: '',
@@ -258,9 +227,9 @@ function onReady() {
       } else if (ipc.message === 'NotifySettingsDecodeFailed') {
         bugsnag.notify('settings-decode-failure', { decodeError: ipc.data })
       } else if (ipc.message === 'TrackEvent') {
-        trackEventParams(ipc.data)
+        analytics.trackEventParams(ipc.data)
       } else if (ipc.message === 'TrackPage') {
-        trackPage(ipc.data)
+        analytics.trackPage(ipc.data)
       } else {
         const exhaustiveCheck: never = ipc
       }
@@ -334,7 +303,7 @@ function setupAutoUpdater() {
 
 function setShowHideShortcut(shortcutString: string) {
   globalShortcut.register(shortcutString, () => {
-    trackEventParams({
+    analytics.trackEventParams({
       ec: 'shortcut',
       ea: 'show-hide',
       el: shortcutString,
@@ -360,7 +329,7 @@ function showStopTimerDialog() {
       cancelId: 1
     })
     if (dialogActionIndex === 1) {
-      trackEventParams({
+      analytics.trackEventParams({
         ec: 'stop-timer',
         ea: 'cancel',
         el: '',
@@ -369,7 +338,7 @@ function showStopTimerDialog() {
     } else {
       closeTimer()
       displayManager.showMain()
-      trackEventParams({
+      analytics.trackEventParams({
         ec: 'stop-timer',
         ea: 'confirm',
         el: '',
