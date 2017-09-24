@@ -14,6 +14,7 @@ import Roster.Rpg
 import Setup.Msg as Msg exposing (..)
 import Styles exposing (StyleElement, Styles)
 import View.Roster
+import View.Roster.Chip
 
 
 view :
@@ -128,71 +129,13 @@ activeView quickRotateState rosterData activeMobstersStyle device =
         )
 
 
-removeButton : Msg.Msg -> StyleElement
-removeButton msg =
-    Element.el Styles.DeleteButton [ onClickWithoutPropagation msg ] (Element.text "×")
-
-
-mobsterChipView :
-    Msg.Msg
-    -> Msg.Msg
-    -> Styles.Styles
-    -> Maybe (Animation.Messenger.State Msg.Msg)
-    -> Device
-    -> String
-    -> Maybe Roster.Presenter.Role
-    -> StyleElement
-mobsterChipView selectMsg removeMsg style maybeActiveMobstersStyle device name role =
-    let
-        iconHeight =
-            Styles.responsiveForWidth device ( 10, 40 ) |> Attr.px
-
-        padding =
-            Styles.responsiveForWidth device ( 2, 14 )
-
-        spacing =
-            Styles.responsiveForWidth device ( 2, 14 )
-
-        roleIcon =
-            case role of
-                Just Roster.Presenter.Driver ->
-                    Element.image "./assets/driver-icon.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
-
-                Just Roster.Presenter.Navigator ->
-                    Element.image "./assets/navigator-icon.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
-
-                Nothing ->
-                    Element.image "./assets/transparent.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
-
-        animationAttrs =
-            case maybeActiveMobstersStyle of
-                Just activeMobstersStyle ->
-                    List.map (\attr -> Attr.toAttr attr) (Animation.render activeMobstersStyle)
-
-                Nothing ->
-                    []
-    in
-    Element.row style
-        (animationAttrs
-            ++ [ Attr.padding padding
-               , Attr.verticalCenter
-               , Attr.spacing spacing
-               , Element.Events.onClick selectMsg
-               ]
-        )
-        [ roleIcon
-        , Element.text name
-        , removeButton removeMsg
-        ]
-
-
 activeMobsterView :
     Animation.Messenger.State Msg.Msg
     -> Device
     -> Roster.Presenter.MobsterWithRole
     -> StyleElement
 activeMobsterView activeMobstersStyle device mobster =
-    mobsterChipView (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
+    View.Roster.Chip.view (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
         (Msg.UpdateRosterData (Roster.Operation.Bench mobster.index))
         (Styles.RosterEntry mobster.role)
         (Just activeMobstersStyle)
@@ -207,7 +150,7 @@ inactiveMobsterView device quickRotateQuery quickRotateSelection matches mobster
         selectionType =
             QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
     in
-    mobsterChipView (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
+    View.Roster.Chip.view (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
         (Msg.UpdateRosterData (Roster.Operation.Remove mobsterIndex))
         (Styles.InactiveRosterEntry selectionType)
         Nothing
@@ -270,13 +213,6 @@ rosterInput query selection =
 quickRotateQueryId : String
 quickRotateQueryId =
     "quick-rotate-query"
-
-
-onClickWithoutPropagation : msg -> Element.Attribute Never msg
-onClickWithoutPropagation msgConstructor =
-    Element.Events.onWithOptions "click"
-        { stopPropagation = True, preventDefault = False }
-        (Json.Decode.succeed msgConstructor)
 
 
 shuffleDie :
