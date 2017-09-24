@@ -12,7 +12,8 @@ import Styles exposing (StyleElement, Styles)
 
 
 view :
-    Msg.Msg
+    List (Element.Attribute Never Msg)
+    -> Msg.Msg
     -> Msg.Msg
     -> Styles.Styles
     -> Maybe (Animation.Messenger.State Msg.Msg)
@@ -20,7 +21,7 @@ view :
     -> String
     -> Maybe Roster.Presenter.Role
     -> StyleElement
-view selectMsg removeMsg style maybeActiveMobstersStyle device name role =
+view additionalAttrs selectMsg removeMsg style maybeActiveMobstersStyle device name role =
     let
         iconHeight =
             Styles.responsiveForWidth device ( 10, 40 ) |> Attr.px
@@ -52,6 +53,7 @@ view selectMsg removeMsg style maybeActiveMobstersStyle device name role =
     in
     Element.row style
         (animationAttrs
+            ++ additionalAttrs
             ++ [ Attr.padding padding
                , Attr.verticalCenter
                , Attr.spacing spacing

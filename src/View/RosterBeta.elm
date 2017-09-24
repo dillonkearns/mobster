@@ -5,6 +5,7 @@ import Animation.Messenger
 import Element exposing (Device, el)
 import Element.Attributes as Attr
 import Element.Events
+import Html5.DragDrop as DragDrop
 import Json.Decode
 import QuickRotate
 import Roster.Data as Mobster
@@ -135,7 +136,8 @@ activeMobsterView :
     -> Roster.Presenter.MobsterWithRole
     -> StyleElement
 activeMobsterView activeMobstersStyle device mobster =
-    View.Roster.Chip.view (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
+    View.Roster.Chip.view (dragDropAttrs mobster.index)
+        (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
         (Msg.UpdateRosterData (Roster.Operation.Bench mobster.index))
         (Styles.RosterEntry mobster.role)
         (Just activeMobstersStyle)
@@ -144,13 +146,21 @@ activeMobsterView activeMobstersStyle device mobster =
         mobster.role
 
 
+dragDropAttrs : Int -> List (Element.Attribute Never Msg)
+dragDropAttrs mobsterIndex =
+    DragDrop.draggable DragDropMsg (ActiveMobster mobsterIndex)
+        ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobsterIndex)
+        |> List.map Attr.toAttr
+
+
 inactiveMobsterView : Device -> String -> QuickRotate.Selection -> List Int -> Int -> String -> StyleElement
 inactiveMobsterView device quickRotateQuery quickRotateSelection matches mobsterIndex mobsterName =
     let
         selectionType =
             QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
     in
-    View.Roster.Chip.view (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
+    View.Roster.Chip.view []
+        (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
         (Msg.UpdateRosterData (Roster.Operation.Remove mobsterIndex))
         (Styles.InactiveRosterEntry selectionType)
         Nothing
