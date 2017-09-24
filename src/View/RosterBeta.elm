@@ -162,7 +162,6 @@ activeMobsterView activeMobstersStyle device mobster =
         roleIcon =
             case mobster.role of
                 Just Roster.Presenter.Driver ->
-                    -- @@ TODO
                     Element.image "./assets/driver-icon.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
 
                 Just Roster.Presenter.Navigator ->
