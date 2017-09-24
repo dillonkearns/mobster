@@ -163,7 +163,7 @@ activeMobsterView activeMobstersStyle device mobster =
                     Element.image "./assets/navigator-icon.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
 
                 Nothing ->
-                    Element.empty
+                    Element.image "./assets/transparent.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
     in
     Element.row (Styles.RosterEntry mobster.role)
         (List.map (\attr -> Attr.toAttr attr) (Animation.render activeMobstersStyle)
