@@ -12,7 +12,7 @@ import Roster.Operation
 import Roster.Presenter
 import Roster.Rpg
 import Setup.Msg as Msg exposing (..)
-import Styles exposing (StyleElement)
+import Styles exposing (StyleElement, Styles)
 import View.Roster
 
 
@@ -123,15 +123,26 @@ activeView quickRotateState rosterData activeMobstersStyle device =
     in
     Element.wrappedRow (Styles.Roster highlighted)
         [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-        (List.map (activeMobsterView activeMobstersStyle device) activeMobsters ++ [ rosterInput quickRotateState.query quickRotateState.selection ])
+        (List.map (activeMobsterView activeMobstersStyle device) activeMobsters
+            ++ [ rosterInput quickRotateState.query quickRotateState.selection ]
+        )
 
 
-activeMobsterView :
-    Animation.Messenger.State Msg.Msg
+removeButton : Msg.Msg -> StyleElement
+removeButton msg =
+    Element.el Styles.DeleteButton [ onClickWithoutPropagation msg ] (Element.text "×")
+
+
+mobsterChipView :
+    Msg.Msg
+    -> Msg.Msg
+    -> Styles.Styles
+    -> Maybe (Animation.Messenger.State Msg.Msg)
     -> Device
-    -> Roster.Presenter.MobsterWithRole
+    -> String
+    -> Maybe Roster.Presenter.Role
     -> StyleElement
-activeMobsterView activeMobstersStyle device mobster =
+mobsterChipView selectMsg removeMsg style maybeActiveMobstersStyle device name role =
     let
         iconHeight =
             Styles.responsiveForWidth device ( 10, 40 ) |> Attr.px
@@ -143,7 +154,7 @@ activeMobsterView activeMobstersStyle device mobster =
             Styles.responsiveForWidth device ( 2, 14 )
 
         roleIcon =
-            case mobster.role of
+            case role of
                 Just Roster.Presenter.Driver ->
                     Element.image "./assets/driver-icon.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
 
@@ -152,19 +163,42 @@ activeMobsterView activeMobstersStyle device mobster =
 
                 Nothing ->
                     Element.image "./assets/transparent.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
+
+        animationAttrs =
+            case maybeActiveMobstersStyle of
+                Just activeMobstersStyle ->
+                    List.map (\attr -> Attr.toAttr attr) (Animation.render activeMobstersStyle)
+
+                Nothing ->
+                    []
     in
-    Element.row (Styles.RosterEntry mobster.role)
-        (List.map (\attr -> Attr.toAttr attr) (Animation.render activeMobstersStyle)
+    Element.row style
+        (animationAttrs
             ++ [ Attr.padding padding
                , Attr.verticalCenter
                , Attr.spacing spacing
-               , Element.Events.onClick (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
+               , Element.Events.onClick selectMsg
                ]
         )
         [ roleIcon
-        , Element.text mobster.name
-        , benchButton mobster.index
+        , Element.text name
+        , removeButton removeMsg
         ]
+
+
+activeMobsterView :
+    Animation.Messenger.State Msg.Msg
+    -> Device
+    -> Roster.Presenter.MobsterWithRole
+    -> StyleElement
+activeMobsterView activeMobstersStyle device mobster =
+    mobsterChipView (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
+        (Msg.UpdateRosterData (Roster.Operation.Bench mobster.index))
+        (Styles.RosterEntry mobster.role)
+        (Just activeMobstersStyle)
+        device
+        mobster.name
+        mobster.role
 
 
 inactiveMobsterView : Device -> String -> QuickRotate.Selection -> List Int -> Int -> String -> StyleElement
@@ -172,26 +206,14 @@ inactiveMobsterView device quickRotateQuery quickRotateSelection matches mobster
     let
         selectionType =
             QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
-
-        iconHeight =
-            Styles.responsiveForWidth device ( 10, 40 ) |> Attr.px
-
-        padding =
-            Styles.responsiveForWidth device ( 2, 14 )
-
-        spacing =
-            Styles.responsiveForWidth device ( 2, 14 )
     in
-    Element.row (Styles.InactiveRosterEntry selectionType)
-        [ Attr.padding padding
-        , Attr.verticalCenter
-        , Attr.spacing spacing
-        , Element.Events.onClick (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
-        ]
-        [ Element.image "./assets/transparent.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
-        , Element.text mobsterName
-        , removeButton mobsterIndex
-        ]
+    mobsterChipView (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
+        (Msg.UpdateRosterData (Roster.Operation.Remove mobsterIndex))
+        (Styles.InactiveRosterEntry selectionType)
+        Nothing
+        device
+        mobsterName
+        Nothing
 
 
 rosterInput : String -> QuickRotate.Selection -> StyleElement
@@ -248,22 +270,6 @@ rosterInput query selection =
 quickRotateQueryId : String
 quickRotateQueryId =
     "quick-rotate-query"
-
-
-benchButton : Int -> StyleElement
-benchButton mobsterIndex =
-    Element.el Styles.DeleteButton
-        [ onClickWithoutPropagation (Msg.UpdateRosterData (Roster.Operation.Bench mobsterIndex)) ]
-    <|
-        Element.text "×"
-
-
-removeButton : Int -> StyleElement
-removeButton mobsterIndex =
-    Element.el Styles.DeleteButton
-        [ onClickWithoutPropagation (Msg.UpdateRosterData (Roster.Operation.Remove mobsterIndex)) ]
-    <|
-        Element.text "×"
 
 
 onClickWithoutPropagation : msg -> Element.Attribute Never msg
