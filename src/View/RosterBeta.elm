@@ -153,6 +153,12 @@ activeMobsterView activeMobstersStyle device mobster =
         iconHeight =
             Styles.responsiveForWidth device ( 10, 40 ) |> Attr.px
 
+        padding =
+            Styles.responsiveForWidth device ( 2, 14 )
+
+        spacing =
+            Styles.responsiveForWidth device ( 2, 14 )
+
         roleIcon =
             case mobster.role of
                 Just Roster.Presenter.Driver ->
@@ -167,9 +173,9 @@ activeMobsterView activeMobstersStyle device mobster =
     in
     Element.row (Styles.RosterEntry mobster.role)
         (List.map (\attr -> Attr.toAttr attr) (Animation.render activeMobstersStyle)
-            ++ [ Attr.padding 6
+            ++ [ Attr.padding padding
                , Attr.verticalCenter
-               , Attr.spacing 4
+               , Attr.spacing spacing
                , Element.Events.onClick (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
                ]
         )
