@@ -88,33 +88,6 @@ rosterView quickRotateState rosterData activeMobstersStyle device =
         ]
 
 
-inactiveMobsterView : Device -> String -> QuickRotate.Selection -> List Int -> Int -> String -> StyleElement
-inactiveMobsterView device quickRotateQuery quickRotateSelection matches mobsterIndex mobsterName =
-    let
-        selectionType =
-            QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
-
-        iconHeight =
-            Styles.responsiveForWidth device ( 10, 40 ) |> Attr.px
-
-        padding =
-            Styles.responsiveForWidth device ( 2, 14 )
-
-        spacing =
-            Styles.responsiveForWidth device ( 2, 14 )
-    in
-    Element.row (Styles.InactiveRosterEntry selectionType)
-        [ Attr.padding padding
-        , Attr.verticalCenter
-        , Attr.spacing spacing
-        , Element.Events.onClick (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
-        ]
-        [ Element.image "./assets/transparent.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
-        , Element.text mobsterName
-        , removeButton mobsterIndex
-        ]
-
-
 activeView :
     { query : String, selection : QuickRotate.Selection }
     ->
@@ -191,6 +164,33 @@ activeMobsterView activeMobstersStyle device mobster =
         [ roleIcon
         , Element.text mobster.name
         , benchButton mobster.index
+        ]
+
+
+inactiveMobsterView : Device -> String -> QuickRotate.Selection -> List Int -> Int -> String -> StyleElement
+inactiveMobsterView device quickRotateQuery quickRotateSelection matches mobsterIndex mobsterName =
+    let
+        selectionType =
+            QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
+
+        iconHeight =
+            Styles.responsiveForWidth device ( 10, 40 ) |> Attr.px
+
+        padding =
+            Styles.responsiveForWidth device ( 2, 14 )
+
+        spacing =
+            Styles.responsiveForWidth device ( 2, 14 )
+    in
+    Element.row (Styles.InactiveRosterEntry selectionType)
+        [ Attr.padding padding
+        , Attr.verticalCenter
+        , Attr.spacing spacing
+        , Element.Events.onClick (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
+        ]
+        [ Element.image "./assets/transparent.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
+        , Element.text mobsterName
+        , removeButton mobsterIndex
         ]
 
 
