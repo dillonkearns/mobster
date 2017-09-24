@@ -83,24 +83,34 @@ rosterView quickRotateState rosterData activeMobstersStyle device =
             [ el Styles.PlainBody [] <| Element.text "Inactive"
             , Element.wrappedRow (Styles.Roster inactiveTagInputHighlighted)
                 [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-                (List.indexedMap (inactiveMobsterView quickRotateState.query quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
+                (List.indexedMap (inactiveMobsterView device quickRotateState.query quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
             ]
         ]
 
 
-inactiveMobsterView : String -> QuickRotate.Selection -> List Int -> Int -> String -> StyleElement
-inactiveMobsterView quickRotateQuery quickRotateSelection matches mobsterIndex mobsterName =
+inactiveMobsterView : Device -> String -> QuickRotate.Selection -> List Int -> Int -> String -> StyleElement
+inactiveMobsterView device quickRotateQuery quickRotateSelection matches mobsterIndex mobsterName =
     let
         selectionType =
             QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
+
+        iconHeight =
+            Styles.responsiveForWidth device ( 10, 40 ) |> Attr.px
+
+        padding =
+            Styles.responsiveForWidth device ( 2, 14 )
+
+        spacing =
+            Styles.responsiveForWidth device ( 2, 14 )
     in
     Element.row (Styles.InactiveRosterEntry selectionType)
-        [ Attr.padding 6
+        [ Attr.padding padding
         , Attr.verticalCenter
-        , Attr.spacing 4
+        , Attr.spacing spacing
         , Element.Events.onClick (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
         ]
-        [ Element.text mobsterName
+        [ Element.image "./assets/transparent.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
+        , Element.text mobsterName
         , removeButton mobsterIndex
         ]
 
