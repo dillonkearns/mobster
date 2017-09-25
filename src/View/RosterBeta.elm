@@ -18,12 +18,17 @@ import View.Roster
 import View.Roster.Chip
 
 
+type alias DragDropModel =
+    DragDrop.Model DragId DropArea
+
+
 view :
     { model
         | quickRotateState : QuickRotate.State
         , activeMobstersStyle : Animation.Messenger.State Msg.Msg
         , dieStyle : Animation.State
         , device : Device
+        , dragDrop : DragDropModel
     }
     ->
         { inactiveMobsters :
@@ -35,13 +40,20 @@ view :
 view ({ quickRotateState, dieStyle, activeMobstersStyle, device } as model) rosterData =
     Element.row Styles.None
         []
-        [ rosterView quickRotateState rosterData activeMobstersStyle device
+        [ rosterView model quickRotateState rosterData activeMobstersStyle device
         , shuffleDieContainer model
         ]
 
 
 rosterView :
-    { query : String, selection : QuickRotate.Selection }
+    { model
+        | quickRotateState : QuickRotate.State
+        , activeMobstersStyle : Animation.Messenger.State Msg.Msg
+        , dieStyle : Animation.State
+        , device : Device
+        , dragDrop : DragDropModel
+    }
+    -> { query : String, selection : QuickRotate.Selection }
     ->
         { inactiveMobsters :
             List { name : String, rpgData : Roster.Rpg.RpgData }
@@ -51,7 +63,7 @@ rosterView :
     -> Animation.Messenger.State Msg.Msg
     -> Device
     -> StyleElement
-rosterView quickRotateState rosterData activeMobstersStyle device =
+rosterView model quickRotateState rosterData activeMobstersStyle device =
     let
         inactiveMobsters =
             rosterData.inactiveMobsters
@@ -78,7 +90,7 @@ rosterView quickRotateState rosterData activeMobstersStyle device =
         [ Element.column Styles.None
             []
             [ el Styles.PlainBody [] <| Element.text "Active"
-            , activeView quickRotateState rosterData activeMobstersStyle device
+            , activeView model quickRotateState rosterData activeMobstersStyle device
             ]
         , Element.column Styles.None
             []
@@ -91,7 +103,14 @@ rosterView quickRotateState rosterData activeMobstersStyle device =
 
 
 activeView :
-    { query : String, selection : QuickRotate.Selection }
+    { model
+        | quickRotateState : QuickRotate.State
+        , activeMobstersStyle : Animation.Messenger.State Msg.Msg
+        , dieStyle : Animation.State
+        , device : Device
+        , dragDrop : DragDropModel
+    }
+    -> { query : String, selection : QuickRotate.Selection }
     ->
         { inactiveMobsters :
             List { rpgData : Roster.Rpg.RpgData, name : String }
@@ -101,7 +120,7 @@ activeView :
     -> Animation.Messenger.State Msg.Msg
     -> Device
     -> StyleElement
-activeView quickRotateState rosterData activeMobstersStyle device =
+activeView model quickRotateState rosterData activeMobstersStyle device =
     let
         inactiveMobsters =
             rosterData.inactiveMobsters
@@ -125,17 +144,33 @@ activeView quickRotateState rosterData activeMobstersStyle device =
     in
     Element.wrappedRow (Styles.Roster highlighted)
         [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-        (List.map (activeMobsterView activeMobstersStyle device) activeMobsters
+        (List.map (activeMobsterView model activeMobstersStyle device) activeMobsters
             ++ [ rosterInput quickRotateState.query quickRotateState.selection ]
         )
 
 
 activeMobsterView :
-    Animation.Messenger.State Msg.Msg
+    { model
+        | quickRotateState : QuickRotate.State
+        , activeMobstersStyle : Animation.Messenger.State Msg.Msg
+        , dieStyle : Animation.State
+        , device : Device
+        , dragDrop : DragDropModel
+    }
+    -> Animation.Messenger.State Msg.Msg
     -> Device
     -> Roster.Presenter.MobsterWithRole
     -> StyleElement
-activeMobsterView activeMobstersStyle device mobster =
+activeMobsterView ({ dragDrop } as model) activeMobstersStyle device mobster =
+    let
+        isBeingDraggedOver =
+            case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
+                ( Just (ActiveMobster _), Just (DropActiveMobster id) ) ->
+                    id == mobster.index
+
+                _ ->
+                    False
+    in
     View.Roster.Chip.view (dragDropAttrs mobster.index)
         (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
         (Msg.UpdateRosterData (Roster.Operation.Bench mobster.index))
