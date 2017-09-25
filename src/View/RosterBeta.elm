@@ -40,7 +40,7 @@ view :
 view ({ quickRotateState, dieStyle, activeMobstersStyle, device } as model) rosterData =
     Element.row Styles.None
         []
-        [ rosterView model rosterData activeMobstersStyle device
+        [ rosterView model rosterData
         , shuffleDieContainer model
         ]
 
@@ -59,10 +59,8 @@ rosterView :
         , mobsters : List Mobster.Mobster
         , nextDriver : Int
         }
-    -> Animation.Messenger.State Msg.Msg
-    -> Device
     -> StyleElement
-rosterView ({ quickRotateState } as model) rosterData activeMobstersStyle device =
+rosterView ({ quickRotateState, device } as model) rosterData =
     let
         inactiveMobsters =
             rosterData.inactiveMobsters
