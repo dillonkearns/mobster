@@ -90,7 +90,7 @@ rosterView model quickRotateState rosterData activeMobstersStyle device =
         [ Element.column Styles.None
             []
             [ el Styles.PlainBody [] <| Element.text "Active"
-            , activeView model quickRotateState rosterData activeMobstersStyle device
+            , activeView model quickRotateState rosterData
             ]
         , Element.column Styles.None
             []
@@ -117,10 +117,8 @@ activeView :
         , nextDriver : Int
         , mobsters : List Mobster.Mobster
         }
-    -> Animation.Messenger.State Msg.Msg
-    -> Device
     -> StyleElement
-activeView model quickRotateState rosterData activeMobstersStyle device =
+activeView model quickRotateState rosterData =
     let
         inactiveMobsters =
             rosterData.inactiveMobsters
@@ -144,7 +142,7 @@ activeView model quickRotateState rosterData activeMobstersStyle device =
     in
     Element.wrappedRow (Styles.Roster highlighted)
         [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-        (List.map (activeMobsterView model activeMobstersStyle) activeMobsters
+        (List.map (activeMobsterView model) activeMobsters
             ++ [ rosterInput quickRotateState.query quickRotateState.selection ]
         )
 
@@ -157,10 +155,9 @@ activeMobsterView :
         , device : Device
         , dragDrop : DragDropModel
     }
-    -> Animation.Messenger.State Msg.Msg
     -> Roster.Presenter.MobsterWithRole
     -> StyleElement
-activeMobsterView ({ dragDrop, device } as model) activeMobstersStyle mobster =
+activeMobsterView ({ dragDrop, device, activeMobstersStyle } as model) mobster =
     let
         isBeingDraggedOver =
             case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
