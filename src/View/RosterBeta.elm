@@ -40,7 +40,7 @@ view :
 view ({ quickRotateState, dieStyle, activeMobstersStyle, device } as model) rosterData =
     Element.row Styles.None
         []
-        [ rosterView model quickRotateState rosterData activeMobstersStyle device
+        [ rosterView model rosterData activeMobstersStyle device
         , shuffleDieContainer model
         ]
 
@@ -53,7 +53,6 @@ rosterView :
         , device : Device
         , dragDrop : DragDropModel
     }
-    -> { query : String, selection : QuickRotate.Selection }
     ->
         { inactiveMobsters :
             List { name : String, rpgData : Roster.Rpg.RpgData }
@@ -63,7 +62,7 @@ rosterView :
     -> Animation.Messenger.State Msg.Msg
     -> Device
     -> StyleElement
-rosterView model quickRotateState rosterData activeMobstersStyle device =
+rosterView ({ quickRotateState } as model) rosterData activeMobstersStyle device =
     let
         inactiveMobsters =
             rosterData.inactiveMobsters
@@ -90,7 +89,7 @@ rosterView model quickRotateState rosterData activeMobstersStyle device =
         [ Element.column Styles.None
             []
             [ el Styles.PlainBody [] <| Element.text "Active"
-            , activeView model quickRotateState rosterData
+            , activeView model rosterData
             ]
         , Element.column Styles.None
             []
@@ -110,7 +109,6 @@ activeView :
         , device : Device
         , dragDrop : DragDropModel
     }
-    -> { query : String, selection : QuickRotate.Selection }
     ->
         { inactiveMobsters :
             List { rpgData : Roster.Rpg.RpgData, name : String }
@@ -118,7 +116,7 @@ activeView :
         , mobsters : List Mobster.Mobster
         }
     -> StyleElement
-activeView model quickRotateState rosterData =
+activeView ({ quickRotateState } as model) rosterData =
     let
         inactiveMobsters =
             rosterData.inactiveMobsters
