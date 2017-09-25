@@ -58,6 +58,7 @@ type Styles
     | Roster Bool
     | RosterInput Bool
     | RosterEntry (Maybe Roster.Presenter.Role)
+    | RosterDraggedOver
     | InactiveRosterEntry QuickRotate.EntrySelection
     | DeleteButton
     | ShuffleDie
@@ -349,6 +350,16 @@ stylesheet device =
             [ Color.background (Color.rgba 0 0 0 0)
             , Color.text Color.white
             , Font.size fonts.small
+            ]
+        , style RosterDraggedOver
+            [ Color.background (Color.rgb 8 226 108)
+            , Border.rounded rosterItemRounding
+            , Font.size fonts.small
+            , Color.text Color.white
+            , Font.typeface typefaces.body
+            , hover
+                [ Color.background (Color.rgb 8 226 108)
+                ]
             ]
         , style (RosterEntry (Just Roster.Presenter.Driver))
             [ Color.background fontColor.circle

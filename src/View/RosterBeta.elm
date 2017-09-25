@@ -162,11 +162,17 @@ activeMobsterView ({ dragDrop, device, activeMobstersStyle } as model) mobster =
 
                 _ ->
                     False
+
+        chipStyle =
+            if isBeingDraggedOver then
+                Styles.RosterDraggedOver
+            else
+                Styles.RosterEntry mobster.role
     in
     View.Roster.Chip.view (dragDropAttrs mobster.index)
         (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
         (Msg.UpdateRosterData (Roster.Operation.Bench mobster.index))
-        (Styles.RosterEntry mobster.role)
+        chipStyle
         (Just activeMobstersStyle)
         device
         mobster.name
