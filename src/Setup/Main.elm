@@ -305,7 +305,14 @@ view model =
             else
                 Page.Continue.view model
     else
-        div [ Attr.style [ "padding" => "100px", "padding-bottom" => "0px" ] ] [ div [] [ Navbar.view model.screenState, View.UpdateAvailable.view model.availableUpdateVersion, mainView, feedbackButton ] ]
+        div [ Attr.style [ "padding" => "100px", "padding-bottom" => "0px" ] ]
+            [ div []
+                [ Navbar.view model.screenState
+                , View.UpdateAvailable.view model.availableUpdateVersion
+                , mainView
+                , feedbackButton
+                ]
+            ]
 
 
 styleElementsConfigureView : Model -> List Styles.StyleElement -> Html Msg
