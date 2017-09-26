@@ -2,6 +2,7 @@ import * as ua from 'universal-analytics'
 const packageJson = require('../package.json')
 const version: string = packageJson.version
 const isLocal = require('electron-is-dev')
+import { screen } from 'electron'
 
 interface AnalyticsEvent {
   category: string
@@ -11,6 +12,13 @@ interface AnalyticsEvent {
 }
 
 const googleAnalyticsId = 'UA-104160912-1'
+
+function screenResolutions() {
+  return screen
+    .getAllDisplays()
+    .map(({ bounds }) => `${bounds.width}x${bounds.height}`)
+    .join(' ')
+}
 
 export class Analytics {
   analytics: ua.Visitor
@@ -22,6 +30,7 @@ export class Analytics {
       } else {
         this.analytics = ua(googleAnalyticsId, uuid)
       }
+      this.analytics.set('sr', screenResolutions()) // screenResolution
       this.analytics.set('ua', `${process.platform} ${require('os').release()}`)
       this.analytics.set('an', 'Mobster') // appName
       this.analytics.set('av', version) // appVersion
