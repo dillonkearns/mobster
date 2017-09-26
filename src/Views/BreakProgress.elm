@@ -13,10 +13,10 @@ circleView : { model | device : Device } -> Styles.CircleFill -> StyleElement
 circleView { device } circleFill =
     let
         width =
-            Styles.responsiveForWidth device ( 6, 20 ) |> Attr.px
+            Styles.responsiveForWidth device ( 6, 25 ) |> Attr.px
 
         height =
-            Styles.responsiveForWidth device ( 10, 25 ) |> Attr.px
+            Styles.responsiveForWidth device ( 10, 32 ) |> Attr.px
     in
     Element.el (Styles.Circle circleFill) [ Attr.width width, Attr.height height ] Element.empty
 
