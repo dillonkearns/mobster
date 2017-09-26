@@ -566,7 +566,7 @@ update msg model =
                             update (Msg.UpdateRosterData (MobsterOperation.RotateIn inactiveMobsterId)) updatedModel
 
                         _ ->
-                            model ! []
+                            updatedModel ! []
 
         Msg.SendIpc ipcMsg ->
             model ! [ sendIpcCmd ipcMsg ]
