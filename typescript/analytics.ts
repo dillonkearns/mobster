@@ -23,26 +23,31 @@ export class Analytics {
         this.analytics = ua(googleAnalyticsId, uuid)
       }
       this.analytics.set('ua', `${process.platform} ${require('os').release()}`)
-      this.analytics.set('appVersion', version)
-      this.trackPage('/')
+      this.analytics.set('an', 'Mobster') // appName
+      this.analytics.set('av', version) // appVersion
+      this.trackPage('/', { sc: 'start' }) // sessionControl
     })
   }
 
-  trackPage = (path: string) => {
-    this.analytics.pageview(path).send()
+  endSession() {
+    this.trackPage('/quit', { sc: 'end' })
   }
 
-  trackEvent = (event: AnalyticsEvent) => {
+  trackPage(path: string, options?: ua.PageviewParams) {
+    this.analytics.pageview({ dp: path, ...options }).send()
+  }
+
+  trackEvent(event: AnalyticsEvent) {
     const { category, action, label, value } = event
     this.analytics.event(category, action, label, value).send()
   }
 
-  trackEventParams = (event: {
+  trackEventParams(event: {
     ec: string
     ea: string
     el: string | undefined
     ev: number | undefined
-  }) => {
+  }) {
     this.analytics.event(event).send()
   }
 }
