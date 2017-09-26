@@ -553,8 +553,8 @@ editableKeyboardKey model currentKey =
             currentKey
 
 
-configOptions : { model | onMac : Bool, device : Element.Device } -> Bool -> Settings.Data -> StyleElement
-configOptions model onMac settings =
+configOptions : { model | onMac : Bool, device : Element.Device } -> Settings.Data -> StyleElement
+configOptions ({ onMac } as model) settings =
     let
         breakIntervalText =
             "Break every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ "′"

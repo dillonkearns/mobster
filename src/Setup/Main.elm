@@ -331,7 +331,7 @@ configureBetaViewElements : Model -> List Styles.StyleElement
 configureBetaViewElements model =
     [ Element.row Styles.None
         [ Element.Attributes.spacing 50 ]
-        [ Styles.configOptions model model.onMac model.settings
+        [ Styles.configOptions model model.settings
         , Element.el Styles.None
             [ Element.Attributes.width (Element.Attributes.percent 70) ]
             (View.RosterBeta.view model model.settings.rosterData)
