@@ -530,17 +530,17 @@ numberInput value ( minValue, maxValue ) onInputMsg fieldId =
             empty
 
 
-keyBase : { model | device : Element.Device } -> StyleElement -> StyleElement
+keyBase : { model | onMac : Bool, device : Element.Device } -> StyleElement -> StyleElement
 keyBase { device } =
     el KeyboardKey [ minWidth (px 60), minHeight (px 40), padding 5 ]
 
 
-keyboardKey : { model | device : Element.Device } -> String -> StyleElement
+keyboardKey : { model | onMac : Bool, device : Element.Device } -> String -> StyleElement
 keyboardKey model key =
     keyBase model <| text key
 
 
-editableKeyboardKey : { model | device : Element.Device } -> String -> StyleElement
+editableKeyboardKey : { model | onMac : Bool, device : Element.Device } -> String -> StyleElement
 editableKeyboardKey model currentKey =
     keyBase model <|
         Element.inputText ShortcutInput
@@ -553,7 +553,7 @@ editableKeyboardKey model currentKey =
             currentKey
 
 
-configOptions : { model | device : Element.Device } -> Bool -> Settings.Data -> StyleElement
+configOptions : { model | onMac : Bool, device : Element.Device } -> Bool -> Settings.Data -> StyleElement
 configOptions model onMac settings =
     let
         breakIntervalText =
