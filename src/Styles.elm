@@ -567,7 +567,13 @@ configOptions onMac settings =
             , inputPair InputField.BreakInterval breakIntervalText settings.intervalsPerBreak
             , inputPair InputField.BreakDuration "Minutes per break" settings.breakDuration
             ]
-        , column PlainBody [ spacing 8 ] [ text "Show/Hide Shortcut", row None [ spacing 10 ] [ keyboardKey (ctrlKey onMac), keyboardKey "Shift", editableKeyboardKey settings.showHideShortcut ] ]
+        , column PlainBody
+            [ spacing 8 ]
+            [ text "Show/Hide Shortcut"
+            , row None
+                [ spacing 10 ]
+                [ keyboardKey (ctrlKey onMac), keyboardKey "Shift", editableKeyboardKey settings.showHideShortcut ]
+            ]
         ]
 
 
