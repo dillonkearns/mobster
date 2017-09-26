@@ -532,7 +532,14 @@ numberInput value ( minValue, maxValue ) onInputMsg fieldId =
 
 keyBase : { model | onMac : Bool, device : Element.Device } -> StyleElement -> StyleElement
 keyBase { device } =
-    el KeyboardKey [ minWidth (px 60), minHeight (px 40), padding 5 ]
+    let
+        width =
+            responsiveForWidth device ( 40, 120 ) |> px
+
+        height =
+            responsiveForWidth device ( 40, 120 ) |> px
+    in
+    el KeyboardKey [ minWidth width, minHeight height, padding 5 ]
 
 
 keyboardKey : { model | onMac : Bool, device : Element.Device } -> String -> StyleElement
