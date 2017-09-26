@@ -9,13 +9,20 @@ import Setup.Settings as Settings
 import Styles exposing (StyleElement)
 
 
-circleView : Styles.CircleFill -> StyleElement
-circleView circleFill =
-    Element.el (Styles.Circle circleFill) [ Attr.width (Attr.px 12), Attr.height (Attr.px 18) ] Element.empty
+circleView : { model | device : Device } -> Styles.CircleFill -> StyleElement
+circleView { device } circleFill =
+    let
+        width =
+            Styles.responsiveForWidth device ( 6, 20 ) |> Attr.px
+
+        height =
+            Styles.responsiveForWidth device ( 10, 25 ) |> Attr.px
+    in
+    Element.el (Styles.Circle circleFill) [ Attr.width width, Attr.height height ] Element.empty
 
 
-view : { model | intervalsSinceBreak : Int, settings : Settings.Data } -> Styles.StyleElement
-view { intervalsSinceBreak, settings } =
+view : { model | intervalsSinceBreak : Int, settings : Settings.Data, device : Device } -> Styles.StyleElement
+view ({ intervalsSinceBreak, settings } as model) =
     let
         remainingIntervals =
             Break.timersBeforeNext intervalsSinceBreak settings.intervalsPerBreak
@@ -26,9 +33,9 @@ view { intervalsSinceBreak, settings } =
                 |> List.map
                     (\incompleteInterval ->
                         if incompleteInterval then
-                            circleView Styles.Hollow
+                            circleView model Styles.Hollow
                         else
-                            circleView Styles.Filled
+                            circleView model Styles.Filled
                     )
     in
     Element.row
