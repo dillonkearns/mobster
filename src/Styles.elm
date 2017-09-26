@@ -530,19 +530,19 @@ numberInput value ( minValue, maxValue ) onInputMsg fieldId =
             empty
 
 
-keyBase : StyleElement -> StyleElement
-keyBase =
+keyBase : { model | device : Element.Device } -> StyleElement -> StyleElement
+keyBase { device } =
     el KeyboardKey [ minWidth (px 60), minHeight (px 40), padding 5 ]
 
 
-keyboardKey : String -> StyleElement
-keyboardKey key =
-    keyBase <| text key
+keyboardKey : { model | device : Element.Device } -> String -> StyleElement
+keyboardKey model key =
+    keyBase model <| text key
 
 
-editableKeyboardKey : String -> StyleElement
-editableKeyboardKey currentKey =
-    keyBase <|
+editableKeyboardKey : { model | device : Element.Device } -> String -> StyleElement
+editableKeyboardKey model currentKey =
+    keyBase model <|
         Element.inputText ShortcutInput
             [ width (px 30)
             , center
@@ -553,8 +553,8 @@ editableKeyboardKey currentKey =
             currentKey
 
 
-configOptions : Bool -> Settings.Data -> StyleElement
-configOptions onMac settings =
+configOptions : { model | device : Element.Device } -> Bool -> Settings.Data -> StyleElement
+configOptions model onMac settings =
     let
         breakIntervalText =
             "Break every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ "′"
@@ -572,7 +572,7 @@ configOptions onMac settings =
             [ text "Show/Hide Shortcut"
             , row None
                 [ spacing 10 ]
-                [ keyboardKey (ctrlKey onMac), keyboardKey "Shift", editableKeyboardKey settings.showHideShortcut ]
+                [ keyboardKey model (ctrlKey onMac), keyboardKey model "Shift", editableKeyboardKey model settings.showHideShortcut ]
             ]
         ]
 
