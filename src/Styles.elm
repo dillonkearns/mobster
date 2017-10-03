@@ -3,7 +3,7 @@ module Styles exposing (..)
 import Color exposing (Color)
 import Color.Mixing
 import Element exposing (..)
-import Element.Attributes exposing (..)
+import Element.Attributes as Attr exposing (..)
 import Element.Events exposing (onClick, onInput)
 import Element.Input
 import QuickRotate
@@ -50,6 +50,7 @@ type Styles
     | TipBody
     | TipLink
     | StepButton
+    | GameButton
     | RoseIcon
     | Circle CircleFill
     | Hairline
@@ -222,6 +223,16 @@ stylesheet device =
             , Border.rounded 10
             , Border.none
             , Font.size fonts.extraSmall
+            , hover
+                [ Color.background colors.defaultButtonHover
+                ]
+            ]
+        , style GameButton
+            [ Color.text <| Color.white
+            , Color.background colors.defaultButton
+            , Border.rounded 10
+            , Border.none
+            , Font.size fonts.small
             , hover
                 [ Color.background colors.defaultButtonHover
                 ]
@@ -518,11 +529,11 @@ numberInput value ( minValue, maxValue ) onInputMsg fieldId =
     Element.node "input" <|
         el None
             [ width <| px 60
-            , minValue |> toString |> Element.Attributes.attribute "min"
-            , maxValue |> toString |> Element.Attributes.attribute "max"
-            , Element.Attributes.attribute "step" "1"
-            , Element.Attributes.attribute "type" "number"
-            , value |> toString |> Element.Attributes.attribute "value"
+            , minValue |> toString |> Attr.attribute "min"
+            , maxValue |> toString |> Attr.attribute "max"
+            , Attr.attribute "step" "1"
+            , Attr.attribute "type" "number"
+            , value |> toString |> Attr.attribute "value"
             , onInput onInputMsg
             , onClick (Msg.SelectInputField fieldId)
             , id fieldId
@@ -570,7 +581,7 @@ configOptions ({ onMac } as model) settings =
             "Break every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ "′"
     in
     Element.column None
-        [ Element.Attributes.spacing 30, Element.Attributes.width (Element.Attributes.percent 30) ]
+        [ Attr.spacing 30, Attr.width (Attr.percent 30) ]
         [ column None
             [ spacing 10 ]
             [ inputPair InputField.TimerDuration "Minutes" settings.timerDuration
@@ -610,7 +621,7 @@ startMobbingButton { onMac, device } title =
             |> button WideButton
                 [ padding (responsiveForWidth device ( 10, 20 ))
                 , Element.Events.onClick Msg.StartTimer
-                , Element.Attributes.id "continue-button"
+                , Attr.id "continue-button"
                 ]
             |> above [ el Tooltip [ center, class "styleElementsTooltip" ] (text tooltipText) ]
         ]

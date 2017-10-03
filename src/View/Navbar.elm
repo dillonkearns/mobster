@@ -27,6 +27,7 @@ view ({ screenState, responsivePalette } as model) =
         , row Styles.None
             [ spacing 10 ]
             [ cogButton
+            , rpgIcon model
             , Element.image Styles.None
                 [ class "invisible-trigger"
                 , Attr.attribute "width" "auto"
@@ -47,6 +48,18 @@ settingsPageButton { responsivePalette } =
         , width responsivePalette.navbarButtonHeight
         , verticalCenter
         , Element.Events.onClick Msg.OpenConfigure
+        ]
+        Element.empty
+
+
+rpgIcon : { model | responsivePalette : Responsive.Palette } -> StyleElement
+rpgIcon { responsivePalette } =
+    Element.button Styles.GameButton
+        [ class "fa fa-gamepad"
+        , height responsivePalette.navbarButtonHeight
+        , width responsivePalette.navbarButtonHeight
+        , verticalCenter
+        , Element.Events.onClick Msg.StartRpgMode
         ]
         Element.empty
 
