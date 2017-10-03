@@ -2,7 +2,6 @@ module Responsive exposing (Palette, defaultPalette, palette)
 
 import Element exposing (Device)
 import Element.Attributes exposing (px)
-import Styles exposing (responsiveForWidth)
 
 
 palette : Device -> Palette
@@ -19,3 +18,8 @@ defaultPalette =
 type alias Palette =
     { navbarButtonHeight : Element.Attributes.Length
     }
+
+
+responsiveForWidth : Device -> ( Float, Float ) -> Float
+responsiveForWidth { width } rangeToScaleTo =
+    Element.responsive (toFloat width) ( 600, 4000 ) rangeToScaleTo
