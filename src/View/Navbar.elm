@@ -4,7 +4,7 @@ import Element exposing (..)
 import Element.Attributes as Attr exposing (..)
 import Element.Events exposing (onClick, onInput)
 import Ipc
-import Responsive
+import Responsive exposing (Palette)
 import Setup.Msg as Msg exposing (Msg)
 import Setup.View exposing (ScreenState(Configure))
 import Styles exposing (StyleElement)
@@ -22,7 +22,7 @@ view ({ screenState, responsivePalette } as model) =
             if screenState /= Configure then
                 settingsPageButton model
             else
-                continueIcon model
+                Element.empty
     in
     row Styles.Navbar
         [ Attr.spread, Attr.paddingXY 10 10, Attr.verticalCenter ]
@@ -30,17 +30,23 @@ view ({ screenState, responsivePalette } as model) =
         , row Styles.None
             [ spacing 10 ]
             [ cogButton
-            , rpgIcon model
-            , Element.image Styles.None
-                [ class "invisible-trigger"
-                , Attr.attribute "width" "auto"
-                , height responsivePalette.navbarButtonHeight
-                ]
-                { src = "./assets/invisible.png", caption = "invisible" }
+            , invisibleTrigger model
             , navButtonView model "Hide" Styles.Warning (Msg.SendIpc Ipc.Hide)
             , navButtonView model "Quit" Styles.Danger (Msg.SendIpc Ipc.Quit)
             ]
         ]
+
+
+invisibleTrigger :
+    { b | responsivePalette : Responsive.Palette }
+    -> StyleElement
+invisibleTrigger { responsivePalette } =
+    Element.image Styles.None
+        [ class "invisible-trigger"
+        , Attr.attribute "width" "auto"
+        , height responsivePalette.navbarButtonHeight
+        ]
+        { src = "./assets/invisible.png", caption = "invisible" }
 
 
 settingsPageButton : { model | responsivePalette : Responsive.Palette } -> StyleElement
