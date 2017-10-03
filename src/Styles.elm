@@ -220,6 +220,7 @@ stylesheet device =
             [ Color.text <| Color.rgb 239 177 1
             , Color.background colors.defaultButton
             , Border.rounded 10
+            , Border.none
             , Font.size fonts.extraSmall
             , hover
                 [ Color.background colors.defaultButtonHover

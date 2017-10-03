@@ -6,7 +6,6 @@ import Element.Events exposing (onClick, onInput)
 import Ipc
 import Setup.Msg as Msg exposing (Msg)
 import Setup.View exposing (ScreenState(Configure))
-import Style.Font
 import Styles exposing (StyleElement)
 
 
@@ -14,10 +13,13 @@ view : { model | screenState : ScreenState, device : Device } -> StyleElement
 view ({ screenState, device } as model) =
     let
         cogButton =
-            Element.when (screenState /= Configure) settingsPageButton
+            Element.when (screenState /= Configure) (settingsPageButton model)
 
         iconDimensions =
             responsive (toFloat device.width) ( 600, 4000 ) ( 24, 66 )
+
+        buttonHeight =
+            Styles.responsiveForWidth device ( 20, 80 )
     in
     row Styles.Navbar
         [ Attr.spread, Attr.paddingXY 10 10, Attr.verticalCenter ]
@@ -26,7 +28,10 @@ view ({ screenState, device } as model) =
             [ spacing 10 ]
             [ cogButton
             , Element.image Styles.None
-                [ class "invisible-trigger", width (px iconDimensions), height (px iconDimensions) ]
+                [ class "invisible-trigger"
+                , Attr.attribute "width" "auto"
+                , height (px buttonHeight)
+                ]
                 { src = "./assets/invisible.png", caption = "invisible" }
             , navButtonView model "Hide" Styles.Warning (Msg.SendIpc Ipc.Hide)
             , navButtonView model "Quit" Styles.Danger (Msg.SendIpc Ipc.Quit)
@@ -34,11 +39,16 @@ view ({ screenState, device } as model) =
         ]
 
 
-settingsPageButton : StyleElement
-settingsPageButton =
-    Element.el Styles.StepButton
-        [ paddingXY 16 10
-        , class "fa fa-cog"
+settingsPageButton : { model | device : Element.Device } -> StyleElement
+settingsPageButton { device } =
+    let
+        buttonHeight =
+            Styles.responsiveForWidth device ( 20, 80 )
+    in
+    Element.button Styles.StepButton
+        [ class "fa fa-cog"
+        , height (px buttonHeight)
+        , width (px buttonHeight)
         , verticalCenter
         , Element.Events.onClick Msg.OpenConfigure
         ]
@@ -47,8 +57,12 @@ settingsPageButton =
 
 navButtonView : { model | device : Element.Device } -> String -> Styles.NavButtonType -> Msg -> StyleElement
 navButtonView { device } buttonText navButtonType msg =
+    let
+        buttonHeight =
+            Styles.responsiveForWidth device ( 20, 80 )
+    in
     button (Styles.NavButton navButtonType)
-        [ paddingXY (Styles.responsiveForWidth device ( 5, 20 )) 0, minWidth <| px 60, Element.Events.onClick msg ]
+        [ height (px buttonHeight), minWidth <| px 60, Element.Events.onClick msg ]
         (text buttonText)
 
 
@@ -56,7 +70,9 @@ roseIcon : { model | device : Device } -> StyleElement
 roseIcon { device } =
     let
         ( width, height ) =
-            ( Styles.responsiveForWidth device ( 12, 40 ) |> Attr.px, Styles.responsiveForWidth device ( 18, 70 ) |> Attr.px )
+            ( Styles.responsiveForWidth device ( 12, 40 ) |> Attr.px
+            , Styles.responsiveForWidth device ( 18, 70 ) |> Attr.px
+            )
     in
     Element.image
         Styles.None
