@@ -5,6 +5,7 @@ import Color.Mixing
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick, onInput)
+import Element.Input
 import QuickRotate
 import Roster.Presenter
 import Setup.InputField as InputField exposing (IntInputField(..))
@@ -72,10 +73,10 @@ type NavButtonType
     | Warning
 
 
-typefaces : { title : List String, body : List String }
+typefaces : { title : List Style.Font, body : List Style.Font }
 typefaces =
-    { title = [ "Anton", "helvetica", "arial", "sans-serif" ]
-    , body = [ "Lato", "Helvetica Neue", "helvetica", "arial", "sans-serif" ]
+    { title = [ "Anton", "helvetica", "arial", "sans-serif" ] |> List.map Font.font
+    , body = [ "Lato", "Helvetica Neue", "helvetica", "arial", "sans-serif" ] |> List.map Font.font
     }
 
 
@@ -148,7 +149,7 @@ stylesheet device =
         tipBoxColor =
             Color.rgb 75 75 75
     in
-    Style.stylesheet
+    Style.styleSheet
         [ style None []
         , style Input
             [ Font.size fonts.mediumSmaller
@@ -238,7 +239,7 @@ stylesheet device =
             , Border.all 1
             , Font.size fonts.small
             , Color.border (Color.rgb 170 170 170)
-            , Font.typeface [ "Droid Sans Mono", "Consolas", "Lucida Console", "monospace" ]
+            , Font.typeface ([ "Droid Sans Mono", "Consolas", "Lucida Console", "monospace" ] |> List.map Font.font)
             ]
         , style Main
             [ Color.text primaryColor
@@ -257,9 +258,7 @@ stylesheet device =
             , Font.typeface typefaces.title
             ]
         , style RoseIcon
-            [ Style.filters
-                [ Filter.brightness 90
-                ]
+            [ Filter.brightness 90
             ]
         , style WideButton
             [ Font.size (responsiveForWidthWith ( 22, 115 ))
@@ -518,11 +517,11 @@ numberInput value ( minValue, maxValue ) onInputMsg fieldId =
     Element.node "input" <|
         el None
             [ width <| px 60
-            , minValue |> toString |> Element.Attributes.min
-            , maxValue |> toString |> Element.Attributes.max
-            , Element.Attributes.step "1"
-            , type_ "number"
-            , value |> toString |> Element.Attributes.value
+            , minValue |> toString |> Element.Attributes.attribute "min"
+            , maxValue |> toString |> Element.Attributes.attribute "max"
+            , Element.Attributes.attribute "step" "1"
+            , Element.Attributes.attribute "type" "number"
+            , value |> toString |> Element.Attributes.attribute "value"
             , onInput onInputMsg
             , onClick (Msg.SelectInputField fieldId)
             , id fieldId
@@ -550,14 +549,17 @@ keyboardKey model key =
 editableKeyboardKey : { model | onMac : Bool, device : Element.Device } -> String -> StyleElement
 editableKeyboardKey model currentKey =
     keyBase model <|
-        Element.inputText ShortcutInput
+        Element.Input.text ShortcutInput
             [ width (px 30)
             , center
             , verticalCenter
             , inlineStyle [ "text-align" => "center" ]
-            , onInput (Msg.ChangeInput (Msg.StringField Msg.ShowHideShortcut))
             ]
-            currentKey
+            { onChange = Msg.ChangeInput (Msg.StringField Msg.ShowHideShortcut)
+            , value = currentKey
+            , label = Element.Input.hiddenLabel "show/hide shortcut"
+            , options = []
+            }
 
 
 configOptions : { model | onMac : Bool, device : Element.Device } -> Settings.Data -> StyleElement
@@ -603,6 +605,11 @@ startMobbingButton { onMac, device } title =
     in
     column None
         [ class "styleElementsTooltipContainer" ]
-        [ (button <| el WideButton [ padding (responsiveForWidth device ( 10, 20 )), Element.Events.onClick Msg.StartTimer, Element.Attributes.id "continue-button" ] (text title))
+        [ text title
+            |> el WideButton
+                [ padding (responsiveForWidth device ( 10, 20 ))
+                , Element.Events.onClick Msg.StartTimer
+                , Element.Attributes.id "continue-button"
+                ]
             |> above [ el Tooltip [ center, class "styleElementsTooltip" ] (text tooltipText) ]
         ]

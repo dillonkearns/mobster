@@ -5,6 +5,10 @@ import Animation.Messenger
 import Element exposing (Device, el)
 import Element.Attributes as Attr
 import Element.Events
+import Element.Input
+import Html
+import Html.Attributes
+import Html.Events
 import Html5.DragDrop as DragDrop
 import Json.Decode
 import QuickRotate
@@ -83,7 +87,7 @@ rosterView ({ quickRotateState, device } as model) rosterData =
                     False
     in
     Element.column Styles.None
-        [ Attr.spacing 30, Attr.width (Attr.fill 1) ]
+        [ Attr.spacing 30, Attr.width (Attr.percent 100) ]
         [ Element.column Styles.None
             []
             [ el Styles.PlainBody [] <| Element.text "Active"
@@ -241,16 +245,20 @@ rosterInput query selection =
         options =
             { preventDefault = True, stopPropagation = False }
     in
-    Element.inputText (Styles.RosterInput highlightSelection)
-        [ Attr.placeholder "+ Mobster"
-        , Attr.verticalCenter
-        , Attr.id quickRotateQueryId
-        , Attr.height (Attr.percent 100)
-        , Attr.width (Attr.fill 1)
-        , Element.Events.onInput (ChangeInput (StringField QuickRotateQuery))
-        , Element.Events.onWithOptions "keydown" options dec
-        ]
-        query
+    Element.el Styles.None [ Attr.id "add-mobster-container" ] <|
+        Element.Input.text (Styles.RosterInput highlightSelection)
+            [ Attr.verticalCenter
+            , Attr.attribute "placeholder" "+ Mobster"
+            , Attr.id quickRotateQueryId
+            , Attr.height (Attr.percent 100)
+            , Attr.width Attr.fill
+            , Element.Events.onWithOptions "keydown" options dec
+            ]
+            { onChange = ChangeInput (StringField QuickRotateQuery)
+            , value = query
+            , label = Element.Input.hiddenLabel "Add mobster"
+            , options = []
+            }
 
 
 quickRotateQueryId : String
@@ -269,7 +277,7 @@ shuffleDie { dieStyle, device } =
         dimension =
             Styles.responsiveForWidth device ( 20, 50 ) |> Attr.px
     in
-    Element.image "./assets/dice.png"
+    Element.image
         Styles.ShuffleDie
         (List.map (\attr -> Attr.toAttr attr) (Animation.render dieStyle)
             ++ [ Element.Events.onClick Msg.ShuffleMobsters
@@ -277,7 +285,7 @@ shuffleDie { dieStyle, device } =
                , Attr.width dimension
                ]
         )
-        Element.empty
+        { src = "./assets/dice.png", caption = "Shuffle die" }
 
 
 shuffleDieContainer :

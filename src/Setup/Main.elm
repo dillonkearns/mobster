@@ -319,10 +319,10 @@ styleElementsConfigureView : Model -> List Styles.StyleElement -> Html Msg
 styleElementsConfigureView model bodyElements =
     Element.viewport (Styles.stylesheet model.device) <|
         Element.column Styles.Main
-            [ Element.Attributes.height (Element.Attributes.fill 1) ]
+            [ Element.Attributes.height Element.Attributes.fill ]
             [ View.Navbar.view model
             , Element.column Styles.None
-                [ Element.Attributes.paddingXY 110 50, Element.Attributes.spacing 30, Element.Attributes.height (Element.Attributes.fill 1) ]
+                [ Element.Attributes.paddingXY 110 50, Element.Attributes.spacing 30 ]
                 (View.UpdateAvailableBeta.view model.availableUpdateVersion :: bodyElements)
             ]
 

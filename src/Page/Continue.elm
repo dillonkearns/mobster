@@ -44,9 +44,12 @@ type Role
 roleView : Device -> Role -> Roster.Presenter.Mobster -> StyleElement
 roleView device role mobster =
     Element.row Styles.None
-        [ Attr.spacing 20, Attr.verticalCenter, Attr.center ]
-        [ roleIcon device role, Element.el Styles.RoleViewName [] <| Element.text mobster.name ]
-        |> Element.onRight [ Element.el Styles.None [ Attr.verticalCenter, Attr.paddingLeft 30 ] (awayView mobster.index) ]
+        [ Attr.spacing 20, Attr.verticalCenter, Attr.center, Attr.width Attr.fill ]
+        [ roleIcon device role
+        , Element.text mobster.name
+            |> Element.el Styles.RoleViewName []
+            |> Element.onRight [ Element.el Styles.None [ Attr.verticalCenter, Attr.paddingLeft 30 ] (awayView mobster.index) ]
+        ]
 
 
 roleRow : Device -> RosterData -> StyleElement
@@ -59,8 +62,8 @@ roleRow device rosterData =
     Element.row Styles.None
         []
         [ Views.StepButton.stepBackwardButton
-        , Element.el Styles.None [ Attr.width (Attr.fill 1) ] (roleView device Driver driverNavigator.driver)
-        , Element.el Styles.None [ Attr.width (Attr.fill 1) ] (roleView device Navigator driverNavigator.navigator)
+        , Element.el Styles.None [ Attr.width Attr.fill ] (roleView device Driver driverNavigator.driver)
+        , Element.el Styles.None [ Attr.width Attr.fill ] (roleView device Navigator driverNavigator.navigator)
         , Views.StepButton.stepForwardButton
         ]
 
@@ -89,4 +92,4 @@ roleIcon device role =
         iconHeight =
             Styles.responsiveForWidth device ( 30, 150 ) |> Attr.px
     in
-    Element.image iconPath Styles.None [ Attr.height iconHeight ] Element.empty
+    Element.image Styles.None [ Attr.height iconHeight ] { src = iconPath, caption = "role" }

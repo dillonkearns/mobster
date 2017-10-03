@@ -5,6 +5,13 @@
   font-family: FontAwesome !important;
 }
 
+.style-elements button.button-focus:focus {
+  box-shadow: none !important;
+}
+button {
+  cursor: default !important;
+}
+
 html,
 body {
   -webkit-user-select: none;
@@ -23,6 +30,18 @@ h2,
 h3,
 .h3 {
   font-size: 2em;
+}
+#add-mobster-container {
+  width: 100% !important;
+}
+
+/* Temporary hack for elm-style-elements issue with width attribute for Input.text,
+and disabling outlines in Input.text. */
+#add-mobster-container input {
+  width: 100% !important;
+  outline: none;
+  box-shadow: none;
+  border-color: transparent;
 }
 
 input {

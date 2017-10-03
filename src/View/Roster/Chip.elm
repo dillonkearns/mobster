@@ -35,13 +35,20 @@ view additionalAttrs selectMsg removeMsg style maybeActiveMobstersStyle device n
         roleIcon =
             case role of
                 Just Roster.Presenter.Driver ->
-                    Element.image "./assets/driver-icon.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
+                    Element.image Styles.None
+                        [ Attr.width iconHeight, Attr.height iconHeight ]
+                        { src = "./assets/driver-icon.png", caption = "" }
 
                 Just Roster.Presenter.Navigator ->
-                    Element.image "./assets/navigator-icon.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
+                    Element.image Styles.None
+                        [ Attr.width iconHeight, Attr.height iconHeight ]
+                        { src = "./assets/navigator-icon.png", caption = "" }
 
                 Nothing ->
-                    Element.image "./assets/transparent.png" Styles.None [ Attr.width iconHeight, Attr.height iconHeight ] Element.empty
+                    Element.image
+                        Styles.None
+                        [ Attr.width iconHeight, Attr.height iconHeight ]
+                        { src = "./assets/transparent.png", caption = "" }
 
         animationAttrs =
             case maybeActiveMobstersStyle of

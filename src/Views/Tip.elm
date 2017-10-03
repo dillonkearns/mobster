@@ -13,19 +13,19 @@ view : Tip -> StyleElement
 view tip =
     Element.column Styles.TipBox
         [ Attr.center
-        , Attr.width (Attr.fill 1)
+        , Attr.width Attr.fill
         , Attr.padding 20
         ]
         [ Element.el Styles.TipTitle
             [ Attr.paddingBottom 15
-            , Attr.target "_blank"
+            , Attr.attribute "target" "_blank"
             , Element.Events.onClick (Msg.SendIpc (Ipc.OpenExternalUrl tip.url))
             ]
           <|
             Element.text tip.title
         , Element.column Styles.TipBody
             [ Attr.center, Attr.width (Attr.percent 55) ]
-            [ Element.el Styles.None [] <| Element.text tip.body
+            [ Element.paragraph Styles.None [] <| [ Element.text tip.body ]
             , Element.text tip.author
             ]
         ]
