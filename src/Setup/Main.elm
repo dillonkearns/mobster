@@ -689,7 +689,15 @@ update msg model =
             { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = newMobsterStyle } ! [ shuffleCmd ]
 
         Msg.WindowResized windowSize ->
-            { model | device = Element.classifyDevice windowSize } ! []
+            let
+                device =
+                    Element.classifyDevice windowSize
+            in
+            { model
+                | device = device
+                , responsivePalette = Styles.responsivePalette device
+            }
+                ! []
 
         Msg.ToggleBetaUi ->
             { model | showBetaUi = not model.showBetaUi } ! []
@@ -949,6 +957,7 @@ type alias Model =
     , dieStyle : Animation.State
     , activeMobstersStyle : Animation.Messenger.State Msg.Msg
     , device : Device
+    , responsivePalette : Styles.ResponsivePalette
     , showBetaUi : Bool
     }
 
@@ -972,6 +981,7 @@ initialModel settings onMac =
     , activeMobstersStyle = Animation.style [ Animation.opacity 1 ]
     , device = Element.Device 0 0 False False False False False
     , showBetaUi = True
+    , responsivePalette = Styles.defaultPalette
     }
 
 

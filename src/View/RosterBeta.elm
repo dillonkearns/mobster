@@ -6,9 +6,6 @@ import Element exposing (Device, el)
 import Element.Attributes as Attr
 import Element.Events
 import Element.Input
-import Html
-import Html.Attributes
-import Html.Events
 import Html5.DragDrop as DragDrop
 import Json.Decode
 import QuickRotate

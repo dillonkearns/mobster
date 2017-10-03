@@ -6,10 +6,16 @@ import Element.Events exposing (onClick, onInput)
 import Ipc
 import Setup.Msg as Msg exposing (Msg)
 import Setup.View exposing (ScreenState(Configure))
-import Styles exposing (StyleElement)
+import Styles exposing (StyleElement, responsivePalette)
 
 
-view : { model | screenState : ScreenState, device : Device } -> StyleElement
+view :
+    { model
+        | screenState : ScreenState
+        , device : Device
+        , responsivePalette : Styles.ResponsivePalette
+    }
+    -> StyleElement
 view ({ screenState, device } as model) =
     let
         cogButton =
@@ -39,30 +45,22 @@ view ({ screenState, device } as model) =
         ]
 
 
-settingsPageButton : { model | device : Element.Device } -> StyleElement
-settingsPageButton { device } =
-    let
-        buttonHeight =
-            Styles.responsiveForWidth device ( 20, 80 )
-    in
+settingsPageButton : { model | responsivePalette : Styles.ResponsivePalette } -> StyleElement
+settingsPageButton { responsivePalette } =
     Element.button Styles.StepButton
         [ class "fa fa-cog"
-        , height (px buttonHeight)
-        , width (px buttonHeight)
+        , height responsivePalette.navbarButtonHeight
+        , width responsivePalette.navbarButtonHeight
         , verticalCenter
         , Element.Events.onClick Msg.OpenConfigure
         ]
         Element.empty
 
 
-navButtonView : { model | device : Element.Device } -> String -> Styles.NavButtonType -> Msg -> StyleElement
-navButtonView { device } buttonText navButtonType msg =
-    let
-        buttonHeight =
-            Styles.responsiveForWidth device ( 20, 80 )
-    in
+navButtonView : { model | responsivePalette : Styles.ResponsivePalette } -> String -> Styles.NavButtonType -> Msg -> StyleElement
+navButtonView { responsivePalette } buttonText navButtonType msg =
     button (Styles.NavButton navButtonType)
-        [ height (px buttonHeight), minWidth <| px 60, Element.Events.onClick msg ]
+        [ height responsivePalette.navbarButtonHeight, minWidth <| px 60, Element.Events.onClick msg ]
         (text buttonText)
 
 
