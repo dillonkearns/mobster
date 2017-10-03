@@ -14,6 +14,7 @@ import Window
 type Msg
     = StartTimer
     | SkipBreak
+    | OpenContinueScreen
     | StartBreak
     | ViewRpgNextUp
     | ToggleRotationScreen

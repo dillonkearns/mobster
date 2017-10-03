@@ -706,6 +706,10 @@ update msg model =
         Msg.RandomizeMobsters ->
             model ! [ shuffleMobstersCmd model.settings.rosterData ]
 
+        Msg.OpenContinueScreen ->
+            ( model, Cmd.none )
+                |> changeScreen (Continue False)
+
 
 startBreak : Model -> ( Model, Cmd Msg )
 startBreak model =

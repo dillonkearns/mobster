@@ -19,7 +19,10 @@ view :
 view ({ screenState, responsivePalette } as model) =
     let
         cogButton =
-            Element.when (screenState /= Configure) (settingsPageButton model)
+            if screenState /= Configure then
+                settingsPageButton model
+            else
+                continueIcon model
     in
     row Styles.Navbar
         [ Attr.spread, Attr.paddingXY 10 10, Attr.verticalCenter ]
@@ -60,6 +63,18 @@ rpgIcon { responsivePalette } =
         , width responsivePalette.navbarButtonHeight
         , verticalCenter
         , Element.Events.onClick Msg.StartRpgMode
+        ]
+        Element.empty
+
+
+continueIcon : { model | responsivePalette : Responsive.Palette } -> StyleElement
+continueIcon { responsivePalette } =
+    Element.button Styles.GameButton
+        [ class "fa fa-lightbulb-o"
+        , height responsivePalette.navbarButtonHeight
+        , width responsivePalette.navbarButtonHeight
+        , verticalCenter
+        , Element.Events.onClick Msg.OpenContinueScreen
         ]
         Element.empty
 
