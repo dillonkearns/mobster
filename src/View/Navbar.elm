@@ -13,20 +13,13 @@ import Styles exposing (StyleElement)
 view :
     { model
         | screenState : ScreenState
-        , device : Device
         , responsivePalette : Responsive.Palette
     }
     -> StyleElement
-view ({ screenState, device } as model) =
+view ({ screenState, responsivePalette } as model) =
     let
         cogButton =
             Element.when (screenState /= Configure) (settingsPageButton model)
-
-        iconDimensions =
-            responsive (toFloat device.width) ( 600, 4000 ) ( 24, 66 )
-
-        buttonHeight =
-            Styles.responsiveForWidth device ( 20, 80 )
     in
     row Styles.Navbar
         [ Attr.spread, Attr.paddingXY 10 10, Attr.verticalCenter ]
@@ -37,7 +30,7 @@ view ({ screenState, device } as model) =
             , Element.image Styles.None
                 [ class "invisible-trigger"
                 , Attr.attribute "width" "auto"
-                , height (px buttonHeight)
+                , height responsivePalette.navbarButtonHeight
                 ]
                 { src = "./assets/invisible.png", caption = "invisible" }
             , navButtonView model "Hide" Styles.Warning (Msg.SendIpc Ipc.Hide)
@@ -65,15 +58,9 @@ navButtonView { responsivePalette } buttonText navButtonType msg =
         (text buttonText)
 
 
-roseIcon : { model | device : Device } -> StyleElement
-roseIcon { device } =
-    let
-        ( width, height ) =
-            ( Styles.responsiveForWidth device ( 12, 40 ) |> Attr.px
-            , Styles.responsiveForWidth device ( 18, 70 ) |> Attr.px
-            )
-    in
+roseIcon : { model | responsivePalette : Responsive.Palette } -> StyleElement
+roseIcon { responsivePalette } =
     Element.image
         Styles.None
-        [ Attr.height height, Attr.width width ]
+        [ Attr.height responsivePalette.navbarButtonHeight, Attr.attribute "width" "auto" ]
         { src = "./assets/rose.png", caption = "logo" }
