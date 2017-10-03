@@ -606,7 +606,7 @@ startMobbingButton { onMac, device } title =
     column None
         [ class "styleElementsTooltipContainer" ]
         [ text title
-            |> el WideButton
+            |> button WideButton
                 [ padding (responsiveForWidth device ( 10, 20 ))
                 , Element.Events.onClick Msg.StartTimer
                 , Element.Attributes.id "continue-button"
