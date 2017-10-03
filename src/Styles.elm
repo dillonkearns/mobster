@@ -614,19 +614,3 @@ startMobbingButton { onMac, device } title =
                 ]
             |> above [ el Tooltip [ center, class "styleElementsTooltip" ] (text tooltipText) ]
         ]
-
-
-responsivePalette : Device -> ResponsivePalette
-responsivePalette device =
-    { navbarButtonHeight = ( 20, 80 ) |> responsiveForWidth device |> px
-    }
-
-
-defaultPalette : ResponsivePalette
-defaultPalette =
-    { navbarButtonHeight = px 0 }
-
-
-type alias ResponsivePalette =
-    { navbarButtonHeight : Length
-    }

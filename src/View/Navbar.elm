@@ -4,16 +4,17 @@ import Element exposing (..)
 import Element.Attributes as Attr exposing (..)
 import Element.Events exposing (onClick, onInput)
 import Ipc
+import Responsive
 import Setup.Msg as Msg exposing (Msg)
 import Setup.View exposing (ScreenState(Configure))
-import Styles exposing (StyleElement, responsivePalette)
+import Styles exposing (StyleElement)
 
 
 view :
     { model
         | screenState : ScreenState
         , device : Device
-        , responsivePalette : Styles.ResponsivePalette
+        , responsivePalette : Responsive.Palette
     }
     -> StyleElement
 view ({ screenState, device } as model) =
@@ -45,7 +46,7 @@ view ({ screenState, device } as model) =
         ]
 
 
-settingsPageButton : { model | responsivePalette : Styles.ResponsivePalette } -> StyleElement
+settingsPageButton : { model | responsivePalette : Responsive.Palette } -> StyleElement
 settingsPageButton { responsivePalette } =
     Element.button Styles.StepButton
         [ class "fa fa-cog"
@@ -57,7 +58,7 @@ settingsPageButton { responsivePalette } =
         Element.empty
 
 
-navButtonView : { model | responsivePalette : Styles.ResponsivePalette } -> String -> Styles.NavButtonType -> Msg -> StyleElement
+navButtonView : { model | responsivePalette : Responsive.Palette } -> String -> Styles.NavButtonType -> Msg -> StyleElement
 navButtonView { responsivePalette } buttonText navButtonType msg =
     button (Styles.NavButton navButtonType)
         [ height responsivePalette.navbarButtonHeight, minWidth <| px 60, Element.Events.onClick msg ]

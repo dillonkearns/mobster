@@ -26,6 +26,7 @@ import Page.Continue
 import Pages.Break
 import QuickRotate
 import Random
+import Responsive
 import Roster.Data as Roster
 import Roster.Operation as MobsterOperation exposing (MobsterOperation)
 import Roster.Presenter as Presenter
@@ -695,7 +696,7 @@ update msg model =
             in
             { model
                 | device = device
-                , responsivePalette = Styles.responsivePalette device
+                , responsivePalette = Responsive.palette device
             }
                 ! []
 
@@ -957,7 +958,7 @@ type alias Model =
     , dieStyle : Animation.State
     , activeMobstersStyle : Animation.Messenger.State Msg.Msg
     , device : Device
-    , responsivePalette : Styles.ResponsivePalette
+    , responsivePalette : Responsive.Palette
     , showBetaUi : Bool
     }
 
@@ -981,7 +982,7 @@ initialModel settings onMac =
     , activeMobstersStyle = Animation.style [ Animation.opacity 1 ]
     , device = Element.Device 0 0 False False False False False
     , showBetaUi = True
-    , responsivePalette = Styles.defaultPalette
+    , responsivePalette = Responsive.defaultPalette
     }
 
 
