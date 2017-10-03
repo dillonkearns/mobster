@@ -925,7 +925,7 @@ init { onMac, isLocal, settings } =
                     Cmd.none
     in
     initialModel initialSettings onMac
-        ! [ notifyIfDecodeFailed, getInitialWindowSize ]
+        ! [ notifyIfDecodeFailed, getInitialWindowSize, changeTip ]
         |> saveActiveMobsters
         |> changeGlobalShortcutIfValid initialSettings.showHideShortcut
 
