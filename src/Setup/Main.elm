@@ -971,7 +971,7 @@ initialModel settings onMac =
     , dieStyle = Animation.style [ Animation.rotate (Animation.turn 0.0) ]
     , activeMobstersStyle = Animation.style [ Animation.opacity 1 ]
     , device = Element.Device 0 0 False False False False False
-    , showBetaUi = False
+    , showBetaUi = True
     }
 
 
