@@ -325,7 +325,28 @@ styleElementsConfigureView model bodyElements =
             , Element.column Styles.None
                 [ Element.Attributes.paddingXY 110 50, Element.Attributes.spacing 30 ]
                 (View.UpdateAvailableBeta.view model.availableUpdateVersion :: bodyElements)
+            , betaFeedbackButton
             ]
+
+
+betaFeedbackButton : Styles.StyleElement
+betaFeedbackButton =
+    div [ style [ "padding" => "5px" ] ]
+        [ a
+            [ onClick <| Msg.SendIpc Ipc.ShowFeedbackForm
+            , style
+                [ "text-transform" => "uppercase"
+                , "transform" => "rotate(-90deg)"
+                , "padding" => "10px"
+                , "background-color" => "#464545"
+                ]
+            , Attr.tabindex -1
+            , Attr.class "btn btn-sm btn-default pull-right"
+            , Attr.id "feedback"
+            ]
+            [ span [ style [ "padding-right" => "10px" ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ]
+        ]
+        |> Element.html
 
 
 configureBetaViewElements : Model -> List Styles.StyleElement
