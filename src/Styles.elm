@@ -6,7 +6,9 @@ import Element exposing (..)
 import Element.Attributes as Attr exposing (..)
 import Element.Events exposing (onClick, onInput)
 import Element.Input
+import Ipc
 import QuickRotate
+import Responsive
 import Roster.Presenter
 import Setup.InputField as InputField exposing (IntInputField(..))
 import Setup.Msg as Msg exposing (Msg)
@@ -34,6 +36,7 @@ type Styles
     | NavOption
     | WideButton
     | NavButton NavButtonType
+    | StartRpgButton
     | Tooltip
     | Navbar
     | RosterTable
@@ -347,6 +350,18 @@ stylesheet device =
                 ]
             , Font.typeface typefaces.body
             ]
+        , style StartRpgButton
+            [ Font.size fonts.extraSmall
+            , Border.none
+            , Color.text primaryColor
+            , Color.rgb 55 90 127 |> buttonGradients 0.06 |> .main
+            , Border.rounded 5
+            , Font.center
+            , hover
+                [ Color.rgb 35 70 107 |> buttonGradients 0.06 |> .hover
+                ]
+            , Font.typeface typefaces.body
+            ]
         , style NavOption
             [ Font.size 12
             , Font.typeface typefaces.body
@@ -574,7 +589,7 @@ editableKeyboardKey model currentKey =
             }
 
 
-configOptions : { model | onMac : Bool, device : Element.Device } -> Settings.Data -> StyleElement
+configOptions : { model | onMac : Bool, device : Element.Device, responsivePalette : Responsive.Palette } -> Settings.Data -> StyleElement
 configOptions ({ onMac } as model) settings =
     let
         breakIntervalText =
@@ -595,7 +610,29 @@ configOptions ({ onMac } as model) settings =
                 [ spacing 10 ]
                 [ keyboardKey model (ctrlKey onMac), keyboardKey model "Shift", editableKeyboardKey model settings.showHideShortcut ]
             ]
+        , navButtonView model
         ]
+
+
+navButtonView : { model | responsivePalette : Responsive.Palette } -> StyleElement
+navButtonView { responsivePalette } =
+    Element.row None
+        [ width fill
+        , height fill
+        , center
+        , verticalCenter
+        , spacing 10
+        ]
+        [ Element.text "Learn to mob game", githubIcon ]
+        |> Element.button StartRpgButton
+            [ Attr.paddingXY 10 10
+            , Element.Events.onClick Msg.StartRpgMode
+            ]
+
+
+githubIcon : StyleElement
+githubIcon =
+    Element.el None [ class "fa fa-gamepad" ] Element.empty
 
 
 ctrlKey : Bool -> String

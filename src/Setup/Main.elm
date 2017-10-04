@@ -40,7 +40,7 @@ import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
 import Setup.Validations as Validations
 import Setup.View exposing (..)
-import Styles
+import Styles exposing (StyleElement)
 import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 import Task
 import Timer.Flags
