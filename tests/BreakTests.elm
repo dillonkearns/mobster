@@ -1,44 +1,15 @@
 module BreakTests exposing (suite)
 
-import Test exposing (..)
-import Expect
 import Break
+import Expect
+import Test exposing (..)
 
 
 suite : Test
 suite =
     describe "break tests"
         [ describe "timersBeforeNext"
-            [ test "just had a break" <|
-                \() ->
-                    let
-                        timersSinceBreak =
-                            0
-
-                        timersPerBreakInterval =
-                            2
-
-                        result =
-                            Break.timersBeforeNext timersSinceBreak timersPerBreakInterval
-                    in
-                        Expect.equal result 2
-            , test "rounds up when going the remaining time doesn't divide evenly into the break interval" <|
-                \() ->
-                    let
-                        timersSinceBreak =
-                            1
-
-                        timersPerBreakInterval =
-                            4
-
-                        result =
-                            Break.timersBeforeNext timersSinceBreak timersPerBreakInterval
-
-                        expected =
-                            3
-                    in
-                        Expect.equal result expected
-            , test "break suggested when at least as many intervals have been done as the break interval" <|
+            [ test "break suggested when at least as many intervals have been done as the break interval" <|
                 \() ->
                     let
                         timersSinceBreak =
@@ -50,7 +21,7 @@ suite =
                         result =
                             Break.breakSuggested timersSinceBreak timersPerBreakInterval
                     in
-                        Expect.equal result True
+                    Expect.equal result True
             , test "break not suggested when fewer intervals have been completed than break interval" <|
                 \() ->
                     let
@@ -63,7 +34,7 @@ suite =
                         result =
                             Break.breakSuggested timersSinceBreak timersPerBreakInterval
                     in
-                        Expect.equal result False
+                    Expect.equal result False
             , test "break not suggested when value set to 0" <|
                 \() ->
                     let
@@ -76,6 +47,6 @@ suite =
                         result =
                             Break.breakSuggested timersSinceBreak timersPerBreakInterval
                     in
-                        Expect.equal result False
+                    Expect.equal result False
             ]
         ]

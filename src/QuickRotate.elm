@@ -1,4 +1,15 @@
-module QuickRotate exposing (..)
+module QuickRotate
+    exposing
+        ( EntrySelection(Matches, NoMatch, Selected)
+        , Selection(All, Index, New)
+        , State
+        , init
+        , matches
+        , next
+        , previous
+        , selectionTypeFor
+        , update
+        )
 
 import List.Extra
 

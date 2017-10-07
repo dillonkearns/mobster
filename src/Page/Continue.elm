@@ -1,7 +1,7 @@
 module Page.Continue exposing (view)
 
 import Element exposing (Device)
-import Element.Attributes as Attr exposing (spacing)
+import Element.Attributes as Attr
 import Element.Events
 import Os exposing (Os)
 import Roster.Data exposing (RosterData)
