@@ -6,7 +6,6 @@ import Element exposing (..)
 import Element.Attributes as Attr exposing (..)
 import Element.Events exposing (onClick, onInput)
 import Element.Input
-import Ipc
 import QuickRotate
 import Responsive
 import Roster.Presenter
@@ -647,10 +646,7 @@ startMobbingButton : { model | onMac : Bool, device : Element.Device } -> String
 startMobbingButton { onMac, device } title =
     let
         tooltipText =
-            if onMac then
-                "⌘+Enter"
-            else
-                "Ctrl+Enter"
+            ctrlKey onMac ++ "+Enter"
     in
     column None
         [ class "styleElementsTooltipContainer" ]
