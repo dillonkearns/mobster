@@ -21,7 +21,7 @@ type Msg
     | SkipHotkey
     | StartRpgMode
     | UpdateRosterData MobsterOperation
-    | CheckRpgBox { index : Int, role : RpgRole } Int Bool
+    | CheckRpgBox { index : Int, role : RpgRole } Int
     | DomResult (Result Dom.Error ())
     | ChangeInput InputField String
     | SelectInputField String

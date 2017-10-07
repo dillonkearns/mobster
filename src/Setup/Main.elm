@@ -346,7 +346,7 @@ update msg model =
         Msg.SendIpc ipcMsg ->
             model ! [ sendIpcCmd ipcMsg ]
 
-        Msg.CheckRpgBox mobster goalIndex checkedValue ->
+        Msg.CheckRpgBox mobster goalIndex ->
             let
                 settings =
                     model.settings
