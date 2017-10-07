@@ -45,7 +45,6 @@ type Msg
     | KeyPressed Bool Keyboard.Extra.Key
     | Animate Animation.Msg
     | WindowResized Window.Size
-    | ToggleBetaUi
 
 
 type Direction

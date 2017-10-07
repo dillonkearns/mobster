@@ -74,34 +74,27 @@ operationToEvent mobsterOperation =
             }
 
 
-trackPage : ScreenState -> { model | showBetaUi : Bool } -> Cmd Msg
-trackPage newScreenState model =
-    sendIpcCmd (Ipc.TrackPage (screenToString newScreenState model))
+trackPage : ScreenState -> Cmd Msg
+trackPage newScreenState =
+    sendIpcCmd (Ipc.TrackPage (screenToString newScreenState))
 
 
-screenToString : ScreenState -> { model | showBetaUi : Bool } -> String
-screenToString newScreenState { showBetaUi } =
-    let
-        screenString =
-            case newScreenState of
-                Setup.View.Configure ->
-                    "configure"
+screenToString : ScreenState -> String
+screenToString newScreenState =
+    case newScreenState of
+        Setup.View.Configure ->
+            "configure"
 
-                Setup.View.Continue bool ->
-                    "continue"
+        Setup.View.Continue bool ->
+            "continue"
 
-                Setup.View.Rpg rpgState ->
-                    case rpgState of
-                        Setup.Rpg.View.Checklist ->
-                            "rpg-checklist"
+        Setup.View.Rpg rpgState ->
+            case rpgState of
+                Setup.Rpg.View.Checklist ->
+                    "rpg-checklist"
 
-                        Setup.Rpg.View.NextUp ->
-                            "rpg-next-up"
-    in
-    if showBetaUi then
-        "beta:" ++ screenString
-    else
-        screenString
+                Setup.Rpg.View.NextUp ->
+                    "rpg-next-up"
 
 
 withIpcMsg : Ipc.Msg -> ( model, Cmd Msg ) -> ( model, Cmd Msg )

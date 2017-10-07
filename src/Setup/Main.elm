@@ -297,15 +297,16 @@ view model =
                 Rpg rpgState ->
                     Setup.Rpg.View.rpgView rpgState model.settings.rosterData
     in
-    if model.showBetaUi && model.screenState == Configure then
+    if model.screenState == Configure then
         styleElementsConfigureView model (configureBetaViewElements model)
-    else if model.showBetaUi && (model.screenState == Continue True || model.screenState == Continue False) then
+    else if model.screenState == Continue True || model.screenState == Continue False then
         styleElementsConfigureView model <|
             if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
                 Pages.Break.view model
             else
                 Page.Continue.view model
     else
+        -- Only used for RPG right now
         div [ Attr.style [ "padding" => "100px", "padding-bottom" => "0px" ] ]
             [ div []
                 [ Navbar.view model.screenState
@@ -721,9 +722,6 @@ update msg model =
             }
                 ! []
 
-        Msg.ToggleBetaUi ->
-            { model | showBetaUi = not model.showBetaUi } ! []
-
         Msg.RandomizeMobsters ->
             model ! [ shuffleMobstersCmd model.settings.rosterData ]
 
@@ -754,7 +752,7 @@ changeScreen newScreenState ( model, cmd ) =
     ( { model | screenState = newScreenState }
     , Cmd.batch
         [ cmd
-        , Analytics.trackPage newScreenState model
+        , Analytics.trackPage newScreenState
         ]
     )
 
@@ -984,7 +982,6 @@ type alias Model =
     , activeMobstersStyle : Animation.Messenger.State Msg.Msg
     , device : Device
     , responsivePalette : Responsive.Palette
-    , showBetaUi : Bool
     }
 
 
@@ -1006,7 +1003,6 @@ initialModel settings onMac =
     , dieStyle = Animation.style [ Animation.rotate (Animation.turn 0.0) ]
     , activeMobstersStyle = Animation.style [ Animation.opacity 1 ]
     , device = Element.Device 0 0 False False False False False
-    , showBetaUi = True
     , responsivePalette = Responsive.defaultPalette
     }
 
