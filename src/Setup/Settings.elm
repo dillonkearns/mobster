@@ -1,8 +1,8 @@
-module Setup.Settings exposing (..)
+module Setup.Settings exposing (Data, decode, decoder, encoder, initial)
 
 import Basics.Extra exposing ((=>))
-import Json.Decode as Decode exposing (oneOf)
-import Json.Decode.Pipeline exposing (..)
+import Json.Decode as Decode
+import Json.Decode.Pipeline as Pipeline
 import Json.Encode as Encode
 import Roster.Data exposing (RosterData)
 
@@ -23,12 +23,12 @@ decoder =
 
 settingsDecoder : Decode.Decoder Data
 settingsDecoder =
-    Json.Decode.Pipeline.decode Data
-        |> required "timerDuration" Decode.int
-        |> required "breakDuration" Decode.int
-        |> required "intervalsPerBreak" Decode.int
-        |> required "mobsterData" Roster.Data.decoder
-        |> required "showHideShortcut" Decode.string
+    Pipeline.decode Data
+        |> Pipeline.required "timerDuration" Decode.int
+        |> Pipeline.required "breakDuration" Decode.int
+        |> Pipeline.required "intervalsPerBreak" Decode.int
+        |> Pipeline.required "mobsterData" Roster.Data.decoder
+        |> Pipeline.required "showHideShortcut" Decode.string
 
 
 decode : Encode.Value -> Result String (Maybe Data)

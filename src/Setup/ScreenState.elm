@@ -1,4 +1,4 @@
-module Setup.ScreenState exposing (..)
+module Setup.ScreenState exposing (ScreenState(Configure, Continue, Rpg))
 
 import Setup.Rpg.View exposing (RpgState)
 
