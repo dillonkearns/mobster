@@ -18,9 +18,8 @@ import Style.Transition
 import Time
 
 
-(=>) : a -> b -> ( a, b )
-(=>) =
-    (,)
+type alias StyleElement =
+    Element Styles Never Msg
 
 
 type Styles
@@ -71,6 +70,11 @@ type NavButtonType
     | Warning
 
 
+type CircleFill
+    = Filled
+    | Hollow
+
+
 typefaces : { title : List Style.Font, body : List Style.Font }
 typefaces =
     { title = [ "Anton", "helvetica", "arial", "sans-serif" ] |> List.map Font.font
@@ -110,11 +114,6 @@ buttonGradients factor color =
     { main = color |> buttonGradient factor
     , hover = color |> Color.Mixing.darken 0.04 |> buttonGradient factor
     }
-
-
-type CircleFill
-    = Filled
-    | Hollow
 
 
 stylesheet : Device -> StyleSheet Styles Never
@@ -515,10 +514,6 @@ stylesheet device =
 rosterItemRounding : Float
 rosterItemRounding =
     4
-
-
-type alias StyleElement =
-    Element Styles Never Msg
 
 
 ctrlKey : Bool -> String
