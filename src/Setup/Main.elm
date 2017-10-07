@@ -259,9 +259,6 @@ update msg model =
         Msg.NewTip tipIndex ->
             { model | tip = Tip.get tipIndex } ! []
 
-        Msg.EnterRating rating ->
-            update Msg.StartTimer { model | ratings = model.ratings ++ [ rating ] }
-
         Msg.ShuffleMobsters ->
             (model |> Dice.animateRoll |> Dice.animateActiveMobstersShuffle)
                 ! []
@@ -703,7 +700,6 @@ type alias Model =
     , newMobster : String
     , combos : Keyboard.Combo.Model Msg
     , tip : Tip.Tip
-    , ratings : List Int
     , secondsSinceBreak : Int
     , intervalsSinceBreak : Int
     , availableUpdateVersion : Maybe String
@@ -732,7 +728,6 @@ initialModel settings onMac =
     , newMobster = ""
     , combos = keyboardComboInit
     , tip = Tip.emptyTip
-    , ratings = []
     , secondsSinceBreak = 0
     , intervalsSinceBreak = 0
     , availableUpdateVersion = Nothing

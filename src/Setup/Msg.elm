@@ -27,7 +27,6 @@ type Msg
     | SelectInputField String
     | OpenConfigure
     | NewTip Int
-    | EnterRating Int
     | ComboMsg Keyboard.Combo.Msg
     | ShuffleMobsters
     | RandomizeMobsters
