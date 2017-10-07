@@ -91,7 +91,9 @@ goalView : Roster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> Styles.StyleElem
 goalView mobster goalIndex goal =
     Element.row
         Styles.None
-        [ Element.Events.onClick (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex) ]
+        [ Element.Events.onClick (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex)
+        , Attr.spacing 55
+        ]
         [ Element.text (toString goal.complete)
         , Element.paragraph Styles.None [] [ Element.text goal.description ]
         ]
