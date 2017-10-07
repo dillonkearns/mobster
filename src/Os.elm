@@ -1,4 +1,4 @@
-module Os exposing (Os(..), ctrlKeyString)
+module Os exposing (Os(Mac, NotMac), ctrlKeyString)
 
 
 type Os

@@ -50,6 +50,10 @@ experienceForRole role rpgData =
             rpgData.sponsor
 
 
+toRpgMobster :
+    Int
+    -> ( Int, { a | name : String, rpgData : Roster.Rpg.RpgData } )
+    -> RpgMobster
 toRpgMobster roleIndex ( mobsterIndex, mobster ) =
     let
         badgeCount =

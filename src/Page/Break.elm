@@ -1,7 +1,7 @@
 module Page.Break exposing (view)
 
-import Element exposing (Device, button, el, empty, row, text)
-import Element.Attributes exposing (center, fill, fillPortion, padding, paddingXY, percent, spacing, verticalCenter, width)
+import Element exposing (button, el, empty, row, text)
+import Element.Attributes as Attr
 import Element.Events
 import Setup.Msg as Msg
 import Styles exposing (StyleElement)
@@ -17,8 +17,8 @@ view { secondsSinceBreak } =
 breakSuggestionView : Int -> StyleElement
 breakSuggestionView secondsSinceBreak =
     row Styles.BreakAlertBox
-        [ width fill, paddingXY 16 16, spacing 10, center, verticalCenter ]
-        [ el Styles.None [ Element.Attributes.class "fa fa-exclamation-circle" ] empty
+        [ Attr.width Attr.fill, Attr.paddingXY 16 16, Attr.spacing 10, Attr.center, Attr.verticalCenter ]
+        [ el Styles.None [ Attr.class "fa fa-exclamation-circle" ] empty
         , text <| "How about a walk? You've been mobbing for " ++ toString (secondsSinceBreak // 60) ++ " minutes."
         ]
 
@@ -26,21 +26,21 @@ breakSuggestionView secondsSinceBreak =
 breakButtons : StyleElement
 breakButtons =
     row Styles.None
-        [ spacing 30 ]
+        [ Attr.spacing 30 ]
         [ button
             Styles.SkipBreakButton
-            [ padding 13, width (fillPortion 1), Element.Events.onClick Msg.SkipBreak ]
+            [ Attr.padding 13, Attr.width (Attr.fillPortion 1), Element.Events.onClick Msg.SkipBreak ]
             (row Styles.None
-                [ spacing 20, center, width (Element.Attributes.percent 100) ]
+                [ Attr.spacing 20, Attr.center, Attr.width (Attr.percent 100) ]
                 [ text "Skip Break" ]
             )
         , button
             Styles.BreakButton
-            [ padding 13, width (fillPortion 3), Element.Events.onClick Msg.StartBreak ]
+            [ Attr.padding 13, Attr.width (Attr.fillPortion 3), Element.Events.onClick Msg.StartBreak ]
             (row Styles.None
-                [ spacing 20, center, width (Element.Attributes.percent 100) ]
+                [ Attr.spacing 20, Attr.center, Attr.width (Attr.percent 100) ]
                 [ text "Take a Break"
-                , el Styles.None [ Element.Attributes.class "fa fa-coffee" ] empty
+                , el Styles.None [ Attr.class "fa fa-coffee" ] empty
                 ]
             )
         ]
