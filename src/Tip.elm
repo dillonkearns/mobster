@@ -1,7 +1,6 @@
-module Tip exposing (..)
+module Tip exposing (Tip, emptyTip, get, random)
 
 import Array
-import Html exposing (..)
 import Random
 
 
@@ -81,11 +80,3 @@ tips =
       , author = "Amitai Schleier"
       }
     ]
-
-
-tipView : Tip -> Html msg
-tipView tip =
-    blockquote []
-        [ p [] [ text tip.body ]
-        , small [] [ text tip.author ]
-        ]
