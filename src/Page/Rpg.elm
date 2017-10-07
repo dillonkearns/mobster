@@ -4,7 +4,6 @@ import Element
 import Element.Attributes as Attr
 import Element.Events
 import Element.Keyed
-import Html exposing (Html)
 import List.Extra
 import Os exposing (Os)
 import Roster.Data exposing (RosterData)
@@ -30,16 +29,16 @@ view model rpgState rosterData =
     in
     [ rpgRolesView rosterData
     , rpgButton
-    , Html.div [] [ allBadgesView rosterData ] |> Element.html
+    , allBadgesView rosterData
     ]
 
 
-allBadgesView : Roster.Data.RosterData -> Html Msg
+allBadgesView : Roster.Data.RosterData -> Styles.StyleElement
 allBadgesView rosterData =
-    Html.div [] (List.map mobsterBadgesView rosterData.mobsters)
+    Element.row Styles.None [] (List.map mobsterBadgesView rosterData.mobsters)
 
 
-mobsterBadgesView : Roster.Data.Mobster -> Html Msg
+mobsterBadgesView : Roster.Data.Mobster -> Styles.StyleElement
 mobsterBadgesView mobster =
     let
         badges =
@@ -47,11 +46,15 @@ mobsterBadgesView mobster =
                 |> Rpg.badges
     in
     if List.length badges == 0 then
-        Html.span [] []
+        Element.empty
     else
-        Html.span []
-            (Html.span [] [ Html.text mobster.name ]
-                :: (badges |> List.map Setup.RpgIcons.mobsterIcon)
+        Element.row Styles.None
+            []
+            (Element.text mobster.name
+                :: (badges
+                        |> List.map Setup.RpgIcons.mobsterIcon
+                        |> List.map Element.html
+                   )
             )
 
 
