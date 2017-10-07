@@ -1,10 +1,10 @@
-module Bootstrap exposing (Color(..), navbarButton, smallButton)
+module Bootstrap exposing (Color(Danger, Primary, Success, Warning), navbarButton, smallButton)
 
-import FA exposing (Icon)
-import Html exposing (..)
+import FA
+import Html exposing (Attribute, Html, button, span, text)
 import Html.Attributes as Attr
-import Html.Events exposing (..)
-import StylesheetHelper exposing (CssClasses(..), class, classList, id)
+import Html.Events exposing (onClick)
+import StylesheetHelper exposing (class)
 
 
 type Color
@@ -28,7 +28,7 @@ navbarButton textContent clickMsg color faIcon =
             else
                 "fa fa-" ++ faIcon
     in
-    button [ noTab, onClick clickMsg, Attr.class ("btn " ++ btnColorClass color ++ " btn-sm navbar-btn"), class [ BufferRight ] ]
+    button [ noTab, onClick clickMsg, Attr.class ("btn " ++ btnColorClass color ++ " btn-sm navbar-btn"), class [ StylesheetHelper.BufferRight ] ]
         [ text textContent
         , span [ Attr.class faIconClass ] []
         ]
@@ -40,9 +40,9 @@ smallButton textContent clickMsg color faIcon =
         [ onClick clickMsg
         , noTab
         , Attr.class ("btn " ++ btnColorClass color ++ " btn-sm")
-        , class [ BufferRight ]
+        , class [ StylesheetHelper.BufferRight ]
         ]
-        [ span [ class [ BufferRight ] ] [ text textContent ]
+        [ span [ class [ StylesheetHelper.BufferRight ] ] [ text textContent ]
         , span [ Attr.class (FA.iconClass faIcon) ] []
         ]
 

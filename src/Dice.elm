@@ -11,7 +11,9 @@ animateRoll model =
     { model | dieStyle = Animation.interrupt [ rollAnimation ] model.dieStyle }
 
 
-animateActiveMobstersShuffle : { a | activeMobstersStyle : Animation.Messenger.State Setup.Msg.Msg } -> { a | activeMobstersStyle : Animation.Messenger.State Setup.Msg.Msg }
+animateActiveMobstersShuffle :
+    { a | activeMobstersStyle : Animation.Messenger.State Setup.Msg.Msg }
+    -> { a | activeMobstersStyle : Animation.Messenger.State Setup.Msg.Msg }
 animateActiveMobstersShuffle model =
     { model
         | activeMobstersStyle =

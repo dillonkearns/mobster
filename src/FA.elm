@@ -1,4 +1,4 @@
-module FA exposing (Icon(..), iconClass)
+module FA exposing (Icon(Gamepad, Github), iconClass)
 
 
 type Icon

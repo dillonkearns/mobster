@@ -12,7 +12,11 @@ import Setup.ScreenState as ScreenState exposing (ScreenState)
 
 
 type alias Event =
-    { category : String, action : String, label : Maybe String, value : Maybe Int }
+    { category : String
+    , action : String
+    , label : Maybe String
+    , value : Maybe Int
+    }
 
 
 trackEvent : Event -> ( model, Cmd Msg ) -> ( model, Cmd Msg )
@@ -60,13 +64,13 @@ operationToEvent mobsterOperation =
         MobsterOperation.RotateIn index ->
             { category = "roster", action = "rotate-in", label = Nothing, value = Just index }
 
-        MobsterOperation.Add string ->
+        MobsterOperation.Add _ ->
             { category = "roster", action = "add", label = Nothing, value = Nothing }
 
-        MobsterOperation.Reorder mobsterList ->
+        MobsterOperation.Reorder _ ->
             { category = "roster", action = "reorder", label = Nothing, value = Nothing }
 
-        MobsterOperation.CompleteGoal mobsterIndex role goalIndex ->
+        MobsterOperation.CompleteGoal _ role goalIndex ->
             { category = "roster"
             , action = "complete-goal"
             , label = Just (toString role ++ "[" ++ toString goalIndex ++ "]")

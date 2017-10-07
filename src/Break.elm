@@ -1,12 +1,4 @@
-module Break exposing (..)
-
-
-timersBeforeNext : Int -> Int -> Int
-timersBeforeNext timersSinceBreak timersPerBreak =
-    if timersSinceBreak >= timersPerBreak then
-        0
-    else
-        timersPerBreak - timersSinceBreak
+module Break exposing (breakSuggested, breaksTurnedOn)
 
 
 breakSuggested : Int -> Int -> Bool
