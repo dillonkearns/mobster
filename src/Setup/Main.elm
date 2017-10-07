@@ -155,6 +155,11 @@ updateSettings settingsUpdater ({ settings } as model) =
 -- update function 187
 
 
+resetKeyboardCombos : ( { model | combos : Keyboard.Combo.Model Msg }, Cmd Msg ) -> ( { model | combos : Keyboard.Combo.Model Msg }, Cmd Msg )
+resetKeyboardCombos ( model, cmd ) =
+    ( { model | combos = keyboardComboInit }, cmd )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case Debug.log "update" msg of
@@ -170,56 +175,45 @@ update msg model =
             model ! [] |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
 
         Msg.StartTimer ->
-            if model.screenState == ScreenState.Continue && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+            (if model.screenState == ScreenState.Continue && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
                 startBreak model
-            else
-                let
-                    nextScreenState =
-                        case model.screenState of
-                            ScreenState.Rpg rpgState ->
-                                ScreenState.Rpg ScreenState.Checklist
-
-                            _ ->
-                                ScreenState.Continue
-
-                    updatedModel =
-                        { model
-                            | combos = keyboardComboInit
-                        }
-                            |> resetIfAfterBreak
-
-                    startTimerUpdate =
-                        updatedModel
-                            ! [ changeTip, blurContinueButton ]
-                            |> changeScreen nextScreenState
-                            |> startTimer
-                in
-                (case model.screenState of
+             else
+                case model.screenState of
                     ScreenState.Rpg rpgState ->
-                        startTimerUpdate
+                        case rpgState of
+                            ScreenState.NextUp ->
+                                ( model, Cmd.none )
+                                    |> changeScreen (ScreenState.Rpg ScreenState.Checklist)
+                                    |> startTimer
+
+                            ScreenState.Checklist ->
+                                ( model, Cmd.none )
+                                    |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
 
                     _ ->
+                        let
+                            nextScreenState =
+                                case model.screenState of
+                                    ScreenState.Rpg rpgState ->
+                                        case rpgState of
+                                            ScreenState.Checklist ->
+                                                ScreenState.Rpg ScreenState.Checklist
+
+                                            ScreenState.NextUp ->
+                                                ScreenState.Rpg ScreenState.NextUp
+
+                                    _ ->
+                                        ScreenState.Continue
+
+                            startTimerUpdate =
+                                ( model |> resetIfAfterBreak, Cmd.none )
+                                    |> changeScreen nextScreenState
+                                    |> startTimer
+                        in
                         startTimerUpdate
                             |> Update.Extra.andThen update (Msg.UpdateRosterData MobsterOperation.NextTurn)
-                )
-                    |> Analytics.trackEvent
-                        { category = "stats"
-                        , action = "active-mobsters"
-                        , label = Nothing
-                        , value =
-                            model.settings.rosterData.mobsters
-                                |> List.length
-                                |> Just
-                        }
-                    |> Analytics.trackEvent
-                        { category = "stats"
-                        , action = "inactive-mobsters"
-                        , label = Nothing
-                        , value =
-                            model.settings.rosterData.inactiveMobsters
-                                |> List.length
-                                |> Just
-                        }
+            )
+                |> resetKeyboardCombos
 
         Msg.SkipBreak ->
             (model |> resetBreakData)
@@ -566,7 +560,27 @@ withIpcMsg msgIpc ( model, cmd ) =
 
 startTimer : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 startTimer (( model, cmd ) as msgAndCmd) =
-    msgAndCmd |> withIpcMsg (Ipc.StartTimer (timerFlags model.settings))
+    msgAndCmd
+        |> withIpcMsg (Ipc.StartTimer (timerFlags model.settings))
+        |> Update.Extra.addCmd (Cmd.batch [ changeTip, blurContinueButton ])
+        |> Analytics.trackEvent
+            { category = "stats"
+            , action = "active-mobsters"
+            , label = Nothing
+            , value =
+                model.settings.rosterData.mobsters
+                    |> List.length
+                    |> Just
+            }
+        |> Analytics.trackEvent
+            { category = "stats"
+            , action = "inactive-mobsters"
+            , label = Nothing
+            , value =
+                model.settings.rosterData.inactiveMobsters
+                    |> List.length
+                    |> Just
+            }
 
 
 timerFlags : Settings.Data -> Encode.Value
