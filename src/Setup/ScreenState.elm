@@ -1,9 +1,16 @@
-module Setup.ScreenState exposing (ScreenState(Configure, Continue, Rpg))
-
-import Setup.Rpg.View exposing (RpgState)
+module Setup.ScreenState
+    exposing
+        ( RpgState(Checklist, NextUp)
+        , ScreenState(Configure, Continue, Rpg)
+        )
 
 
 type ScreenState
     = Configure
     | Continue
     | Rpg RpgState
+
+
+type RpgState
+    = Checklist
+    | NextUp

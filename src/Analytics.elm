@@ -7,7 +7,6 @@ import Json.Encode as Encode
 import Roster.Operation as MobsterOperation exposing (MobsterOperation)
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Ports
-import Setup.Rpg.View
 import Setup.ScreenState as ScreenState exposing (ScreenState)
 
 
@@ -94,10 +93,10 @@ screenToString newScreenState =
 
         ScreenState.Rpg rpgState ->
             case rpgState of
-                Setup.Rpg.View.Checklist ->
+                ScreenState.Checklist ->
                     "rpg-checklist"
 
-                Setup.Rpg.View.NextUp ->
+                ScreenState.NextUp ->
                     "rpg-next-up"
 
 

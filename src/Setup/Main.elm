@@ -24,6 +24,7 @@ import Os exposing (Os)
 import Page.Break
 import Page.Config
 import Page.Continue
+import Page.Rpg
 import QuickRotate
 import Random
 import Responsive
@@ -32,9 +33,7 @@ import Roster.Operation as MobsterOperation exposing (MobsterOperation)
 import Roster.Presenter as Presenter
 import Setup.InputField as InputField
 import Setup.Msg as Msg exposing (Msg)
-import Setup.Navbar as Navbar
 import Setup.Ports
-import Setup.Rpg.View exposing (RpgState(..))
 import Setup.ScreenState as ScreenState exposing (ScreenState)
 import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
@@ -49,7 +48,6 @@ import View.FeedbackButton
 import View.Navbar
 import View.RosterBeta
 import View.StartMobbingButton
-import View.UpdateAvailable
 import View.UpdateAvailableBeta
 import Window
 
@@ -110,14 +108,8 @@ view model =
                     Page.Continue.view model
 
         ScreenState.Rpg rpgState ->
-            div [ Attr.style [ "padding" => "100px", "padding-bottom" => "0px" ] ]
-                [ div []
-                    [ Navbar.view model.screenState
-                    , View.UpdateAvailable.view model.availableUpdateVersion
-                    , Setup.Rpg.View.rpgView rpgState model.settings.rosterData
-                    , feedbackButton
-                    ]
-                ]
+            Page.Rpg.view model rpgState model.settings.rosterData
+                |> wrapPageView model
 
 
 wrapPageView : Model -> List Styles.StyleElement -> Html Msg
@@ -194,7 +186,7 @@ update msg model =
                     ( model, Cmd.none )
 
         Msg.StartRpgMode ->
-            model ! [] |> changeScreen (ScreenState.Rpg NextUp)
+            model ! [] |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
 
         Msg.StartTimer ->
             if model.screenState == ScreenState.Continue && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
@@ -204,7 +196,7 @@ update msg model =
                     nextScreenState =
                         case model.screenState of
                             ScreenState.Rpg rpgState ->
-                                ScreenState.Rpg Checklist
+                                ScreenState.Rpg ScreenState.Checklist
 
                             _ ->
                                 ScreenState.Continue
@@ -364,7 +356,7 @@ update msg model =
         Msg.ViewRpgNextUp ->
             model
                 |> performRosterOperationUntracked MobsterOperation.NextTurn
-                |> changeScreen (ScreenState.Rpg NextUp)
+                |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
 
         Msg.ChangeInput inputField newInputValue ->
             case inputField of
@@ -508,7 +500,7 @@ startBreak model =
         nextScreenState =
             case model.screenState of
                 ScreenState.Rpg _ ->
-                    ScreenState.Rpg Checklist
+                    ScreenState.Rpg ScreenState.Checklist
 
                 _ ->
                     ScreenState.Continue
