@@ -1,17 +1,17 @@
-module Setup.Rpg.View exposing (RpgState(..), rpgView)
+module Setup.Rpg.View exposing (RpgState(Checklist, NextUp), rpgView)
 
 import Basics.Extra exposing ((=>))
-import Html exposing (..)
-import Html.Attributes as Attr exposing (href, id, placeholder, src, style, target, title, type_, value)
-import Html.Events exposing (keyCode, on, onCheck, onClick, onDoubleClick, onInput, onSubmit)
+import Html exposing (Html, button, div, input, label, li, span, text)
+import Html.Attributes as Attr exposing (style, type_)
+import Html.Events exposing (onCheck, onClick)
 import Html.Keyed
 import List.Extra
-import Roster.Data exposing (..)
-import Roster.Rpg as Rpg exposing (RpgData)
+import Roster.Data exposing (RosterData)
+import Roster.Rpg as Rpg
 import Roster.RpgPresenter
-import Setup.Msg exposing (..)
+import Setup.Msg as Msg exposing (Msg)
 import Setup.RpgIcons
-import StylesheetHelper exposing (CssClasses(..), class, classList, id)
+import StylesheetHelper exposing (CssClasses(..), class)
 
 
 type RpgState
@@ -26,7 +26,7 @@ rpgView rpgState rosterData =
             case rpgState of
                 Checklist ->
                     button
-                        [ onClick ViewRpgNextUp
+                        [ onClick Msg.ViewRpgNextUp
                         , Attr.class "btn btn-info btn-lg btn-block"
                         , class [ BufferTop, TooltipContainer ]
                         , class [ LargeButtonText ]
@@ -35,7 +35,7 @@ rpgView rpgState rosterData =
 
                 NextUp ->
                     button
-                        [ onClick StartTimer
+                        [ onClick Msg.StartTimer
                         , Attr.class "btn btn-info btn-lg btn-block"
                         , class [ BufferTop, TooltipContainer ]
                         , class [ LargeButtonText ]
@@ -66,8 +66,8 @@ mobsterBadgesView mobster =
         span [] []
     else
         span []
-            ([ span [] [ text mobster.name ] ]
-                ++ (badges |> List.map Setup.RpgIcons.mobsterIcon)
+            (span [] [ text mobster.name ]
+                :: (badges |> List.map Setup.RpgIcons.mobsterIcon)
             )
 
 
@@ -115,7 +115,10 @@ goalView mobster goalIndex goal =
             nameWithoutWhitespace ++ toString mobster.role ++ toString goalIndex
     in
     ( uniqueId
-    , li [ Attr.class "checkbox checkbox-success", onCheck (CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex) ]
+    , li
+        [ Attr.class "checkbox checkbox-success"
+        , onCheck (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex)
+        ]
         [ input [ Attr.id uniqueId, type_ "checkbox", Attr.checked goal.complete ] []
         , label [ Attr.for uniqueId ] [ text goal.description ]
         ]
