@@ -30,7 +30,6 @@ import Responsive
 import Roster.Data as Roster
 import Roster.Operation as MobsterOperation exposing (MobsterOperation)
 import Roster.Presenter as Presenter
-import Setup.Forms.ViewHelpers
 import Setup.InputField exposing (IntInputField(..))
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Navbar as Navbar
@@ -40,14 +39,13 @@ import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
 import Setup.Validations as Validations
 import Setup.View exposing (..)
-import Styles exposing (StyleElement)
-import StylesheetHelper exposing (CssClasses(..), class, classList, id)
+import Styles
+import StylesheetHelper exposing (CssClasses(..), class, id)
 import Task
 import Timer.Flags
 import Tip
 import Update.Extra
 import View.Navbar
-import View.Roster
 import View.RosterBeta
 import View.UpdateAvailable
 import View.UpdateAvailableBeta
@@ -163,79 +161,6 @@ nextView thing name =
     span []
         [ span [ Attr.class "text-muted" ] [ text ("Next " ++ thing ++ ": ") ]
         , span [ Attr.class "text-info" ] [ text name ]
-        ]
-
-
-configureView : Model -> Html Msg
-configureView model =
-    div [ Attr.class "container-fluid" ]
-        [ div [ Attr.class "row" ]
-            [ div [ Attr.class "col-md-4 col-sm-12" ]
-                [ timerDurationInputView model.settings.timerDuration
-                , breakIntervalInputView model.settings.intervalsPerBreak model.settings.timerDuration
-                , breakDurationInputView model.settings.breakDuration
-                , shortcutInputView model.settings.showHideShortcut model.onMac
-                ]
-            , div [ Attr.class "col-md-8 col-sm-12" ] [ View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle) ]
-            ]
-        , div []
-            [ h3 [] [ text "Getting Started" ]
-            , Bootstrap.smallButton "Install Mob Git Commit Script" (Msg.SendIpc Ipc.ShowScriptInstallInstructions) Bootstrap.Primary FA.Github
-            , Bootstrap.smallButton "Learn to Mob Game" Msg.StartRpgMode Bootstrap.Success FA.Gamepad
-            ]
-        , div [ style [ "margin-top" => "50px" ] ] [ ViewHelpers.blockButton "Start Mobbing" Msg.StartTimer (startMobbingShortcut model.onMac |> Just) continueButtonId ]
-        ]
-
-
-
--- configure inputs (Settings -> Html Msg) 46
-
-
-timerDurationInputView : Int -> Html Msg
-timerDurationInputView duration =
-    div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
-        [ Setup.Forms.ViewHelpers.intInputView TimerDuration duration
-        , text "Minutes"
-        ]
-
-
-breakDurationInputView : Int -> Html Msg
-breakDurationInputView duration =
-    div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
-        [ Setup.Forms.ViewHelpers.intInputView BreakDuration duration
-        , text "Minutes Per Break"
-        ]
-
-
-breakIntervalInputView : Int -> Int -> Html Msg
-breakIntervalInputView intervalsPerBreak timerDuration =
-    let
-        theString =
-            if intervalsPerBreak > 0 then
-                "Break every " ++ toString (intervalsPerBreak * timerDuration) ++ "′"
-            else
-                "Breaks off"
-    in
-    div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
-        [ Setup.Forms.ViewHelpers.intInputView BreakInterval intervalsPerBreak
-        , text theString
-        ]
-
-
-shortcutInputView : String -> Bool -> Html Msg
-shortcutInputView currentShortcut onMac =
-    div [ Attr.class "text-primary h3 col-md-12 col-sm-6", style [ "margin-top" => "0px" ] ]
-        [ text "Show/Hide: "
-        , text (ctrlKey onMac ++ "+shift+")
-        , input
-            [ id "shortcut"
-            , onInput (Msg.ChangeInput (Msg.StringField Msg.ShowHideShortcut))
-            , class [ BufferRight ]
-            , value currentShortcut
-            , style [ "font-size" => "4.0rem", "width" => "40px" ]
-            , Attr.maxlength 1
-            ]
-            []
         ]
 
 
@@ -626,7 +551,7 @@ update msg model =
                     model ! []
 
                 QuickRotate.New newMobster ->
-                    if View.Roster.preventAddingMobster model.settings.rosterData.mobsters newMobster then
+                    if View.RosterBeta.preventAddingMobster model.settings.rosterData.mobsters newMobster then
                         model ! []
                     else
                         { model | quickRotateState = QuickRotate.init }

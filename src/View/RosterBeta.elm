@@ -1,4 +1,4 @@
-module View.RosterBeta exposing (view)
+module View.RosterBeta exposing (preventAddingMobster, view)
 
 import Animation
 import Animation.Messenger
@@ -15,7 +15,6 @@ import Roster.Presenter
 import Roster.Rpg
 import Setup.Msg as Msg exposing (..)
 import Styles exposing (StyleElement, Styles)
-import View.Roster
 import View.Roster.Chip
 
 
@@ -73,7 +72,7 @@ rosterView ({ quickRotateState, device } as model) rosterData =
             Roster.Presenter.mobsters rosterData
 
         newMobsterDisabled =
-            View.Roster.preventAddingMobster rosterData.mobsters quickRotateState.query
+            preventAddingMobster rosterData.mobsters quickRotateState.query
 
         inactiveTagInputHighlighted =
             case quickRotateState.selection of
@@ -127,7 +126,7 @@ activeView ({ quickRotateState } as model) rosterData =
             Roster.Presenter.mobsters rosterData
 
         newMobsterDisabled =
-            View.Roster.preventAddingMobster rosterData.mobsters quickRotateState.query
+            preventAddingMobster rosterData.mobsters quickRotateState.query
 
         highlighted =
             case quickRotateState.selection of
@@ -304,3 +303,8 @@ shuffleDieContainer ({ dieStyle, device } as model) =
             , Attr.center
             ]
             (shuffleDie model)
+
+
+preventAddingMobster : List Mobster.Mobster -> String -> Bool
+preventAddingMobster mobsters newMobster =
+    mobsters |> List.map (.name >> String.toLower) |> List.member (newMobster |> String.toLower |> String.trim)
