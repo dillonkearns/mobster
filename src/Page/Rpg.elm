@@ -3,7 +3,6 @@ module Page.Rpg exposing (view)
 import Element
 import Element.Attributes as Attr
 import Element.Events
-import Element.Keyed
 import List.Extra
 import Os exposing (Os)
 import Roster.Data exposing (RosterData)
@@ -88,27 +87,18 @@ rpgCardView mobster =
     Element.column Styles.None [ Attr.width (Attr.fillPortion 1) ] [ header, experienceView mobster ]
 
 
-goalView : Roster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> ( String, Styles.StyleElement )
+goalView : Roster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> Styles.StyleElement
 goalView mobster goalIndex goal =
-    let
-        nameWithoutWhitespace =
-            mobster.name |> String.words |> String.join ""
-
-        uniqueId =
-            nameWithoutWhitespace ++ toString mobster.role ++ toString goalIndex
-    in
-    ( uniqueId
-    , Element.row
+    Element.row
         Styles.None
         [ Element.Events.onClick (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex) ]
         [ Element.text (toString goal.complete)
         , Element.paragraph Styles.None [] [ Element.text goal.description ]
         ]
-    )
 
 
 experienceView : Roster.RpgPresenter.RpgMobster -> Styles.StyleElement
 experienceView mobster =
-    Element.Keyed.column Styles.None
+    Element.column Styles.None
         []
         (List.indexedMap (goalView mobster) mobster.experience)
