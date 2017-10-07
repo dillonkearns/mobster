@@ -2,7 +2,7 @@ module Roster.Data exposing (Mobster, RosterData, containsName, createMobster, c
 
 import Basics.Extra exposing ((=>))
 import Json.Decode as Decode exposing (Decoder)
-import Json.Decode.Pipeline as Pipeline exposing (hardcoded, optional, required)
+import Json.Decode.Pipeline as Pipeline exposing (optional, required)
 import Json.Encode as Encode
 import Random
 import Random.List

@@ -1,7 +1,7 @@
 module Roster.Rpg exposing (Experience, Goal, RpgData, badges, init)
 
 import ListHelpers exposing (compact)
-import Roster.RpgRole exposing (..)
+import Roster.RpgRole exposing (RpgRole(Driver, Mobber, Navigator, Researcher, Sponsor))
 
 
 type alias Experience =
@@ -9,7 +9,9 @@ type alias Experience =
 
 
 type alias Goal =
-    { complete : Bool, description : String }
+    { complete : Bool
+    , description : String
+    }
 
 
 type alias RpgData =
@@ -34,11 +36,6 @@ something rpgData =
 badges : RpgData -> List RpgRole
 badges rpgData =
     let
-        driverGoalCount =
-            rpgData.driver
-                |> List.filter .complete
-                |> List.length
-
         completeBadges =
             rpgData
                 |> something

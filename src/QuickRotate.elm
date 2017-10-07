@@ -70,7 +70,7 @@ previous list state =
             else
                 { state | selection = Index (List.length list - 1) }
 
-        New string ->
+        New _ ->
             let
                 firstMatch =
                     allMatches

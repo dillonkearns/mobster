@@ -1,4 +1,4 @@
-module Roster.RpgPresenter exposing (..)
+module Roster.RpgPresenter exposing (RpgMobster, present)
 
 import Roster.Data exposing (RosterData)
 import Roster.Rpg exposing (Experience, badges)

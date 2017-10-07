@@ -1,4 +1,12 @@
-module Roster.Presenter exposing (..)
+module Roster.Presenter
+    exposing
+        ( DriverNavigator
+        , Mobster
+        , MobsterWithRole
+        , Role(Driver, Navigator)
+        , mobsters
+        , nextDriverNavigator
+        )
 
 import Array
 import Roster.Data exposing (RosterData, nextIndex)
@@ -16,11 +24,16 @@ type Role
 
 
 type alias Mobster =
-    { name : String, index : Int }
+    { name : String
+    , index : Int
+    }
 
 
 type alias MobsterWithRole =
-    { name : String, role : Maybe Role, index : Int }
+    { name : String
+    , role : Maybe Role
+    , index : Int
+    }
 
 
 type alias Mobsters =

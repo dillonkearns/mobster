@@ -1,7 +1,7 @@
 module Roster.Operation exposing (MobsterOperation(..), add, completeGoalInRpgData, updateMoblist)
 
 import Array
-import ListHelpers exposing (..)
+import ListHelpers
 import Roster.Data exposing (Mobster, RosterData, nextIndex, previousIndex)
 import Roster.Rpg as Rpg exposing (RpgData)
 import Roster.RpgRole exposing (..)
@@ -26,7 +26,7 @@ updateMoblist mobsterOperation rosterData =
         Move fromIndex toIndex ->
             let
                 updatedMobsters =
-                    move fromIndex toIndex rosterData.mobsters
+                    ListHelpers.move fromIndex toIndex rosterData.mobsters
             in
             { rosterData | mobsters = updatedMobsters }
 
@@ -108,7 +108,7 @@ rotateIn : Int -> RosterData -> RosterData
 rotateIn index list =
     let
         ( maybeMobsterToMove, inactiveWithoutNewlyActive ) =
-            removeAndGet index list.inactiveMobsters
+            ListHelpers.removeAndGet index list.inactiveMobsters
     in
     case maybeMobsterToMove of
         Just mobsterToMove ->
@@ -116,7 +116,7 @@ rotateIn index list =
                 activeWithNewlyActive =
                     list.mobsters
                         |> Array.fromList
-                        |> insertAt mobsterToMove list.nextDriver False
+                        |> ListHelpers.insertAt mobsterToMove list.nextDriver False
                         |> Array.toList
             in
             { list | mobsters = activeWithNewlyActive, inactiveMobsters = inactiveWithoutNewlyActive }
@@ -129,7 +129,7 @@ bench : Int -> RosterData -> RosterData
 bench index list =
     let
         ( maybeMobsterToBench, activeWithoutBenchedMobster ) =
-            removeAndGet index list.mobsters
+            ListHelpers.removeAndGet index list.mobsters
     in
     case maybeMobsterToBench of
         Just mobsterToBench ->
@@ -149,7 +149,7 @@ bench index list =
 
 remove : Int -> RosterData -> RosterData
 remove index list =
-    { list | inactiveMobsters = removeFromListAt index list.inactiveMobsters }
+    { list | inactiveMobsters = ListHelpers.removeFromListAt index list.inactiveMobsters }
 
 
 setNextDriver : Int -> RosterData -> RosterData
