@@ -1,6 +1,5 @@
-module Pages.Break exposing (view)
+module Page.Break exposing (view)
 
-import Animation exposing (percent)
 import Element exposing (Device, button, el, empty, row, text)
 import Element.Attributes exposing (center, fill, fillPortion, padding, paddingXY, percent, spacing, verticalCenter, width)
 import Element.Events

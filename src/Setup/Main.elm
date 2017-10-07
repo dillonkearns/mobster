@@ -20,8 +20,8 @@ import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard.Combo
 import Keyboard.Extra
+import Page.Break
 import Page.Continue
-import Pages.Break
 import QuickRotate
 import Random
 import Responsive
@@ -94,7 +94,7 @@ view model =
         Continue _ ->
             styleElementsConfigureView model <|
                 if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
-                    Pages.Break.view model
+                    Page.Break.view model
                 else
                     Page.Continue.view model
 
