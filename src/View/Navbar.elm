@@ -1,10 +1,10 @@
 module View.Navbar exposing (view)
 
-import Element exposing (..)
-import Element.Attributes as Attr exposing (..)
-import Element.Events exposing (onClick, onInput)
+import Element
+import Element.Attributes as Attr
+import Element.Events
 import Ipc
-import Responsive exposing (Palette)
+import Responsive
 import Setup.Msg as Msg exposing (Msg)
 import Setup.ScreenState as ScreenState exposing (ScreenState)
 import Styles exposing (StyleElement)
@@ -16,7 +16,7 @@ view :
         , responsivePalette : Responsive.Palette
     }
     -> StyleElement
-view ({ screenState, responsivePalette } as model) =
+view ({ screenState } as model) =
     let
         cogButton =
             if screenState /= ScreenState.Configure then
@@ -24,11 +24,11 @@ view ({ screenState, responsivePalette } as model) =
             else
                 Element.empty
     in
-    row Styles.Navbar
+    Element.row Styles.Navbar
         [ Attr.spread, Attr.paddingXY 10 10, Attr.verticalCenter ]
-        [ row Styles.None [ spacing 12, verticalCenter ] [ roseIcon model, el Styles.Logo [] (text "Mobster") ]
-        , row Styles.None
-            [ spacing 10 ]
+        [ Element.row Styles.None [ Attr.spacing 12, Attr.verticalCenter ] [ roseIcon model, Element.el Styles.Logo [] (Element.text "Mobster") ]
+        , Element.row Styles.None
+            [ Attr.spacing 10 ]
             [ cogButton
             , invisibleTrigger model
             , navButtonView model "Hide" Styles.Warning (Msg.SendIpc Ipc.Hide)
@@ -42,9 +42,9 @@ invisibleTrigger :
     -> StyleElement
 invisibleTrigger { responsivePalette } =
     Element.image Styles.None
-        [ class "invisible-trigger"
+        [ Attr.class "invisible-trigger"
         , Attr.attribute "width" "auto"
-        , height responsivePalette.navbarButtonHeight
+        , Attr.height responsivePalette.navbarButtonHeight
         ]
         { src = "./assets/invisible.png", caption = "invisible" }
 
@@ -52,10 +52,10 @@ invisibleTrigger { responsivePalette } =
 settingsPageButton : { model | responsivePalette : Responsive.Palette } -> StyleElement
 settingsPageButton { responsivePalette } =
     Element.button Styles.StepButton
-        [ class "fa fa-cog"
-        , height responsivePalette.navbarButtonHeight
-        , width responsivePalette.navbarButtonHeight
-        , verticalCenter
+        [ Attr.class "fa fa-cog"
+        , Attr.height responsivePalette.navbarButtonHeight
+        , Attr.width responsivePalette.navbarButtonHeight
+        , Attr.verticalCenter
         , Element.Events.onClick Msg.OpenConfigure
         ]
         Element.empty
@@ -63,9 +63,9 @@ settingsPageButton { responsivePalette } =
 
 navButtonView : { model | responsivePalette : Responsive.Palette } -> String -> Styles.NavButtonType -> Msg -> StyleElement
 navButtonView { responsivePalette } buttonText navButtonType msg =
-    button (Styles.NavButton navButtonType)
-        [ height responsivePalette.navbarButtonHeight, minWidth <| px 60, Element.Events.onClick msg ]
-        (text buttonText)
+    Element.button (Styles.NavButton navButtonType)
+        [ Attr.height responsivePalette.navbarButtonHeight, Attr.minWidth <| Attr.px 60, Element.Events.onClick msg ]
+        (Element.text buttonText)
 
 
 roseIcon : { model | responsivePalette : Responsive.Palette } -> StyleElement
