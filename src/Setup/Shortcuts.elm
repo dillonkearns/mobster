@@ -1,49 +1,7 @@
 module Setup.Shortcuts exposing (keyboardCombos)
 
-import Array
-import Basics.Extra exposing ((=>))
-import Html exposing (Html, span, text, u)
-import Html.Attributes as Attr exposing (style)
 import Keyboard.Combo
 import Setup.Msg as Msg exposing (Msg)
-
-
-letters : Array.Array String
-letters =
-    Array.fromList [ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p" ]
-
-
-letterHint : Int -> Html msg
-letterHint index =
-    let
-        letter =
-            Maybe.withDefault "?" (Array.get index letters)
-    in
-    hint letter
-
-
-numberHint : Int -> Html msg
-numberHint index =
-    let
-        maybeHint =
-            if index == 9 then
-                Just 0
-            else if index < 9 then
-                Just (index + 1)
-            else
-                Nothing
-    in
-    case maybeHint of
-        Just hintText ->
-            hint (toString hintText)
-
-        Nothing ->
-            span [] []
-
-
-hint : String -> Html msg
-hint string =
-    span [ Attr.class "text-muted", style [ "font-size" => "0.58em" ] ] [ text " (", u [] [ text string ], text ")" ]
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)

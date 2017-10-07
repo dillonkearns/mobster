@@ -9,7 +9,7 @@ import Dom
 import Element exposing (Device)
 import Element.Attributes
 import GlobalShortcut
-import Html exposing (Html, a, div, span, text)
+import Html exposing (Html)
 import Html5.DragDrop as DragDrop
 import Ipc
 import IpcSerializer
