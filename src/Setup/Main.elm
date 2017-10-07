@@ -46,9 +46,9 @@ import Tip
 import Update.Extra
 import View.FeedbackButton
 import View.Navbar
-import View.RosterBeta
+import View.Roster
 import View.StartMobbingButton
-import View.UpdateAvailableBeta
+import View.UpdateAvailable
 import Window
 
 
@@ -103,7 +103,7 @@ view model =
             [ Element.Attributes.paddingXY 110 50
             , Element.Attributes.spacing 30
             ]
-            (View.UpdateAvailableBeta.view model.availableUpdateVersion
+            (View.UpdateAvailable.view model.availableUpdateVersion
                 :: pageView model
             )
         , View.FeedbackButton.view
@@ -437,7 +437,7 @@ update msg model =
                     model ! []
 
                 QuickRotate.New newMobster ->
-                    if View.RosterBeta.preventAddingMobster model.settings.rosterData.mobsters newMobster then
+                    if View.Roster.preventAddingMobster model.settings.rosterData.mobsters newMobster then
                         model ! []
                     else
                         { model | quickRotateState = QuickRotate.init }

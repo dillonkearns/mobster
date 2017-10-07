@@ -1,23 +1,28 @@
 module View.UpdateAvailable exposing (view)
 
-import Html exposing (..)
-import Html.Attributes as Attr exposing (id, placeholder, src, style, target, title, type_, value)
-import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit)
+import Element
+import Element.Attributes as Attr
+import Element.Events
 import Ipc
-import Setup.Msg as Msg exposing (Msg)
-import StylesheetHelper exposing (CssClasses(..), class, classList, id)
+import Setup.Msg as Msg
+import Styles
 
 
-view : Maybe String -> Html Msg
+view : Maybe String -> Styles.StyleElement
 view availableUpdateVersion =
     case availableUpdateVersion of
         Nothing ->
-            div [] []
+            Element.empty
 
         Just version ->
-            div [ Attr.class "alert alert-success" ]
-                [ span [ Attr.class "glyphicon glyphicon-flag", class [ BufferRight ] ] []
-                , text "A new version is downloaded and ready to install. "
-                , a [ onClick <| Msg.SendIpc Ipc.QuitAndInstall, Attr.href "#", Attr.class "alert-link", class [ HandPointer ] ] [ text "Update now" ]
-                , text "."
+            Element.row Styles.UpdateAlertBox
+                [ Attr.paddingXY 20 15, Attr.spacing 10 ]
+                [ Element.el Styles.None [ Attr.class "fa fa-flag" ] Element.empty
+                , Element.row Styles.None
+                    [ Attr.spacing 5 ]
+                    [ Element.text "A new version is downloaded and ready to install."
+                    , Element.el Styles.UpdateNow
+                        [ Element.Events.onClick (Msg.SendIpc Ipc.QuitAndInstall) ]
+                        (Element.text "Update now")
+                    ]
                 ]

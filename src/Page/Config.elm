@@ -16,7 +16,7 @@ import Setup.Msg as Msg exposing (Msg)
 import Setup.Settings as Settings
 import Setup.Validations as Validations
 import Styles exposing (StyleElement)
-import View.RosterBeta
+import View.Roster
 import View.StartMobbingButton
 
 
@@ -43,7 +43,7 @@ view model =
         [ configOptions model model.settings
         , Element.el Styles.None
             [ Attr.width (Attr.percent 70) ]
-            (View.RosterBeta.view model model.settings.rosterData)
+            (View.Roster.view model model.settings.rosterData)
         ]
     , View.StartMobbingButton.view model "Start Mobbing"
     ]

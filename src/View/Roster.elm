@@ -1,4 +1,4 @@
-module View.RosterBeta exposing (preventAddingMobster, view)
+module View.Roster exposing (preventAddingMobster, view)
 
 import Animation
 import Animation.Messenger
