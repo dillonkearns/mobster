@@ -64,7 +64,7 @@ rpgRolesView rosterData =
         ( row1, row2 ) =
             List.Extra.splitAt 2 (rosterData |> Roster.RpgPresenter.present)
     in
-    Element.column Styles.None [] [ rpgRolesRow row1, rpgRolesRow row2 ]
+    Element.column Styles.None [ Attr.spacing 80 ] [ rpgRolesRow row1, rpgRolesRow row2 ]
 
 
 rpgRolesRow : List Roster.RpgPresenter.RpgMobster -> Styles.StyleElement
