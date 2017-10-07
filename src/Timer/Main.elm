@@ -1,11 +1,11 @@
 port module Timer.Main exposing (main)
 
-import Html exposing (..)
+import Html exposing (Html, div, h1, i, img, p, text)
 import Html.Attributes exposing (class, src, style)
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Time exposing (..)
-import Timer.Flags exposing (..)
+import Time
+import Timer.Flags exposing (IncomingFlags)
 import Timer.Timer as Timer
 
 
@@ -22,7 +22,9 @@ type TimerType
 
 
 type alias DriverNavigator =
-    { driver : String, navigator : String }
+    { driver : String
+    , navigator : String
+    }
 
 
 type Msg
@@ -153,7 +155,7 @@ subscriptions model =
     if Timer.timerComplete model.secondsLeft then
         Sub.none
     else
-        every second Tick
+        Time.every Time.second Tick
 
 
 main : Program Decode.Value Model Msg

@@ -1,8 +1,17 @@
-module Timer.Timer exposing (..)
+module Timer.Timer
+    exposing
+        ( Timer
+        , secondsToTimer
+        , timerComplete
+        , timerToString
+        , updateTimer
+        )
 
 
 type alias Timer =
-    { minutes : Int, seconds : Int }
+    { minutes : Int
+    , seconds : Int
+    }
 
 
 updateTimer : Int -> Int
