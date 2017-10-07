@@ -658,7 +658,12 @@ startMobbingButton { onMac, device } title =
             |> button WideButton
                 [ padding (responsiveForWidth device ( 10, 20 ))
                 , Element.Events.onClick Msg.StartTimer
-                , Attr.id "continue-button"
+                , Attr.id continueButtonId
                 ]
             |> above [ el Tooltip [ center, class "styleElementsTooltip" ] (text tooltipText) ]
         ]
+
+
+continueButtonId : String
+continueButtonId =
+    "continue-button"

@@ -667,14 +667,9 @@ reorderOperation shuffledMobsters =
 
 blurContinueButton : Cmd Msg
 blurContinueButton =
-    continueButtonId
+    Styles.continueButtonId
         |> Dom.blur
         |> Task.attempt Msg.DomResult
-
-
-continueButtonId : String
-continueButtonId =
-    "continue-button"
 
 
 
