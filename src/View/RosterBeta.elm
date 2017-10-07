@@ -13,19 +13,19 @@ import Roster.Data as Mobster
 import Roster.Operation
 import Roster.Presenter
 import Roster.Rpg
-import Setup.Msg as Msg exposing (..)
-import Styles exposing (StyleElement, Styles)
+import Setup.Msg as Msg exposing (Msg)
+import Styles exposing (StyleElement)
 import View.Roster.Chip
 
 
 type alias DragDropModel =
-    DragDrop.Model DragId DropArea
+    DragDrop.Model Msg.DragId Msg.DropArea
 
 
 view :
     { model
         | quickRotateState : QuickRotate.State
-        , activeMobstersStyle : Animation.Messenger.State Msg.Msg
+        , activeMobstersStyle : Animation.Messenger.State Msg
         , dieStyle : Animation.State
         , device : Device
         , dragDrop : DragDropModel
@@ -37,7 +37,7 @@ view :
         , nextDriver : Int
         }
     -> StyleElement
-view ({ quickRotateState, dieStyle, activeMobstersStyle, device } as model) rosterData =
+view model rosterData =
     Element.row Styles.None
         []
         [ rosterView model rosterData
@@ -48,7 +48,7 @@ view ({ quickRotateState, dieStyle, activeMobstersStyle, device } as model) rost
 rosterView :
     { model
         | quickRotateState : QuickRotate.State
-        , activeMobstersStyle : Animation.Messenger.State Msg.Msg
+        , activeMobstersStyle : Animation.Messenger.State Msg
         , dieStyle : Animation.State
         , device : Device
         , dragDrop : DragDropModel
@@ -68,15 +68,13 @@ rosterView ({ quickRotateState, device } as model) rosterData =
         matches =
             QuickRotate.matches (inactiveMobsters |> List.map .name) quickRotateState
 
-        mobsters =
-            Roster.Presenter.mobsters rosterData
-
+        -- TODO: use this in the new beta roster
         newMobsterDisabled =
             preventAddingMobster rosterData.mobsters quickRotateState.query
 
         inactiveTagInputHighlighted =
             case quickRotateState.selection of
-                QuickRotate.Index int ->
+                QuickRotate.Index _ ->
                     True
 
                 _ ->
@@ -94,7 +92,9 @@ rosterView ({ quickRotateState, device } as model) rosterData =
             [ el Styles.PlainBody [] <| Element.text "Inactive"
             , Element.wrappedRow (Styles.Roster inactiveTagInputHighlighted)
                 [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-                (List.indexedMap (inactiveMobsterView device quickRotateState.query quickRotateState.selection matches) (inactiveMobsters |> List.map .name))
+                (List.indexedMap (inactiveMobsterView device quickRotateState.query quickRotateState.selection matches)
+                    (inactiveMobsters |> List.map .name)
+                )
             ]
         ]
 
@@ -102,7 +102,7 @@ rosterView ({ quickRotateState, device } as model) rosterData =
 activeView :
     { model
         | quickRotateState : QuickRotate.State
-        , activeMobstersStyle : Animation.Messenger.State Msg.Msg
+        , activeMobstersStyle : Animation.Messenger.State Msg
         , dieStyle : Animation.State
         , device : Device
         , dragDrop : DragDropModel
@@ -116,21 +116,12 @@ activeView :
     -> StyleElement
 activeView ({ quickRotateState } as model) rosterData =
     let
-        inactiveMobsters =
-            rosterData.inactiveMobsters
-
-        matches =
-            QuickRotate.matches (inactiveMobsters |> List.map .name) quickRotateState
-
         activeMobsters =
             Roster.Presenter.mobsters rosterData
 
-        newMobsterDisabled =
-            preventAddingMobster rosterData.mobsters quickRotateState.query
-
         highlighted =
             case quickRotateState.selection of
-                QuickRotate.Index int ->
+                QuickRotate.Index _ ->
                     False
 
                 _ ->
@@ -146,7 +137,7 @@ activeView ({ quickRotateState } as model) rosterData =
 activeMobsterView :
     { model
         | quickRotateState : QuickRotate.State
-        , activeMobstersStyle : Animation.Messenger.State Msg.Msg
+        , activeMobstersStyle : Animation.Messenger.State Msg
         , dieStyle : Animation.State
         , device : Device
         , dragDrop : DragDropModel
@@ -157,7 +148,7 @@ activeMobsterView ({ dragDrop, device, activeMobstersStyle } as model) mobster =
     let
         isBeingDraggedOver =
             case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
-                ( Just (ActiveMobster _), Just (DropActiveMobster id) ) ->
+                ( Just (Msg.ActiveMobster _), Just (Msg.DropActiveMobster id) ) ->
                     id == mobster.index
 
                 _ ->
@@ -170,7 +161,7 @@ activeMobsterView ({ dragDrop, device, activeMobstersStyle } as model) mobster =
                 Styles.RosterEntry mobster.role
     in
     View.Roster.Chip.view (dragDropAttrs mobster.index)
-        (UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
+        (Msg.UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
         (Msg.UpdateRosterData (Roster.Operation.Bench mobster.index))
         chipStyle
         (Just activeMobstersStyle)
@@ -181,8 +172,8 @@ activeMobsterView ({ dragDrop, device, activeMobstersStyle } as model) mobster =
 
 dragDropAttrs : Int -> List (Element.Attribute Never Msg)
 dragDropAttrs mobsterIndex =
-    DragDrop.draggable DragDropMsg (ActiveMobster mobsterIndex)
-        ++ DragDrop.droppable DragDropMsg (DropActiveMobster mobsterIndex)
+    DragDrop.draggable Msg.DragDropMsg (Msg.ActiveMobster mobsterIndex)
+        ++ DragDrop.droppable Msg.DragDropMsg (Msg.DropActiveMobster mobsterIndex)
         |> List.map Attr.toAttr
 
 
@@ -193,7 +184,7 @@ inactiveMobsterView device quickRotateQuery quickRotateSelection matches mobster
             QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
     in
     View.Roster.Chip.view []
-        (UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
+        (Msg.UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
         (Msg.UpdateRosterData (Roster.Operation.Remove mobsterIndex))
         (Styles.InactiveRosterEntry selectionType)
         Nothing
@@ -217,11 +208,11 @@ rosterInput query selection =
             Json.Decode.map
                 (\code ->
                     if code == 38 then
-                        Ok (QuickRotateMove Previous)
+                        Ok (Msg.QuickRotateMove Msg.Previous)
                     else if code == 9 || code == 40 then
-                        Ok (QuickRotateMove Next)
+                        Ok (Msg.QuickRotateMove Msg.Next)
                     else if code == 13 then
-                        Ok QuickRotateAdd
+                        Ok Msg.QuickRotateAdd
                     else
                         Err "not handling that key"
                 )
@@ -250,7 +241,7 @@ rosterInput query selection =
             , Attr.width Attr.fill
             , Element.Events.onWithOptions "keydown" options dec
             ]
-            { onChange = ChangeInput (StringField QuickRotateQuery)
+            { onChange = Msg.ChangeInput (Msg.StringField Msg.QuickRotateQuery)
             , value = query
             , label = Element.Input.hiddenLabel "Add mobster"
             , options = []
