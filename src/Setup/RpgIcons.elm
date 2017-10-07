@@ -2,9 +2,9 @@ module Setup.RpgIcons exposing (mobsterCar, mobsterIcon)
 
 import Html
 import Html.Attributes exposing (attribute)
-import Roster.RpgRole exposing (..)
-import StylesheetHelper exposing (CssClasses(..), class, classList, id)
-import Svg exposing (..)
+import Roster.RpgRole as RpgRole exposing (RpgRole)
+import StylesheetHelper exposing (CssClasses(RpgIcon1, RpgIcon2), class)
+import Svg exposing (Svg)
 import Svg.Attributes exposing (d, fill, height, preserveAspectRatio, stroke, transform, viewBox, width)
 
 
@@ -13,19 +13,19 @@ mobsterIcon role =
     let
         ( cssClass, icon ) =
             case role of
-                Driver ->
+                RpgRole.Driver ->
                     ( RpgIcon1, driverIcon )
 
-                Navigator ->
+                RpgRole.Navigator ->
                     ( RpgIcon1, navigatorIcon )
 
-                Researcher ->
+                RpgRole.Researcher ->
                     ( RpgIcon2, researcherIcon )
 
-                Sponsor ->
+                RpgRole.Sponsor ->
                     ( RpgIcon2, sponsorIcon )
 
-                Roster.RpgRole.Mobber ->
+                RpgRole.Mobber ->
                     ( RpgIcon1, mobberIcon )
     in
     Html.span [ class [ cssClass ] ] [ icon ]
@@ -136,8 +136,8 @@ rpgIcon widthArg paths =
         widthString =
             toString widthArg
     in
-    svg [ width (widthString ++ "pt"), height (widthString ++ "pt"), viewBox ("0 0 " ++ widthString ++ " " ++ widthString), preserveAspectRatio "xMidYMid meet", attribute "version" "1.0", attribute "xmlns" "http://www.w3.org/2000/svg" ]
-        [ g [ transform ("translate(0.000000," ++ widthString ++ ".000000) scale(0.100000,-0.100000)"), fill "#000000", stroke "none" ]
+    Svg.svg [ width (widthString ++ "pt"), height (widthString ++ "pt"), viewBox ("0 0 " ++ widthString ++ " " ++ widthString), preserveAspectRatio "xMidYMid meet", attribute "version" "1.0", attribute "xmlns" "http://www.w3.org/2000/svg" ]
+        [ Svg.g [ transform ("translate(0.000000," ++ widthString ++ ".000000) scale(0.100000,-0.100000)"), fill "#000000", stroke "none" ]
             (List.map pathToSvgPath paths)
         ]
 
