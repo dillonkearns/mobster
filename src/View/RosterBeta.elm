@@ -92,7 +92,7 @@ rosterView ({ quickRotateState, device } as model) rosterData =
             [ el Styles.PlainBody [] <| Element.text "Inactive"
             , Element.wrappedRow (Styles.Roster inactiveTagInputHighlighted)
                 [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-                (List.indexedMap (inactiveMobsterView model quickRotateState.query quickRotateState.selection matches)
+                (List.indexedMap (inactiveMobsterView model quickRotateState.selection matches)
                     (inactiveMobsters |> List.map .name)
                 )
             ]
@@ -185,13 +185,12 @@ inactiveMobsterView :
         , device : Device
         , dragDrop : DragDropModel
     }
-    -> String
     -> QuickRotate.Selection
     -> List Int
     -> Int
     -> String
     -> StyleElement
-inactiveMobsterView model quickRotateQuery quickRotateSelection matches mobsterIndex mobsterName =
+inactiveMobsterView model quickRotateSelection matches mobsterIndex mobsterName =
     let
         selectionType =
             QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
@@ -294,7 +293,7 @@ shuffleDieContainer :
         , device : Device
     }
     -> StyleElement
-shuffleDieContainer ({ dieStyle, device } as model) =
+shuffleDieContainer ({ device } as model) =
     let
         dimension =
             Styles.responsiveForWidth device ( 40, 100 ) |> Attr.px
