@@ -1,4 +1,4 @@
-module Setup.InputField exposing (..)
+module Setup.InputField exposing (IntInputField(..))
 
 
 type IntInputField

@@ -1,7 +1,7 @@
 module Setup.Main exposing (main)
 
 import Analytics exposing (trackEvent)
-import Animation exposing (Step)
+import Animation
 import Animation.Messenger
 import Basics.Extra exposing ((=>))
 import Break
@@ -10,9 +10,9 @@ import Dom
 import Element exposing (Device)
 import Element.Attributes
 import GlobalShortcut
-import Html exposing (..)
-import Html.Attributes as Attr exposing (placeholder, src, style, target, title, type_, value)
-import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit)
+import Html exposing (Html, a, div, span, text)
+import Html.Attributes as Attr
+import Html.Events
 import Html5.DragDrop as DragDrop
 import Ipc
 import IpcSerializer
@@ -30,17 +30,17 @@ import Responsive
 import Roster.Data as Roster
 import Roster.Operation as MobsterOperation exposing (MobsterOperation)
 import Roster.Presenter as Presenter
-import Setup.InputField exposing (IntInputField(..))
+import Setup.InputField as InputField
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Navbar as Navbar
 import Setup.Ports
 import Setup.Rpg.View exposing (RpgState(..))
-import Setup.ScreenState exposing (..)
+import Setup.ScreenState as ScreenState exposing (ScreenState)
 import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
 import Setup.Validations as Validations
 import Styles
-import StylesheetHelper exposing (CssClasses(..), class, id)
+import StylesheetHelper exposing (class)
 import Task
 import Timer.Flags
 import Tip
@@ -75,7 +75,15 @@ changeTip =
 feedbackButton : Html Msg
 feedbackButton =
     div []
-        [ a [ onClick <| Msg.SendIpc Ipc.ShowFeedbackForm, style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
+        [ a
+            [ Html.Events.onClick <| Msg.SendIpc Ipc.ShowFeedbackForm
+            , Attr.style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ]
+            , Attr.tabindex -1
+            , Attr.class "btn btn-sm btn-default pull-right"
+            , Attr.id "feedback"
+            ]
+            [ span [ class [ StylesheetHelper.BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ]
+        ]
 
 
 
@@ -91,17 +99,17 @@ getInitialWindowSize =
 view : Model -> Html Msg
 view model =
     case model.screenState of
-        Configure ->
+        ScreenState.Configure ->
             wrapPageView model (Page.Config.view model)
 
-        Continue ->
+        ScreenState.Continue ->
             wrapPageView model <|
                 if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
                     Page.Break.view model
                 else
                     Page.Continue.view model
 
-        Rpg rpgState ->
+        ScreenState.Rpg rpgState ->
             div [ Attr.style [ "padding" => "100px", "padding-bottom" => "0px" ] ]
                 [ div []
                     [ Navbar.view model.screenState
@@ -179,27 +187,27 @@ update msg model =
     case Debug.log "update" msg of
         Msg.SkipHotkey ->
             case model.screenState of
-                Continue ->
+                ScreenState.Continue ->
                     update (Msg.UpdateRosterData MobsterOperation.NextTurn) model
 
                 _ ->
                     ( model, Cmd.none )
 
         Msg.StartRpgMode ->
-            model ! [] |> changeScreen (Rpg NextUp)
+            model ! [] |> changeScreen (ScreenState.Rpg NextUp)
 
         Msg.StartTimer ->
-            if model.screenState == Continue && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+            if model.screenState == ScreenState.Continue && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
                 startBreak model
             else
                 let
                     nextScreenState =
                         case model.screenState of
-                            Rpg rpgState ->
-                                Rpg Checklist
+                            ScreenState.Rpg rpgState ->
+                                ScreenState.Rpg Checklist
 
                             _ ->
-                                Continue
+                                ScreenState.Continue
 
                     updatedModel =
                         { model
@@ -214,7 +222,7 @@ update msg model =
                             |> startTimer
                 in
                 case model.screenState of
-                    Rpg rpgState ->
+                    ScreenState.Rpg rpgState ->
                         startTimerUpdate
                             |> Analytics.trackEvent { category = "stats", action = "active-mobsters", label = Nothing, value = model.settings.rosterData.mobsters |> List.length |> Just }
                             |> Analytics.trackEvent { category = "stats", action = "inactive-mobsters", label = Nothing, value = model.settings.rosterData.inactiveMobsters |> List.length |> Just }
@@ -228,7 +236,7 @@ update msg model =
         Msg.SkipBreak ->
             (model |> resetBreakData)
                 ! []
-                |> changeScreen Continue
+                |> changeScreen ScreenState.Continue
                 |> Analytics.trackEvent
                     { category = "break"
                     , action = "skip"
@@ -245,7 +253,7 @@ update msg model =
         Msg.OpenConfigure ->
             model
                 ! []
-                |> changeScreen Configure
+                |> changeScreen ScreenState.Configure
 
         Msg.DomResult _ ->
             model ! []
@@ -329,7 +337,7 @@ update msg model =
         Msg.ViewRpgNextUp ->
             model
                 |> performRosterOperationUntracked MobsterOperation.NextTurn
-                |> changeScreen (Rpg NextUp)
+                |> changeScreen (ScreenState.Rpg NextUp)
 
         Msg.ChangeInput inputField newInputValue ->
             case inputField of
@@ -354,7 +362,7 @@ update msg model =
                             Validations.parseInputFieldWithinRange intField newInputValue
                     in
                     case intField of
-                        BreakInterval ->
+                        InputField.BreakInterval ->
                             model
                                 |> updateSettings
                                     (\settings -> { settings | intervalsPerBreak = newValueInRange })
@@ -365,7 +373,7 @@ update msg model =
                                     , value = Just newValueInRange
                                     }
 
-                        TimerDuration ->
+                        InputField.TimerDuration ->
                             model
                                 |> updateSettings
                                     (\settings -> { settings | timerDuration = newValueInRange })
@@ -376,7 +384,7 @@ update msg model =
                                     , value = Just newValueInRange
                                     }
 
-                        BreakDuration ->
+                        InputField.BreakDuration ->
                             model
                                 |> updateSettings
                                     (\settings -> { settings | breakDuration = newValueInRange })
@@ -456,7 +464,7 @@ update msg model =
 
         Msg.OpenContinueScreen ->
             ( model, Cmd.none )
-                |> changeScreen Continue
+                |> changeScreen ScreenState.Continue
 
 
 startBreak : Model -> ( Model, Cmd Msg )
@@ -464,11 +472,11 @@ startBreak model =
     let
         nextScreenState =
             case model.screenState of
-                Rpg _ ->
-                    Rpg Checklist
+                ScreenState.Rpg _ ->
+                    ScreenState.Rpg Checklist
 
                 _ ->
-                    Continue
+                    ScreenState.Continue
     in
     (model |> resetIfAfterBreak)
         ! [ changeTip ]
@@ -576,7 +584,7 @@ startBreakTimer (( model, cmd ) as msgAndCmd) =
 
 rosterViewIsShowing : ScreenState -> Bool
 rosterViewIsShowing screenState =
-    screenState == Configure
+    screenState == ScreenState.Configure
 
 
 keyboardComboInit : Keyboard.Combo.Model Msg
@@ -596,7 +604,7 @@ focusQuickRotateInput =
 
 focusQuickRotateInputIfVisible : ( { model | screenState : ScreenState }, Cmd Msg ) -> ( { model | screenState : ScreenState }, Cmd Msg )
 focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
-    if model.screenState == Configure then
+    if model.screenState == ScreenState.Configure then
         model ! [ cmd, focusQuickRotateInput ]
     else
         updateResult
@@ -709,7 +717,7 @@ initialModel settings onMac =
                 Os.NotMac
     in
     { settings = settings
-    , screenState = Configure
+    , screenState = ScreenState.Configure
     , newMobster = ""
     , combos = keyboardComboInit
     , tip = Tip.emptyTip

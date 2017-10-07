@@ -2,7 +2,11 @@ module Roster.RpgPresenter exposing (RpgMobster, present)
 
 import Roster.Data exposing (RosterData)
 import Roster.Rpg exposing (Experience, badges)
-import Roster.RpgRole exposing (..)
+import Roster.RpgRole
+    exposing
+        ( Level(Level1, Level2)
+        , RpgRole(Driver, Mobber, Navigator, Researcher, Sponsor)
+        )
 
 
 type alias RpgMobster =
@@ -77,7 +81,7 @@ getRoleForIndex level index =
         1 ->
             Navigator
 
-        n ->
+        _ ->
             case level of
                 Level1 ->
                     Mobber
