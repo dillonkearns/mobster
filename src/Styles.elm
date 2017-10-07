@@ -10,7 +10,7 @@ module Styles
 
 import Color exposing (Color)
 import Color.Mixing
-import Element exposing (..)
+import Element exposing (Device, Element)
 import QuickRotate
 import Roster.Presenter
 import Setup.Msg as Msg exposing (Msg)
@@ -90,7 +90,7 @@ typefaces =
 
 responsiveForWidth : Device -> ( Float, Float ) -> Float
 responsiveForWidth { width } something =
-    responsive (toFloat width) ( 600, 4000 ) something
+    Element.responsive (toFloat width) ( 600, 4000 ) something
 
 
 primaryColor : Color.Color
