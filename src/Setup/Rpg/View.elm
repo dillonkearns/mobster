@@ -7,7 +7,6 @@ import Html.Events exposing (keyCode, on, onCheck, onClick, onDoubleClick, onInp
 import Html.Keyed
 import List.Extra
 import Roster.Data exposing (..)
-import Roster.Operation as MobsterOperation exposing (MobsterOperation)
 import Roster.Rpg as Rpg exposing (RpgData)
 import Roster.RpgPresenter
 import Setup.Msg exposing (..)
@@ -116,7 +115,7 @@ goalView mobster goalIndex goal =
             nameWithoutWhitespace ++ toString mobster.role ++ toString goalIndex
     in
     ( uniqueId
-    , li [ Attr.class "checkbox checkbox-success", onCheck (CheckRpgBox (UpdateRosterData (MobsterOperation.CompleteGoal mobster.index mobster.role goalIndex))) ]
+    , li [ Attr.class "checkbox checkbox-success", onCheck (CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex) ]
         [ input [ Attr.id uniqueId, type_ "checkbox", Attr.checked goal.complete ] []
         , label [ Attr.for uniqueId ] [ text goal.description ]
         ]

@@ -331,8 +331,20 @@ update msg model =
         Msg.SendIpc ipcMsg ->
             model ! [ sendIpcCmd ipcMsg ]
 
-        Msg.CheckRpgBox msg checkedValue ->
-            update msg model
+        Msg.CheckRpgBox mobster goalIndex checkedValue ->
+            let
+                settings =
+                    model.settings
+
+                updatedSettings =
+                    { settings
+                        | rosterData =
+                            MobsterOperation.updateMoblist
+                                (MobsterOperation.CompleteGoal mobster.index mobster.role goalIndex)
+                                model.settings.rosterData
+                    }
+            in
+            ( { model | settings = updatedSettings }, Cmd.none )
 
         Msg.ViewRpgNextUp ->
             model

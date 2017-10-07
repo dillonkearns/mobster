@@ -7,6 +7,7 @@ import Ipc
 import Keyboard.Combo
 import Keyboard.Extra
 import Roster.Operation exposing (MobsterOperation)
+import Roster.RpgRole exposing (RpgRole)
 import Setup.InputField exposing (..)
 import Window
 
@@ -20,7 +21,7 @@ type Msg
     | SkipHotkey
     | StartRpgMode
     | UpdateRosterData MobsterOperation
-    | CheckRpgBox Msg Bool
+    | CheckRpgBox { index : Int, role : RpgRole } Int Bool
     | DomResult (Result Dom.Error ())
     | ChangeInput InputField String
     | SelectInputField String
