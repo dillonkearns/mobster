@@ -3,7 +3,7 @@ module Setup.Rpg.View exposing (RpgState(Checklist, NextUp), rpgView)
 import Basics.Extra exposing ((=>))
 import Html exposing (Html, button, div, input, label, li, span, text)
 import Html.Attributes as Attr exposing (style, type_)
-import Html.Events exposing (onCheck, onClick)
+import Html.Events
 import Html.Keyed
 import List.Extra
 import Roster.Data exposing (RosterData)
@@ -26,7 +26,7 @@ rpgView rpgState rosterData =
             case rpgState of
                 Checklist ->
                     button
-                        [ onClick Msg.ViewRpgNextUp
+                        [ Html.Events.onClick Msg.ViewRpgNextUp
                         , Attr.class "btn btn-info btn-lg btn-block"
                         , class [ BufferTop, TooltipContainer ]
                         , class [ LargeButtonText ]
@@ -35,7 +35,7 @@ rpgView rpgState rosterData =
 
                 NextUp ->
                     button
-                        [ onClick Msg.StartTimer
+                        [ Html.Events.onClick Msg.StartTimer
                         , Attr.class "btn btn-info btn-lg btn-block"
                         , class [ BufferTop, TooltipContainer ]
                         , class [ LargeButtonText ]
@@ -117,7 +117,7 @@ goalView mobster goalIndex goal =
     ( uniqueId
     , li
         [ Attr.class "checkbox checkbox-success"
-        , onCheck (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex)
+        , Html.Events.onCheck (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex)
         ]
         [ input [ Attr.id uniqueId, type_ "checkbox", Attr.checked goal.complete ] []
         , label [ Attr.for uniqueId ] [ text goal.description ]
