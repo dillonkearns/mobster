@@ -3,19 +3,19 @@ module View.FeedbackButton exposing (view)
 import Basics.Extra exposing ((=>))
 import Element
 import Html exposing (a, div, span, text)
-import Html.Attributes as Attr exposing (placeholder, src, style, target, title, type_, value)
-import Html.Events exposing (keyCode, on, onCheck, onClick, onFocus, onInput, onSubmit)
+import Html.Attributes as Attr
+import Html.Events
 import Ipc
-import Setup.Msg as Msg exposing (Msg)
+import Setup.Msg as Msg
 import Styles exposing (StyleElement)
 
 
 view : StyleElement
 view =
-    div [ style [ "padding" => "5px" ] ]
+    div [ Attr.style [ "padding" => "5px" ] ]
         [ a
-            [ onClick <| Msg.SendIpc Ipc.ShowFeedbackForm
-            , style
+            [ Html.Events.onClick <| Msg.SendIpc Ipc.ShowFeedbackForm
+            , Attr.style
                 [ "text-transform" => "uppercase"
                 , "transform" => "rotate(-90deg)"
                 , "padding" => "10px"
@@ -25,7 +25,7 @@ view =
             , Attr.class "btn btn-sm btn-default pull-right"
             , Attr.id "feedback"
             ]
-            [ span [ style [ "padding-right" => "10px" ] ] [ text "Feedback" ]
+            [ span [ Attr.style [ "padding-right" => "10px" ] ] [ text "Feedback" ]
             , span [ Attr.class "fa fa-comment-o" ] []
             ]
         ]
