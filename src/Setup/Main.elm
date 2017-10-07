@@ -96,33 +96,36 @@ getInitialWindowSize =
 
 view : Model -> Html Msg
 view model =
+    Element.column Styles.Main
+        [ Element.Attributes.height Element.Attributes.fill ]
+        [ View.Navbar.view model
+        , Element.column Styles.None
+            [ Element.Attributes.paddingXY 110 50
+            , Element.Attributes.spacing 30
+            ]
+            (View.UpdateAvailableBeta.view model.availableUpdateVersion
+                :: pageView model
+            )
+        , View.FeedbackButton.view
+        ]
+        |> Element.viewport
+            (Styles.stylesheet model.device)
+
+
+pageView : Model -> List Styles.StyleElement
+pageView model =
     case model.screenState of
         ScreenState.Configure ->
-            wrapPageView model (Page.Config.view model)
+            Page.Config.view model
 
         ScreenState.Continue ->
-            wrapPageView model <|
-                if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
-                    Page.Break.view model
-                else
-                    Page.Continue.view model
+            if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+                Page.Break.view model
+            else
+                Page.Continue.view model
 
         ScreenState.Rpg rpgState ->
             Page.Rpg.view model rpgState model.settings.rosterData
-                |> wrapPageView model
-
-
-wrapPageView : Model -> List Styles.StyleElement -> Html Msg
-wrapPageView model bodyElements =
-    Element.viewport (Styles.stylesheet model.device) <|
-        Element.column Styles.Main
-            [ Element.Attributes.height Element.Attributes.fill ]
-            [ View.Navbar.view model
-            , Element.column Styles.None
-                [ Element.Attributes.paddingXY 110 50, Element.Attributes.spacing 30 ]
-                (View.UpdateAvailableBeta.view model.availableUpdateVersion :: bodyElements)
-            , View.FeedbackButton.view
-            ]
 
 
 
