@@ -1,8 +1,8 @@
-module Timer.Flags exposing (..)
+module Timer.Flags exposing (IncomingFlags, decoder, encodeBreak, encodeRegularTimer)
 
 import Basics.Extra exposing ((=>))
-import Json.Decode
-import Json.Decode.Pipeline as Pipeline exposing (hardcoded, optional, required)
+import Json.Decode as Decode
+import Json.Decode.Pipeline as Pipeline
 import Json.Encode as Encode
 
 
@@ -39,11 +39,11 @@ encodeBreak breakDurationMinutes =
         ]
 
 
-decoder : Json.Decode.Decoder IncomingFlags
+decoder : Decode.Decoder IncomingFlags
 decoder =
     Pipeline.decode IncomingFlags
-        |> required "minutes" Json.Decode.int
-        |> optional "driver" Json.Decode.string ""
-        |> optional "navigator" Json.Decode.string ""
-        |> required "isBreak" Json.Decode.bool
-        |> optional "isDev" Json.Decode.bool False
+        |> Pipeline.required "minutes" Decode.int
+        |> Pipeline.optional "driver" Decode.string ""
+        |> Pipeline.optional "navigator" Decode.string ""
+        |> Pipeline.required "isBreak" Decode.bool
+        |> Pipeline.optional "isDev" Decode.bool False
