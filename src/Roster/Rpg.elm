@@ -9,7 +9,7 @@ type alias Experience =
 
 
 type alias Goal =
-    { complete : Bool
+    { complete : Int
     , description : String
     }
 
@@ -50,8 +50,8 @@ somethingToBadge ( role, experience ) =
     let
         goalCount =
             experience
-                |> List.filter .complete
-                |> List.length
+                |> List.map .complete
+                |> List.sum
     in
     if goalCount > 2 then
         Just role
@@ -105,4 +105,4 @@ experienceThings stringList =
 
 initGoal : String -> Goal
 initGoal description =
-    { complete = False, description = description }
+    { complete = 0, description = description }

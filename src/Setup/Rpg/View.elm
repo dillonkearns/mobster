@@ -116,10 +116,9 @@ goalView mobster goalIndex goal =
     in
     ( uniqueId
     , li
-        [ Attr.class "checkbox checkbox-success"
-        , Html.Events.onClick (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex)
+        [ Html.Events.onClick (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex)
         ]
-        [ input [ Attr.id uniqueId, type_ "checkbox", Attr.checked goal.complete ] []
+        [ text (toString goal.complete)
         , label [ Attr.for uniqueId ] [ text goal.description ]
         ]
     )

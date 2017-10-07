@@ -62,7 +62,7 @@ suite =
                     \() ->
                         let
                             driverGoals =
-                                [ { complete = True, description = "Do something" } ]
+                                [ { complete = 1, description = "Do something" } ]
 
                             rpgData =
                                 { init | driver = driverGoals }
@@ -75,11 +75,11 @@ suite =
                     \() ->
                         let
                             fakeExperience =
-                                { driver = [ { complete = False, description = "driver goal" } ]
-                                , navigator = [ { complete = False, description = "navigator goal" } ]
-                                , mobber = [ { complete = False, description = "mobber goal" } ]
-                                , researcher = [ { complete = False, description = "researcher goal" } ]
-                                , sponsor = [ { complete = False, description = "sponsor goal" } ]
+                                { driver = [ { complete = 0, description = "driver goal" } ]
+                                , navigator = [ { complete = 0, description = "navigator goal" } ]
+                                , mobber = [ { complete = 0, description = "mobber goal" } ]
+                                , researcher = [ { complete = 0, description = "researcher goal" } ]
+                                , sponsor = [ { complete = 0, description = "sponsor goal" } ]
                                 }
 
                             rpgData =
@@ -105,14 +105,14 @@ suite =
                     \() ->
                         let
                             completeGoal =
-                                { complete = True, description = "driver goal" }
+                                { complete = 1, description = "driver goal" }
 
                             fakeExperience =
                                 { driver = List.repeat 3 completeGoal
-                                , navigator = [ { complete = False, description = "navigator goal" } ]
-                                , mobber = [ { complete = False, description = "mobber goal" } ]
-                                , researcher = [ { complete = False, description = "researcher goal" } ]
-                                , sponsor = [ { complete = False, description = "sponsor goal" } ]
+                                , navigator = [ { complete = 0, description = "navigator goal" } ]
+                                , mobber = [ { complete = 0, description = "mobber goal" } ]
+                                , researcher = [ { complete = 0, description = "researcher goal" } ]
+                                , sponsor = [ { complete = 0, description = "sponsor goal" } ]
                                 }
 
                             rpgData =

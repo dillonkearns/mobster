@@ -17,24 +17,24 @@ suite =
                         Rpg.init
                 in
                 Expect.true (toString rpgData)
-                    (List.all (not << .complete) rpgData.driver)
+                    (List.all ((==) 0 << .complete) rpgData.driver)
         , test "complete navigator goal" <|
             \() ->
                 let
                     rpgData =
-                        { driver = [ { complete = False, description = "driver goal" } ]
-                        , navigator = [ { complete = False, description = "navigator goal" } ]
-                        , mobber = [ { complete = False, description = "mobber goal" } ]
-                        , researcher = [ { complete = False, description = "researcher goal" } ]
-                        , sponsor = [ { complete = False, description = "sponsor goal" } ]
+                        { driver = [ { complete = 0, description = "driver goal" } ]
+                        , navigator = [ { complete = 0, description = "navigator goal" } ]
+                        , mobber = [ { complete = 0, description = "mobber goal" } ]
+                        , researcher = [ { complete = 0, description = "researcher goal" } ]
+                        , sponsor = [ { complete = 0, description = "sponsor goal" } ]
                         }
 
                     expectedRpgData =
-                        { driver = [ { complete = False, description = "driver goal" } ]
-                        , navigator = [ { complete = True, description = "navigator goal" } ]
-                        , mobber = [ { complete = False, description = "mobber goal" } ]
-                        , researcher = [ { complete = False, description = "researcher goal" } ]
-                        , sponsor = [ { complete = False, description = "sponsor goal" } ]
+                        { driver = [ { complete = 0, description = "driver goal" } ]
+                        , navigator = [ { complete = 1, description = "navigator goal" } ]
+                        , mobber = [ { complete = 0, description = "mobber goal" } ]
+                        , researcher = [ { complete = 0, description = "researcher goal" } ]
+                        , sponsor = [ { complete = 0, description = "sponsor goal" } ]
                         }
 
                     withCompleted =
@@ -46,19 +46,19 @@ suite =
             \() ->
                 let
                     rpgData =
-                        { driver = [ { complete = False, description = "driver goal" } ]
-                        , navigator = [ { complete = False, description = "navigator goal" } ]
-                        , mobber = [ { complete = False, description = "mobber goal" } ]
-                        , researcher = [ { complete = False, description = "researcher goal" } ]
-                        , sponsor = [ { complete = False, description = "sponsor goal" } ]
+                        { driver = [ { complete = 0, description = "driver goal" } ]
+                        , navigator = [ { complete = 0, description = "navigator goal" } ]
+                        , mobber = [ { complete = 0, description = "mobber goal" } ]
+                        , researcher = [ { complete = 0, description = "researcher goal" } ]
+                        , sponsor = [ { complete = 0, description = "sponsor goal" } ]
                         }
 
                     expectedRpgData =
-                        { driver = [ { complete = False, description = "driver goal" } ]
-                        , navigator = [ { complete = False, description = "navigator goal" } ]
-                        , mobber = [ { complete = False, description = "mobber goal" } ]
-                        , researcher = [ { complete = False, description = "researcher goal" } ]
-                        , sponsor = [ { complete = True, description = "sponsor goal" } ]
+                        { driver = [ { complete = 0, description = "driver goal" } ]
+                        , navigator = [ { complete = 0, description = "navigator goal" } ]
+                        , mobber = [ { complete = 0, description = "mobber goal" } ]
+                        , researcher = [ { complete = 0, description = "researcher goal" } ]
+                        , sponsor = [ { complete = 1, description = "sponsor goal" } ]
                         }
 
                     withCompleted =
@@ -71,11 +71,11 @@ suite =
                 \() ->
                     let
                         rpgData =
-                            { driver = [ { complete = False, description = "driver goal" } ]
-                            , navigator = [ { complete = False, description = "navigator goal" } ]
-                            , mobber = [ { complete = False, description = "mobber goal" } ]
-                            , researcher = [ { complete = False, description = "researcher goal" } ]
-                            , sponsor = [ { complete = False, description = "sponsor goal" } ]
+                            { driver = [ { complete = 0, description = "driver goal" } ]
+                            , navigator = [ { complete = 0, description = "navigator goal" } ]
+                            , mobber = [ { complete = 0, description = "mobber goal" } ]
+                            , researcher = [ { complete = 0, description = "researcher goal" } ]
+                            , sponsor = [ { complete = 0, description = "sponsor goal" } ]
                             }
                     in
                     Expect.equal (Rpg.badges rpgData) []
@@ -84,14 +84,14 @@ suite =
                     let
                         rpgData =
                             { driver =
-                                [ { complete = True, description = "driver goal 1" }
-                                , { complete = True, description = "driver goal 2" }
-                                , { complete = True, description = "driver goal 3" }
+                                [ { complete = 1, description = "driver goal 1" }
+                                , { complete = 1, description = "driver goal 2" }
+                                , { complete = 1, description = "driver goal 3" }
                                 ]
-                            , navigator = [ { complete = False, description = "navigator goal" } ]
-                            , mobber = [ { complete = False, description = "mobber goal" } ]
-                            , researcher = [ { complete = False, description = "researcher goal" } ]
-                            , sponsor = [ { complete = False, description = "sponsor goal" } ]
+                            , navigator = [ { complete = 0, description = "navigator goal" } ]
+                            , mobber = [ { complete = 0, description = "mobber goal" } ]
+                            , researcher = [ { complete = 0, description = "researcher goal" } ]
+                            , sponsor = [ { complete = 0, description = "sponsor goal" } ]
                             }
                     in
                     Expect.equal (Rpg.badges rpgData) [ Driver ]
@@ -100,18 +100,18 @@ suite =
                     let
                         rpgData =
                             { driver =
-                                [ { complete = True, description = "driver goal 1" }
-                                , { complete = True, description = "driver goal 2" }
-                                , { complete = True, description = "driver goal 3" }
+                                [ { complete = 1, description = "driver goal 1" }
+                                , { complete = 1, description = "driver goal 2" }
+                                , { complete = 1, description = "driver goal 3" }
                                 ]
                             , navigator =
-                                [ { complete = True, description = "nav goal 1" }
-                                , { complete = True, description = "nav goal 2" }
-                                , { complete = True, description = "nav goal 3" }
+                                [ { complete = 1, description = "nav goal 1" }
+                                , { complete = 1, description = "nav goal 2" }
+                                , { complete = 1, description = "nav goal 3" }
                                 ]
-                            , mobber = List.repeat 3 { complete = True, description = "mobber goal" }
-                            , researcher = [ { complete = False, description = "researcher goal" } ]
-                            , sponsor = [ { complete = False, description = "sponsor goal" } ]
+                            , mobber = List.repeat 3 { complete = 1, description = "mobber goal" }
+                            , researcher = [ { complete = 0, description = "researcher goal" } ]
+                            , sponsor = [ { complete = 0, description = "sponsor goal" } ]
                             }
                     in
                     Expect.equal (Rpg.badges rpgData) [ Driver, Navigator, Mobber ]

@@ -226,9 +226,9 @@ completeGoalInRpgData role goalIndex rpgData =
     updatedRpgData
 
 
-completeGoal2 : { goal | complete : Bool } -> { goal | complete : Bool }
+completeGoal2 : { goal | complete : Int } -> { goal | complete : Int }
 completeGoal2 goal =
-    { goal | complete = True }
+    { goal | complete = goal.complete + 1 }
 
 
 goalFromIndex : Int -> List Rpg.Goal -> Rpg.Goal
@@ -236,4 +236,4 @@ goalFromIndex goalIndex experience =
     experience
         |> Array.fromList
         |> Array.get goalIndex
-        |> Maybe.withDefault { description = "", complete = True }
+        |> Maybe.withDefault { description = "", complete = 0 }

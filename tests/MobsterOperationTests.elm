@@ -9,20 +9,20 @@ import TestHelpers exposing (toMobsters)
 
 
 fakeExperience =
-    { driver = [ { complete = False, description = "driver goal" } ]
-    , navigator = [ { complete = False, description = "navigator goal" } ]
-    , mobber = [ { complete = False, description = "mobber goal" } ]
-    , researcher = [ { complete = False, description = "researcher goal" } ]
-    , sponsor = [ { complete = False, description = "sponsor goal" } ]
+    { driver = [ { complete = 0, description = "driver goal" } ]
+    , navigator = [ { complete = 0, description = "navigator goal" } ]
+    , mobber = [ { complete = 0, description = "mobber goal" } ]
+    , researcher = [ { complete = 0, description = "researcher goal" } ]
+    , sponsor = [ { complete = 0, description = "sponsor goal" } ]
     }
 
 
 fakeExperience2 =
-    { driver = [ { complete = True, description = "driver goal" } ]
-    , navigator = [ { complete = False, description = "navigator goal" } ]
-    , mobber = [ { complete = False, description = "mobber goal" } ]
-    , researcher = [ { complete = False, description = "researcher goal" } ]
-    , sponsor = [ { complete = False, description = "sponsor goal" } ]
+    { driver = [ { complete = 1, description = "driver goal" } ]
+    , navigator = [ { complete = 0, description = "navigator goal" } ]
+    , mobber = [ { complete = 0, description = "mobber goal" } ]
+    , researcher = [ { complete = 0, description = "researcher goal" } ]
+    , sponsor = [ { complete = 0, description = "sponsor goal" } ]
     }
 
 
