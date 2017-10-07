@@ -61,30 +61,6 @@ settingsPageButton { responsivePalette } =
         Element.empty
 
 
-rpgIcon : { model | responsivePalette : Responsive.Palette } -> StyleElement
-rpgIcon { responsivePalette } =
-    Element.button Styles.GameButton
-        [ class "fa fa-gamepad"
-        , height responsivePalette.navbarButtonHeight
-        , width responsivePalette.navbarButtonHeight
-        , verticalCenter
-        , Element.Events.onClick Msg.StartRpgMode
-        ]
-        Element.empty
-
-
-continueIcon : { model | responsivePalette : Responsive.Palette } -> StyleElement
-continueIcon { responsivePalette } =
-    Element.button Styles.GameButton
-        [ class "fa fa-lightbulb-o"
-        , height responsivePalette.navbarButtonHeight
-        , width responsivePalette.navbarButtonHeight
-        , verticalCenter
-        , Element.Events.onClick Msg.OpenContinueScreen
-        ]
-        Element.empty
-
-
 navButtonView : { model | responsivePalette : Responsive.Palette } -> String -> Styles.NavButtonType -> Msg -> StyleElement
 navButtonView { responsivePalette } buttonText navButtonType msg =
     button (Styles.NavButton navButtonType)

@@ -74,19 +74,6 @@ feedbackButton =
         [ a [ onClick <| Msg.SendIpc Ipc.ShowFeedbackForm, style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ], Attr.tabindex -1, Attr.class "btn btn-sm btn-default pull-right", Attr.id "feedback" ] [ span [ class [ BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ] ]
 
 
-ctrlKey : Bool -> String
-ctrlKey onMac =
-    if onMac then
-        "⌘"
-    else
-        "Ctrl"
-
-
-startMobbingShortcut : Bool -> String
-startMobbingShortcut onMac =
-    ctrlKey onMac ++ "+Enter"
-
-
 
 -- main view function 15
 

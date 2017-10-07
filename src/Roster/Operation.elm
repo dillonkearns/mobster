@@ -226,39 +226,14 @@ completeGoalInRpgData role goalIndex rpgData =
     updatedRpgData
 
 
+completeGoal2 : { goal | complete : Bool } -> { goal | complete : Bool }
 completeGoal2 goal =
     { goal | complete = True }
 
 
+goalFromIndex : Int -> List Rpg.Goal -> Rpg.Goal
 goalFromIndex goalIndex experience =
     experience
         |> Array.fromList
         |> Array.get goalIndex
         |> Maybe.withDefault { description = "", complete = True }
-
-
-updateMobsterGoal : Int -> Mobster -> Mobster
-updateMobsterGoal goalIndex mobster =
-    let
-        goal =
-            mobster.rpgData.driver
-                |> Array.fromList
-                |> Array.get goalIndex
-                |> Maybe.withDefault { description = "", complete = True }
-
-        completeGoal =
-            { goal | complete = True }
-
-        updatedExperience =
-            mobster.rpgData.driver
-                |> Array.fromList
-                |> Array.set goalIndex completeGoal
-                |> Array.toList
-
-        rpgData =
-            mobster.rpgData
-
-        updatedRpgData =
-            { rpgData | driver = updatedExperience }
-    in
-    { mobster | rpgData = updatedRpgData }

@@ -7,11 +7,6 @@ import Html.Events exposing (..)
 import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 
 
-type RpgState
-    = Checklist
-    | NextUp
-
-
 type Color
     = Primary
     | Success
