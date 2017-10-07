@@ -137,6 +137,15 @@ stylesheet device =
             , circle = Color.rgb 0 140 255
             }
 
+        fonts :
+            { mediumLarge : Float
+            , medium : Float
+            , mediumSmall : Float
+            , mediumSmaller : Float
+            , smallish : Float
+            , small : Float
+            , extraSmall : Float
+            }
         fonts =
             { mediumLarge =
                 responsiveForWidthWith ( 25, 180 )
@@ -146,6 +155,8 @@ stylesheet device =
                 responsiveForWidthWith ( 16, 80 )
             , mediumSmaller =
                 responsiveForWidthWith ( 12, 70 )
+            , smallish =
+                responsiveForWidthWith ( 10, 50 )
             , small =
                 responsiveForWidthWith ( 10, 45 )
             , extraSmall =
@@ -374,6 +385,7 @@ stylesheet device =
             ]
         , style RpgGoal
             [ Style.cursor "pointer"
+            , Font.size fonts.smallish
             ]
         , style (RosterInput True)
             [ Color.background (Color.rgba 0 0 0 0)
