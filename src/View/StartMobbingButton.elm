@@ -1,10 +1,10 @@
 module View.StartMobbingButton exposing (buttonId, view)
 
-import Element exposing (..)
-import Element.Attributes as Attr exposing (..)
-import Element.Events exposing (onClick, onInput)
+import Element
+import Element.Attributes as Attr
+import Element.Events
 import Os exposing (Os)
-import Setup.Msg as Msg exposing (Msg)
+import Setup.Msg as Msg
 import Styles exposing (StyleElement)
 
 
@@ -14,15 +14,21 @@ view { os, device } title =
         tooltipText =
             Os.ctrlKeyString os ++ "+Enter"
     in
-    column Styles.None
-        [ class "styleElementsTooltipContainer" ]
-        [ text title
-            |> button Styles.WideButton
-                [ padding (Styles.responsiveForWidth device ( 10, 20 ))
+    Element.column Styles.None
+        [ Attr.class "styleElementsTooltipContainer" ]
+        [ Element.text title
+            |> Element.button Styles.WideButton
+                [ Attr.padding (Styles.responsiveForWidth device ( 10, 20 ))
                 , Element.Events.onClick Msg.StartTimer
                 , Attr.id buttonId
                 ]
-            |> above [ el Styles.Tooltip [ center, class "styleElementsTooltip" ] (text tooltipText) ]
+            |> Element.above
+                [ Element.el Styles.Tooltip
+                    [ Attr.center
+                    , Attr.class "styleElementsTooltip"
+                    ]
+                    (Element.text tooltipText)
+                ]
         ]
 
 
