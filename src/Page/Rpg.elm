@@ -90,7 +90,7 @@ rpgCardView mobster =
 goalView : Roster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> Styles.StyleElement
 goalView mobster goalIndex goal =
     Element.row
-        Styles.None
+        Styles.RpgGoal
         [ Element.Events.onClick (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex)
         , Attr.spacing 55
         ]

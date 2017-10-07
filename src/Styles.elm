@@ -36,6 +36,7 @@ type alias StyleAttribute =
 type Styles
     = None
     | Main
+    | RpgGoal
     | Logo
     | NavOption
     | WideButton
@@ -370,6 +371,9 @@ stylesheet device =
             [ Font.size 12
             , Font.typeface typefaces.body
             , Color.text (Color.rgb 255 179 116)
+            ]
+        , style RpgGoal
+            [ Style.cursor "pointer"
             ]
         , style (RosterInput True)
             [ Color.background (Color.rgba 0 0 0 0)
