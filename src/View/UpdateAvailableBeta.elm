@@ -4,7 +4,7 @@ import Element
 import Element.Attributes as Attr
 import Element.Events
 import Ipc
-import Setup.Msg as Msg exposing (Msg)
+import Setup.Msg as Msg
 import Styles
 
 
