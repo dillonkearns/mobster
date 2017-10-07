@@ -92,10 +92,10 @@ view : Model -> Html Msg
 view model =
     case model.screenState of
         Configure ->
-            styleElementsConfigureView model (Page.Config.view model)
+            wrapPageView model (Page.Config.view model)
 
         Continue _ ->
-            styleElementsConfigureView model <|
+            wrapPageView model <|
                 if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
                     Page.Break.view model
                 else
@@ -112,8 +112,8 @@ view model =
                 ]
 
 
-styleElementsConfigureView : Model -> List Styles.StyleElement -> Html Msg
-styleElementsConfigureView model bodyElements =
+wrapPageView : Model -> List Styles.StyleElement -> Html Msg
+wrapPageView model bodyElements =
     Element.viewport (Styles.stylesheet model.device) <|
         Element.column Styles.Main
             [ Element.Attributes.height Element.Attributes.fill ]
