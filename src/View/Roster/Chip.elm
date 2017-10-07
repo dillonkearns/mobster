@@ -8,15 +8,15 @@ import Element.Events
 import Json.Decode
 import Roster.Presenter
 import Setup.Msg as Msg exposing (Msg)
-import Styles exposing (StyleAttribute, StyleElement, Styles)
+import Styles exposing (StyleAttribute, StyleElement)
 
 
 view :
     List StyleAttribute
-    -> Msg.Msg
-    -> Msg.Msg
+    -> Msg
+    -> Msg
     -> Styles.Styles
-    -> Maybe (Animation.Messenger.State Msg.Msg)
+    -> Maybe (Animation.Messenger.State Msg)
     -> Device
     -> String
     -> Maybe Roster.Presenter.Role
