@@ -75,7 +75,7 @@ getInitialWindowSize =
 view : Model -> Html Msg
 view model =
     Element.column Styles.Main
-        []
+        [ Element.Attributes.height Element.Attributes.fill ]
         [ View.Navbar.view model
         , Element.column Styles.None
             [ Element.Attributes.paddingXY 110 50

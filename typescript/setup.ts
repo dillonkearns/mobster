@@ -8,8 +8,6 @@ let onMac = /Mac/.test(navigator.platform)
 let isLocal = require('electron-is-dev')
 
 document.addEventListener('DOMContentLoaded', function(event) {
-  const div = document.getElementById('main')
-
   let setup = Elm.Setup.Main.fullscreen({ settings, onMac, isLocal })
   setup.ports.selectDuration.subscribe(function(id) {
     let inputElement: any = document.getElementById(id)
