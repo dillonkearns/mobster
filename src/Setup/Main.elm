@@ -35,10 +35,10 @@ import Setup.Msg as Msg exposing (Msg)
 import Setup.Navbar as Navbar
 import Setup.Ports
 import Setup.Rpg.View exposing (RpgState(..))
+import Setup.ScreenState exposing (..)
 import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
 import Setup.Validations as Validations
-import Setup.View exposing (..)
 import Styles
 import StylesheetHelper exposing (CssClasses(..), class, id)
 import Task

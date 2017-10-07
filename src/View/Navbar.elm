@@ -6,7 +6,7 @@ import Element.Events exposing (onClick, onInput)
 import Ipc
 import Responsive exposing (Palette)
 import Setup.Msg as Msg exposing (Msg)
-import Setup.View exposing (ScreenState(Configure))
+import Setup.ScreenState as ScreenState exposing (ScreenState)
 import Styles exposing (StyleElement)
 
 
@@ -19,7 +19,7 @@ view :
 view ({ screenState, responsivePalette } as model) =
     let
         cogButton =
-            if screenState /= Configure then
+            if screenState /= ScreenState.Configure then
                 settingsPageButton model
             else
                 Element.empty

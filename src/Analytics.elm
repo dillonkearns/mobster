@@ -8,7 +8,7 @@ import Roster.Operation as MobsterOperation exposing (MobsterOperation)
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Ports
 import Setup.Rpg.View
-import Setup.View exposing (ScreenState)
+import Setup.ScreenState as ScreenState exposing (ScreenState)
 
 
 type alias Event =
@@ -82,13 +82,13 @@ trackPage newScreenState =
 screenToString : ScreenState -> String
 screenToString newScreenState =
     case newScreenState of
-        Setup.View.Configure ->
+        ScreenState.Configure ->
             "configure"
 
-        Setup.View.Continue bool ->
+        ScreenState.Continue bool ->
             "continue"
 
-        Setup.View.Rpg rpgState ->
+        ScreenState.Rpg rpgState ->
             case rpgState of
                 Setup.Rpg.View.Checklist ->
                     "rpg-checklist"

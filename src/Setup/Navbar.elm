@@ -6,7 +6,7 @@ import Html exposing (..)
 import Html.Attributes as Attr exposing (href, src, style)
 import Ipc
 import Setup.Msg exposing (Msg(..))
-import Setup.View exposing (ScreenState(..))
+import Setup.ScreenState as ScreenState exposing (ScreenState)
 import StylesheetHelper exposing (CssClasses(..), class, classList, id)
 
 
@@ -15,7 +15,7 @@ view screen =
     let
         configureScreenButton =
             case screen of
-                Configure ->
+                ScreenState.Configure ->
                     text ""
 
                 _ ->
