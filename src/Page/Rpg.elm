@@ -78,12 +78,12 @@ rpgCardView mobster =
         roleName =
             toString mobster.role
 
-        iconDiv =
+        icon =
             Setup.RpgIcons.mobsterIcon mobster.role
                 |> Element.html
 
         header =
-            Element.row Styles.None [] [ iconDiv, Element.text (roleName ++ " ( " ++ mobster.name ++ ")") ]
+            Element.row Styles.None [] [ icon, Element.text (roleName ++ " ( " ++ mobster.name ++ ")") ]
     in
     Element.column Styles.None [ Attr.width (Attr.fillPortion 1) ] [ header, experienceView mobster ]
 
