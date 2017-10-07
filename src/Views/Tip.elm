@@ -1,6 +1,6 @@
 module Views.Tip exposing (view)
 
-import Element exposing (Device)
+import Element
 import Element.Attributes as Attr
 import Element.Events
 import Ipc

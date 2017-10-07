@@ -1,6 +1,6 @@
 module Views.StepButton exposing (stepBackwardButton, stepForwardButton)
 
-import Element exposing (Device)
+import Element
 import Element.Attributes as Attr
 import Element.Events
 import Roster.Operation as MobsterOperation

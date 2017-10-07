@@ -1,6 +1,5 @@
 module Views.BreakProgress exposing (view)
 
-import Break
 import Element exposing (Device)
 import Element.Attributes as Attr
 import Element.Events
@@ -24,9 +23,6 @@ circleView { device } circleFill =
 view : { model | intervalsSinceBreak : Int, settings : Settings.Data, device : Device } -> Styles.StyleElement
 view ({ intervalsSinceBreak, settings } as model) =
     let
-        remainingIntervals =
-            Break.timersBeforeNext intervalsSinceBreak settings.intervalsPerBreak
-
         intervalBadges =
             List.range 1 settings.intervalsPerBreak
                 |> List.map (\index -> index > intervalsSinceBreak)
