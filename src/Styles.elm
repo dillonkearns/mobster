@@ -3,8 +3,6 @@ module Styles exposing (..)
 import Color exposing (Color)
 import Color.Mixing
 import Element exposing (..)
-import Element.Attributes as Attr exposing (..)
-import Element.Events exposing (onClick, onInput)
 import QuickRotate
 import Roster.Presenter
 import Setup.Msg as Msg exposing (Msg)
@@ -522,26 +520,3 @@ ctrlKey onMac =
         "⌘"
     else
         "Ctrl"
-
-
-startMobbingButton : { model | onMac : Bool, device : Element.Device } -> String -> StyleElement
-startMobbingButton { onMac, device } title =
-    let
-        tooltipText =
-            ctrlKey onMac ++ "+Enter"
-    in
-    column None
-        [ class "styleElementsTooltipContainer" ]
-        [ text title
-            |> button WideButton
-                [ padding (responsiveForWidth device ( 10, 20 ))
-                , Element.Events.onClick Msg.StartTimer
-                , Attr.id continueButtonId
-                ]
-            |> above [ el Tooltip [ center, class "styleElementsTooltip" ] (text tooltipText) ]
-        ]
-
-
-continueButtonId : String
-continueButtonId =
-    "continue-button"

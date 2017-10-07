@@ -47,6 +47,7 @@ import Update.Extra
 import View.FeedbackButton
 import View.Navbar
 import View.RosterBeta
+import View.StartMobbingButton
 import View.UpdateAvailable
 import View.UpdateAvailableBeta
 import Window
@@ -655,7 +656,7 @@ reorderOperation shuffledMobsters =
 
 blurContinueButton : Cmd Msg
 blurContinueButton =
-    Styles.continueButtonId
+    View.StartMobbingButton.buttonId
         |> Dom.blur
         |> Task.attempt Msg.DomResult
 

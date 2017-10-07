@@ -16,6 +16,7 @@ import Setup.Settings as Settings
 import Setup.Validations as Validations
 import Styles exposing (StyleElement)
 import View.RosterBeta
+import View.StartMobbingButton
 
 
 type alias DragDropModel =
@@ -43,7 +44,7 @@ view model =
             [ Attr.width (Attr.percent 70) ]
             (View.RosterBeta.view model model.settings.rosterData)
         ]
-    , Styles.startMobbingButton model "Start Mobbing"
+    , View.StartMobbingButton.view model "Start Mobbing"
     ]
 
 

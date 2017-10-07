@@ -10,6 +10,7 @@ import Setup.Msg as Msg
 import Setup.Settings as Settings
 import Styles exposing (StyleElement)
 import Tip exposing (Tip)
+import View.StartMobbingButton
 import Views.BreakProgress
 import Views.StepButton
 import Views.Tip
@@ -32,7 +33,7 @@ view ({ device, tip, settings, onMac } as model) =
         , Element.hairline Styles.Hairline
         ]
     , Views.Tip.view tip
-    , Styles.startMobbingButton model "Continue"
+    , View.StartMobbingButton.view model "Continue"
     ]
 
 
