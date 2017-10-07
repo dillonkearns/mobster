@@ -94,7 +94,7 @@ view model =
         Configure ->
             wrapPageView model (Page.Config.view model)
 
-        Continue _ ->
+        Continue ->
             wrapPageView model <|
                 if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
                     Page.Break.view model
@@ -179,50 +179,17 @@ update msg model =
     case Debug.log "update" msg of
         Msg.SkipHotkey ->
             case model.screenState of
-                Continue showRotation ->
+                Continue ->
                     update (Msg.UpdateRosterData MobsterOperation.NextTurn) model
 
                 _ ->
-                    model ! []
+                    ( model, Cmd.none )
 
         Msg.StartRpgMode ->
             model ! [] |> changeScreen (Rpg NextUp)
 
-        Msg.ToggleRotationScreen ->
-            case model.screenState of
-                Continue showRotation ->
-                    let
-                        sideEffects =
-                            if showRotation then
-                                []
-                            else
-                                [ focusQuickRotateInput ]
-                    in
-                    model
-                        ! sideEffects
-                        |> changeScreen (Continue (not showRotation))
-
-                Configure ->
-                    model ! [ focusQuickRotateInput ]
-
-                _ ->
-                    model ! []
-
-        Msg.ShowRotationScreen ->
-            case model.screenState of
-                Continue showRotation ->
-                    model
-                        ! [ focusQuickRotateInput ]
-                        |> changeScreen (Continue True)
-
-                Configure ->
-                    model ! [ focusQuickRotateInput ]
-
-                _ ->
-                    model ! []
-
         Msg.StartTimer ->
-            if model.screenState == Continue False && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+            if model.screenState == Continue && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
                 startBreak model
             else
                 let
@@ -232,7 +199,7 @@ update msg model =
                                 Rpg Checklist
 
                             _ ->
-                                Continue False
+                                Continue
 
                     updatedModel =
                         { model
@@ -261,7 +228,7 @@ update msg model =
         Msg.SkipBreak ->
             (model |> resetBreakData)
                 ! []
-                |> changeScreen (Continue False)
+                |> changeScreen Continue
                 |> Analytics.trackEvent
                     { category = "break"
                     , action = "skip"
@@ -489,7 +456,7 @@ update msg model =
 
         Msg.OpenContinueScreen ->
             ( model, Cmd.none )
-                |> changeScreen (Continue False)
+                |> changeScreen Continue
 
 
 startBreak : Model -> ( Model, Cmd Msg )
@@ -501,7 +468,7 @@ startBreak model =
                     Rpg Checklist
 
                 _ ->
-                    Continue False
+                    Continue
     in
     (model |> resetIfAfterBreak)
         ! [ changeTip ]
@@ -532,7 +499,7 @@ performRosterOperation operation model =
                 |> saveActiveMobsters
                 |> focusQuickRotateInputIfVisible
     in
-    ( updatedModel |> updateQuickRotateStateIfActive, cmd )
+    ( updatedModel, cmd )
         |> Analytics.trackOperation operation
 
 
@@ -549,7 +516,7 @@ performRosterOperationUntracked operation model =
                 |> saveActiveMobsters
                 |> focusQuickRotateInputIfVisible
     in
-    ( updatedModel |> updateQuickRotateStateIfActive, cmd )
+    ( updatedModel, cmd )
 
 
 changeGlobalShortcutIfValid : String -> ( { model | settings : Settings.Data }, Cmd Msg ) -> ( { model | settings : Settings.Data }, Cmd Msg )
@@ -609,7 +576,7 @@ startBreakTimer (( model, cmd ) as msgAndCmd) =
 
 rosterViewIsShowing : ScreenState -> Bool
 rosterViewIsShowing screenState =
-    screenState == Continue True || screenState == Configure
+    screenState == Configure
 
 
 keyboardComboInit : Keyboard.Combo.Model Msg
@@ -629,20 +596,10 @@ focusQuickRotateInput =
 
 focusQuickRotateInputIfVisible : ( { model | screenState : ScreenState }, Cmd Msg ) -> ( { model | screenState : ScreenState }, Cmd Msg )
 focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
-    if model.screenState == Continue True || model.screenState == Configure then
+    if model.screenState == Configure then
         model ! [ cmd, focusQuickRotateInput ]
     else
         updateResult
-
-
-updateQuickRotateStateIfActive :
-    { model | screenState : ScreenState, settings : Settings.Data, quickRotateState : QuickRotate.State }
-    -> { model | screenState : ScreenState, settings : Settings.Data, quickRotateState : QuickRotate.State }
-updateQuickRotateStateIfActive model =
-    if model.screenState == Continue True then
-        { model | quickRotateState = QuickRotate.update model.quickRotateState.query (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState }
-    else
-        model
 
 
 quickRotateQueryId : String
