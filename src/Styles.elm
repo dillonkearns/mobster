@@ -1,4 +1,12 @@
-module Styles exposing (..)
+module Styles
+    exposing
+        ( CircleFill(..)
+        , NavButtonType(..)
+        , StyleElement
+        , Styles(..)
+        , responsiveForWidth
+        , stylesheet
+        )
 
 import Color exposing (Color)
 import Color.Mixing
