@@ -3,7 +3,6 @@ module Setup.Main exposing (main)
 import Analytics exposing (trackEvent)
 import Animation
 import Animation.Messenger
-import Basics.Extra exposing ((=>))
 import Break
 import Dice
 import Dom
@@ -11,8 +10,6 @@ import Element exposing (Device)
 import Element.Attributes
 import GlobalShortcut
 import Html exposing (Html, a, div, span, text)
-import Html.Attributes as Attr
-import Html.Events
 import Html5.DragDrop as DragDrop
 import Ipc
 import IpcSerializer
@@ -39,7 +36,6 @@ import Setup.Settings as Settings
 import Setup.Shortcuts as Shortcuts
 import Setup.Validations as Validations
 import Styles
-import StylesheetHelper exposing (class)
 import Task
 import Timer.Flags
 import Tip
@@ -64,24 +60,6 @@ type alias DragDropModel =
 changeTip : Cmd Msg
 changeTip =
     Random.generate Msg.NewTip Tip.random
-
-
-
--- cross-page view stuff 37
-
-
-feedbackButton : Html Msg
-feedbackButton =
-    div []
-        [ a
-            [ Html.Events.onClick <| Msg.SendIpc Ipc.ShowFeedbackForm
-            , Attr.style [ "text-transform" => "uppercase", "transform" => "rotate(-90deg)" ]
-            , Attr.tabindex -1
-            , Attr.class "btn btn-sm btn-default pull-right"
-            , Attr.id "feedback"
-            ]
-            [ span [ class [ StylesheetHelper.BufferRight ] ] [ text "Feedback" ], span [ Attr.class "fa fa-comment-o" ] [] ]
-        ]
 
 
 

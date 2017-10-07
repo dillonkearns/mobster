@@ -9,7 +9,7 @@ import Os exposing (Os)
 import Roster.Data exposing (RosterData)
 import Roster.Rpg as Rpg
 import Roster.RpgPresenter
-import Setup.Msg as Msg exposing (Msg)
+import Setup.Msg as Msg
 import Setup.RpgIcons
 import Setup.ScreenState as ScreenState
 import Styles
