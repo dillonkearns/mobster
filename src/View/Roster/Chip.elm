@@ -2,17 +2,17 @@ module View.Roster.Chip exposing (view)
 
 import Animation
 import Animation.Messenger
-import Element exposing (Device, el)
+import Element exposing (Device)
 import Element.Attributes as Attr
 import Element.Events
 import Json.Decode
 import Roster.Presenter
-import Setup.Msg as Msg exposing (..)
-import Styles exposing (StyleElement, Styles)
+import Setup.Msg as Msg exposing (Msg)
+import Styles exposing (StyleAttribute, StyleElement, Styles)
 
 
 view :
-    List (Element.Attribute Never Msg)
+    List StyleAttribute
     -> Msg.Msg
     -> Msg.Msg
     -> Styles.Styles

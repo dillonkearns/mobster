@@ -2,6 +2,7 @@ module Styles
     exposing
         ( CircleFill(..)
         , NavButtonType(..)
+        , StyleAttribute
         , StyleElement
         , Styles(..)
         , responsiveForWidth
@@ -26,6 +27,10 @@ import Time
 
 type alias StyleElement =
     Element Styles Never Msg
+
+
+type alias StyleAttribute =
+    Element.Attribute Never Msg
 
 
 type Styles
