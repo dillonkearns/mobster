@@ -608,10 +608,7 @@ rosterViewIsShowing screenState =
 
 keyboardComboInit : Keyboard.Combo.Model Msg
 keyboardComboInit =
-    Keyboard.Combo.init
-        { toMsg = Msg.ComboMsg
-        , combos = Shortcuts.keyboardCombos
-        }
+    Keyboard.Combo.init Shortcuts.keyboardCombos Msg.ComboMsg
 
 
 focusQuickRotateInput : Cmd Msg
