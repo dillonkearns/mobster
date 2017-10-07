@@ -3,11 +3,13 @@ module MobsterOperationTests exposing (addCases, benchCases, completeGoalCases, 
 import Expect
 import Roster.Data as Mobster exposing (RosterData, empty)
 import Roster.Operation exposing (MobsterOperation(..), updateMoblist)
+import Roster.Rpg
 import Roster.RpgRole exposing (..)
 import Test exposing (..)
 import TestHelpers exposing (toMobsters)
 
 
+fakeExperience : Roster.Rpg.RpgData
 fakeExperience =
     { driver = [ { complete = 0, description = "driver goal" } ]
     , navigator = [ { complete = 0, description = "navigator goal" } ]
@@ -17,6 +19,7 @@ fakeExperience =
     }
 
 
+fakeExperience2 : Roster.Rpg.RpgData
 fakeExperience2 =
     { driver = [ { complete = 1, description = "driver goal" } ]
     , navigator = [ { complete = 0, description = "navigator goal" } ]
