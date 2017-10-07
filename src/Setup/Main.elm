@@ -46,12 +46,9 @@ import Task
 import Timer.Flags
 import Tip
 import Update.Extra
-import View.Break
-import View.IntervalsToBreak
 import View.Navbar
 import View.Roster
 import View.RosterBeta
-import View.Tip
 import View.UpdateAvailable
 import View.UpdateAvailableBeta
 import ViewHelpers
@@ -93,37 +90,6 @@ ctrlKey onMac =
 startMobbingShortcut : Bool -> String
 startMobbingShortcut onMac =
     ctrlKey onMac ++ "+Enter"
-
-
-
--- continue view 92
-
-
-continueView : Bool -> Model -> Html Msg
-continueView showRotation model =
-    let
-        mainView =
-            if showRotation then
-                div []
-                    [ View.Roster.rotationView model.dragDrop model.quickRotateState model.settings.rosterData model.activeMobstersStyle (Animation.render model.dieStyle)
-                    , button [ style [ "margin-bottom" => "12px" ], Attr.class "btn btn-small btn-default pull-right", onClick Msg.ToggleRotationScreen ]
-                        [ span [ class [ BufferRight ] ] [ text "Back to tip view" ], span [ Attr.class "fa fa-arrow-circle-o-left" ] [] ]
-                    ]
-            else
-                div []
-                    [ table [ Attr.class "table table-hover" ] [ tbody [] [ View.Roster.newMobsterRowView False model.quickRotateState False ] ]
-                    , View.Tip.view model.tip
-                    ]
-    in
-    if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
-        View.Break.view model
-    else
-        div [ Attr.class "container-fluid" ]
-            [ View.IntervalsToBreak.view model.intervalsSinceBreak model.settings.intervalsPerBreak
-            , nextDriverNavigatorView model
-            , div [ class [ BufferTop ] ] [ mainView ]
-            , ViewHelpers.blockButton "Continue" Msg.StartTimer (startMobbingShortcut model.onMac |> Just) continueButtonId
-            ]
 
 
 nextDriverNavigatorView : Model -> Html Msg
@@ -285,36 +251,26 @@ getInitialWindowSize =
 
 view : Model -> Html Msg
 view model =
-    let
-        mainView =
-            case model.screenState of
-                Configure ->
-                    configureView model
+    case model.screenState of
+        Configure ->
+            styleElementsConfigureView model (configureBetaViewElements model)
 
-                Continue showRotation ->
-                    continueView showRotation model
+        Continue _ ->
+            styleElementsConfigureView model <|
+                if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+                    Pages.Break.view model
+                else
+                    Page.Continue.view model
 
-                Rpg rpgState ->
-                    Setup.Rpg.View.rpgView rpgState model.settings.rosterData
-    in
-    if model.screenState == Configure then
-        styleElementsConfigureView model (configureBetaViewElements model)
-    else if model.screenState == Continue True || model.screenState == Continue False then
-        styleElementsConfigureView model <|
-            if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
-                Pages.Break.view model
-            else
-                Page.Continue.view model
-    else
-        -- Only used for RPG right now
-        div [ Attr.style [ "padding" => "100px", "padding-bottom" => "0px" ] ]
-            [ div []
-                [ Navbar.view model.screenState
-                , View.UpdateAvailable.view model.availableUpdateVersion
-                , mainView
-                , feedbackButton
+        Rpg rpgState ->
+            div [ Attr.style [ "padding" => "100px", "padding-bottom" => "0px" ] ]
+                [ div []
+                    [ Navbar.view model.screenState
+                    , View.UpdateAvailable.view model.availableUpdateVersion
+                    , Setup.Rpg.View.rpgView rpgState model.settings.rosterData
+                    , feedbackButton
+                    ]
                 ]
-            ]
 
 
 styleElementsConfigureView : Model -> List Styles.StyleElement -> Html Msg
