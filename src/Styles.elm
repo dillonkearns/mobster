@@ -5,14 +5,9 @@ import Color.Mixing
 import Element exposing (..)
 import Element.Attributes as Attr exposing (..)
 import Element.Events exposing (onClick, onInput)
-import Element.Input
 import QuickRotate
-import Responsive
 import Roster.Presenter
-import Setup.InputField as InputField exposing (IntInputField(..))
 import Setup.Msg as Msg exposing (Msg)
-import Setup.Settings as Settings
-import Setup.Validations as Validations
 import Style exposing (..)
 import Style.Background
 import Style.Border as Border
@@ -524,114 +519,6 @@ rosterItemRounding =
 
 type alias StyleElement =
     Element Styles Never Msg
-
-
-inputPair : IntInputField -> String -> Int -> StyleElement
-inputPair inputField label value =
-    row Input
-        [ spacing 20 ]
-        [ numberInput value
-            (Validations.inputRangeFor inputField)
-            (Msg.ChangeInput (Msg.IntField inputField))
-            (toString inputField)
-        , el None [] <| text label
-        ]
-
-
-numberInput : Int -> ( Int, Int ) -> (String -> Msg) -> String -> StyleElement
-numberInput value ( minValue, maxValue ) onInputMsg fieldId =
-    Element.node "input" <|
-        el None
-            [ width <| px 60
-            , minValue |> toString |> Attr.attribute "min"
-            , maxValue |> toString |> Attr.attribute "max"
-            , Attr.attribute "step" "1"
-            , Attr.attribute "type" "number"
-            , value |> toString |> Attr.attribute "value"
-            , onInput onInputMsg
-            , onClick (Msg.SelectInputField fieldId)
-            , id fieldId
-            ]
-            empty
-
-
-keyBase : { model | onMac : Bool, device : Element.Device } -> StyleElement -> StyleElement
-keyBase { device } =
-    let
-        width =
-            responsiveForWidth device ( 40, 120 ) |> px
-
-        height =
-            responsiveForWidth device ( 40, 120 ) |> px
-    in
-    el KeyboardKey [ minWidth width, minHeight height, padding 5 ]
-
-
-keyboardKey : { model | onMac : Bool, device : Element.Device } -> String -> StyleElement
-keyboardKey model key =
-    keyBase model <| text key
-
-
-editableKeyboardKey : { model | onMac : Bool, device : Element.Device } -> String -> StyleElement
-editableKeyboardKey model currentKey =
-    keyBase model <|
-        Element.Input.text ShortcutInput
-            [ width (px 30)
-            , center
-            , verticalCenter
-            , inlineStyle [ "text-align" => "center" ]
-            ]
-            { onChange = Msg.ChangeInput (Msg.StringField Msg.ShowHideShortcut)
-            , value = currentKey
-            , label = Element.Input.hiddenLabel "show/hide shortcut"
-            , options = []
-            }
-
-
-configOptions : { model | onMac : Bool, device : Element.Device, responsivePalette : Responsive.Palette } -> Settings.Data -> StyleElement
-configOptions ({ onMac } as model) settings =
-    let
-        breakIntervalText =
-            "Break every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ "′"
-    in
-    Element.column None
-        [ Attr.spacing 30, Attr.width (Attr.percent 30) ]
-        [ column None
-            [ spacing 10 ]
-            [ inputPair InputField.TimerDuration "Minutes" settings.timerDuration
-            , inputPair InputField.BreakInterval breakIntervalText settings.intervalsPerBreak
-            , inputPair InputField.BreakDuration "Minutes per break" settings.breakDuration
-            ]
-        , column PlainBody
-            [ spacing 8 ]
-            [ text "Show/Hide Shortcut"
-            , row None
-                [ spacing 10 ]
-                [ keyboardKey model (ctrlKey onMac), keyboardKey model "Shift", editableKeyboardKey model settings.showHideShortcut ]
-            ]
-        , navButtonView model
-        ]
-
-
-navButtonView : { model | responsivePalette : Responsive.Palette } -> StyleElement
-navButtonView { responsivePalette } =
-    Element.row None
-        [ width fill
-        , height fill
-        , center
-        , verticalCenter
-        , spacing 10
-        ]
-        [ Element.text "Learn to mob game", githubIcon ]
-        |> Element.button StartRpgButton
-            [ Attr.paddingXY 10 10
-            , Element.Events.onClick Msg.StartRpgMode
-            ]
-
-
-githubIcon : StyleElement
-githubIcon =
-    Element.el None [ class "fa fa-gamepad" ] Element.empty
 
 
 ctrlKey : Bool -> String

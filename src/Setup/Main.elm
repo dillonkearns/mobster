@@ -21,6 +21,7 @@ import Json.Encode as Encode
 import Keyboard.Combo
 import Keyboard.Extra
 import Page.Break
+import Page.Config
 import Page.Continue
 import QuickRotate
 import Random
@@ -89,7 +90,7 @@ view : Model -> Html Msg
 view model =
     case model.screenState of
         Configure ->
-            styleElementsConfigureView model (configureBetaViewElements model)
+            styleElementsConfigureView model (Page.Config.view model)
 
         Continue _ ->
             styleElementsConfigureView model <|
@@ -120,19 +121,6 @@ styleElementsConfigureView model bodyElements =
                 (View.UpdateAvailableBeta.view model.availableUpdateVersion :: bodyElements)
             , View.FeedbackButton.view
             ]
-
-
-configureBetaViewElements : Model -> List Styles.StyleElement
-configureBetaViewElements model =
-    [ Element.row Styles.None
-        [ Element.Attributes.spacing 50 ]
-        [ Styles.configOptions model model.settings
-        , Element.el Styles.None
-            [ Element.Attributes.width (Element.Attributes.percent 70) ]
-            (View.RosterBeta.view model model.settings.rosterData)
-        ]
-    , Styles.startMobbingButton model "Start Mobbing"
-    ]
 
 
 
