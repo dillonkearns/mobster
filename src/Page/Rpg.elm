@@ -83,7 +83,7 @@ rpgCardView mobster =
                 |> Element.html
 
         header =
-            Element.row Styles.None [] [ icon, Element.text (roleName ++ " ( " ++ mobster.name ++ ")") ]
+            Element.row Styles.H1 [ Attr.spacing 30 ] [ icon, Element.text (roleName ++ " ( " ++ mobster.name ++ ")") ]
     in
     Element.column Styles.None [ Attr.width (Attr.fillPortion 1) ] [ header, experienceView mobster ]
 

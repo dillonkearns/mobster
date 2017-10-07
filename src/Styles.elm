@@ -48,7 +48,7 @@ type Styles
     | AThing
     | Input
     | KeyboardKey
-    | RoleViewName
+    | H1
     | AwayIcon
     | AwayX
     | TipBox
@@ -244,7 +244,7 @@ stylesheet device =
                 [ Color.background colors.defaultButtonHover
                 ]
             ]
-        , style RoleViewName
+        , style H1
             [ Font.size fonts.medium
             , Font.typeface typefaces.body
             ]

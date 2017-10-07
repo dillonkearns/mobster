@@ -49,7 +49,7 @@ roleView device role mobster =
         [ Attr.spacing 20, Attr.verticalCenter, Attr.center, Attr.width Attr.fill ]
         [ roleIcon device role
         , Element.text mobster.name
-            |> Element.el Styles.RoleViewName []
+            |> Element.el Styles.H1 []
             |> Element.onRight [ Element.el Styles.None [ Attr.verticalCenter, Attr.paddingLeft 30 ] (awayView mobster.index) ]
         ]
 
