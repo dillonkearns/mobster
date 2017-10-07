@@ -4,13 +4,11 @@ import Analytics exposing (trackEvent)
 import Animation exposing (Step)
 import Animation.Messenger
 import Basics.Extra exposing ((=>))
-import Bootstrap
 import Break
 import Dice
 import Dom
 import Element exposing (Device)
 import Element.Attributes
-import FA
 import GlobalShortcut
 import Html exposing (..)
 import Html.Attributes as Attr exposing (placeholder, src, style, target, title, type_, value)
@@ -49,7 +47,6 @@ import View.Navbar
 import View.RosterBeta
 import View.UpdateAvailable
 import View.UpdateAvailableBeta
-import ViewHelpers
 import Window
 
 
