@@ -92,7 +92,7 @@ rosterView ({ quickRotateState, device } as model) rosterData =
             [ el Styles.PlainBody [] <| Element.text "Inactive"
             , Element.wrappedRow (Styles.Roster inactiveTagInputHighlighted)
                 [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
-                (List.indexedMap (inactiveMobsterView device quickRotateState.query quickRotateState.selection matches)
+                (List.indexedMap (inactiveMobsterView model quickRotateState.query quickRotateState.selection matches)
                     (inactiveMobsters |> List.map .name)
                 )
             ]
@@ -144,7 +144,7 @@ activeMobsterView :
     }
     -> Roster.Presenter.MobsterWithRole
     -> StyleElement
-activeMobsterView ({ dragDrop, device, activeMobstersStyle } as model) mobster =
+activeMobsterView ({ dragDrop, activeMobstersStyle } as model) mobster =
     let
         isBeingDraggedOver =
             case ( DragDrop.getDragId dragDrop, DragDrop.getDropId dragDrop ) of
@@ -160,12 +160,12 @@ activeMobsterView ({ dragDrop, device, activeMobstersStyle } as model) mobster =
             else
                 Styles.RosterEntry mobster.role
     in
-    View.Roster.Chip.view (dragDropAttrs mobster.index)
+    View.Roster.Chip.view model
+        (dragDropAttrs mobster.index)
         (Msg.UpdateRosterData (Roster.Operation.SetNextDriver mobster.index))
         (Msg.UpdateRosterData (Roster.Operation.Bench mobster.index))
         chipStyle
         (Just activeMobstersStyle)
-        device
         mobster.name
         mobster.role
 
@@ -177,18 +177,31 @@ dragDropAttrs mobsterIndex =
         |> List.map Attr.toAttr
 
 
-inactiveMobsterView : Device -> String -> QuickRotate.Selection -> List Int -> Int -> String -> StyleElement
-inactiveMobsterView device quickRotateQuery quickRotateSelection matches mobsterIndex mobsterName =
+inactiveMobsterView :
+    { model
+        | quickRotateState : QuickRotate.State
+        , activeMobstersStyle : Animation.Messenger.State Msg
+        , dieStyle : Animation.State
+        , device : Device
+        , dragDrop : DragDropModel
+    }
+    -> String
+    -> QuickRotate.Selection
+    -> List Int
+    -> Int
+    -> String
+    -> StyleElement
+inactiveMobsterView model quickRotateQuery quickRotateSelection matches mobsterIndex mobsterName =
     let
         selectionType =
             QuickRotate.selectionTypeFor mobsterIndex matches quickRotateSelection
     in
-    View.Roster.Chip.view []
+    View.Roster.Chip.view model
+        []
         (Msg.UpdateRosterData (Roster.Operation.RotateIn mobsterIndex))
         (Msg.UpdateRosterData (Roster.Operation.Remove mobsterIndex))
         (Styles.InactiveRosterEntry selectionType)
         Nothing
-        device
         mobsterName
         Nothing
 

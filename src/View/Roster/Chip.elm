@@ -5,23 +5,35 @@ import Animation.Messenger
 import Element exposing (Device)
 import Element.Attributes as Attr
 import Element.Events
+import Html5.DragDrop as DragDrop
 import Json.Decode
+import QuickRotate
 import Roster.Presenter
 import Setup.Msg as Msg exposing (Msg)
 import Styles exposing (StyleAttribute, StyleElement)
 
 
+type alias DragDropModel =
+    DragDrop.Model Msg.DragId Msg.DropArea
+
+
 view :
-    List StyleAttribute
+    { model
+        | quickRotateState : QuickRotate.State
+        , activeMobstersStyle : Animation.Messenger.State Msg
+        , dieStyle : Animation.State
+        , device : Device
+        , dragDrop : DragDropModel
+    }
+    -> List StyleAttribute
     -> Msg
     -> Msg
     -> Styles.Styles
     -> Maybe (Animation.Messenger.State Msg)
-    -> Device
     -> String
     -> Maybe Roster.Presenter.Role
     -> StyleElement
-view additionalAttrs selectMsg removeMsg style maybeActiveMobstersStyle device name role =
+view { device } additionalAttrs selectMsg removeMsg style maybeActiveMobstersStyle name role =
     let
         iconHeight =
             Styles.responsiveForWidth device ( 10, 40 ) |> Attr.px
