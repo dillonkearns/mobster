@@ -381,7 +381,15 @@ update msg model =
                             if model.altPressed then
                                 model ! []
                             else
-                                { model | quickRotateState = QuickRotate.update newInputValue (model.settings.rosterData.inactiveMobsters |> List.map .name) model.quickRotateState } ! []
+                                { model
+                                    | quickRotateState =
+                                        QuickRotate.update newInputValue
+                                            (model.settings.rosterData.inactiveMobsters
+                                                |> List.map .name
+                                            )
+                                            model.quickRotateState
+                                }
+                                    ! []
 
                 Msg.IntField intField ->
                     let
@@ -659,7 +667,10 @@ blurContinueButton =
 
 
 type alias Flags =
-    { onMac : Bool, isLocal : Bool, settings : Decode.Value }
+    { onMac : Bool
+    , isLocal : Bool
+    , settings : Decode.Value
+    }
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -670,7 +681,7 @@ init { onMac, isLocal, settings } =
 
         maybeDecodeError =
             case decodedSettings of
-                Ok settings ->
+                Ok _ ->
                     Nothing
 
                 Err errorString ->
