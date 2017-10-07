@@ -85,7 +85,7 @@ rpgCardView mobster =
         header =
             Element.row Styles.None [] [ iconDiv, Element.text (roleName ++ " ( " ++ mobster.name ++ ")") ]
     in
-    Element.column Styles.None [ Attr.width Attr.fill ] [ header, experienceView mobster ]
+    Element.column Styles.None [ Attr.width (Attr.fillPortion 1) ] [ header, experienceView mobster ]
 
 
 goalView : Roster.RpgPresenter.RpgMobster -> Int -> Rpg.Goal -> ( String, Styles.StyleElement )
@@ -102,7 +102,7 @@ goalView mobster goalIndex goal =
         Styles.None
         [ Element.Events.onClick (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex) ]
         [ Element.text (toString goal.complete)
-        , Element.text goal.description
+        , Element.paragraph Styles.None [] [ Element.text goal.description ]
         ]
     )
 
