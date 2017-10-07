@@ -512,11 +512,3 @@ stylesheet device =
 rosterItemRounding : Float
 rosterItemRounding =
     4
-
-
-ctrlKey : Bool -> String
-ctrlKey onMac =
-    if onMac then
-        "⌘"
-    else
-        "Ctrl"

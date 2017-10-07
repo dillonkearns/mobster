@@ -3,6 +3,7 @@ module Page.Continue exposing (view)
 import Element exposing (Device)
 import Element.Attributes as Attr exposing (spacing)
 import Element.Events
+import Os exposing (Os)
 import Roster.Data exposing (RosterData)
 import Roster.Operation as MobsterOperation
 import Roster.Presenter
@@ -22,10 +23,10 @@ view :
         , tip : Tip
         , settings : Settings.Data
         , intervalsSinceBreak : Int
-        , onMac : Bool
+        , os : Os
     }
     -> List StyleElement
-view ({ device, tip, settings, onMac } as model) =
+view ({ device, tip, settings } as model) =
     [ Element.column Styles.None
         []
         [ Views.BreakProgress.view model

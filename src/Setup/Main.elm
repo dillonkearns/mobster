@@ -20,6 +20,7 @@ import Json.Decode as Decode
 import Json.Encode as Encode
 import Keyboard.Combo
 import Keyboard.Extra
+import Os exposing (Os)
 import Page.Break
 import Page.Config
 import Page.Continue
@@ -731,7 +732,7 @@ type alias Model =
     , intervalsSinceBreak : Int
     , availableUpdateVersion : Maybe String
     , dragDrop : DragDropModel
-    , onMac : Bool
+    , os : Os
     , quickRotateState : QuickRotate.State
     , altPressed : Bool
     , dieStyle : Animation.State
@@ -743,6 +744,13 @@ type alias Model =
 
 initialModel : Settings.Data -> Bool -> Model
 initialModel settings onMac =
+    let
+        os =
+            if onMac then
+                Os.Mac
+            else
+                Os.NotMac
+    in
     { settings = settings
     , screenState = Configure
     , newMobster = ""
@@ -753,7 +761,7 @@ initialModel settings onMac =
     , intervalsSinceBreak = 0
     , availableUpdateVersion = Nothing
     , dragDrop = DragDrop.init
-    , onMac = onMac
+    , os = os
     , quickRotateState = QuickRotate.init
     , altPressed = False
     , dieStyle = Animation.style [ Animation.rotate (Animation.turn 0.0) ]

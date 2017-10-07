@@ -8,6 +8,7 @@ import Element.Attributes as Attr exposing (..)
 import Element.Events exposing (onClick, onInput)
 import Element.Input
 import Html5.DragDrop as DragDrop
+import Os exposing (Os)
 import QuickRotate
 import Responsive
 import Setup.InputField as InputField exposing (IntInputField(..))
@@ -25,7 +26,7 @@ type alias DragDropModel =
 
 view :
     { model
-        | onMac : Bool
+        | os : Os
         , device : Element.Device
         , responsivePalette : Responsive.Palette
         , settings : Settings.Data
@@ -77,7 +78,7 @@ numberInput value ( minValue, maxValue ) onInputMsg fieldId =
             empty
 
 
-keyBase : { model | onMac : Bool, device : Element.Device } -> StyleElement -> StyleElement
+keyBase : { model | device : Element.Device } -> StyleElement -> StyleElement
 keyBase { device } =
     let
         width =
@@ -89,12 +90,12 @@ keyBase { device } =
     el Styles.KeyboardKey [ minWidth width, minHeight height, padding 5 ]
 
 
-keyboardKey : { model | onMac : Bool, device : Element.Device } -> String -> StyleElement
+keyboardKey : { model | device : Element.Device } -> String -> StyleElement
 keyboardKey model key =
     keyBase model <| text key
 
 
-editableKeyboardKey : { model | onMac : Bool, device : Element.Device } -> String -> StyleElement
+editableKeyboardKey : { model | device : Element.Device } -> String -> StyleElement
 editableKeyboardKey model currentKey =
     keyBase model <|
         Element.Input.text Styles.ShortcutInput
@@ -110,8 +111,8 @@ editableKeyboardKey model currentKey =
             }
 
 
-configOptions : { model | onMac : Bool, device : Element.Device, responsivePalette : Responsive.Palette } -> Settings.Data -> StyleElement
-configOptions ({ onMac } as model) settings =
+configOptions : { model | os : Os, device : Element.Device, responsivePalette : Responsive.Palette } -> Settings.Data -> StyleElement
+configOptions ({ os } as model) settings =
     let
         breakIntervalText =
             "Break every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ "′"
@@ -129,7 +130,7 @@ configOptions ({ onMac } as model) settings =
             [ text "Show/Hide Shortcut"
             , row Styles.None
                 [ spacing 10 ]
-                [ keyboardKey model (Styles.ctrlKey onMac), keyboardKey model "Shift", editableKeyboardKey model settings.showHideShortcut ]
+                [ keyboardKey model (Os.ctrlKeyString os), keyboardKey model "Shift", editableKeyboardKey model settings.showHideShortcut ]
             ]
         , navButtonView model
         ]
