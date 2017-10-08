@@ -50,7 +50,7 @@
     "electron-builder": "^11.7.0",
     "elm-electron": "0.0.3",
     "elm-hot-loader": "^0.5.4",
-    "elm-test": "^0.18.7",
+    "elm-test": "^0.18.9",
     "elm-webpack-loader": "^4.3.1",
     "ts-loader": "^2.3.1",
     "ts-node": "^3.3.0",
