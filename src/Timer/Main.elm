@@ -52,8 +52,8 @@ navigatorIcon =
     "../assets/navigator-icon.png"
 
 
-coffeeIconNew : StyleElement
-coffeeIconNew =
+coffeeIcon : StyleElement
+coffeeIcon =
     Element.el BreakIcon [ Element.Attributes.class "fa fa-coffee" ] Element.empty
 
 
@@ -65,14 +65,14 @@ timerBodyView : Model -> StyleElement
 timerBodyView model =
     case model.timerType of
         BreakTimer ->
-            coffeeIconNew
+            coffeeIcon
 
         RegularTimer driverNavigator ->
-            activeMobstersNew driverNavigator
+            activeMobsters driverNavigator
 
 
-activeMobstersNew : DriverNavigator -> StyleElement
-activeMobstersNew driverNavigator =
+activeMobsters : DriverNavigator -> StyleElement
+activeMobsters driverNavigator =
     if driverNavigator.driver == "" && driverNavigator.navigator == "" then
         Element.empty
     else
@@ -80,24 +80,24 @@ activeMobstersNew driverNavigator =
             [ Element.Attributes.spacing 12
             , Element.Attributes.paddingTop 8
             ]
-            [ roleViewNew driverNavigator.driver driverIcon
-            , roleViewNew driverNavigator.navigator navigatorIcon
+            [ roleView driverNavigator.driver driverIcon
+            , roleView driverNavigator.navigator navigatorIcon
             ]
 
 
-roleViewNew : String -> String -> StyleElement
-roleViewNew name iconPath =
+roleView : String -> String -> StyleElement
+roleView name iconPath =
     Element.row MobsterName
         [ Element.Attributes.spacing 4
         , Element.Attributes.center
         ]
-        [ iconViewNew iconPath
+        [ iconView iconPath
         , Element.text name
         ]
 
 
-iconViewNew : String -> StyleElement
-iconViewNew iconUrl =
+iconView : String -> StyleElement
+iconView iconUrl =
     Element.image None
         [ Element.Attributes.width (Element.Attributes.px 20)
         , Element.Attributes.height (Element.Attributes.px 20)
