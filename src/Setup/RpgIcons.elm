@@ -136,8 +136,23 @@ rpgIcon widthArg paths =
         widthString =
             toString widthArg
     in
-    Svg.svg [ width (widthString ++ "pt"), height (widthString ++ "pt"), viewBox ("0 0 " ++ widthString ++ " " ++ widthString), preserveAspectRatio "xMidYMid meet", attribute "version" "1.0", attribute "xmlns" "http://www.w3.org/2000/svg" ]
-        [ Svg.g [ transform ("translate(0.000000," ++ widthString ++ ".000000) scale(0.100000,-0.100000)"), fill "#000000", stroke "none" ]
+    Svg.svg
+        [ width (widthString ++ "pt")
+        , height (widthString ++ "pt")
+        , viewBox ("0 0 " ++ widthString ++ " " ++ widthString)
+        , preserveAspectRatio "xMidYMid meet"
+        , attribute "version" "1.0"
+        , attribute "xmlns" "http://www.w3.org/2000/svg"
+        ]
+        [ Svg.g
+            [ transform
+                ("translate(0.000000,"
+                    ++ widthString
+                    ++ ".000000) scale(0.100000,-0.100000)"
+                )
+            , fill "#000000"
+            , stroke "none"
+            ]
             (List.map pathToSvgPath paths)
         ]
 
