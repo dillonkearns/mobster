@@ -32,41 +32,6 @@ type alias DriverNavigator =
     }
 
 
-timerBodyView : Model -> StyleElement
-timerBodyView model =
-    case model.timerType of
-        BreakTimer ->
-            Timer.View.Icon.coffeeIcon
-
-        RegularTimer driverNavigator ->
-            activeMobsters driverNavigator
-
-
-activeMobsters : DriverNavigator -> StyleElement
-activeMobsters driverNavigator =
-    if driverNavigator.driver == "" && driverNavigator.navigator == "" then
-        Element.empty
-    else
-        Element.column Styles.None
-            [ Element.Attributes.spacing 12
-            , Element.Attributes.paddingTop 8
-            ]
-            [ roleView driverNavigator.driver Timer.View.Icon.driverIcon
-            , roleView driverNavigator.navigator Timer.View.Icon.navigatorIcon
-            ]
-
-
-roleView : String -> StyleElement -> StyleElement
-roleView name icon =
-    Element.row Styles.MobsterName
-        [ Element.Attributes.spacing 4
-        , Element.Attributes.center
-        ]
-        [ icon
-        , Element.text name
-        ]
-
-
 view : Model -> Html Msg
 view model =
     Element.column Styles.None
@@ -76,7 +41,7 @@ view model =
             , Element.Attributes.spacing 0
             , Element.Attributes.center
             ]
-            [ Element.text (Timer.timerToString (Timer.secondsToTimer model.secondsLeft))
+            [ timerView model
             , timerBodyView model
             ]
         ]
@@ -98,16 +63,6 @@ update msg model =
                    else
                     []
                   )
-
-
-timerDoneCommand : TimerType -> Int -> Cmd msg
-timerDoneCommand timerType originalDurationSeconds =
-    case timerType of
-        BreakTimer ->
-            Timer.Ports.breakTimerDone originalDurationSeconds
-
-        RegularTimer _ ->
-            Timer.Ports.timerDone originalDurationSeconds
 
 
 initialModel : IncomingFlags -> Model
@@ -158,3 +113,64 @@ main =
         , update = update
         , view = view
         }
+
+
+timerDoneCommand : TimerType -> Int -> Cmd msg
+timerDoneCommand timerType originalDurationSeconds =
+    case timerType of
+        BreakTimer ->
+            Timer.Ports.breakTimerDone originalDurationSeconds
+
+        RegularTimer _ ->
+            Timer.Ports.timerDone originalDurationSeconds
+
+
+
+-- timer view functions
+
+
+timerView : { model | secondsLeft : Int } -> StyleElement
+timerView model =
+    model.secondsLeft
+        |> Timer.secondsToTimer
+        |> Timer.timerToString
+        |> Element.text
+
+
+
+-- timer body view functions
+
+
+timerBodyView : Model -> StyleElement
+timerBodyView model =
+    case model.timerType of
+        BreakTimer ->
+            Timer.View.Icon.coffeeIcon
+
+        RegularTimer driverNavigator ->
+            activeMobsters driverNavigator
+
+
+activeMobsters : DriverNavigator -> StyleElement
+activeMobsters driverNavigator =
+    if driverNavigator.driver == "" && driverNavigator.navigator == "" then
+        Element.empty
+    else
+        Element.column Styles.None
+            [ Element.Attributes.spacing 12
+            , Element.Attributes.paddingTop 8
+            ]
+            [ roleView driverNavigator.driver Timer.View.Icon.driverIcon
+            , roleView driverNavigator.navigator Timer.View.Icon.navigatorIcon
+            ]
+
+
+roleView : String -> StyleElement -> StyleElement
+roleView name icon =
+    Element.row Styles.MobsterName
+        [ Element.Attributes.spacing 4
+        , Element.Attributes.center
+        ]
+        [ icon
+        , Element.text name
+        ]
