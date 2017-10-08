@@ -8,23 +8,5 @@ import Html.CssHelpers
 
 
 type CssClasses
-    = BufferTop
-    | BufferRight
-    | Green
-    | Orange
-    | Red
-    | DropAreaInactive
-    | DropAreaActive
-    | LargeButtonText
-    | TooltipContainer
-    | Tooltip
-    | ShowOnParentHover
-    | ShowOnParentHoverParent
-    | HasHoverActions
-    | DragBelow
-    | HasError
-    | RpgIcon1
+    = RpgIcon1
     | RpgIcon2
-    | ButtonMuted
-    | HandPointer
-    | Title
