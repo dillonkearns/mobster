@@ -32,7 +32,7 @@ view :
     -> Maybe (Animation.Messenger.State Msg)
     -> String
     -> Maybe Roster.Presenter.Role
-    -> StyleElement
+    -> ( String, StyleElement )
 view { device } additionalAttrs selectMsg removeMsg style maybeActiveMobstersStyle name role =
     let
         iconHeight =
@@ -70,7 +70,8 @@ view { device } additionalAttrs selectMsg removeMsg style maybeActiveMobstersSty
                 Nothing ->
                     []
     in
-    Element.row style
+    ( name
+    , Element.row style
         (animationAttrs
             ++ additionalAttrs
             ++ [ Attr.padding padding
@@ -83,6 +84,7 @@ view { device } additionalAttrs selectMsg removeMsg style maybeActiveMobstersSty
         , Element.text name
         , removeButton removeMsg
         ]
+    )
 
 
 removeButton : Msg.Msg -> StyleElement

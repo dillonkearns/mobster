@@ -6,6 +6,7 @@ import Element exposing (Device, el)
 import Element.Attributes as Attr
 import Element.Events
 import Element.Input
+import Element.Keyed
 import Html5.DragDrop as DragDrop
 import Json.Decode
 import QuickRotate
@@ -90,7 +91,7 @@ rosterView ({ quickRotateState, device } as model) rosterData =
         , Element.column Styles.None
             []
             [ el Styles.PlainBody [] <| Element.text "Inactive"
-            , Element.wrappedRow (Styles.Roster inactiveTagInputHighlighted)
+            , Element.Keyed.wrappedRow (Styles.Roster inactiveTagInputHighlighted)
                 [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
                 (List.indexedMap (inactiveMobsterView model quickRotateState.selection matches)
                     (inactiveMobsters |> List.map .name)
@@ -127,10 +128,10 @@ activeView ({ quickRotateState } as model) rosterData =
                 _ ->
                     True
     in
-    Element.wrappedRow (Styles.Roster highlighted)
+    Element.Keyed.wrappedRow (Styles.Roster highlighted)
         [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
         (List.map (activeMobsterView model) activeMobsters
-            ++ [ rosterInput quickRotateState.query quickRotateState.selection ]
+            ++ [ ( "input", rosterInput quickRotateState.query quickRotateState.selection ) ]
         )
 
 
@@ -143,7 +144,7 @@ activeMobsterView :
         , dragDrop : DragDropModel
     }
     -> Roster.Presenter.MobsterWithRole
-    -> StyleElement
+    -> ( String, StyleElement )
 activeMobsterView ({ dragDrop, activeMobstersStyle } as model) mobster =
     let
         isBeingDraggedOver =
@@ -189,7 +190,7 @@ inactiveMobsterView :
     -> List Int
     -> Int
     -> String
-    -> StyleElement
+    -> ( String, StyleElement )
 inactiveMobsterView model quickRotateSelection matches mobsterIndex mobsterName =
     let
         selectionType =
