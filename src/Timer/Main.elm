@@ -1,16 +1,14 @@
 port module Timer.Main exposing (main)
 
-import Color
 import Element exposing (Element)
 import Element.Attributes
 import Html exposing (Html)
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Style
-import Style.Color
-import Style.Font
 import Time
 import Timer.Flags exposing (IncomingFlags)
+import Timer.Msg as Msg exposing (Msg)
+import Timer.Styles as Styles exposing (StyleElement)
 import Timer.Timer as Timer
 
 
@@ -32,10 +30,6 @@ type alias DriverNavigator =
     }
 
 
-type Msg
-    = Tick Time.Time
-
-
 port timerDone : Int -> Cmd msg
 
 
@@ -54,11 +48,7 @@ navigatorIcon =
 
 coffeeIcon : StyleElement
 coffeeIcon =
-    Element.el BreakIcon [ Element.Attributes.class "fa fa-coffee" ] Element.empty
-
-
-type alias StyleElement =
-    Element Styles Never Msg
+    Element.el Styles.BreakIcon [ Element.Attributes.class "fa fa-coffee" ] Element.empty
 
 
 timerBodyView : Model -> StyleElement
@@ -76,7 +66,7 @@ activeMobsters driverNavigator =
     if driverNavigator.driver == "" && driverNavigator.navigator == "" then
         Element.empty
     else
-        Element.column None
+        Element.column Styles.None
             [ Element.Attributes.spacing 12
             , Element.Attributes.paddingTop 8
             ]
@@ -87,7 +77,7 @@ activeMobsters driverNavigator =
 
 roleView : String -> String -> StyleElement
 roleView name iconPath =
-    Element.row MobsterName
+    Element.row Styles.MobsterName
         [ Element.Attributes.spacing 4
         , Element.Attributes.center
         ]
@@ -98,46 +88,18 @@ roleView name iconPath =
 
 iconView : String -> StyleElement
 iconView iconUrl =
-    Element.image None
+    Element.image Styles.None
         [ Element.Attributes.width (Element.Attributes.px 20)
         , Element.Attributes.height (Element.Attributes.px 20)
         ]
         { src = iconUrl, caption = "icon" }
 
 
-type Styles
-    = None
-    | Timer
-    | MobsterName
-    | BreakIcon
-
-
-styleSheet : Style.StyleSheet Styles Never
-styleSheet =
-    Style.styleSheet
-        [ Style.style None
-            [ [ "Lato" ]
-                |> List.map Style.Font.font
-                |> Style.Font.typeface
-            ]
-        , Style.style Timer
-            [ Style.Font.size 39
-            ]
-        , Style.style MobsterName
-            [ Style.Font.size 15
-            ]
-        , Style.style BreakIcon
-            [ Style.Font.size 50
-            , Color.rgb 8 226 108 |> Style.Color.text
-            ]
-        ]
-
-
 view : Model -> Html Msg
 view model =
-    Element.column None
+    Element.column Styles.None
         []
-        [ Element.column Timer
+        [ Element.column Styles.Timer
             [ Element.Attributes.paddingXY 8 8
             , Element.Attributes.spacing 0
             , Element.Attributes.center
@@ -147,13 +109,13 @@ view model =
             ]
         ]
         |> Element.viewport
-            styleSheet
+            Styles.styleSheet
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Tick time ->
+        Msg.Tick time ->
             let
                 updatedSecondsLeft =
                     Timer.updateTimer model.secondsLeft
@@ -213,7 +175,7 @@ subscriptions model =
     if Timer.timerComplete model.secondsLeft then
         Sub.none
     else
-        Time.every Time.second Tick
+        Time.every Time.second Msg.Tick
 
 
 main : Program Decode.Value Model Msg
