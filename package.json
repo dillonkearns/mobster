@@ -6,7 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start":
-      "NODE_ENV=dev concurrently --kill-others 'npm run generate-ipc && npm run webpack-dev' 'npm run build-node && npm test && electron .'",
+      "NODE_ENV=dev concurrently --kill-others 'npm run webpack-dev' 'npm run build-node && npm test && electron .'",
     "startprod":
       "NODE_ENV=production npm test && npm run build-node && npm run webpack-production && electron .",
     "webpack-dev": "webpack-dev-server --hot --port 8080",
