@@ -61,8 +61,8 @@ type alias StyleElement =
     Element Styles Never Msg
 
 
-driverNavigatorViewNew : Model -> StyleElement
-driverNavigatorViewNew model =
+timerBodyView : Model -> StyleElement
+timerBodyView model =
     case model.timerType of
         BreakTimer ->
             coffeeIconNew
@@ -143,7 +143,7 @@ view model =
             , Element.Attributes.center
             ]
             [ Element.text (Timer.timerToString (Timer.secondsToTimer model.secondsLeft))
-            , driverNavigatorViewNew model
+            , timerBodyView model
             ]
         ]
         |> Element.viewport
