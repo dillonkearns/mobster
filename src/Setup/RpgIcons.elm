@@ -10,31 +10,31 @@ import Svg.Attributes exposing (d, fill, height, preserveAspectRatio, stroke, tr
 
 mobsterIcon : RpgRole -> Html.Html msg
 mobsterIcon role =
-    let
-        level1Color =
-            Color.rgb 8 133 236
+    case role of
+        RpgRole.Driver ->
+            driverIcon level1Color
 
-        level2Color =
-            Color.rgb 144 7 179
+        RpgRole.Navigator ->
+            navigatorIcon level1Color
 
-        ( cssClass, icon ) =
-            case role of
-                RpgRole.Driver ->
-                    ( level1Color, driverIcon )
+        RpgRole.Researcher ->
+            researcherIcon level2Color
 
-                RpgRole.Navigator ->
-                    ( level1Color, navigatorIcon )
+        RpgRole.Sponsor ->
+            sponsorIcon level2Color
 
-                RpgRole.Researcher ->
-                    ( level2Color, researcherIcon )
+        RpgRole.Mobber ->
+            mobberIcon level1Color
 
-                RpgRole.Sponsor ->
-                    ( level2Color, sponsorIcon )
 
-                RpgRole.Mobber ->
-                    ( level1Color, mobberIcon )
-    in
-    Html.span [] [ icon cssClass ]
+level1Color : Color
+level1Color =
+    Color.rgb 8 133 236
+
+
+level2Color : Color
+level2Color =
+    Color.rgb 144 7 179
 
 
 researcherIcon : Color -> Svg msg
