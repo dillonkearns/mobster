@@ -9,6 +9,7 @@ keyboardCombos =
     [ Keyboard.Combo.combo2 ( Keyboard.Combo.control, Keyboard.Combo.enter ) Msg.StartTimer
     , Keyboard.Combo.combo2 ( Keyboard.Combo.command, Keyboard.Combo.enter ) Msg.StartTimer
     , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.r ) Msg.GoToRosterShortcut
+    , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.t ) Msg.GoToTipScreenShortcut
     , Keyboard.Combo.combo2 ( Keyboard.Combo.option, Keyboard.Combo.s ) Msg.SkipHotkey
     , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.s ) Msg.SkipHotkey
     , Keyboard.Combo.combo2 ( Keyboard.Combo.alt, Keyboard.Combo.a ) (Msg.RotateInHotkey 0)

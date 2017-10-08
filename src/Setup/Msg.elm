@@ -16,6 +16,7 @@ type Msg
     = StartTimer
     | SkipBreak
     | GoToRosterShortcut
+    | GoToTipScreenShortcut
     | OpenContinueScreen
     | StartBreak
     | ViewRpgNextUp

@@ -469,6 +469,10 @@ update msg model =
             ( model, focusQuickRotateInput )
                 |> changeScreen ScreenState.Configure
 
+        Msg.GoToTipScreenShortcut ->
+            ( model, Cmd.none )
+                |> changeScreen ScreenState.Continue
+
 
 startBreak : Model -> ( Model, Cmd Msg )
 startBreak model =
