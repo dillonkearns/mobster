@@ -9,10 +9,9 @@
   <link rel="stylesheet" href="./assets/css/bootstrap337.min.css" />
   <link rel="stylesheet" href="./assets/css/bootstrap-darkly-theme.min.css" />
   <link rel="stylesheet" href="./assets/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="./index.css" />
   <script type="text/javascript">
-  const $ = jQuery = require('jquery')
-  </script>
+  const $ = (jQuery = require('jquery'))
+</script>
 </head>
 <body>
   <div class="container-fluid">
@@ -58,17 +57,16 @@ Date:   Fri Mar 3 21:00:25 2017 -0500
 </body>
 
 <script>
-  const {app, ipcRenderer} = require('electron')
+const { app, ipcRenderer } = require('electron')
 
-  let onMac = /Mac/.test(navigator.platform)
-  const Clipboard = require('clipboard')
+let onMac = /Mac/.test(navigator.platform)
+const Clipboard = require('clipboard')
 
-  $(document).ready(function() {
-    let activeMobstersPath = ipcRenderer.sendSync('get-active-mobsters-path')
-    $('.active-mobsters-path').text(activeMobstersPath)
-    var clipboard = new Clipboard('.clipboard');
-  });
-
+$(document).ready(function() {
+  let activeMobstersPath = ipcRenderer.sendSync('get-active-mobsters-path')
+  $('.active-mobsters-path').text(activeMobstersPath)
+  var clipboard = new Clipboard('.clipboard')
+})
 </script>
 <script src="./assets/js/bootstrap337.min.js" crossorigin="anonymous"></script>
 </html>

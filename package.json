@@ -1,17 +1,21 @@
 {
   "name": "Mobster",
   "version": "0.0.44",
-  "description": "A cross-platform mob programming timer built on web technologies",
+  "description":
+    "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
   "scripts": {
-    "start": "NODE_ENV=dev concurrently --kill-others 'npm run generate-ipc && npm run webpack-dev' 'npm run build-node && npm test && npm run build-css && electron .'",
-    "startprod": "NODE_ENV=production npm test && npm run build-node && npm run webpack-production && electron .",
+    "start":
+      "NODE_ENV=dev concurrently --kill-others 'npm run generate-ipc && npm run webpack-dev' 'npm run build-node && npm test && electron .'",
+    "startprod":
+      "NODE_ENV=production npm test && npm run build-node && npm run webpack-production && electron .",
     "webpack-dev": "webpack-dev-server --hot --port 8080",
     "webpack-production": "webpack -p --env.production",
-    "build-css": "elm-css src/Stylesheets.elm",
     "build-node": "npm run generate-ipc && npm run types",
-    "generate-ipc": "elm-electron src/Ipc.elm --ts typescript/ipc.ts --elm src/IpcSerializer.elm",
-    "test-watch": "npm test; fswatch -0 src tests -e '.*' -i \\.elm$ | xargs -0 -n1 -I{} npm test",
+    "generate-ipc":
+      "elm-electron src/Ipc.elm --ts typescript/ipc.ts --elm src/IpcSerializer.elm",
+    "test-watch":
+      "npm test; fswatch -0 src tests -e '.*' -i \\.elm$ | xargs -0 -n1 -I{} npm test",
     "test": "clear && echo 'running tests' && elm-test",
     "pack": "build --dir",
     "dist-mac": "build --mac",
@@ -27,16 +31,12 @@
       "category": "Utility"
     },
     "win": {
-      "iconUrl": "https://raw.githubusercontent.com/dillonkearns/mobster/master/build/icon.ico?raw=true"
+      "iconUrl":
+        "https://raw.githubusercontent.com/dillonkearns/mobster/master/build/icon.ico?raw=true"
     }
   },
   "repository": "https://github.com/dillonkearns/mobster",
-  "keywords": [
-    "Electron",
-    "mob programming",
-    "timer",
-    "Agile"
-  ],
+  "keywords": ["Electron", "mob programming", "timer", "Agile"],
   "author": "Dillon Kearns",
   "license": "MIT",
   "devDependencies": {
@@ -48,7 +48,6 @@
     "devtron": "^1.4.0",
     "electron": "^1.7.6",
     "electron-builder": "^11.7.0",
-    "elm-css": "^0.6.0",
     "elm-electron": "0.0.3",
     "elm-hot-loader": "^0.5.4",
     "elm-test": "^0.18.7",

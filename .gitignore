@@ -3,6 +3,5 @@ elm-stuff
 elm.js
 npm-debug.log
 dist/
-index.css
 *.js
 !webpack.config.js
