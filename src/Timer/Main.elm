@@ -11,6 +11,7 @@ import Timer.Msg as Msg exposing (Msg)
 import Timer.Ports
 import Timer.Styles as Styles exposing (StyleElement)
 import Timer.Timer as Timer
+import Timer.View.Icon
 
 
 type alias Model =
@@ -31,26 +32,11 @@ type alias DriverNavigator =
     }
 
 
-driverIcon : String
-driverIcon =
-    "../assets/driver-icon.png"
-
-
-navigatorIcon : String
-navigatorIcon =
-    "../assets/navigator-icon.png"
-
-
-coffeeIcon : StyleElement
-coffeeIcon =
-    Element.el Styles.BreakIcon [ Element.Attributes.class "fa fa-coffee" ] Element.empty
-
-
 timerBodyView : Model -> StyleElement
 timerBodyView model =
     case model.timerType of
         BreakTimer ->
-            coffeeIcon
+            Timer.View.Icon.coffeeIcon
 
         RegularTimer driverNavigator ->
             activeMobsters driverNavigator
@@ -65,29 +51,20 @@ activeMobsters driverNavigator =
             [ Element.Attributes.spacing 12
             , Element.Attributes.paddingTop 8
             ]
-            [ roleView driverNavigator.driver driverIcon
-            , roleView driverNavigator.navigator navigatorIcon
+            [ roleView driverNavigator.driver Timer.View.Icon.driverIcon
+            , roleView driverNavigator.navigator Timer.View.Icon.navigatorIcon
             ]
 
 
-roleView : String -> String -> StyleElement
-roleView name iconPath =
+roleView : String -> StyleElement -> StyleElement
+roleView name icon =
     Element.row Styles.MobsterName
         [ Element.Attributes.spacing 4
         , Element.Attributes.center
         ]
-        [ iconView iconPath
+        [ icon
         , Element.text name
         ]
-
-
-iconView : String -> StyleElement
-iconView iconUrl =
-    Element.image Styles.None
-        [ Element.Attributes.width (Element.Attributes.px 20)
-        , Element.Attributes.height (Element.Attributes.px 20)
-        ]
-        { src = iconUrl, caption = "icon" }
 
 
 view : Model -> Html Msg
