@@ -1,9 +1,13 @@
 port module Timer.Main exposing (main)
 
+import Element
+import Element.Attributes
 import Html exposing (Html, div, h1, i, img, p, text)
 import Html.Attributes exposing (class, src, style)
 import Json.Decode as Decode
 import Json.Encode as Encode
+import Style
+import Style.Font
 import Time
 import Timer.Flags exposing (IncomingFlags)
 import Timer.Timer as Timer
@@ -83,8 +87,44 @@ driverNavigatorView model =
             activeMobsters driverNavigator
 
 
-view : Model -> Html msg
+type Styles
+    = None
+    | Timer
+
+
+styleSheet : Style.StyleSheet Styles Never
+styleSheet =
+    Style.styleSheet
+        [ Style.style None []
+        , Style.style Timer
+            [ Style.Font.size 39
+            ]
+        ]
+
+
+view : Model -> Html Msg
 view model =
+    old model
+
+
+new : Model -> Html Msg
+new model =
+    Element.column None
+        []
+        [ Element.column Timer
+            [ Element.Attributes.paddingXY 8 8
+            , Element.Attributes.spacing 10
+            , Element.Attributes.center
+            ]
+            [ Element.text (Timer.timerToString (Timer.secondsToTimer model.secondsLeft))
+            ]
+        ]
+        |> Element.viewport
+            styleSheet
+
+
+old : Model -> Html Msg
+old model =
     div [ class "text-center" ]
         [ h1 [ style [ ( "margin", "0px" ), ( "margin-top", "10px" ) ] ]
             [ text (Timer.timerToString (Timer.secondsToTimer model.secondsLeft)) ]
@@ -124,7 +164,7 @@ initialModel flags =
         secondsLeft =
             if flags.isDev then
                 -- just show timer for one second no matter what it's set to
-                1
+                59 * 60
             else
                 flags.minutes * 60
 
