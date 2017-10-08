@@ -1,4 +1,4 @@
-module Views.Tip exposing (view)
+module View.Tip exposing (view)
 
 import Element
 import Element.Attributes as Attr

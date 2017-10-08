@@ -1,4 +1,4 @@
-module Views.BreakProgress exposing (view)
+module View.BreakProgress exposing (view)
 
 import Element exposing (Device)
 import Element.Attributes as Attr

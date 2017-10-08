@@ -12,9 +12,9 @@ import Setup.Settings as Settings
 import Styles exposing (StyleElement)
 import Tip exposing (Tip)
 import View.StartMobbingButton
-import Views.BreakProgress
-import Views.StepButton
-import Views.Tip
+import View.BreakProgress
+import View.StepButton
+import View.Tip
 
 
 view :
@@ -29,11 +29,11 @@ view :
 view ({ device, tip, settings } as model) =
     [ Element.column Styles.None
         []
-        [ Views.BreakProgress.view model
+        [ View.BreakProgress.view model
         , Element.el Styles.None [ Attr.paddingTop 10, Attr.paddingBottom 20 ] <| roleRow device settings.rosterData
         , Element.hairline Styles.Hairline
         ]
-    , Views.Tip.view tip
+    , View.Tip.view tip
     , View.StartMobbingButton.view model "Continue"
     ]
 
@@ -63,10 +63,10 @@ roleRow device rosterData =
     in
     Element.row Styles.None
         []
-        [ Views.StepButton.stepBackwardButton
+        [ View.StepButton.stepBackwardButton
         , Element.el Styles.None [ Attr.width Attr.fill ] (roleView device Driver driverNavigator.driver)
         , Element.el Styles.None [ Attr.width Attr.fill ] (roleView device Navigator driverNavigator.navigator)
-        , Views.StepButton.stepForwardButton
+        , View.StepButton.stepForwardButton
         ]
 
 

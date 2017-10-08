@@ -1,4 +1,4 @@
-module Views.StepButton exposing (stepBackwardButton, stepForwardButton)
+module View.StepButton exposing (stepBackwardButton, stepForwardButton)
 
 import Element
 import Element.Attributes as Attr
