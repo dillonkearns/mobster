@@ -23,7 +23,10 @@ view tip =
                 , Element.Events.onClick (Msg.SendIpc (Ipc.OpenExternalUrl tip.url))
                 ]
         , Element.column Styles.TipBody
-            [ Attr.center, Attr.width (Attr.percent 55) ]
+            [ Attr.center
+            , Attr.width (Attr.percent 55)
+            , Attr.spacing 15
+            ]
             [ [ Element.text tip.body ] |> Element.paragraph Styles.None []
             , Element.text tip.author
             ]
