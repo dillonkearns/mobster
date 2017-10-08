@@ -1,6 +1,6 @@
 port module Timer.Main exposing (main)
 
-import Element
+import Element exposing (Element)
 import Element.Attributes
 import Html exposing (Html, div, h1, i, img, p, text)
 import Html.Attributes exposing (class, src, style)
@@ -87,24 +87,87 @@ driverNavigatorView model =
             activeMobsters driverNavigator
 
 
+type alias StyleElement =
+    Element Styles Never Msg
+
+
+driverNavigatorViewNew : Model -> StyleElement
+driverNavigatorViewNew model =
+    case model.timerType of
+        BreakTimer ->
+            coffeeIcon |> Element.html
+
+        RegularTimer driverNavigator ->
+            activeMobstersNew driverNavigator
+
+
+activeMobstersNew : DriverNavigator -> StyleElement
+activeMobstersNew driverNavigator =
+    if driverNavigator.driver == "" && driverNavigator.navigator == "" then
+        Element.empty
+    else
+        -- div [ style [ ( "margin-top", "8px" ) ] ]
+        --     [ roleViewNew driverNavigator.driver driverIcon
+        --     , roleViewNew driverNavigator.navigator navigatorIcon
+        --     ]
+        Element.column None
+            [ Element.Attributes.spacing 12 ]
+            [ roleViewNew driverNavigator.driver driverIcon
+            , roleViewNew driverNavigator.navigator navigatorIcon
+            ]
+
+
+
+-- Element.empty
+
+
+roleViewNew : String -> String -> StyleElement
+roleViewNew name iconPath =
+    Element.row MobsterName
+        [ Element.Attributes.spacing 4
+        , Element.Attributes.center
+        ]
+        [ iconViewNew iconPath
+        , Element.text name
+        ]
+
+
+iconViewNew : String -> StyleElement
+iconViewNew iconUrl =
+    -- img [ class "role-icon", style [ ( "max-width", "20px" ) ], src iconUrl ] []
+    Element.image None
+        [ Element.Attributes.width (Element.Attributes.px 20)
+        , Element.Attributes.height (Element.Attributes.px 20)
+        ]
+        { src = iconUrl, caption = "icon" }
+
+
 type Styles
     = None
     | Timer
+    | MobsterName
 
 
 styleSheet : Style.StyleSheet Styles Never
 styleSheet =
     Style.styleSheet
-        [ Style.style None []
+        [ Style.style None
+            [ [ "Lato" ]
+                |> List.map Style.Font.font
+                |> Style.Font.typeface
+            ]
         , Style.style Timer
             [ Style.Font.size 39
+            ]
+        , Style.style MobsterName
+            [ Style.Font.size 15
             ]
         ]
 
 
 view : Model -> Html Msg
 view model =
-    old model
+    new model
 
 
 new : Model -> Html Msg
@@ -113,10 +176,11 @@ new model =
         []
         [ Element.column Timer
             [ Element.Attributes.paddingXY 8 8
-            , Element.Attributes.spacing 10
+            , Element.Attributes.spacing 8
             , Element.Attributes.center
             ]
             [ Element.text (Timer.timerToString (Timer.secondsToTimer model.secondsLeft))
+            , driverNavigatorViewNew model
             ]
         ]
         |> Element.viewport
