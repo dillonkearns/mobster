@@ -1,12 +1,13 @@
 port module Timer.Main exposing (main)
 
+import Color
 import Element exposing (Element)
 import Element.Attributes
-import Html exposing (Html, div, h1, i, img, p, text)
-import Html.Attributes exposing (class, src, style)
+import Html exposing (Html)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Style
+import Style.Color
 import Style.Font
 import Time
 import Timer.Flags exposing (IncomingFlags)
@@ -41,11 +42,6 @@ port timerDone : Int -> Cmd msg
 port breakTimerDone : Int -> Cmd msg
 
 
-roleView : String -> String -> Html msg
-roleView name iconPath =
-    p [] [ iconView iconPath, text name ]
-
-
 driverIcon : String
 driverIcon =
     "../assets/driver-icon.png"
@@ -56,35 +52,9 @@ navigatorIcon =
     "../assets/navigator-icon.png"
 
 
-iconView : String -> Html msg
-iconView iconUrl =
-    img [ class "role-icon", style [ ( "max-width", "20px" ) ], src iconUrl ] []
-
-
-coffeeIcon : Html msg
-coffeeIcon =
-    div [ style [ ( "font-size", "50px" ) ] ] [ i [ class "text-success fa fa-coffee" ] [] ]
-
-
-activeMobsters : DriverNavigator -> Html msg
-activeMobsters driverNavigator =
-    if driverNavigator.driver == "" && driverNavigator.navigator == "" then
-        text ""
-    else
-        div [ style [ ( "margin-top", "8px" ) ] ]
-            [ roleView driverNavigator.driver driverIcon
-            , roleView driverNavigator.navigator navigatorIcon
-            ]
-
-
-driverNavigatorView : Model -> Html msg
-driverNavigatorView model =
-    case model.timerType of
-        BreakTimer ->
-            coffeeIcon
-
-        RegularTimer driverNavigator ->
-            activeMobsters driverNavigator
+coffeeIconNew : StyleElement
+coffeeIconNew =
+    Element.el BreakIcon [ Element.Attributes.class "fa fa-coffee" ] Element.empty
 
 
 type alias StyleElement =
@@ -95,7 +65,7 @@ driverNavigatorViewNew : Model -> StyleElement
 driverNavigatorViewNew model =
     case model.timerType of
         BreakTimer ->
-            coffeeIcon |> Element.html
+            coffeeIconNew
 
         RegularTimer driverNavigator ->
             activeMobstersNew driverNavigator
@@ -106,19 +76,13 @@ activeMobstersNew driverNavigator =
     if driverNavigator.driver == "" && driverNavigator.navigator == "" then
         Element.empty
     else
-        -- div [ style [ ( "margin-top", "8px" ) ] ]
-        --     [ roleViewNew driverNavigator.driver driverIcon
-        --     , roleViewNew driverNavigator.navigator navigatorIcon
-        --     ]
         Element.column None
-            [ Element.Attributes.spacing 12 ]
+            [ Element.Attributes.spacing 12
+            , Element.Attributes.paddingTop 8
+            ]
             [ roleViewNew driverNavigator.driver driverIcon
             , roleViewNew driverNavigator.navigator navigatorIcon
             ]
-
-
-
--- Element.empty
 
 
 roleViewNew : String -> String -> StyleElement
@@ -134,7 +98,6 @@ roleViewNew name iconPath =
 
 iconViewNew : String -> StyleElement
 iconViewNew iconUrl =
-    -- img [ class "role-icon", style [ ( "max-width", "20px" ) ], src iconUrl ] []
     Element.image None
         [ Element.Attributes.width (Element.Attributes.px 20)
         , Element.Attributes.height (Element.Attributes.px 20)
@@ -146,6 +109,7 @@ type Styles
     = None
     | Timer
     | MobsterName
+    | BreakIcon
 
 
 styleSheet : Style.StyleSheet Styles Never
@@ -162,21 +126,20 @@ styleSheet =
         , Style.style MobsterName
             [ Style.Font.size 15
             ]
+        , Style.style BreakIcon
+            [ Style.Font.size 50
+            , Color.rgb 8 226 108 |> Style.Color.text
+            ]
         ]
 
 
 view : Model -> Html Msg
 view model =
-    new model
-
-
-new : Model -> Html Msg
-new model =
     Element.column None
         []
         [ Element.column Timer
             [ Element.Attributes.paddingXY 8 8
-            , Element.Attributes.spacing 8
+            , Element.Attributes.spacing 0
             , Element.Attributes.center
             ]
             [ Element.text (Timer.timerToString (Timer.secondsToTimer model.secondsLeft))
@@ -185,15 +148,6 @@ new model =
         ]
         |> Element.viewport
             styleSheet
-
-
-old : Model -> Html Msg
-old model =
-    div [ class "text-center" ]
-        [ h1 [ style [ ( "margin", "0px" ), ( "margin-top", "10px" ) ] ]
-            [ text (Timer.timerToString (Timer.secondsToTimer model.secondsLeft)) ]
-        , driverNavigatorView model
-        ]
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -228,7 +182,7 @@ initialModel flags =
         secondsLeft =
             if flags.isDev then
                 -- just show timer for one second no matter what it's set to
-                59 * 60
+                1
             else
                 flags.minutes * 60
 
