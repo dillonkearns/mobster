@@ -8,6 +8,7 @@ import Json.Encode as Encode
 import Time
 import Timer.Flags exposing (IncomingFlags)
 import Timer.Msg as Msg exposing (Msg)
+import Timer.Ports
 import Timer.Styles as Styles exposing (StyleElement)
 import Timer.Timer as Timer
 
@@ -28,12 +29,6 @@ type alias DriverNavigator =
     { driver : String
     , navigator : String
     }
-
-
-port timerDone : Int -> Cmd msg
-
-
-port breakTimerDone : Int -> Cmd msg
 
 
 driverIcon : String
@@ -132,10 +127,10 @@ timerDoneCommand : TimerType -> Int -> Cmd msg
 timerDoneCommand timerType originalDurationSeconds =
     case timerType of
         BreakTimer ->
-            breakTimerDone originalDurationSeconds
+            Timer.Ports.breakTimerDone originalDurationSeconds
 
         RegularTimer _ ->
-            timerDone originalDurationSeconds
+            Timer.Ports.timerDone originalDurationSeconds
 
 
 initialModel : IncomingFlags -> Model
