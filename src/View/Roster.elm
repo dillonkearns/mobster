@@ -257,7 +257,7 @@ rosterInput query selection =
             { onChange = Msg.ChangeInput (Msg.StringField Msg.QuickRotateQuery)
             , value = query
             , label = Element.Input.hiddenLabel "Add mobster"
-            , options = [ Element.Input.textKey query ]
+            , options = []
             }
 
 
