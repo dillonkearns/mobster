@@ -39,6 +39,7 @@ import Styles
 import Task
 import Timer.Flags
 import Tip
+import Tip.All
 import Update.Extra
 import View.FeedbackButton
 import View.Navbar
@@ -59,7 +60,7 @@ type alias DragDropModel =
 
 changeTip : Cmd Msg
 changeTip =
-    Random.generate Msg.NewTip Tip.random
+    Random.generate Msg.NewTip (Tip.random Tip.All.tips)
 
 
 
@@ -251,7 +252,7 @@ update msg model =
             ( { model | combos = combos }, cmd )
 
         Msg.NewTip tipIndex ->
-            { model | tip = Tip.get tipIndex } ! []
+            { model | tip = Tip.get Tip.All.tips tipIndex } ! []
 
         Msg.ShuffleMobsters ->
             (model |> Dice.animateRoll |> Dice.animateActiveMobstersShuffle)
