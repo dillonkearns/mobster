@@ -35,6 +35,7 @@ view :
         , dieStyle : Animation.State
         , device : Device
         , dragDrop : DragDropModel
+        , manualChangeCounter : Int
     }
     -> List Styles.StyleElement
 view model =

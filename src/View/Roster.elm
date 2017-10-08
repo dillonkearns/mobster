@@ -30,6 +30,7 @@ view :
         , dieStyle : Animation.State
         , device : Device
         , dragDrop : DragDropModel
+        , manualChangeCounter : Int
     }
     ->
         { inactiveMobsters :
@@ -53,6 +54,7 @@ rosterView :
         , dieStyle : Animation.State
         , device : Device
         , dragDrop : DragDropModel
+        , manualChangeCounter : Int
     }
     ->
         { inactiveMobsters :
@@ -107,6 +109,7 @@ activeView :
         , dieStyle : Animation.State
         , device : Device
         , dragDrop : DragDropModel
+        , manualChangeCounter : Int
     }
     ->
         { inactiveMobsters :
@@ -131,7 +134,7 @@ activeView ({ quickRotateState } as model) rosterData =
     Element.Keyed.wrappedRow (Styles.Roster highlighted)
         [ Attr.width (Attr.percent 100), Attr.padding 5, Attr.spacing 10 ]
         (List.map (activeMobsterView model) activeMobsters
-            ++ [ ( "input", rosterInput quickRotateState.query quickRotateState.selection ) ]
+            ++ [ ( "input", rosterInput model quickRotateState.query quickRotateState.selection ) ]
         )
 
 
@@ -206,8 +209,8 @@ inactiveMobsterView model quickRotateSelection matches mobsterIndex mobsterName 
         Nothing
 
 
-rosterInput : String -> QuickRotate.Selection -> StyleElement
-rosterInput query selection =
+rosterInput : { model | manualChangeCounter : Int } -> String -> QuickRotate.Selection -> StyleElement
+rosterInput model query selection =
     let
         highlightSelection =
             case selection of
@@ -257,7 +260,7 @@ rosterInput query selection =
             { onChange = Msg.ChangeInput (Msg.StringField Msg.QuickRotateQuery)
             , value = query
             , label = Element.Input.hiddenLabel "Add mobster"
-            , options = []
+            , options = [ model.manualChangeCounter |> toString |> Element.Input.textKey ]
             }
 
 

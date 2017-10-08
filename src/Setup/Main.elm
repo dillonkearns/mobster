@@ -344,7 +344,8 @@ update msg model =
 
                         Msg.QuickRotateQuery ->
                             if model.altPressed then
-                                model ! []
+                                ( model, Cmd.none )
+                                    |> manualQuickRotateChange
                             else
                                 { model
                                     | quickRotateState =
@@ -402,6 +403,7 @@ update msg model =
                         ! []
                         |> Update.Extra.andThen update
                             (Msg.UpdateRosterData (MobsterOperation.RotateIn benchIndex))
+                        |> manualQuickRotateChange
 
                 QuickRotate.All ->
                     model ! []
@@ -414,6 +416,7 @@ update msg model =
                             ! []
                             |> Update.Extra.andThen update
                                 (Msg.UpdateRosterData (MobsterOperation.Add newMobster))
+                            |> manualQuickRotateChange
 
         Msg.QuickRotateMove direction ->
             let
@@ -473,6 +476,24 @@ update msg model =
         Msg.GoToTipScreenShortcut ->
             ( model, Cmd.none )
                 |> changeScreen ScreenState.Continue
+
+
+
+{-
+   This is a workaround for the following issue:
+   https://github.com/mdgriffith/style-elements/issues/91
+
+   See http://package.elm-lang.org/packages/mdgriffith/style-elements/4.1.0/Element-Input#textKey
+-}
+
+
+manualQuickRotateChange : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+manualQuickRotateChange modelCmd =
+    modelCmd
+        |> Update.Extra.updateModel
+            (\model ->
+                { model | manualChangeCounter = model.manualChangeCounter + 1 }
+            )
 
 
 startBreak : Model -> ( Model, Cmd Msg )
@@ -731,6 +752,7 @@ type alias Model =
     , activeMobstersStyle : Animation.Messenger.State Msg.Msg
     , device : Device
     , responsivePalette : Responsive.Palette
+    , manualChangeCounter : Int
     }
 
 
@@ -759,6 +781,7 @@ initialModel settings onMac =
     , activeMobstersStyle = Animation.style [ Animation.opacity 1 ]
     , device = Element.Device 0 0 False False False False False
     , responsivePalette = Responsive.defaultPalette
+    , manualChangeCounter = 0
     }
 
 
