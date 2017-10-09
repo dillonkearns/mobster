@@ -23,16 +23,11 @@ present rosterData =
         mobstersWithIndex =
             List.indexedMap (,) rosterData.mobsters
     in
-    if List.length rosterData.mobsters >= 4 then
-        mobstersWithIndex
-            ++ mobstersWithIndex
-            |> List.drop rosterData.nextDriver
-            |> List.take 4
-            |> List.indexedMap toRpgMobster
-    else
-        mobstersWithIndex
-            |> List.take 4
-            |> List.indexedMap toRpgMobster
+    mobstersWithIndex
+        ++ mobstersWithIndex
+        |> List.drop rosterData.nextDriver
+        |> List.take (clamp 0 4 (List.length rosterData.mobsters))
+        |> List.indexedMap toRpgMobster
 
 
 experienceForRole : RpgRole -> Roster.Rpg.RpgData -> Roster.Rpg.Experience
