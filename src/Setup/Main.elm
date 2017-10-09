@@ -540,7 +540,10 @@ startBreak model =
         |> startBreakTimer
 
 
-changeScreen : ScreenState -> ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
+changeScreen :
+    ScreenState
+    -> ( { model | screenState : ScreenState }, Cmd Msg )
+    -> ( { model | screenState : ScreenState }, Cmd Msg )
 changeScreen newScreenState ( model, cmd ) =
     ( { model | screenState = newScreenState }
     , Cmd.batch
