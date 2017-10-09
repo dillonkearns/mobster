@@ -480,7 +480,7 @@ update msg model =
                 |> changeScreen ScreenState.Configure
 
         Msg.GoToTipScreenShortcut ->
-            ( model, Cmd.none )
+            ( model, changeTip )
                 |> changeScreen ScreenState.Continue
 
         Msg.MinuteElapsed _ ->
