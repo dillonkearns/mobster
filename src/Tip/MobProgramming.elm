@@ -22,7 +22,7 @@ tips =
       , author = "Llewellyn Falco"
       }
     , { url = "https://github.com/MobProgramming/MobTimer.Python/blob/master/Tips/MobProgramming"
-      , title = "Mob Decision-Making Protocol"
+      , title = "Mob Decision-Making"
       , body =
             "Arguing about solutions? Try going with the least experienced navigator and have the more experienced team members course correct only as needed."
       , author = "The Hunter Mob"
