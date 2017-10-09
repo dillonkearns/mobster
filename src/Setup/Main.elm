@@ -263,7 +263,7 @@ update msg model =
             { model
                 | secondsSinceBreak = model.secondsSinceBreak + elapsedSeconds
                 , intervalsSinceBreak = model.intervalsSinceBreak + 1
-                , minutesTillBreakReset = breakResetIntervalMinutes
+                , minutesTillBreakReset = breakResetInit
             }
                 ! []
 
@@ -484,14 +484,25 @@ update msg model =
                 |> changeScreen ScreenState.Continue
 
         Msg.MinuteElapsed _ ->
-            let
-                minutesTillBreakReset =
-                    model.minutesTillBreakReset - 1
-            in
-            if minutesTillBreakReset == 0 then
-                ( { model | minutesTillBreakReset = breakResetIntervalMinutes } |> resetBreakData, Cmd.none )
-            else
-                ( { model | minutesTillBreakReset = minutesTillBreakReset }, Cmd.none )
+            case model.minutesTillBreakReset of
+                ResetInNMinutes 1 ->
+                    ( { model | minutesTillBreakReset = breakResetInit } |> resetBreakData, Cmd.none )
+
+                ResetInNMinutes minutes ->
+                    ( { model | minutesTillBreakReset = ResetInNMinutes (minutes - 1) }, Cmd.none )
+
+                TimerInProgress ->
+                    ( model, Cmd.none )
+
+
+breakResetInit : BreakResetState
+breakResetInit =
+    ResetInNMinutes 2
+
+
+type BreakResetState
+    = ResetInNMinutes Int
+    | TimerInProgress
 
 
 
@@ -609,7 +620,7 @@ startTimer (( model, cmd ) as msgAndCmd) =
     msgAndCmd
         |> withIpcMsg (Ipc.StartTimer (timerFlags model.settings))
         |> Update.Extra.addCmd (Cmd.batch [ changeTip, blurContinueButton ])
-        |> Update.Extra.updateModel (\model -> { model | minutesTillBreakReset = -1 })
+        |> Update.Extra.updateModel (\model -> { model | minutesTillBreakReset = TimerInProgress })
         |> Analytics.trackEvent
             { category = "stats"
             , action = "active-mobsters"
@@ -766,7 +777,7 @@ type alias Model =
     , device : Device
     , responsivePalette : Responsive.Palette
     , manualChangeCounter : Int
-    , minutesTillBreakReset : Int
+    , minutesTillBreakReset : BreakResetState
     }
 
 
@@ -796,13 +807,8 @@ initialModel settings onMac =
     , device = Element.Device 0 0 False False False False False
     , responsivePalette = Responsive.defaultPalette
     , manualChangeCounter = 0
-    , minutesTillBreakReset = breakResetIntervalMinutes
+    , minutesTillBreakReset = breakResetInit
     }
-
-
-breakResetIntervalMinutes : Int
-breakResetIntervalMinutes =
-    20
 
 
 main : Program Flags Model Msg
