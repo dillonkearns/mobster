@@ -92,7 +92,15 @@ export class DisplayManager {
     )
 
     if (this.getSecondaryWindows().length === 0) {
-      this.mainWindow.show()
+      // TODO: workaround - remove once
+      // https://github.com/electron/electron/issues/2867#issuecomment-264312493 has been resolved
+      if (onWindows) {
+        this.mainWindow.minimize()
+        this.mainWindow.show()
+        this.mainWindow.focus()
+      } else {
+        this.mainWindow.show()
+      }
     } else {
       let readyToDisplay = this.getSecondaryWindows().map(window => {
         return { id: window.id, ready: false }
