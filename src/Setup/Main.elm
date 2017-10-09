@@ -64,10 +64,6 @@ changeTip =
     Random.generate Msg.NewTip (Tip.random Tip.All.tips)
 
 
-
--- main view function 15
-
-
 getInitialWindowSize : Cmd Msg
 getInitialWindowSize =
     Window.size
