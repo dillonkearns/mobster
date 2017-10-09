@@ -158,7 +158,7 @@ updateSettings settingsUpdater ({ settings } as model) =
 
 resetKeyboardCombos : ( { model | combos : Keyboard.Combo.Model Msg }, Cmd Msg ) -> ( { model | combos : Keyboard.Combo.Model Msg }, Cmd Msg )
 resetKeyboardCombos ( model, cmd ) =
-    ( { model | combos = keyboardComboInit }, cmd )
+    ( { model | combos = Shortcuts.init }, cmd )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -636,11 +636,6 @@ rosterViewIsShowing screenState =
     screenState == ScreenState.Configure
 
 
-keyboardComboInit : Keyboard.Combo.Model Msg
-keyboardComboInit =
-    Keyboard.Combo.init Shortcuts.keyboardCombos Msg.ComboMsg
-
-
 focusQuickRotateInput : Cmd Msg
 focusQuickRotateInput =
     quickRotateQueryId
@@ -768,7 +763,7 @@ initialModel settings onMac =
     { settings = settings
     , screenState = ScreenState.Configure
     , newMobster = ""
-    , combos = keyboardComboInit
+    , combos = Shortcuts.init
     , tip = Tip.emptyTip
     , secondsSinceBreak = 0
     , intervalsSinceBreak = 0

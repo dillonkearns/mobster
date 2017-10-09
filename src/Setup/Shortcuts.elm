@@ -1,7 +1,12 @@
-module Setup.Shortcuts exposing (keyboardCombos)
+module Setup.Shortcuts exposing (init)
 
 import Keyboard.Combo
 import Setup.Msg as Msg exposing (Msg)
+
+
+init : Keyboard.Combo.Model Msg
+init =
+    Keyboard.Combo.init keyboardCombos Msg.ComboMsg
 
 
 keyboardCombos : List (Keyboard.Combo.KeyCombo Msg)
