@@ -9,6 +9,7 @@ import Keyboard.Extra
 import Roster.Operation exposing (MobsterOperation)
 import Roster.RpgRole exposing (RpgRole)
 import Setup.InputField exposing (..)
+import Time
 import Window
 
 
@@ -45,6 +46,7 @@ type Msg
     | KeyPressed Bool Keyboard.Extra.Key
     | Animate Animation.Msg
     | WindowResized Window.Size
+    | MinuteElapsed Time.Time
 
 
 type Direction

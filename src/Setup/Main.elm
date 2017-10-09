@@ -37,6 +37,7 @@ import Setup.Shortcuts as Shortcuts
 import Setup.Validations as Validations
 import Styles
 import Task
+import Time
 import Timer.Flags
 import Tip
 import Tip.All
@@ -259,7 +260,12 @@ update msg model =
                 ! []
 
         Msg.TimeElapsed elapsedSeconds ->
-            { model | secondsSinceBreak = model.secondsSinceBreak + elapsedSeconds, intervalsSinceBreak = model.intervalsSinceBreak + 1 } ! []
+            { model
+                | secondsSinceBreak = model.secondsSinceBreak + elapsedSeconds
+                , intervalsSinceBreak = model.intervalsSinceBreak + 1
+                , minutesTillBreakReset = breakResetIntervalMinutes
+            }
+                ! []
 
         Msg.BreakDone elapsedSeconds ->
             model ! []
@@ -477,6 +483,16 @@ update msg model =
             ( model, Cmd.none )
                 |> changeScreen ScreenState.Continue
 
+        Msg.MinuteElapsed _ ->
+            let
+                minutesTillBreakReset =
+                    model.minutesTillBreakReset - 1
+            in
+            if minutesTillBreakReset == 0 then
+                ( { model | minutesTillBreakReset = breakResetIntervalMinutes } |> resetBreakData, Cmd.none )
+            else
+                ( { model | minutesTillBreakReset = minutesTillBreakReset }, Cmd.none )
+
 
 
 {-
@@ -593,6 +609,7 @@ startTimer (( model, cmd ) as msgAndCmd) =
     msgAndCmd
         |> withIpcMsg (Ipc.StartTimer (timerFlags model.settings))
         |> Update.Extra.addCmd (Cmd.batch [ changeTip, blurContinueButton ])
+        |> Update.Extra.updateModel (\model -> { model | minutesTillBreakReset = -model.settings.timerDuration })
         |> Analytics.trackEvent
             { category = "stats"
             , action = "active-mobsters"
@@ -727,6 +744,7 @@ subscriptions model =
         , Animation.subscription Msg.Animate [ model.dieStyle ]
         , Animation.subscription Msg.Animate [ model.activeMobstersStyle ]
         , Window.resizes Msg.WindowResized
+        , Time.every Time.minute Msg.MinuteElapsed
         ]
 
 
@@ -748,6 +766,7 @@ type alias Model =
     , device : Device
     , responsivePalette : Responsive.Palette
     , manualChangeCounter : Int
+    , minutesTillBreakReset : Int
     }
 
 
@@ -777,7 +796,13 @@ initialModel settings onMac =
     , device = Element.Device 0 0 False False False False False
     , responsivePalette = Responsive.defaultPalette
     , manualChangeCounter = 0
+    , minutesTillBreakReset = breakResetIntervalMinutes
     }
+
+
+breakResetIntervalMinutes : Int
+breakResetIntervalMinutes =
+    20
 
 
 main : Program Flags Model Msg
