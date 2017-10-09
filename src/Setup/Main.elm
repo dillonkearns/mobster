@@ -609,7 +609,7 @@ startTimer (( model, cmd ) as msgAndCmd) =
     msgAndCmd
         |> withIpcMsg (Ipc.StartTimer (timerFlags model.settings))
         |> Update.Extra.addCmd (Cmd.batch [ changeTip, blurContinueButton ])
-        |> Update.Extra.updateModel (\model -> { model | minutesTillBreakReset = -model.settings.timerDuration })
+        |> Update.Extra.updateModel (\model -> { model | minutesTillBreakReset = -1 })
         |> Analytics.trackEvent
             { category = "stats"
             , action = "active-mobsters"
