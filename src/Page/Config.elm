@@ -104,7 +104,7 @@ numberInput { dirtyInputKeys, responsivePalette } value ( minValue, maxValue ) o
             { onChange = Msg.ChangeInput (Msg.IntField inputField)
             , value = value |> toString
             , label = Element.Input.hiddenLabel "input"
-            , options = [ Element.Input.textKey (Dict.get fieldId dirtyInputKeys |> Maybe.withDefault -1 |> toString |> Debug.log ("key for" ++ toString inputField)) ]
+            , options = [ Element.Input.textKey (Dict.get fieldId dirtyInputKeys |> Maybe.withDefault -1 |> toString) ]
             }
         , plusMinusButton "+" plusMsg
         ]
