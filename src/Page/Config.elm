@@ -52,7 +52,7 @@ view model =
     ]
 
 
-inputPair : { model | dirtyInputKeys : Dict String Int } -> IntInputField -> String -> Int -> StyleElement
+inputPair : { model | dirtyInputKeys : Dict String Int, responsivePalette : Responsive.Palette } -> IntInputField -> String -> Int -> StyleElement
 inputPair model inputField label value =
     Element.row Styles.Input
         [ Attr.spacing 20 ]
@@ -76,8 +76,8 @@ plusMinusButton stringy msg =
             ]
 
 
-numberInput : { model | dirtyInputKeys : Dict String Int } -> Int -> ( Int, Int ) -> (String -> Msg) -> IntInputField -> StyleElement
-numberInput { dirtyInputKeys } value ( minValue, maxValue ) onInputMsg inputField =
+numberInput : { model | dirtyInputKeys : Dict String Int, responsivePalette : Responsive.Palette } -> Int -> ( Int, Int ) -> (String -> Msg) -> IntInputField -> StyleElement
+numberInput { dirtyInputKeys, responsivePalette } value ( minValue, maxValue ) onInputMsg inputField =
     let
         plusMsg =
             Msg.ChangeInput (Msg.IntField inputField) (value + 1 |> toString)
@@ -92,7 +92,7 @@ numberInput { dirtyInputKeys } value ( minValue, maxValue ) onInputMsg inputFiel
         []
         [ plusMinusButton "–" minusMsg
         , Element.Input.text Styles.NumberInput
-            [ Attr.width <| Attr.px 45
+            [ responsivePalette.inputWidth |> Attr.width
             , minValue |> toString |> Attr.attribute "min"
             , maxValue |> toString |> Attr.attribute "max"
             , Attr.attribute "step" "1"

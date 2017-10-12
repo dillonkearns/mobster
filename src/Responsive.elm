@@ -7,16 +7,20 @@ import Element.Attributes exposing (px)
 palette : Device -> Palette
 palette device =
     { navbarButtonHeight = ( 20, 80 ) |> responsiveForWidth device |> px
+    , inputWidth = ( 25, 115 ) |> responsiveForWidth device |> px
     }
 
 
 defaultPalette : Palette
 defaultPalette =
-    { navbarButtonHeight = px 0 }
+    { navbarButtonHeight = px 0
+    , inputWidth = px 0
+    }
 
 
 type alias Palette =
     { navbarButtonHeight : Element.Attributes.Length
+    , inputWidth : Element.Attributes.Length
     }
 
 
