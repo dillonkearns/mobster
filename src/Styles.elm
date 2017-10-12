@@ -50,6 +50,8 @@ type Styles
     | Input
     | KeyboardKey
     | H1
+    | NumberInputButton
+    | NumberInput
     | AwayIcon
     | AwayX
     | TipBox
@@ -181,6 +183,19 @@ stylesheet device =
             ]
         , style ShortcutInput
             [ Font.uppercase
+            ]
+        , style NumberInput
+            [ Font.center
+            , Font.size fonts.mediumSmaller
+            ]
+        , style NumberInputButton
+            [ Color.background (Color.rgba 150 150 150 255)
+            , Color.text Color.white
+            , Font.size fonts.mediumSmaller
+            , Style.cursor "default"
+            , hover
+                [ Color.background (Color.rgba 95 95 95 60)
+                ]
             ]
         , style (Circle Filled)
             [ Color.background fontColor.circle

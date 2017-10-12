@@ -3,6 +3,7 @@ module Page.Config exposing (view)
 import Animation
 import Animation.Messenger
 import Basics.Extra exposing ((=>))
+import Dict exposing (Dict)
 import Element exposing (Device)
 import Element.Attributes as Attr
 import Element.Events exposing (onClick, onInput)
@@ -36,6 +37,7 @@ view :
         , device : Device
         , dragDrop : DragDropModel
         , manualChangeCounter : Int
+        , dirtyInputKeys : Dict String Int
     }
     -> List Styles.StyleElement
 view model =
@@ -50,33 +52,62 @@ view model =
     ]
 
 
-inputPair : IntInputField -> String -> Int -> StyleElement
-inputPair inputField label value =
+inputPair : { model | dirtyInputKeys : Dict String Int } -> IntInputField -> String -> Int -> StyleElement
+inputPair model inputField label value =
     Element.row Styles.Input
         [ Attr.spacing 20 ]
-        [ numberInput value
+        [ numberInput model
+            value
             (Validations.inputRangeFor inputField)
             (Msg.ChangeInput (Msg.IntField inputField))
-            (toString inputField)
+            inputField
         , Element.el Styles.None [] <| Element.text label
         ]
 
 
-numberInput : Int -> ( Int, Int ) -> (String -> Msg) -> String -> StyleElement
-numberInput value ( minValue, maxValue ) onInputMsg fieldId =
-    Element.node "input" <|
-        Element.el Styles.None
-            [ Attr.width <| Attr.px 60
+plusMinusButton : String -> Msg -> StyleElement
+plusMinusButton stringy msg =
+    Element.text stringy
+        |> Element.el Styles.NumberInputButton
+            [ Attr.paddingXY 10 0
+            , Attr.verticalCenter
+            , Attr.height (Attr.percent 100)
+            , Element.Events.onClick msg
+            ]
+
+
+numberInput : { model | dirtyInputKeys : Dict String Int } -> Int -> ( Int, Int ) -> (String -> Msg) -> IntInputField -> StyleElement
+numberInput { dirtyInputKeys } value ( minValue, maxValue ) onInputMsg inputField =
+    let
+        plusMsg =
+            Msg.ChangeInput (Msg.IntField inputField) (value + 1 |> toString)
+
+        minusMsg =
+            Msg.ChangeInput (Msg.IntField inputField) (value - 1 |> toString)
+
+        fieldId =
+            toString inputField
+    in
+    Element.row Styles.None
+        []
+        [ plusMinusButton "–" minusMsg
+        , Element.Input.text Styles.NumberInput
+            [ Attr.width <| Attr.px 45
             , minValue |> toString |> Attr.attribute "min"
             , maxValue |> toString |> Attr.attribute "max"
             , Attr.attribute "step" "1"
             , Attr.attribute "type" "number"
             , value |> toString |> Attr.attribute "value"
-            , onInput onInputMsg
             , onClick (Msg.SelectInputField fieldId)
             , Attr.id fieldId
             ]
-            Element.empty
+            { onChange = Msg.ChangeInput (Msg.IntField inputField)
+            , value = value |> toString
+            , label = Element.Input.hiddenLabel "input"
+            , options = [ Element.Input.textKey (Dict.get fieldId dirtyInputKeys |> Maybe.withDefault -1 |> toString |> Debug.log ("key for" ++ toString inputField)) ]
+            }
+        , plusMinusButton "+" plusMsg
+        ]
 
 
 keyBase : { model | device : Element.Device } -> StyleElement -> StyleElement
@@ -112,7 +143,15 @@ editableKeyboardKey model currentKey =
             }
 
 
-configOptions : { model | os : Os, device : Element.Device, responsivePalette : Responsive.Palette } -> Settings.Data -> StyleElement
+configOptions :
+    { model
+        | os : Os
+        , device : Element.Device
+        , responsivePalette : Responsive.Palette
+        , dirtyInputKeys : Dict String Int
+    }
+    -> Settings.Data
+    -> StyleElement
 configOptions ({ os } as model) settings =
     let
         breakIntervalText =
@@ -122,9 +161,9 @@ configOptions ({ os } as model) settings =
         [ Attr.spacing 30, Attr.width (Attr.percent 30) ]
         [ Element.column Styles.None
             [ Attr.spacing 10 ]
-            [ inputPair InputField.TimerDuration "Minutes" settings.timerDuration
-            , inputPair InputField.BreakInterval breakIntervalText settings.intervalsPerBreak
-            , inputPair InputField.BreakDuration "Minutes per break" settings.breakDuration
+            [ inputPair model InputField.TimerDuration "Minutes" settings.timerDuration
+            , inputPair model InputField.BreakInterval breakIntervalText settings.intervalsPerBreak
+            , inputPair model InputField.BreakDuration "Minutes per break" settings.breakDuration
             ]
         , Element.column Styles.PlainBody
             [ Attr.spacing 8 ]

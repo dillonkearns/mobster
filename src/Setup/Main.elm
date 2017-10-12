@@ -5,6 +5,7 @@ import Animation
 import Animation.Messenger
 import Break
 import Dice
+import Dict exposing (Dict)
 import Dom
 import Element exposing (Device)
 import Element.Attributes
@@ -28,7 +29,7 @@ import Responsive
 import Roster.Data as Roster
 import Roster.Operation as MobsterOperation exposing (MobsterOperation)
 import Roster.Presenter as Presenter
-import Setup.InputField as InputField
+import Setup.InputField as InputField exposing (IntInputField)
 import Setup.Msg as Msg exposing (Msg)
 import Setup.Ports
 import Setup.ScreenState as ScreenState exposing (ScreenState)
@@ -147,6 +148,34 @@ updateSettings settingsUpdater ({ settings } as model) =
             settingsUpdater settings
     in
     { model | settings = updatedSettings } ! [ Setup.Ports.saveSettings (updatedSettings |> Settings.encoder) ]
+
+
+markDirtyIfChangePrevented :
+    IntInputField
+    -> Bool
+    -> ( { model | dirtyInputKeys : Dict String Int }, Cmd Msg )
+    -> ( { model | dirtyInputKeys : Dict String Int }, Cmd Msg )
+markDirtyIfChangePrevented inputField changePrevented ( possiblyChangedModel, cmd ) =
+    if not changePrevented then
+        let
+            updatedDict =
+                possiblyChangedModel.dirtyInputKeys
+                    |> Dict.update (toString inputField)
+                        (\value ->
+                            value
+                                |> Maybe.withDefault 0
+                                |> (+) 1
+                                |> Just
+                        )
+        in
+        ( { possiblyChangedModel
+            | dirtyInputKeys =
+                updatedDict
+          }
+        , cmd
+        )
+    else
+        ( possiblyChangedModel, cmd )
 
 
 
@@ -363,8 +392,12 @@ update msg model =
                     let
                         newValueInRange =
                             Validations.parseInputFieldWithinRange intField newInputValue
+                                |> Debug.log ("newValueInRange for " ++ newInputValue)
+
+                        changePrevented =
+                            toString newValueInRange == newInputValue
                     in
-                    case intField of
+                    (case intField of
                         InputField.BreakInterval ->
                             model
                                 |> updateSettings
@@ -397,6 +430,8 @@ update msg model =
                                     , label = Nothing
                                     , value = Just newValueInRange
                                     }
+                    )
+                        |> markDirtyIfChangePrevented intField changePrevented
 
         Msg.QuickRotateAdd ->
             case model.quickRotateState.selection of
@@ -777,6 +812,7 @@ type alias Model =
     , responsivePalette : Responsive.Palette
     , manualChangeCounter : Int
     , minutesTillBreakReset : BreakResetState
+    , dirtyInputKeys : Dict String Int
     }
 
 
@@ -807,6 +843,7 @@ initialModel settings onMac =
     , responsivePalette = Responsive.defaultPalette
     , manualChangeCounter = 0
     , minutesTillBreakReset = breakResetInit
+    , dirtyInputKeys = Dict.empty
     }
 
 
