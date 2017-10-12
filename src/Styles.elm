@@ -189,7 +189,7 @@ stylesheet device =
             , Font.size fonts.mediumSmaller
             ]
         , style NumberInputButton
-            [ Color.background (Color.rgba 150 150 150 255)
+            [ Color.background (Color.rgba 130 130 130 255)
             , Color.text Color.white
             , Font.size fonts.mediumSmaller
             , Style.cursor "default"
