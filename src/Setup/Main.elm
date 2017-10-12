@@ -392,10 +392,12 @@ update msg model =
                     let
                         newValueInRange =
                             Validations.parseInputFieldWithinRange intField newInputValue
-                                |> Debug.log ("newValueInRange for " ++ newInputValue)
 
                         changePrevented =
-                            toString newValueInRange == newInputValue
+                            toString newValueInRange
+                                == newInputValue
+                                && newInputValue
+                                /= "0"
                     in
                     (case intField of
                         InputField.BreakInterval ->
