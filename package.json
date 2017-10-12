@@ -1,21 +1,16 @@
 {
   "name": "Mobster",
-  "version": "0.0.45",
-  "description":
-    "A cross-platform mob programming timer built on web technologies",
+  "version": "0.0.46",
+  "description": "A cross-platform mob programming timer built on web technologies",
   "main": "main.js",
   "scripts": {
-    "start":
-      "NODE_ENV=dev concurrently --kill-others 'npm run webpack-dev' 'npm run build-node && npm test && electron .'",
-    "startprod":
-      "NODE_ENV=production npm test && npm run build-node && npm run webpack-production && electron .",
+    "start": "NODE_ENV=dev concurrently --kill-others 'npm run webpack-dev' 'npm run build-node && npm test && electron .'",
+    "startprod": "NODE_ENV=production npm test && npm run build-node && npm run webpack-production && electron .",
     "webpack-dev": "webpack-dev-server --hot --port 8080",
     "webpack-production": "webpack -p --env.production",
     "build-node": "npm run generate-ipc && npm run types",
-    "generate-ipc":
-      "elm-electron src/Ipc.elm --ts typescript/ipc.ts --elm src/IpcSerializer.elm",
-    "test-watch":
-      "npm test; fswatch -0 src tests -e '.*' -i \\.elm$ | xargs -0 -n1 -I{} npm test",
+    "generate-ipc": "elm-electron src/Ipc.elm --ts typescript/ipc.ts --elm src/IpcSerializer.elm",
+    "test-watch": "npm test; fswatch -0 src tests -e '.*' -i \\.elm$ | xargs -0 -n1 -I{} npm test",
     "test": "clear && echo 'running tests' && elm-test",
     "pack": "build --dir",
     "dist-mac": "build --mac",
@@ -32,7 +27,12 @@
     }
   },
   "repository": "https://github.com/dillonkearns/mobster",
-  "keywords": ["Electron", "mob programming", "timer", "Agile"],
+  "keywords": [
+    "Electron",
+    "mob programming",
+    "timer",
+    "Agile"
+  ],
   "author": "Dillon Kearns",
   "license": "MIT",
   "devDependencies": {
