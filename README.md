@@ -39,8 +39,7 @@ Date:   Fri Mar 3 21:00:25 2017 -0500
 ## Workaround for Windows 10 Transparency Issues
 There is a [known Electron bug for transparency in Windows 10](https://github.com/electron/electron/issues/9357) (see also https://github.com/dillonkearns/mobster/issues/49). If you have this issue on your machine, you can disable transparency with these steps:
 
-* Find the file path for `%APPDATA%` (you can use Windows-R to pull up the run menu and type it in there to open the folder)
-* Create a file called `NO_TRANSPARENCY` in the directory `%APPDATA%/mobster` (make sure it doesn't have a `.txt` or any other extension)
+* Create a file called `NO_TRANSPARENCY` in the directory `%APPDATA%/mobster` (make sure it doesn't have a `.txt` or any other extension). You can type the [Windows]+[R] command and paste in `%APPDATA%/mobster` to get directly to the directory where this file should go.
 * Restart Mobster
 
 Thanks @steverb1 for reporting the issue and testing workarounds!
