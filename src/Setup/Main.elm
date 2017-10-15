@@ -51,15 +51,6 @@ import View.UpdateAvailable
 import Window
 
 
-add2dPoints : { pointA | x : Int, y : Int } -> { pointB | x : Int, y : Int } -> { x : Int, y : Int }
-add2dPoints pointA pointB =
-    { x = pointA.x + pointB.x, y = pointA.y + pointB.y }
-
-
-result =
-    add2dPoints { x = 10, y = 10, z = 10 } { x = 100, y = 100 }
-
-
 shuffleMobstersCmd : Roster.RosterData -> Cmd Msg
 shuffleMobstersCmd rosterData =
     Random.generate reorderOperation (Roster.randomizeMobsters rosterData)
@@ -582,10 +573,7 @@ startBreak model =
         |> startBreakTimer
 
 
-changeScreen :
-    ScreenState
-    -> ( { model | screenState : ScreenState }, Cmd Msg )
-    -> ( { model | screenState : ScreenState }, Cmd Msg )
+changeScreen : ScreenState -> ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 changeScreen newScreenState ( model, cmd ) =
     ( { model | screenState = newScreenState }
     , Cmd.batch
