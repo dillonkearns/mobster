@@ -223,40 +223,46 @@ update msg model =
             ( model, Cmd.none ) |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
 
         Msg.StartTimer ->
-            (case model.screenState of
-                ScreenState.Rpg rpgState ->
-                    case rpgState of
-                        ScreenState.NextUp ->
-                            ( model, Cmd.none )
-                                |> changeScreen (ScreenState.Rpg ScreenState.Checklist)
-                                |> startTimer
+            (if
+                onContinueScreen model.screenState
+                    && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak
+             then
+                startBreak model
+             else
+                case model.screenState of
+                    ScreenState.Rpg rpgState ->
+                        case rpgState of
+                            ScreenState.NextUp ->
+                                ( model, Cmd.none )
+                                    |> changeScreen (ScreenState.Rpg ScreenState.Checklist)
+                                    |> startTimer
 
-                        ScreenState.Checklist ->
-                            ( model, Cmd.none )
-                                |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
+                            ScreenState.Checklist ->
+                                ( model, Cmd.none )
+                                    |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
 
-                _ ->
-                    let
-                        nextScreenState =
-                            case model.screenState of
-                                ScreenState.Rpg rpgState ->
-                                    case rpgState of
-                                        ScreenState.Checklist ->
-                                            ScreenState.Rpg ScreenState.Checklist
+                    _ ->
+                        let
+                            nextScreenState =
+                                case model.screenState of
+                                    ScreenState.Rpg rpgState ->
+                                        case rpgState of
+                                            ScreenState.Checklist ->
+                                                ScreenState.Rpg ScreenState.Checklist
 
-                                        ScreenState.NextUp ->
-                                            ScreenState.Rpg ScreenState.NextUp
+                                            ScreenState.NextUp ->
+                                                ScreenState.Rpg ScreenState.NextUp
 
-                                _ ->
-                                    continueScreenState model
+                                    _ ->
+                                        continueScreenState model
 
-                        startTimerUpdate =
-                            ( model |> resetIfAfterBreak, Cmd.none )
-                                |> changeScreen nextScreenState
-                                |> startTimer
-                    in
-                    startTimerUpdate
-                        |> Update.Extra.andThen update (Msg.UpdateRosterData MobsterOperation.NextTurn)
+                            startTimerUpdate =
+                                ( model |> resetIfAfterBreak, Cmd.none )
+                                    |> changeScreen nextScreenState
+                                    |> startTimer
+                        in
+                        startTimerUpdate
+                            |> Update.Extra.andThen update (Msg.UpdateRosterData MobsterOperation.NextTurn)
             )
                 |> resetKeyboardCombos
 
