@@ -585,7 +585,7 @@ continueScreenState model =
 
 breakResetInit : BreakResetState
 breakResetInit =
-    ResetInNMinutes 2
+    ResetInNMinutes 20
 
 
 type BreakResetState
