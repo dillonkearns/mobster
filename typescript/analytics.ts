@@ -2,7 +2,7 @@ import * as ua from 'universal-analytics'
 const packageJson = require('../package.json')
 const version: string = packageJson.version
 const isLocal = require('electron-is-dev')
-import { screen } from 'electron'
+import { screen, app } from 'electron'
 
 interface AnalyticsEvent {
   category: string
@@ -34,6 +34,7 @@ export class Analytics {
       this.analytics.set('ua', `${process.platform} ${require('os').release()}`)
       this.analytics.set('an', 'Mobster') // appName
       this.analytics.set('av', version) // appVersion
+      this.analytics.set('ul', app.getLocale().toLowerCase()) // user language
       this.trackPage('/', { sc: 'start' }) // sessionControl
     })
   }
