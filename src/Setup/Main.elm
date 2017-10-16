@@ -22,6 +22,7 @@ import Os exposing (Os)
 import Page.Break
 import Page.BreakBeta
 import Page.Config
+import Page.ConfigBeta
 import Page.Continue
 import Page.Rpg
 import QuickRotate
@@ -99,7 +100,10 @@ pageView : Model -> List Styles.StyleElement
 pageView model =
     case model.screenState of
         ScreenState.Configure ->
-            Page.Config.view model
+            if beta then
+                Page.ConfigBeta.view model
+            else
+                Page.Config.view model
 
         ScreenState.Continue { breakSecondsLeft } ->
             if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
