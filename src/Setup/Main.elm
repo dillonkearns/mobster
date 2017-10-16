@@ -20,6 +20,7 @@ import Keyboard.Combo
 import Keyboard.Extra
 import Os exposing (Os)
 import Page.Break
+import Page.BreakBeta
 import Page.Config
 import Page.Continue
 import Page.Rpg
@@ -89,15 +90,23 @@ view model =
             (Styles.stylesheet model.device)
 
 
+beta : Bool
+beta =
+    False
+
+
 pageView : Model -> List Styles.StyleElement
 pageView model =
     case model.screenState of
         ScreenState.Configure ->
             Page.Config.view model
 
-        ScreenState.Continue ->
+        ScreenState.Continue { breakSecondsLeft } ->
             if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
-                Page.Break.view model
+                if beta then
+                    Page.BreakBeta.view model breakSecondsLeft
+                else
+                    Page.Break.view model
             else
                 Page.Continue.view model
 
@@ -187,12 +196,22 @@ resetKeyboardCombos ( model, cmd ) =
     ( { model | combos = Shortcuts.init }, cmd )
 
 
+onContinueScreen : ScreenState -> Bool
+onContinueScreen screenState =
+    case screenState of
+        ScreenState.Continue _ ->
+            True
+
+        _ ->
+            False
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case Debug.log "update" msg of
         Msg.SkipHotkey ->
             case model.screenState of
-                ScreenState.Continue ->
+                ScreenState.Continue _ ->
                     update (Msg.UpdateRosterData MobsterOperation.NextTurn) model
 
                 _ ->
@@ -202,7 +221,10 @@ update msg model =
             model ! [] |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
 
         Msg.StartTimer ->
-            (if model.screenState == ScreenState.Continue && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
+            (if
+                onContinueScreen model.screenState
+                    && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak
+             then
                 startBreak model
              else
                 case model.screenState of
@@ -230,7 +252,7 @@ update msg model =
                                                 ScreenState.Rpg ScreenState.NextUp
 
                                     _ ->
-                                        ScreenState.Continue
+                                        continueScreenState model
 
                             startTimerUpdate =
                                 ( model |> resetIfAfterBreak, Cmd.none )
@@ -245,7 +267,8 @@ update msg model =
         Msg.SkipBreak ->
             (model |> resetBreakData)
                 ! []
-                |> changeScreen ScreenState.Continue
+                |> changeScreen
+                    (ScreenState.Continue { breakSecondsLeft = model.settings.breakDuration * 60 })
                 |> Analytics.trackEvent
                     { category = "break"
                     , action = "skip"
@@ -506,7 +529,7 @@ update msg model =
 
         Msg.OpenContinueScreen ->
             ( model, Cmd.none )
-                |> changeScreen ScreenState.Continue
+                |> changeScreen (ScreenState.Continue { breakSecondsLeft = model.settings.breakDuration * 60 })
 
         Msg.GoToRosterShortcut ->
             ( model, focusQuickRotateInput )
@@ -514,7 +537,8 @@ update msg model =
 
         Msg.GoToTipScreenShortcut ->
             ( model, changeTip )
-                |> changeScreen ScreenState.Continue
+                |> changeScreen
+                    (ScreenState.Continue { breakSecondsLeft = model.settings.breakDuration * 60 })
 
         Msg.MinuteElapsed _ ->
             case model.minutesTillBreakReset of
@@ -526,6 +550,37 @@ update msg model =
 
                 TimerInProgress ->
                     ( model, Cmd.none )
+
+        Msg.BreakSecondElapsed _ ->
+            case model.screenState of
+                ScreenState.Continue { breakSecondsLeft } ->
+                    let
+                        decrementedBreakSecondsLeft =
+                            breakSecondsLeft - 1
+                    in
+                    if decrementedBreakSecondsLeft <= 0 then
+                        if beta then
+                            ( model |> resetBreakData, Cmd.none )
+                                |> changeScreen
+                                    (continueScreenState model)
+                        else
+                            ( model, Cmd.none )
+                    else
+                        ( { model
+                            | screenState =
+                                ScreenState.Continue
+                                    { breakSecondsLeft = decrementedBreakSecondsLeft }
+                          }
+                        , Cmd.none
+                        )
+
+                _ ->
+                    ( model, Cmd.none )
+
+
+continueScreenState : { model | settings : { settings | breakDuration : Int } } -> ScreenState
+continueScreenState model =
+    ScreenState.Continue { breakSecondsLeft = model.settings.breakDuration * 60 }
 
 
 breakResetInit : BreakResetState
@@ -565,7 +620,7 @@ startBreak model =
                     ScreenState.Rpg ScreenState.Checklist
 
                 _ ->
-                    ScreenState.Continue
+                    continueScreenState model
     in
     (model |> resetIfAfterBreak)
         ! [ changeTip ]
@@ -778,6 +833,21 @@ init { onMac, isLocal, settings } =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
+    let
+        breakTimerActive =
+            case model.screenState of
+                ScreenState.Continue _ ->
+                    Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak
+
+                _ ->
+                    False
+
+        breakTimerSub =
+            if breakTimerActive then
+                Time.every Time.second Msg.BreakSecondElapsed
+            else
+                Sub.none
+    in
     Sub.batch
         [ Keyboard.Combo.subscriptions model.combos
         , Setup.Ports.timeElapsed Msg.TimeElapsed
@@ -789,6 +859,7 @@ subscriptions model =
         , Animation.subscription Msg.Animate [ model.activeMobstersStyle ]
         , Window.resizes Msg.WindowResized
         , Time.every Time.minute Msg.MinuteElapsed
+        , breakTimerSub
         ]
 
 

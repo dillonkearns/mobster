@@ -88,7 +88,7 @@ screenToString newScreenState =
         ScreenState.Configure ->
             "configure"
 
-        ScreenState.Continue ->
+        ScreenState.Continue _ ->
             "continue"
 
         ScreenState.Rpg rpgState ->

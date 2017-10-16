@@ -44,6 +44,7 @@ type Styles
     | StartRpgButton
     | Tooltip
     | Navbar
+    | BreakTimer
     | RosterTable
     | ShortcutInput
     | AThing
@@ -56,6 +57,9 @@ type Styles
     | AwayX
     | TipBox
     | TipTitle
+    | BreakTipTitle
+    | RetroTipBox
+    | BreakTipBox
     | PlainBody
     | TipBody
     | TipLink
@@ -188,6 +192,10 @@ stylesheet device =
             [ Font.center
             , Font.size fonts.mediumSmaller
             ]
+        , style BreakTimer
+            [ Font.center
+            , Font.size fonts.mediumLarge
+            ]
         , style NumberInputButton
             [ Color.background (Color.rgba 130 130 130 255)
             , Color.text Color.white
@@ -221,6 +229,30 @@ stylesheet device =
             , Style.cursor "pointer"
             , Font.typeface typefaces.body
             , Font.bold
+            ]
+        , style BreakTipTitle
+            [ Font.size fonts.mediumSmall
+            , Color.text Color.white
+            , Font.typeface typefaces.body
+            , Font.bold
+            ]
+        , style RetroTipBox
+            [ Color.background fontColor.circle
+            , Border.none
+            , Font.typeface typefaces.body
+            , Font.size fonts.small
+            , Color.text primaryColor
+            , Border.rounded 3
+            , Font.center
+            ]
+        , style BreakTipBox
+            [ Color.rgb 8 226 108 |> Color.Mixing.darken 0.14 |> Color.background
+            , Border.none
+            , Font.typeface typefaces.body
+            , Font.size fonts.small
+            , Color.text primaryColor
+            , Border.rounded 3
+            , Font.center
             ]
         , style TipLink
             [ Font.typeface typefaces.body

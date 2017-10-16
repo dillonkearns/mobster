@@ -7,7 +7,7 @@ module Setup.ScreenState
 
 type ScreenState
     = Configure
-    | Continue
+    | Continue { breakSecondsLeft : Int }
     | Rpg RpgState
 
 

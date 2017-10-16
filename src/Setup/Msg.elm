@@ -47,6 +47,7 @@ type Msg
     | Animate Animation.Msg
     | WindowResized Window.Size
     | MinuteElapsed Time.Time
+    | BreakSecondElapsed Time.Time
 
 
 type Direction
