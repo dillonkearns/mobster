@@ -156,7 +156,9 @@ updateSettings settingsUpdater ({ settings } as model) =
         updatedSettings =
             settingsUpdater settings
     in
-    { model | settings = updatedSettings } ! [ Setup.Ports.saveSettings (updatedSettings |> Settings.encoder) ]
+    ( { model | settings = updatedSettings }
+    , Setup.Ports.saveSettings (updatedSettings |> Settings.encoder)
+    )
 
 
 markDirtyIfChangePrevented :
@@ -218,7 +220,7 @@ update msg model =
                     ( model, Cmd.none )
 
         Msg.StartRpgMode ->
-            model ! [] |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
+            ( model, Cmd.none ) |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
 
         Msg.StartTimer ->
             (case model.screenState of
@@ -259,8 +261,7 @@ update msg model =
                 |> resetKeyboardCombos
 
         Msg.SkipBreak ->
-            (model |> resetBreakData)
-                ! []
+            ( model |> resetBreakData, Cmd.none )
                 |> changeScreen
                     (continueScreenState model)
                 |> Analytics.trackEvent
@@ -274,15 +275,13 @@ update msg model =
             startBreak model
 
         Msg.SelectInputField fieldId ->
-            model ! [ Setup.Ports.selectDuration fieldId ]
+            ( model, Setup.Ports.selectDuration fieldId )
 
         Msg.OpenConfigure ->
-            model
-                ! []
-                |> changeScreen ScreenState.Configure
+            ( model, Cmd.none ) |> changeScreen ScreenState.Configure
 
         Msg.DomResult _ ->
-            model ! []
+            ( model, Cmd.none )
 
         Msg.UpdateRosterData operation ->
             model |> performRosterOperation operation
@@ -295,40 +294,44 @@ update msg model =
             ( { model | combos = combos }, cmd )
 
         Msg.NewTip tipIndex ->
-            { model | tip = Tip.get Tip.All.tips tipIndex } ! []
+            ( { model | tip = Tip.get Tip.All.tips tipIndex }, Cmd.none )
 
         Msg.ShuffleMobsters ->
-            (model |> Dice.animateRoll |> Dice.animateActiveMobstersShuffle)
-                ! []
+            ( model |> Dice.animateRoll |> Dice.animateActiveMobstersShuffle
+            , Cmd.none
+            )
 
         Msg.TimeElapsed elapsedSeconds ->
-            { model
+            ( { model
                 | secondsSinceBreak = model.secondsSinceBreak + elapsedSeconds
                 , intervalsSinceBreak = model.intervalsSinceBreak + 1
                 , minutesTillBreakReset = breakResetInit
-            }
-                ! []
+              }
+            , Cmd.none
+            )
 
         Msg.BreakDone elapsedSeconds ->
-            model ! []
+            ( model, Cmd.none )
 
         Msg.ResetBreakData ->
-            (model |> resetBreakData) ! []
+            ( model |> resetBreakData, Cmd.none )
 
         Msg.UpdateAvailable availableUpdateVersion ->
-            { model | availableUpdateVersion = Just availableUpdateVersion } ! []
+            ( { model | availableUpdateVersion = Just availableUpdateVersion }
+            , Cmd.none
+            )
 
         Msg.RotateOutHotkey index ->
             if rosterViewIsShowing model.screenState then
                 performRosterOperation (MobsterOperation.Bench index) model
             else
-                model ! []
+                ( model, Cmd.none )
 
         Msg.RotateInHotkey index ->
             if rosterViewIsShowing model.screenState then
                 update (Msg.UpdateRosterData (MobsterOperation.RotateIn index)) model
             else
-                model ! []
+                ( model, Cmd.none )
 
         Msg.DragDropMsg dragDropMsg ->
             let
@@ -340,7 +343,7 @@ update msg model =
             in
             case dragDropResult of
                 Nothing ->
-                    updatedModel ! []
+                    ( updatedModel, Cmd.none )
 
                 Just ( dragId, dropId ) ->
                     case ( dragId, dropId ) of
@@ -354,10 +357,10 @@ update msg model =
                             update (Msg.UpdateRosterData (MobsterOperation.RotateIn inactiveMobsterId)) updatedModel
 
                         _ ->
-                            updatedModel ! []
+                            ( updatedModel, Cmd.none )
 
         Msg.SendIpc ipcMsg ->
-            model ! [ sendIpcCmd ipcMsg ]
+            ( model, sendIpcCmd ipcMsg )
 
         Msg.CheckRpgBox mobster goalIndex ->
             let
@@ -388,22 +391,23 @@ update msg model =
                                 |> trackEvent { category = "configure", action = "change-shortcut", label = Just newInputValue, value = Nothing }
 
                         Msg.NewMobster ->
-                            { model | newMobster = newInputValue } ! []
+                            ( { model | newMobster = newInputValue }, Cmd.none )
 
                         Msg.QuickRotateQuery ->
                             if model.altPressed then
                                 ( model, Cmd.none )
                                     |> manualQuickRotateChange
                             else
-                                { model
+                                ( { model
                                     | quickRotateState =
                                         QuickRotate.update newInputValue
                                             (model.settings.rosterData.inactiveMobsters
                                                 |> List.map .name
                                             )
                                             model.quickRotateState
-                                }
-                                    ! []
+                                  }
+                                , Cmd.none
+                                )
 
                 Msg.IntField intField ->
                     let
@@ -455,21 +459,19 @@ update msg model =
         Msg.QuickRotateAdd ->
             case model.quickRotateState.selection of
                 QuickRotate.Index benchIndex ->
-                    { model | quickRotateState = QuickRotate.init }
-                        ! []
+                    ( { model | quickRotateState = QuickRotate.init }, Cmd.none )
                         |> Update.Extra.andThen update
                             (Msg.UpdateRosterData (MobsterOperation.RotateIn benchIndex))
                         |> manualQuickRotateChange
 
                 QuickRotate.All ->
-                    model ! []
+                    ( model, Cmd.none )
 
                 QuickRotate.New newMobster ->
                     if View.Roster.preventAddingMobster model.settings.rosterData.mobsters newMobster then
-                        model ! []
+                        ( model, Cmd.none )
                     else
-                        { model | quickRotateState = QuickRotate.init }
-                            ! []
+                        ( { model | quickRotateState = QuickRotate.init }, Cmd.none )
                             |> Update.Extra.andThen update
                                 (Msg.UpdateRosterData (MobsterOperation.Add newMobster))
                             |> manualQuickRotateChange
@@ -481,45 +483,48 @@ update msg model =
             in
             case direction of
                 Msg.Next ->
-                    { model
+                    ( { model
                         | quickRotateState = QuickRotate.next inactiveMobsterNames model.quickRotateState
-                    }
-                        ! []
+                      }
+                    , Cmd.none
+                    )
 
                 Msg.Previous ->
-                    { model
+                    ( { model
                         | quickRotateState = QuickRotate.previous inactiveMobsterNames model.quickRotateState
-                    }
-                        ! []
+                      }
+                    , Cmd.none
+                    )
 
         Msg.KeyPressed pressed key ->
             case key of
                 Keyboard.Extra.Alt ->
-                    { model | altPressed = pressed } ! []
+                    ( { model | altPressed = pressed }, Cmd.none )
 
                 _ ->
-                    model ! []
+                    ( model, Cmd.none )
 
         Msg.Animate animMsg ->
             let
                 ( newMobsterStyle, shuffleCmd ) =
                     Animation.Messenger.update animMsg model.activeMobstersStyle
             in
-            { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = newMobsterStyle } ! [ shuffleCmd ]
+            ( { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = newMobsterStyle }, shuffleCmd )
 
         Msg.WindowResized windowSize ->
             let
                 device =
                     Element.classifyDevice windowSize
             in
-            { model
+            ( { model
                 | device = device
                 , responsivePalette = Responsive.palette device
-            }
-                ! []
+              }
+            , Cmd.none
+            )
 
         Msg.RandomizeMobsters ->
-            model ! [ shuffleMobstersCmd model.settings.rosterData ]
+            ( model, shuffleMobstersCmd model.settings.rosterData )
 
         Msg.OpenContinueScreen ->
             ( model, Cmd.none )
@@ -607,8 +612,7 @@ manualQuickRotateChange modelCmd =
 
 startBreak : Model -> ( Model, Cmd Msg )
 startBreak model =
-    (model |> resetIfAfterBreak)
-        ! [ changeTip ]
+    ( model |> resetIfAfterBreak, changeTip )
         |> changeScreen (continueScreenState model)
         |> startBreakTimer
 
@@ -659,7 +663,7 @@ performRosterOperationUntracked operation model =
 changeGlobalShortcutIfValid : String -> ( { model | settings : Settings.Data }, Cmd Msg ) -> ( { model | settings : Settings.Data }, Cmd Msg )
 changeGlobalShortcutIfValid newInputValue ( model, cmd ) =
     if GlobalShortcut.isInvalid newInputValue then
-        model ! []
+        ( model, Cmd.none )
     else
         let
             shortcutString =
@@ -684,8 +688,8 @@ sendIpcCmd ipcMsg =
 
 
 withIpcMsg : Ipc.Msg -> ( model, Cmd Msg ) -> ( model, Cmd Msg )
-withIpcMsg msgIpc ( model, cmd ) =
-    model ! [ cmd, sendIpcCmd msgIpc ]
+withIpcMsg msgIpc modelCmd =
+    Update.Extra.addCmd (sendIpcCmd msgIpc) modelCmd
 
 
 startTimer : ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
@@ -747,7 +751,7 @@ focusQuickRotateInput =
 focusQuickRotateInputIfVisible : ( { model | screenState : ScreenState }, Cmd Msg ) -> ( { model | screenState : ScreenState }, Cmd Msg )
 focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
     if model.screenState == ScreenState.Configure then
-        model ! [ cmd, focusQuickRotateInput ]
+        ( model, Cmd.batch [ cmd, focusQuickRotateInput ] )
     else
         updateResult
 
@@ -810,8 +814,9 @@ init { onMac, isLocal, settings } =
                 Nothing ->
                     Cmd.none
     in
-    initialModel initialSettings onMac
-        ! [ notifyIfDecodeFailed, getInitialWindowSize, changeTip ]
+    ( initialModel initialSettings onMac
+    , Cmd.batch [ notifyIfDecodeFailed, getInitialWindowSize, changeTip ]
+    )
         |> saveActiveMobsters
         |> changeGlobalShortcutIfValid initialSettings.showHideShortcut
 
