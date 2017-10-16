@@ -268,7 +268,7 @@ update msg model =
             (model |> resetBreakData)
                 ! []
                 |> changeScreen
-                    (ScreenState.Continue { breakSecondsLeft = model.settings.breakDuration * 60 })
+                    (continueScreenState model)
                 |> Analytics.trackEvent
                     { category = "break"
                     , action = "skip"
@@ -529,7 +529,7 @@ update msg model =
 
         Msg.OpenContinueScreen ->
             ( model, Cmd.none )
-                |> changeScreen (ScreenState.Continue { breakSecondsLeft = model.settings.breakDuration * 60 })
+                |> changeScreen (continueScreenState model)
 
         Msg.GoToRosterShortcut ->
             ( model, focusQuickRotateInput )
@@ -538,7 +538,7 @@ update msg model =
         Msg.GoToTipScreenShortcut ->
             ( model, changeTip )
                 |> changeScreen
-                    (ScreenState.Continue { breakSecondsLeft = model.settings.breakDuration * 60 })
+                    (continueScreenState model)
 
         Msg.MinuteElapsed _ ->
             case model.minutesTillBreakReset of
