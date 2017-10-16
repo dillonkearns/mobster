@@ -19,7 +19,6 @@ type Msg
     | GoToRosterShortcut
     | GoToTipScreenShortcut
     | OpenContinueScreen
-    | StartBreak
     | ViewRpgNextUp
     | SkipHotkey
     | StartRpgMode

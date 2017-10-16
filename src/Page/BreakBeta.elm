@@ -108,7 +108,7 @@ breakButtons breakSecondsLeft =
             )
         , button
             Styles.BreakButton
-            [ Attr.padding 13, Attr.width (Attr.fillPortion 3), Element.Events.onClick Msg.StartBreak ]
+            [ Attr.padding 13, Attr.width (Attr.fillPortion 3), Element.Events.onClick Msg.StartTimer ]
             (row Styles.None
                 [ Attr.spacing 20, Attr.center, Attr.width (Attr.percent 100) ]
                 [ text "Hide Until Break Done"

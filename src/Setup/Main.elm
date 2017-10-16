@@ -277,9 +277,6 @@ update msg model =
                     , value = Just (toFloat model.secondsSinceBreak / 60.0 |> round)
                     }
 
-        Msg.StartBreak ->
-            startBreak model
-
         Msg.SelectInputField fieldId ->
             ( model, Setup.Ports.selectDuration fieldId )
 
