@@ -46,7 +46,6 @@ import Tip
 import Tip.All
 import Update.Extra
 import View.FeedbackButton
-import View.FeedbackButtonStyleElements
 import View.Navbar
 import View.Roster
 import View.StartMobbingButton
@@ -88,7 +87,7 @@ view model =
             )
         ]
         |> Element.within
-            [ View.FeedbackButtonStyleElements.view
+            [ View.FeedbackButton.view
                 |> Element.el Styles.None [ Element.Attributes.alignRight, Element.Attributes.alignBottom, Element.Attributes.moveUp 115 ]
             ]
         |> Element.viewport
