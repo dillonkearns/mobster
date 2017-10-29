@@ -158,7 +158,7 @@ configOptions ({ os } as model) settings =
             "Every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ " Minutes"
     in
     Element.column Styles.PlainBody
-        [ Attr.spacing 30, Attr.width (Attr.percent 30) ]
+        [ Attr.spacing 25, Attr.width (Attr.percent 30) ]
         [ Element.column Styles.None
             [ Attr.spacing 10 ]
             [ Element.text "Timer"
