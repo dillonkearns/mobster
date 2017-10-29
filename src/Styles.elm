@@ -544,6 +544,7 @@ stylesheet device =
             , Border.all 3
             , Color.border Color.white
             , Font.uppercase
+            , Style.rotate -1.5708
             ]
         , style ShuffleDieContainer
             [ Color.background (Color.rgb 48 48 48)

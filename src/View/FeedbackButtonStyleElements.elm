@@ -1,6 +1,5 @@
 module View.FeedbackButtonStyleElements exposing (view)
 
-import Basics.Extra exposing ((=>))
 import Element
 import Element.Attributes as Attr
 import Element.Events
@@ -15,7 +14,6 @@ view =
         |> Element.row Styles.FeedbackButton
             [ Attr.padding 10
             , Attr.spacing 10
-            , Attr.inlineStyle [ "transform" => "rotate(-90deg)" ]
             , Element.Events.onClick <| Msg.SendIpc Ipc.ShowFeedbackForm
             ]
 

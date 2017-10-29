@@ -86,11 +86,11 @@ view model =
             (View.UpdateAvailable.view model.availableUpdateVersion
                 :: pageView model
             )
-            |> Element.within
-                [ View.FeedbackButtonStyleElements.view
-                    |> Element.el Styles.None [ Element.Attributes.alignRight, Element.Attributes.alignBottom ]
-                ]
         ]
+        |> Element.within
+            [ View.FeedbackButtonStyleElements.view
+                |> Element.el Styles.None [ Element.Attributes.alignRight, Element.Attributes.alignBottom, Element.Attributes.moveUp 115 ]
+            ]
         |> Element.viewport
             (Styles.stylesheet model.device)
 
