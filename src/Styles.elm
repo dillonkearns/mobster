@@ -545,6 +545,9 @@ stylesheet device =
             , Color.border Color.white
             , Font.uppercase
             , rotate90DegreesCounterClockwise
+            , hover
+                [ Color.background (Color.rgb 50 49 49)
+                ]
             ]
         , style ShuffleDieContainer
             [ Color.background (Color.rgb 48 48 48)
