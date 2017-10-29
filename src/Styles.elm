@@ -81,6 +81,7 @@ type Styles
     | ShuffleDieContainer
     | UpdateAlertBox
     | UpdateNow
+    | FeedbackButton
 
 
 type NavButtonType
@@ -537,6 +538,12 @@ stylesheet device =
             [ Style.cursor "pointer"
             , Font.underline
             , Font.bold
+            ]
+        , style FeedbackButton
+            [ Color.background (Color.rgb 70 69 69)
+            , Border.all 3
+            , Color.border Color.white
+            , Font.uppercase
             ]
         , style ShuffleDieContainer
             [ Color.background (Color.rgb 48 48 48)

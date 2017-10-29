@@ -46,6 +46,7 @@ import Tip
 import Tip.All
 import Update.Extra
 import View.FeedbackButton
+import View.FeedbackButtonStyleElements
 import View.Navbar
 import View.Roster
 import View.StartMobbingButton
@@ -85,7 +86,10 @@ view model =
             (View.UpdateAvailable.view model.availableUpdateVersion
                 :: pageView model
             )
-        , View.FeedbackButton.view
+            |> Element.within
+                [ View.FeedbackButtonStyleElements.view
+                    |> Element.el Styles.None [ Element.Attributes.alignRight, Element.Attributes.alignBottom ]
+                ]
         ]
         |> Element.viewport
             (Styles.stylesheet model.device)
@@ -93,7 +97,7 @@ view model =
 
 beta : Bool
 beta =
-    False
+    True
 
 
 pageView : Model -> List Styles.StyleElement
