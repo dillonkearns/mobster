@@ -46,7 +46,7 @@ breakTipView =
     --     ]
     let
         retroTip =
-            { title = "1-Minute Retro"
+            { title = "Mini-Retro"
             , body = "Name one repeated task you encountered today. What would it look like if it were automated?"
             , style = Styles.RetroTipBox
             }
