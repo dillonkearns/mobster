@@ -544,7 +544,7 @@ stylesheet device =
             , Border.all 3
             , Color.border Color.white
             , Font.uppercase
-            , Style.rotate -1.5708
+            , rotate90DegreesCounterClockwise
             ]
         , style ShuffleDieContainer
             [ Color.background (Color.rgb 48 48 48)
@@ -591,6 +591,11 @@ stylesheet device =
                 ]
             ]
         ]
+
+
+rotate90DegreesCounterClockwise : StyleProperty
+rotate90DegreesCounterClockwise =
+    Style.rotate -1.5708
 
 
 rosterItemRounding : Float
