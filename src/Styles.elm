@@ -546,10 +546,10 @@ stylesheet device =
                 ]
             ]
         , style (ShuffleDieContainer False)
-            [ Color.background (Color.rgb 48 48 48)
+            [ Color.background (Color.rgb 68 68 68)
             ]
         , style (ShuffleDieContainer True)
-            [ Color.background (Color.rgb 48 48 48)
+            [ Color.background (Color.rgb 68 68 68)
             ]
         , style (ShuffleDie False)
             [ Style.opacity 0.5
