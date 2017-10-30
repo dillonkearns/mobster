@@ -586,6 +586,9 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        Msg.ShuffleHover value ->
+            ( { model | shuffleButtonHover = value }, Cmd.none )
+
 
 continueScreenState : { model | settings : { settings | breakDuration : Int } } -> ScreenState
 continueScreenState model =
@@ -883,6 +886,7 @@ type alias Model =
     , manualChangeCounter : Int
     , minutesTillBreakReset : BreakResetState
     , dirtyInputKeys : Dict String Int
+    , shuffleButtonHover : Bool
     }
 
 
@@ -914,6 +918,7 @@ initialModel settings onMac =
     , manualChangeCounter = 0
     , minutesTillBreakReset = breakResetInit
     , dirtyInputKeys = Dict.empty
+    , shuffleButtonHover = False
     }
 
 

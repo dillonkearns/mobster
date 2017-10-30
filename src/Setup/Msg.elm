@@ -47,6 +47,7 @@ type Msg
     | WindowResized Window.Size
     | MinuteElapsed Time.Time
     | BreakSecondElapsed Time.Time
+    | ShuffleHover Bool
 
 
 type Direction
