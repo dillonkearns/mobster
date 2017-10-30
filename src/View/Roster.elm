@@ -84,7 +84,7 @@ rosterView ({ quickRotateState, device } as model) rosterData =
                     False
     in
     Element.column Styles.None
-        [ Attr.spacing 30, Attr.width (Attr.percent 100) ]
+        [ Attr.spacing 30 ]
         [ Element.column Styles.None
             []
             [ el Styles.PlainBody [] <| Element.text "Active"
