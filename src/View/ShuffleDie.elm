@@ -30,7 +30,7 @@ view ({ device, shuffleButtonHover } as model) =
     <|
         -- The extra container is needed to center, setting it directly
         -- on the image conflicts with the style animation css
-        Element.el Styles.None
+        Element.el (Styles.ShuffleDie shuffleButtonHover)
             [ Attr.verticalCenter
             , Attr.center
             ]
@@ -41,16 +41,15 @@ shuffleDie :
     { model
         | dieStyle : Animation.State
         , device : Device
-        , shuffleButtonHover : Bool
     }
     -> StyleElement
-shuffleDie { dieStyle, device, shuffleButtonHover } =
+shuffleDie { dieStyle, device } =
     let
         dimension =
             Styles.responsiveForWidth device ( 20, 50 ) |> Attr.px
     in
     Element.image
-        (Styles.ShuffleDie shuffleButtonHover)
+        Styles.None
         (List.map (\attr -> Attr.toAttr attr) (Animation.render dieStyle)
             ++ [ Attr.height dimension
                , Attr.width dimension

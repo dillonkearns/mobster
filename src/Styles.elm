@@ -553,9 +553,23 @@ stylesheet device =
             ]
         , style (ShuffleDie False)
             [ Style.opacity 0.5
+            , Style.Transition.transitions
+                [ { delay = 0
+                  , duration = Time.millisecond * 500
+                  , easing = "ease"
+                  , props = [ "all" ]
+                  }
+                ]
             ]
         , style (ShuffleDie True)
             [ Style.opacity 1
+            , Style.Transition.transitions
+                [ { delay = 0
+                  , duration = Time.millisecond * 500
+                  , easing = "ease"
+                  , props = [ "all" ]
+                  }
+                ]
             ]
         , style DeleteButton
             [ Color.text Color.white
