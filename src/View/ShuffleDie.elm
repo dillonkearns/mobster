@@ -1,7 +1,7 @@
 module View.ShuffleDie exposing (view)
 
 import Animation
-import Element exposing (Device, el)
+import Element exposing (Device)
 import Element.Attributes as Attr
 import Element.Events
 import Setup.Msg as Msg exposing (Msg)
