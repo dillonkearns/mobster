@@ -59,7 +59,7 @@ rosterView :
         , nextDriver : Int
         }
     -> StyleElement
-rosterView ({ quickRotateState, device } as model) rosterData =
+rosterView ({ quickRotateState } as model) rosterData =
     let
         inactiveMobsters =
             rosterData.inactiveMobsters
