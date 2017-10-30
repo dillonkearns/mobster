@@ -283,8 +283,7 @@ shuffleDie { dieStyle, device } =
     Element.image
         Styles.ShuffleDie
         (List.map (\attr -> Attr.toAttr attr) (Animation.render dieStyle)
-            ++ [ Element.Events.onClick Msg.ShuffleMobsters
-               , Attr.height dimension
+            ++ [ Attr.height dimension
                , Attr.width dimension
                ]
         )
@@ -302,7 +301,12 @@ shuffleDieContainer ({ device } as model) =
         dimension =
             Styles.responsiveForWidth device ( 40, 100 ) |> Attr.px
     in
-    Element.el Styles.ShuffleDieContainer [ Attr.width dimension, Attr.height dimension ] <|
+    Element.el Styles.ShuffleDieContainer
+        [ Attr.width dimension
+        , Attr.height dimension
+        , Element.Events.onClick Msg.ShuffleMobsters
+        ]
+    <|
         -- The extra container is needed to center, setting it directly
         -- on the image conflicts with the style animation css
         Element.el Styles.None
