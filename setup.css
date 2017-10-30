@@ -26,18 +26,6 @@ body {
   height: 100%;
   cursor: default;
 }
-h1,
-.h1 {
-  font-size: 2.6em;
-}
-h2,
-.h2 {
-  font-size: 2.133em;
-}
-h3,
-.h3 {
-  font-size: 2em;
-}
 #add-mobster-container {
   width: 100% !important;
 }
@@ -100,10 +88,6 @@ button {
   width: 0;
 }
 
-table.table tr td {
-  border: solid 1px black;
-}
-
 svg {
   width: 60px;
   height: 60px;
@@ -135,73 +119,7 @@ ul {
   opacity: 0.08 !important;
   background-color: rgba(150, 150, 150, 0.08);
 }
-
-.role-icon {
-  margin-left: 10px;
-  width: 20px;
-}
-
-.shuffle:hover {
-  opacity: 1;
-}
-
-.shuffle {
-  opacity: 0.5;
-}
-
-.no-role-icon {
-  content: url(./assets/driver-icon.png);
-  opacity: 0.08;
-}
-
-.active-mobster:hover .no-role-icon {
-  opacity: 1;
-}
-
-.driver-icon {
-  opacity: 0.8;
-  content: url(./assets/driver-icon.png);
-}
-
-.active-mobster:hover .driver-icon {
-  opacity: 0.9;
-  content: url(./assets/driver-icon.png);
-}
-
-.navigator-icon {
-  opacity: 0.08;
-  content: url(./assets/navigator-icon.png);
-}
-
-.active-mobster:hover .navigator-icon {
-  opacity: 1;
-  content: url(./assets/driver-icon.png);
-}
-
-.inactive-mobster {
-  color: gray;
-}
-.inactive-mobster.selected {
-  color: white;
-}
-
-.inactive-mobster:hover::before {
-  content: '«';
-  color: orange;
-}
-
-.inactive-mobster:hover {
-  color: white;
-}
 img {
   -webkit-user-select: none;
   user-select: none;
-}
-
-#feedback {
-  float: left;
-  position: fixed;
-  top: calc(85% - 47px);
-  right: 0;
-  border: 3px solid white;
 }
