@@ -6,7 +6,7 @@ import Basics.Extra exposing ((=>))
 import Dict exposing (Dict)
 import Element exposing (Device)
 import Element.Attributes as Attr
-import Element.Events exposing (onClick, onInput)
+import Element.Events
 import Element.Input
 import Html5.DragDrop as DragDrop
 import Os exposing (Os)
@@ -63,7 +63,6 @@ inputPair model inputField label value =
         [ numberInput model
             value
             (Validations.inputRangeFor inputField)
-            (Msg.ChangeInput (Msg.IntField inputField))
             inputField
         , Element.el Styles.None [] <| Element.text label
         ]
@@ -80,8 +79,8 @@ plusMinusButton stringy msg =
             ]
 
 
-numberInput : { model | dirtyInputKeys : Dict String Int, responsivePalette : Responsive.Palette } -> Int -> ( Int, Int ) -> (String -> Msg) -> IntInputField -> StyleElement
-numberInput { dirtyInputKeys, responsivePalette } value ( minValue, maxValue ) onInputMsg inputField =
+numberInput : { model | dirtyInputKeys : Dict String Int, responsivePalette : Responsive.Palette } -> Int -> ( Int, Int ) -> IntInputField -> StyleElement
+numberInput { dirtyInputKeys, responsivePalette } value ( minValue, maxValue ) inputField =
     let
         plusMsg =
             Msg.ChangeInput (Msg.IntField inputField) (value + 1 |> toString)
@@ -102,7 +101,7 @@ numberInput { dirtyInputKeys, responsivePalette } value ( minValue, maxValue ) o
             , Attr.attribute "step" "1"
             , Attr.attribute "type" "number"
             , value |> toString |> Attr.attribute "value"
-            , onClick (Msg.SelectInputField fieldId)
+            , Element.Events.onClick (Msg.SelectInputField fieldId)
             , Attr.id fieldId
             ]
             { onChange = Msg.ChangeInput (Msg.IntField inputField)
