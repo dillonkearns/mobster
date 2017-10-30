@@ -47,7 +47,7 @@ view model =
         [ Attr.spacing 50 ]
         [ configOptions model model.settings
         , Element.row Styles.None
-            [ Attr.width (Attr.percent 70) ]
+            [ Attr.width (Attr.fillPortion 68) ]
             [ View.Roster.view model model.settings.rosterData
             , View.ShuffleDie.view model
             ]
@@ -162,7 +162,7 @@ configOptions ({ os } as model) settings =
             "Every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ " Minutes"
     in
     Element.column Styles.PlainBody
-        [ Attr.spacing 25, Attr.width (Attr.fillPortion 3) ]
+        [ Attr.spacing 25, Attr.width (Attr.fillPortion 32) ]
         [ Element.column Styles.None
             [ Attr.spacing 10 ]
             [ Element.text "Timer"
