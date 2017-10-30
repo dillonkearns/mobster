@@ -96,7 +96,7 @@ view model =
 
 beta : Bool
 beta =
-    True
+    False
 
 
 pageView : Model -> List Styles.StyleElement
