@@ -525,12 +525,6 @@ stylesheet device =
                 , Color.border (Color.rgb 60 53 53)
                 ]
             ]
-        , style (ShuffleDie False)
-            [ Style.opacity 0.5
-            ]
-        , style (ShuffleDie True)
-            [ Style.opacity 1
-            ]
         , style UpdateAlertBox
             [ Color.background (Color.rgb 0 188 140)
             , Font.size fonts.extraSmall
@@ -556,6 +550,12 @@ stylesheet device =
             ]
         , style (ShuffleDieContainer True)
             [ Color.background (Color.rgb 48 48 48)
+            ]
+        , style (ShuffleDie False)
+            [ Style.opacity 0.5
+            ]
+        , style (ShuffleDie True)
+            [ Style.opacity 1
             ]
         , style DeleteButton
             [ Color.text Color.white
