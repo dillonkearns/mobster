@@ -18,6 +18,7 @@ import Setup.Settings as Settings
 import Setup.Validations as Validations
 import Styles exposing (StyleElement)
 import View.Roster
+import View.ShuffleDie
 import View.StartMobbingButton
 
 
@@ -45,9 +46,11 @@ view model =
     [ Element.row Styles.None
         [ Attr.spacing 50 ]
         [ configOptions model model.settings
-        , Element.el Styles.None
+        , Element.row Styles.None
             [ Attr.width (Attr.percent 70) ]
-            (View.Roster.view model model.settings.rosterData)
+            [ View.Roster.view model model.settings.rosterData
+            , View.ShuffleDie.view model
+            ]
         ]
     , View.StartMobbingButton.view model "Start Mobbing"
     ]

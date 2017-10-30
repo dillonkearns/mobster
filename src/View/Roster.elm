@@ -40,11 +40,7 @@ view :
         }
     -> StyleElement
 view model rosterData =
-    Element.row Styles.None
-        []
-        [ rosterView model rosterData
-        , shuffleDieContainer model
-        ]
+    rosterView model rosterData
 
 
 rosterView :
@@ -267,53 +263,6 @@ rosterInput model query selection =
 quickRotateQueryId : String
 quickRotateQueryId =
     "quick-rotate-query"
-
-
-shuffleDie :
-    { model
-        | dieStyle : Animation.State
-        , device : Device
-    }
-    -> StyleElement
-shuffleDie { dieStyle, device } =
-    let
-        dimension =
-            Styles.responsiveForWidth device ( 20, 50 ) |> Attr.px
-    in
-    Element.image
-        Styles.ShuffleDie
-        (List.map (\attr -> Attr.toAttr attr) (Animation.render dieStyle)
-            ++ [ Attr.height dimension
-               , Attr.width dimension
-               ]
-        )
-        { src = "./assets/dice.png", caption = "Shuffle die" }
-
-
-shuffleDieContainer :
-    { model
-        | dieStyle : Animation.State
-        , device : Device
-    }
-    -> StyleElement
-shuffleDieContainer ({ device } as model) =
-    let
-        dimension =
-            Styles.responsiveForWidth device ( 40, 100 ) |> Attr.px
-    in
-    Element.el Styles.ShuffleDieContainer
-        [ Attr.width dimension
-        , Attr.height dimension
-        , Element.Events.onClick Msg.ShuffleMobsters
-        ]
-    <|
-        -- The extra container is needed to center, setting it directly
-        -- on the image conflicts with the style animation css
-        Element.el Styles.None
-            [ Attr.verticalCenter
-            , Attr.center
-            ]
-            (shuffleDie model)
 
 
 preventAddingMobster : List Mobster.Mobster -> String -> Bool
