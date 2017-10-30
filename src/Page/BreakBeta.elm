@@ -1,6 +1,6 @@
 module Page.BreakBeta exposing (view)
 
-import Element exposing (button, el, empty, row, text)
+import Element
 import Element.Attributes as Attr
 import Element.Events
 import Setup.Msg as Msg
@@ -28,13 +28,13 @@ timerView breakSecondsLeft =
     breakSecondsLeft
         |> Timer.Timer.secondsToTimer
         |> Timer.Timer.timerToString
-        |> text
+        |> Element.text
         |> Element.el Styles.BreakTimer []
 
 
 fa : Styles.Styles -> String -> StyleElement
 fa style faClass =
-    Element.el style [ Attr.class <| "fa " ++ faClass ] empty
+    Element.el style [ Attr.class <| "fa " ++ faClass ] Element.empty
 
 
 breakTipView : StyleElement
@@ -88,30 +88,30 @@ breakSuggestionView :
     { model | secondsSinceBreak : Int }
     -> StyleElement
 breakSuggestionView { secondsSinceBreak } =
-    row Styles.BreakAlertBox
+    Element.row Styles.BreakAlertBox
         [ Attr.width Attr.fill, Attr.paddingXY 16 16, Attr.spacing 10, Attr.center, Attr.verticalCenter ]
         [ fa Styles.None "fa-exclamation-circle"
-        , text <| "How about a walk? You've been mobbing for " ++ toString (secondsSinceBreak // 60) ++ " minutes."
+        , Element.text <| "How about a walk? You've been mobbing for " ++ toString (secondsSinceBreak // 60) ++ " minutes."
         ]
 
 
 breakButtons : Int -> StyleElement
 breakButtons breakSecondsLeft =
-    row Styles.None
+    Element.row Styles.None
         [ Attr.spacing 30 ]
-        [ button
+        [ Element.button
             Styles.SkipBreakButton
             [ Attr.padding 13, Attr.width (Attr.fillPortion 1), Element.Events.onClick Msg.SkipBreak ]
-            (row Styles.None
+            (Element.row Styles.None
                 [ Attr.spacing 20, Attr.center, Attr.width (Attr.percent 100) ]
-                [ text "Skip Break" ]
+                [ Element.text "Skip Break" ]
             )
-        , button
+        , Element.button
             Styles.BreakButton
             [ Attr.padding 13, Attr.width (Attr.fillPortion 3), Element.Events.onClick Msg.StartTimer ]
-            (row Styles.None
+            (Element.row Styles.None
                 [ Attr.spacing 20, Attr.center, Attr.width (Attr.percent 100) ]
-                [ text "Hide Until Break Done"
+                [ Element.text "Hide Until Break Done"
                 , fa Styles.None "fa-coffee"
                 ]
             )
