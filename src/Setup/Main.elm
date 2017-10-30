@@ -632,7 +632,7 @@ startBreak model =
 
 changeScreen : ScreenState -> ( Model, Cmd Msg ) -> ( Model, Cmd Msg )
 changeScreen newScreenState ( model, cmd ) =
-    ( { model | screenState = newScreenState }
+    ( { model | screenState = newScreenState, shuffleButtonHover = False }
     , Cmd.batch
         [ cmd
         , Analytics.trackPage newScreenState
