@@ -12,17 +12,20 @@ view :
     { model
         | dieStyle : Animation.State
         , device : Device
+        , shuffleButtonHover : Bool
     }
     -> StyleElement
-view ({ device } as model) =
+view ({ device, shuffleButtonHover } as model) =
     let
         dimension =
             Styles.responsiveForWidth device ( 40, 100 ) |> Attr.px
     in
-    Element.el Styles.ShuffleDieContainer
+    Element.el (Styles.ShuffleDieContainer shuffleButtonHover)
         [ Attr.width dimension
         , Attr.height dimension
         , Element.Events.onClick Msg.ShuffleMobsters
+        , Element.Events.onMouseOver (Msg.ShuffleHover True)
+        , Element.Events.onMouseOut (Msg.ShuffleHover False)
         ]
     <|
         -- The extra container is needed to center, setting it directly
@@ -38,15 +41,16 @@ shuffleDie :
     { model
         | dieStyle : Animation.State
         , device : Device
+        , shuffleButtonHover : Bool
     }
     -> StyleElement
-shuffleDie { dieStyle, device } =
+shuffleDie { dieStyle, device, shuffleButtonHover } =
     let
         dimension =
             Styles.responsiveForWidth device ( 20, 50 ) |> Attr.px
     in
     Element.image
-        Styles.ShuffleDie
+        (Styles.ShuffleDie shuffleButtonHover)
         (List.map (\attr -> Attr.toAttr attr) (Animation.render dieStyle)
             ++ [ Attr.height dimension
                , Attr.width dimension

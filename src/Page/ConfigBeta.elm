@@ -39,6 +39,7 @@ view :
         , dragDrop : DragDropModel
         , manualChangeCounter : Int
         , dirtyInputKeys : Dict String Int
+        , shuffleButtonHover : Bool
     }
     -> List Styles.StyleElement
 view model =

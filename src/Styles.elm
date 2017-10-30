@@ -77,8 +77,8 @@ type Styles
     | RosterDraggedOver
     | InactiveRosterEntry QuickRotate.EntrySelection
     | DeleteButton
-    | ShuffleDie
-    | ShuffleDieContainer
+    | ShuffleDie Bool
+    | ShuffleDieContainer Bool
     | UpdateAlertBox
     | UpdateNow
     | FeedbackButton
@@ -525,9 +525,11 @@ stylesheet device =
                 , Color.border (Color.rgb 60 53 53)
                 ]
             ]
-        , style ShuffleDie
+        , style (ShuffleDie False)
             [ Style.opacity 0.5
-            , hover [ Style.opacity 1 ]
+            ]
+        , style (ShuffleDie True)
+            [ Style.opacity 1
             ]
         , style UpdateAlertBox
             [ Color.background (Color.rgb 0 188 140)
@@ -549,7 +551,10 @@ stylesheet device =
                 [ Color.background (Color.rgb 50 49 49)
                 ]
             ]
-        , style ShuffleDieContainer
+        , style (ShuffleDieContainer False)
+            [ Color.background (Color.rgb 48 48 48)
+            ]
+        , style (ShuffleDieContainer True)
             [ Color.background (Color.rgb 48 48 48)
             ]
         , style DeleteButton
