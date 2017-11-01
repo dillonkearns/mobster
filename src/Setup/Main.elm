@@ -103,10 +103,7 @@ pageView : Model -> List Styles.StyleElement
 pageView model =
     case model.screenState of
         ScreenState.Configure ->
-            if beta then
-                Page.ConfigBeta.view model
-            else
-                Page.Config.view model
+            Page.ConfigBeta.view model
 
         ScreenState.Continue { breakSecondsLeft } ->
             if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
