@@ -1,32 +1,57 @@
 sudo: false
-
 cache:
   directories:
     - tests/elm-stuff/build-artifacts
     - sysconfcpus
     - "node_modules"
+    - "web/node_modules"
+    - web/tests/elm-stuff/build-artifacts
 os:
   - osx
 language: node_js
 node_js:
   - "node"
 
-before_install:
-  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-  - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
-    if [ ! -d sysconfcpus/bin ];
-    then
-      git clone https://github.com/obmarg/libsysconfcpus.git;
-      cd libsysconfcpus;
-      ./configure --prefix=$TRAVIS_BUILD_DIR/sysconfcpus;
-      make && make install;
-      cd ..;
-    fi
-install:
-  - npm install
-  - cd tests
-  - travis_retry ../node_modules/.bin/elm-package install --yes
-  - cd ..
+jobs:
+  include:
+    - stage: Test and Deploy
+      before_install:
+        - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+        - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
+          if [ ! -d sysconfcpus/bin ];
+          then
+            git clone https://github.com/obmarg/libsysconfcpus.git;
+            cd libsysconfcpus;
+            ./configure --prefix=$TRAVIS_BUILD_DIR/sysconfcpus;
+            make && make install;
+            cd ..;
+          fi
+      install:
+        - npm install
+        - cd tests
+        - travis_retry ../node_modules/.bin/elm-package install --yes
+        - cd ..
 
-script:
-  - npm test
+      script:
+        - npm test
+    - stage: Test and Deploy
+      before_install:
+        - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+        - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
+          if [ ! -d sysconfcpus/bin ];
+          then
+            git clone https://github.com/obmarg/libsysconfcpus.git;
+            cd libsysconfcpus;
+            ./configure --prefix=$TRAVIS_BUILD_DIR/sysconfcpus;
+            make && make install;
+            cd ..;
+          fi
+      install:
+        - cd web
+        - npm install
+        - cd tests
+        - travis_retry ../node_modules/.bin/elm-package install --yes
+        - cd ..
+
+      script:
+        - npm test
