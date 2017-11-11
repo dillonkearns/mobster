@@ -10,10 +10,7 @@ os:
 
 before_install:
   - brew update
-  - brew install nvm
-  - mkdir ~/.nvm
-  - export NVM_DIR=~/.nvm
-  - source $(brew --prefix nvm)/nvm.sh
+  - brew install nvm; mkdir ~/.nvm; export NVM_DIR=~/.nvm; source $(brew --prefix nvm)/nvm.sh;
   - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
     if [ ! -d sysconfcpus/bin ];
