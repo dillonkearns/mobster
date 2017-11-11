@@ -14,7 +14,7 @@ node_js:
 
 jobs:
   include:
-    - name: Mobster App
+    - stage: Test
       before_install:
         - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
@@ -34,7 +34,7 @@ jobs:
 
       script:
         - npm test
-    - name: Mobster Web
+    - stage: Test
       before_install:
         - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
@@ -49,9 +49,14 @@ jobs:
       install:
         - cd web
         - npm install
-        - cd tests
-        - travis_retry ../node_modules/.bin/elm-package install --yes
-        - cd ..
+        - cd tests && travis_retry ../node_modules/.bin/elm-package install --yes && cd ..
 
       script:
         - npm test
+        - npm build
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN
+        on:
+          branch: master
