@@ -53,8 +53,6 @@ jobs:
 
       script:
         - npm test
-      stage: Deploy
-      script:
         - npm run build
       deploy:
         provider: pages
