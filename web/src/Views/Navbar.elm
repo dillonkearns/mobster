@@ -9,10 +9,16 @@ import Views.Fa as Fa
 import Views.GithubStar
 
 
-view : { model | githubInfo : WebData Github.Info } -> StyleElement
-view model =
+view : { model | githubInfo : WebData Github.Info, device : Device } -> StyleElement
+view ({ device } as model) =
     row Navbar
-        [ spread, paddingXY 150 18, verticalCenter ]
+        [ spread
+        , if device.width < 800 then
+            paddingXY 10 18
+          else
+            paddingXY 150 18
+        , verticalCenter
+        ]
         [ navbarTitle
         , navbarLinks model
         ]

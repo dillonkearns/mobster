@@ -102,7 +102,12 @@ mainContent model =
             [ text "Get a friendly reminder to pass the keyboard"
                 |> el SubHeading []
             , Element.image None
-                [ width (percent 80), verticalCenter ]
+                [ if model.device.phone then
+                    width (percent 95)
+                  else
+                    width (percent 80)
+                , verticalCenter
+                ]
                 { src = "./assets/screenshot1.png", caption = "icon" }
             ]
         ]
