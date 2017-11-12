@@ -22,7 +22,7 @@
     "webpack-dev-server": "^2.9.4"
   },
   "scripts": {
-    "build": "rm -rf dist/* && webpack -p && cp -r index.html CNAME assets dist",
+    "build": "rm -rf dist/* && webpack -p && cp -r index.html CNAME assets favicon* dist",
     "start": "npm run elm-typescript-interop && webpack-dev-server --open --hot",
     "test": "elm-test",
     "elm-typescript-interop": "elm-typescript-interop src/Main.elm --output=src/Main/index.d.ts"
