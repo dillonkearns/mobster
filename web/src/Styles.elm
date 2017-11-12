@@ -19,7 +19,6 @@ type Styles
     = None
     | TopLevel
     | Main
-    | Tooltip
     | Navbar
     | DownloadButton
     | Title
@@ -34,6 +33,18 @@ type Styles
 
 type alias StyleProperty =
     Style.Property Styles Never
+
+
+colors : { bg : { dark : Color }, darkText : Color, green : Color, text : { dark : Color }, blue : Color }
+colors =
+    { blue = Color.rgb 52 152 219
+    , green = Color.rgb 9 180 80
+    , darkText = Color.rgb 57 64 64
+    , text =
+        { dark = Color.rgb 57 64 64 }
+    , bg =
+        { dark = Color.rgb 40 40 40 }
+    }
 
 
 typefaces : { title : List Style.Font, body : List Style.Font }
@@ -82,36 +93,31 @@ stylesheet device =
             ]
         , style Main
             [ Color.text primaryColor
-            , Color.background (Color.rgb 40 40 40)
+            , Color.background colors.bg.dark
             , Font.size 16
             , Font.lineHeight 1.3
             ]
         , style DownloadButton
-            [ Color.background (Color.rgb 10 190 84 |> Color.Mixing.darken 0.02)
+            [ Color.background colors.green
             , Font.center
             , Border.rounded 5
             , Style.Shadow.simple
             , Font.size 30
             , hover
                 [ cursor "pointer"
-                , Color.background (Color.rgb 10 190 84 |> Color.Mixing.darken 0.1)
+                , Color.background (colors.green |> Color.Mixing.darken 0.1)
                 ]
             ]
         , style Navbar
             [ Color.background Color.white
             ]
-        , style Tooltip
-            [ Color.background (Color.rgb 201 201 201)
-            , Font.size 28
-            , opacity 0
-            ]
         , style Title
             [ Font.typeface typefaces.title
-            , Color.text (Color.rgb 57 64 64)
+            , Color.text colors.text.dark
             , Font.size 40
             ]
         , style SubHeading
-            [ Color.text (Color.rgb 57 64 64)
+            [ Color.text colors.text.dark
             , Font.size 25
             , Font.weight 900
             ]
@@ -121,7 +127,7 @@ stylesheet device =
             , Color.border (Color.rgb 195 195 195)
             , hover
                 [ Color.background (Color.rgb 240 240 240 |> Color.Mixing.darken 0.2)
-                , Color.text (Color.rgb 57 64 64)
+                , Color.text colors.text.dark
                 , Style.cursor "pointer"
                 ]
             ]
@@ -136,25 +142,19 @@ stylesheet device =
             ]
         , style NavbarLinks
             [ Font.size 35
-            , Color.text (Color.rgb 57 64 64)
+            , Color.text colors.text.dark
             ]
         , style NavbarLink
             [ Font.size 35
-            , Color.text (Color.rgb 57 64 64)
+            , Color.text colors.text.dark
             , hover
-                [ Color.text (Color.rgb 52 152 219)
-                ]
+                [ Color.text colors.blue ]
             ]
         , style TaglineA
             [ Font.size 35
-
-            -- , Font.weight 900
-            --  , Color.text (Color.rgb 57 64 64)
             ]
         , style TaglineB
             [ Font.size 35
             , Font.weight 900
-
-            --  , Color.text (Color.rgb 57 64 64)
             ]
         ]
