@@ -40,7 +40,7 @@ colors =
     { blue = Color.rgb 52 152 219
     , green = Color.rgb 9 180 80
     , text =
-        { darkBold = Color.rgb 35 35 35
+        { darkBold = Color.rgb 38 38 38
         , darkRegular = Color.rgb 57 64 64
         }
     , bg =
@@ -126,6 +126,10 @@ stylesheet device =
             [ Font.typeface typefaces.title
             , Color.text colors.text.darkBold
             , Font.size 40
+            , Style.prop "fill" (colorToString colors.text.darkBold)
+            , hover
+                [ cursor "pointer"
+                ]
             ]
         , style SubHeading
             [ Color.text colors.text.darkRegular
@@ -160,7 +164,10 @@ stylesheet device =
             , Color.text colors.text.darkBold
             , Style.prop "fill" (colorToString colors.text.darkBold)
             , hover
-                [ Color.text colors.blue ]
+                [ Color.text colors.blue
+                , Style.prop "fill" (colorToString colors.blue)
+                , cursor "pointer"
+                ]
             ]
         , style TaglineA
             [ Font.size 35

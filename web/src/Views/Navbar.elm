@@ -26,11 +26,10 @@ view ({ device } as model) =
 
 navbarTitle : StyleElement
 navbarTitle =
-    row None
+    row Title
         [ spacing 20 ]
-        [ Views.GithubStar.logo |> el NavbarLink [ width (px 65), verticalCenter ]
+        [ Views.GithubStar.logo |> el Title [ width (px 65), verticalCenter ]
         , text "Mobster"
-            |> el Title []
         ]
 
 
