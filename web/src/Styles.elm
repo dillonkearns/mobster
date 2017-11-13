@@ -35,11 +35,10 @@ type alias StyleProperty =
     Style.Property Styles Never
 
 
-colors : { bg : { dark : Color }, darkText : Color, green : Color, text : { dark : Color }, blue : Color }
+colors : { bg : { dark : Color }, green : Color, text : { dark : Color }, blue : Color }
 colors =
     { blue = Color.rgb 52 152 219
     , green = Color.rgb 9 180 80
-    , darkText = Color.rgb 57 64 64
     , text =
         { dark = Color.rgb 57 64 64 }
     , bg =
