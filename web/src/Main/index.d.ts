@@ -6,7 +6,9 @@ export as namespace Elm
 
 export interface App {
   ports: {
-
+    trackEvent: {
+      subscribe(callback: (data: { category: string; name: string; label: string }) => void): void
+    }
   }
 }
     

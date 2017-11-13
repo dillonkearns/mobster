@@ -2,7 +2,9 @@ module Views.DownloadButton exposing (view)
 
 import Element exposing (..)
 import Element.Attributes exposing (..)
+import Element.Events exposing (onClick)
 import Github
+import Msg
 import Os exposing (Os)
 import Releases
 import RemoteData exposing (WebData)
@@ -21,20 +23,26 @@ view : { model | githubInfo : WebData Github.Info, os : Os } -> StyleElement
 view { githubInfo, os } =
     case os of
         Os.Mac ->
-            downloadButtonForOs .mac "fa-apple" githubInfo
+            downloadButtonForOs .mac "fa-apple" os githubInfo
 
         Os.Windows ->
-            downloadButtonForOs .windows "fa-windows" githubInfo
+            downloadButtonForOs .windows "fa-windows" os githubInfo
 
         Os.Linux ->
-            downloadButtonForOs .linux "fa-linux" githubInfo
+            downloadButtonForOs .linux "fa-linux" os githubInfo
 
         Os.Other ->
-            downloadButtonView releasesUrl [ text "Download" ]
+            downloadButtonView releasesUrl
+                os
+                [ text "Download"
+                , Fa.fa Styles.None "fa-apple"
+                , Fa.fa Styles.None "fa-windows"
+                , Fa.fa Styles.None "fa-linux"
+                ]
 
 
-downloadButtonForOs : (Releases.PlatformUrls -> String) -> String -> WebData Github.Info -> StyleElement
-downloadButtonForOs getPlatformDownloadUrl platformIcon githubInfo =
+downloadButtonForOs : (Releases.PlatformUrls -> String) -> String -> Os -> WebData Github.Info -> StyleElement
+downloadButtonForOs getPlatformDownloadUrl platformIcon os githubInfo =
     column Styles.None
         [ spacing 10 ]
         [ downloadButtonView
@@ -43,6 +51,7 @@ downloadButtonForOs getPlatformDownloadUrl platformIcon githubInfo =
                 |> RemoteData.map getPlatformDownloadUrl
                 |> RemoteData.withDefault releasesUrl
             )
+            os
             [ text "Download", Fa.fa Styles.None platformIcon ]
         , otherPlatformsLink
         ]
@@ -50,14 +59,17 @@ downloadButtonForOs getPlatformDownloadUrl platformIcon githubInfo =
 
 downloadButtonView :
     String
+    -> Os
     -> List StyleElement
     -> StyleElement
-downloadButtonView href buttonContents =
+downloadButtonView href os buttonContents =
     row Styles.DownloadButton
         [ padding 20
         , center
         , spacing 10
         , attribute "href" href
+        , attribute "target" "_blank"
+        , onClick (Msg.TrackDownloadClick os)
         ]
         buttonContents
         |> node "a"

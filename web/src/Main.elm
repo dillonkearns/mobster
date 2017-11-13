@@ -1,5 +1,6 @@
-module Main exposing (main)
+port module Main exposing (main)
 
+import Analytics exposing (Event)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Github
@@ -71,6 +72,15 @@ update msg model =
         Msg.GotGithubInfo githubInfo ->
             ( { model | githubInfo = githubInfo }, Cmd.none )
 
+        Msg.TrackDownloadClick os ->
+            ( model
+            , trackEvent
+                { name = "download"
+                , category = "engagement"
+                , label = toString os
+                }
+            )
+
 
 subscriptions : a -> Sub Msg
 subscriptions model =
@@ -137,3 +147,6 @@ view model =
             [ Navbar.view model
             , mainContent model
             ]
+
+
+port trackEvent : Event -> Cmd msg
