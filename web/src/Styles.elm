@@ -35,12 +35,14 @@ type alias StyleProperty =
     Style.Property Styles Never
 
 
-colors : { bg : { dark : Color }, green : Color, text : { dark : Color }, blue : Color }
+colors : { bg : { dark : Color }, green : Color, text : { darkBold : Color, darkRegular : Color }, blue : Color }
 colors =
     { blue = Color.rgb 52 152 219
     , green = Color.rgb 9 180 80
     , text =
-        { dark = Color.rgb 57 64 64 }
+        { darkBold = Color.rgb 35 35 35
+        , darkRegular = Color.rgb 57 64 64
+        }
     , bg =
         { dark = Color.rgb 40 40 40 }
     }
@@ -122,11 +124,11 @@ stylesheet device =
             ]
         , style Title
             [ Font.typeface typefaces.title
-            , Color.text colors.text.dark
+            , Color.text colors.text.darkBold
             , Font.size 40
             ]
         , style SubHeading
-            [ Color.text colors.text.dark
+            [ Color.text colors.text.darkRegular
             , Font.size 25
             , Font.weight 900
             ]
@@ -134,7 +136,7 @@ stylesheet device =
             [ Color.background (Color.rgb 240 240 240)
             , Border.all 2
             , Color.border (Color.rgb 195 195 195)
-            , Style.prop "fill" (colorToString colors.text.dark)
+            , Style.prop "fill" (colorToString colors.text.darkBold)
             , hover
                 [ Color.background (Color.rgb 240 240 240 |> Color.Mixing.darken 0.2)
                 , Style.cursor "pointer"
@@ -151,12 +153,12 @@ stylesheet device =
             ]
         , style NavbarLinks
             [ Font.size 35
-            , Color.text colors.text.dark
+            , Color.text colors.text.darkBold
             ]
         , style NavbarLink
             [ Font.size 35
-            , Color.text colors.text.dark
-            , Style.prop "fill" (colorToString colors.text.dark)
+            , Color.text colors.text.darkBold
+            , Style.prop "fill" (colorToString colors.text.darkBold)
             , hover
                 [ Color.text colors.blue ]
             ]
