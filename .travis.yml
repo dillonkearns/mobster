@@ -3,19 +3,18 @@ cache:
   directories:
     - tests/elm-stuff/build-artifacts
     - sysconfcpus
-    - "node_modules"
-    - "web/node_modules"
+    - node_modules
+    - web/node_modules
     - web/tests/elm-stuff/build-artifacts
 os:
   - osx
 language: node_js
 node_js:
-  - "node"
+  - node
 
 jobs:
   include:
-    - stage: Test
-      before_install:
+    - before_install:
         - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
           if [ ! -d sysconfcpus/bin ];
@@ -34,8 +33,7 @@ jobs:
 
       script:
         - npm test
-    - stage: Test
-      before_install:
+    - before_install:
         - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - | # epic build time improvement - see https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
           if [ ! -d sysconfcpus/bin ];
