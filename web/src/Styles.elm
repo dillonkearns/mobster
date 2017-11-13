@@ -5,6 +5,7 @@ import Color.Mixing
 import Element exposing (..)
 import Msg exposing (Msg)
 import Style exposing (..)
+import Style.Background
 import Style.Border as Border
 import Style.Color as Color
 import Style.Font as Font
@@ -45,6 +46,21 @@ colors =
         }
     , bg =
         { dark = Color.rgb 40 40 40 }
+    }
+
+
+buttonGradient : Color.Mixing.Factor -> Color -> StyleProperty
+buttonGradient factor color =
+    Style.Background.gradient 115
+        [ color |> Style.Background.step
+        , color |> Color.Mixing.darken factor |> Style.Background.step
+        ]
+
+
+buttonGradients : Color -> { main : StyleProperty, hover : StyleProperty }
+buttonGradients color =
+    { main = color |> buttonGradient 0.04
+    , hover = color |> Color.Mixing.darken 0.04 |> buttonGradient 0.04
     }
 
 
@@ -109,14 +125,14 @@ stylesheet device =
             , Font.lineHeight 1.3
             ]
         , style DownloadButton
-            [ Color.background colors.green
+            [ colors.green |> buttonGradients |> .main
             , Font.center
             , Border.rounded 5
             , Style.Shadow.simple
             , Font.size 30
             , hover
                 [ cursor "pointer"
-                , Color.background (colors.green |> Color.Mixing.darken 0.1)
+                , colors.green |> buttonGradients |> .hover
                 ]
             ]
         , style Navbar
