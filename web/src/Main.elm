@@ -43,10 +43,6 @@ main =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    let
-        _ =
-            Debug.log "flags" flags
-    in
     ( { device = Element.classifyDevice (Window.Size 0 0)
       , githubInfo = RemoteData.Loading
       , os = Os.fromString flags.os
