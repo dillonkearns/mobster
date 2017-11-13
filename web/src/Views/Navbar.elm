@@ -28,9 +28,7 @@ navbarTitle : StyleElement
 navbarTitle =
     row None
         [ spacing 20 ]
-        [ Element.image None
-            [ height (px 35), verticalCenter ]
-            { src = "./assets/icon.png", caption = "icon" }
+        [ Views.GithubStar.logo |> el NavbarLink [ width (px 65), verticalCenter ]
         , text "Mobster"
             |> el Title []
         ]

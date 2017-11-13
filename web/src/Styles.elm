@@ -47,6 +47,16 @@ colors =
     }
 
 
+colorToString : Color -> String
+colorToString color =
+    color
+        |> Color.toRgb
+        |> (\{ red, green, blue } -> [ red, green, blue ])
+        |> List.map toString
+        |> String.join ","
+        |> (\rgb -> "rgb(" ++ rgb ++ ")")
+
+
 typefaces : { title : List Style.Font, body : List Style.Font }
 typefaces =
     { title = [ "Anton", "helvetica", "arial", "sans-serif" ] |> List.map Font.font
@@ -125,9 +135,9 @@ stylesheet device =
             [ Color.background (Color.rgb 240 240 240)
             , Border.all 2
             , Color.border (Color.rgb 195 195 195)
+            , Style.prop "fill" (colorToString colors.text.dark)
             , hover
                 [ Color.background (Color.rgb 240 240 240 |> Color.Mixing.darken 0.2)
-                , Color.text colors.text.dark
                 , Style.cursor "pointer"
                 ]
             ]
@@ -147,6 +157,7 @@ stylesheet device =
         , style NavbarLink
             [ Font.size 35
             , Color.text colors.text.dark
+            , Style.prop "fill" (colorToString colors.text.dark)
             , hover
                 [ Color.text colors.blue ]
             ]
