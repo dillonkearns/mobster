@@ -111,6 +111,9 @@ mainContent model =
                 [ Element.Attributes.attribute "autoplay" ""
                 , attribute "loop" ""
                 , attribute "src" "./assets/configure.mp4"
+                , attribute "type" "video/mp4"
+                , attribute "muted" ""
+                , attribute "playsinline" ""
                 , width (percent 80)
                 ]
                 Element.empty
