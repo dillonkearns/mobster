@@ -108,12 +108,12 @@ mainContent model =
             [ text "Get a friendly reminder to pass the keyboard"
                 |> el SubHeading []
             , el None
-                [ Element.Attributes.attribute "autoplay" ""
-                , attribute "loop" ""
-                , attribute "src" "./assets/configure.mp4"
-                , attribute "type" "video/mp4"
-                , attribute "muted" ""
+                [ attribute "src" "./assets/configure.mp4"
                 , attribute "playsinline" ""
+                , attribute "loop" ""
+                , attribute "muted" ""
+                , attribute "autoplay" ""
+                , attribute "type" "video/mp4"
                 , width (percent 80)
                 ]
                 Element.empty
