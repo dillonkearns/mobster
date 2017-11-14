@@ -64,7 +64,6 @@ type Styles
     | TipBody
     | TipLink
     | StepButton
-    | GameButton
     | RoseIcon
     | Circle CircleFill
     | Hairline
@@ -173,6 +172,11 @@ stylesheet device =
         responsiveForWidthWith =
             responsiveForWidth device
 
+        rounding =
+            { small = Border.rounded (responsiveForWidthWith ( 2, 10 ))
+            , large = Border.rounded (responsiveForWidthWith ( 4, 20 ))
+            }
+
         tipBoxColor =
             Color.rgb 75 75 75
     in
@@ -208,15 +212,15 @@ stylesheet device =
             ]
         , style (Circle Filled)
             [ Color.background fontColor.circle
-            , Border.rounded 3
+            , rounding.small
             ]
         , style (Circle Hollow)
-            [ Border.rounded 3
+            [ rounding.small
             , Color.background (Color.rgba 80 80 80 60)
             ]
         , style TipBox
             [ Color.background tipBoxColor
-            , Border.rounded 3
+            , rounding.small
             , Border.solid
             , Border.all 1
             , Color.border (Color.rgb 25 25 25)
@@ -243,7 +247,7 @@ stylesheet device =
             , Font.typeface typefaces.body
             , Font.size fonts.small
             , Color.text primaryColor
-            , Border.rounded 3
+            , rounding.small
             , Font.center
             ]
         , style BreakTipBox
@@ -252,7 +256,7 @@ stylesheet device =
             , Font.typeface typefaces.body
             , Font.size fonts.small
             , Color.text primaryColor
-            , Border.rounded 3
+            , rounding.small
             , Font.center
             ]
         , style TipLink
@@ -272,7 +276,7 @@ stylesheet device =
             [ Color.text (Color.rgb 235 235 235)
             , Font.size fonts.extraSmall
             , Font.typeface typefaces.body
-            , Border.rounded 10
+            , rounding.large
             , Color.background colors.defaultButton
             , hover
                 [ Color.text (Color.rgba 200 20 20 255)
@@ -287,19 +291,9 @@ stylesheet device =
         , style StepButton
             [ Color.text <| Color.rgb 239 177 1
             , Color.background colors.defaultButton
-            , Border.rounded 10
+            , rounding.large
             , Border.none
             , Font.size fonts.extraSmall
-            , hover
-                [ Color.background colors.defaultButtonHover
-                ]
-            ]
-        , style GameButton
-            [ Color.text <| Color.white
-            , Color.background colors.defaultButton
-            , Border.rounded 10
-            , Border.none
-            , Font.size fonts.small
             , hover
                 [ Color.background colors.defaultButtonHover
                 ]
@@ -311,7 +305,7 @@ stylesheet device =
         , style KeyboardKey
             [ Color.text Color.black
             , Style.Background.gradient -90 [ Style.Background.step <| Color.white, Style.Background.step <| Color.rgb 207 207 207 ]
-            , Border.rounded 3
+            , rounding.small
             , Font.lineHeight 2.5
             , Font.center
             , Border.solid
@@ -345,7 +339,7 @@ stylesheet device =
             , Font.typeface typefaces.title
             , colors.mobButton |> buttonGradients 0.14 |> .main
             , Color.text primaryColor
-            , Border.rounded 6
+            , rounding.large
             , Font.center
             , hover
                 [ colors.mobButton |> buttonGradients 0.14 |> .hover
@@ -357,7 +351,7 @@ stylesheet device =
             , Font.typeface typefaces.title
             , Color.rgb 186 186 186 |> buttonGradients 0.14 |> .main
             , Color.text primaryColor
-            , Border.rounded 10
+            , rounding.large
             , Font.center
             , hover
                 [ Color.rgb 186 186 186 |> buttonGradients 0.14 |> .hover
@@ -369,7 +363,7 @@ stylesheet device =
             , Font.typeface typefaces.title
             , Color.rgb 8 226 108 |> buttonGradients 0.14 |> .main
             , Color.text primaryColor
-            , Border.rounded 10
+            , rounding.large
             , Font.center
             , hover
                 [ Color.rgb 8 226 108 |> buttonGradients 0.14 |> .hover
@@ -381,7 +375,7 @@ stylesheet device =
             , Font.size fonts.small
             , Color.background fontColor.circle
             , Color.text primaryColor
-            , Border.rounded 3
+            , rounding.small
             , Font.center
             ]
         , style Tooltip
@@ -395,7 +389,7 @@ stylesheet device =
             , Border.none
             , Color.text primaryColor
             , Color.rgb 194 12 12 |> buttonGradients 0.06 |> .main
-            , Border.rounded 5
+            , rounding.small
             , Font.center
             , hover
                 [ Color.rgb 194 12 12 |> buttonGradients 0.06 |> .hover
@@ -407,7 +401,7 @@ stylesheet device =
             , Border.none
             , Color.text primaryColor
             , Color.rgb 239 177 1 |> buttonGradients 0.06 |> .main
-            , Border.rounded 5
+            , rounding.small
             , Font.center
             , hover
                 [ Color.rgb 239 177 1 |> buttonGradients 0.06 |> .hover
@@ -419,7 +413,7 @@ stylesheet device =
             , Border.none
             , Color.text primaryColor
             , Color.rgb 55 90 127 |> buttonGradients 0.06 |> .main
-            , Border.rounded 5
+            , rounding.small
             , Font.center
             , hover
                 [ Color.rgb 35 70 107 |> buttonGradients 0.06 |> .hover
@@ -447,7 +441,7 @@ stylesheet device =
             ]
         , style RosterDraggedOver
             [ Color.background (Color.rgb 8 226 108)
-            , Border.rounded rosterItemRounding
+            , rounding.small
             , Font.size fonts.small
             , Color.text Color.white
             , Font.typeface typefaces.body
@@ -457,7 +451,7 @@ stylesheet device =
             ]
         , style (RosterEntry (Just Roster.Presenter.Driver))
             [ Color.background fontColor.circle
-            , Border.rounded rosterItemRounding
+            , rounding.small
             , Font.size fonts.small
             , Color.text Color.white
             , Font.typeface typefaces.body
@@ -467,7 +461,7 @@ stylesheet device =
             ]
         , style (RosterEntry (Just Roster.Presenter.Navigator))
             [ Color.background (Color.rgb 140 133 133)
-            , Border.rounded rosterItemRounding
+            , rounding.small
             , Color.text Color.white
             , Font.size fonts.small
             , Font.typeface typefaces.body
@@ -477,7 +471,7 @@ stylesheet device =
             ]
         , style (RosterEntry Nothing)
             [ Color.background (Color.rgb 140 133 133)
-            , Border.rounded rosterItemRounding
+            , rounding.small
             , Color.text Color.white
             , Font.size fonts.small
             , Font.typeface typefaces.body
@@ -487,7 +481,7 @@ stylesheet device =
             ]
         , style (InactiveRosterEntry QuickRotate.Selected)
             [ Color.background (Color.rgb 0 140 255)
-            , Border.rounded rosterItemRounding
+            , rounding.small
             , Color.text Color.white
             , Font.size fonts.small
             , Color.border (Color.rgb 233 224 103)
@@ -500,7 +494,7 @@ stylesheet device =
             ]
         , style (InactiveRosterEntry QuickRotate.Matches)
             [ Color.background (Color.rgb 0 50 95)
-            , Border.rounded rosterItemRounding
+            , rounding.small
             , Color.border (Color.rgb 233 224 103)
             , Border.solid
             , Border.all 1
@@ -513,7 +507,7 @@ stylesheet device =
             ]
         , style (InactiveRosterEntry QuickRotate.NoMatch)
             [ Color.background (Color.rgb 80 73 73)
-            , Border.rounded rosterItemRounding
+            , rounding.small
             , Color.text Color.white
             , Color.border (Color.rgb 80 73 73)
             , Border.solid
@@ -528,7 +522,7 @@ stylesheet device =
         , style UpdateAlertBox
             [ Color.background (Color.rgb 0 188 140)
             , Font.size fonts.extraSmall
-            , Border.rounded 3
+            , rounding.small
             ]
         , style UpdateNow
             [ Style.cursor "pointer"
@@ -618,8 +612,3 @@ stylesheet device =
 rotate90DegreesCounterClockwise : StyleProperty
 rotate90DegreesCounterClockwise =
     Style.rotate -1.5708
-
-
-rosterItemRounding : Float
-rosterItemRounding =
-    4

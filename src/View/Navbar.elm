@@ -64,7 +64,7 @@ settingsPageButton { responsivePalette } =
 navButtonView : { model | responsivePalette : Responsive.Palette } -> String -> Styles.NavButtonType -> Msg -> StyleElement
 navButtonView { responsivePalette } buttonText navButtonType msg =
     Element.button (Styles.NavButton navButtonType)
-        [ Attr.height responsivePalette.navbarButtonHeight, Attr.minWidth <| Attr.px 60, Element.Events.onClick msg ]
+        [ Attr.height responsivePalette.navbarButtonHeight, responsivePalette.navbarPadding, Element.Events.onClick msg ]
         (Element.text buttonText)
 
 
