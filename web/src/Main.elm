@@ -113,7 +113,6 @@ mainContent model =
                 , attribute "loop" ""
                 , attribute "muted" ""
                 , attribute "autoplay" ""
-                , attribute "type" "video/mp4"
                 , width (percent 80)
                 ]
                 Element.empty
