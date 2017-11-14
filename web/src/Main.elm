@@ -107,14 +107,14 @@ mainContent model =
             ]
             [ text "Get a friendly reminder to pass the keyboard"
                 |> el SubHeading []
-            , Element.image None
-                [ if model.device.phone then
-                    width (percent 95)
-                  else
-                    width (percent 80)
-                , verticalCenter
+            , el None
+                [ Element.Attributes.attribute "autoplay" ""
+                , attribute "loop" ""
+                , attribute "src" "./assets/configure.mp4"
+                , width (percent 80)
                 ]
-                { src = "./assets/screenshot1.png", caption = "icon" }
+                Element.empty
+                |> Element.node "video"
             ]
         ]
 
