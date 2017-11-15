@@ -107,16 +107,7 @@ mainContent model =
             ]
             [ text "Get a friendly reminder to pass the keyboard"
                 |> el SubHeading []
-            , el None
-                [ attribute "src" "./assets/configure.mp4"
-                , attribute "playsinline" ""
-                , attribute "loop" ""
-                , attribute "muted" ""
-                , attribute "autoplay" ""
-                , width (percent 80)
-                ]
-                Element.empty
-                |> Element.node "video"
+            , Element.image None [ width (percent 80) ] { src = "./assets/configure.gif", caption = "configure demo" }
             ]
         ]
 
