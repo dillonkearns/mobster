@@ -21,7 +21,6 @@ import Keyboard.Extra
 import Os exposing (Os)
 import Page.Break
 import Page.BreakBeta
-import Page.Config
 import Page.ConfigBeta
 import Page.Continue
 import Page.Rpg
