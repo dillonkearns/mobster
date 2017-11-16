@@ -1,6 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Anton|Droid+Sans+Mono|Lato');
-@import url('https://fonts.googleapis.com/css?family=Fjalla+One');
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   /* display: none; <- Crashes Chrome on hover */
