@@ -4,7 +4,10 @@ import Analytics exposing (Event)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Github
+import GithubGraphql
+import GraphQL.Client.Http
 import Html
+import Http
 import Msg exposing (Msg)
 import Os exposing (Os)
 import RemoteData exposing (WebData)
@@ -50,6 +53,15 @@ init flags =
     , Cmd.batch
         [ getInitialWindowSize
         , Github.getReleasesAndStats |> RemoteData.sendRequest |> Cmd.map Msg.GotGithubInfo
+        , GraphQL.Client.Http.customSendQuery
+            { timeout = Nothing
+            , url = "https://api.github.com/graphql"
+            , method = "POST"
+            , headers = [ Http.header "authorization" "Bearer dbd4c239b0bbaa40ab0ea291fa811775da8f5b59" ]
+            , withCredentials = False
+            }
+            GithubGraphql.query
+            |> Task.attempt Msg.GraphqlQuery
         ]
     )
 
@@ -76,6 +88,13 @@ update msg model =
                 , label = toString os
                 }
             )
+
+        Msg.GraphqlQuery response ->
+            let
+                _ =
+                    Debug.log "graphql response" response
+            in
+            ( model, Cmd.none )
 
 
 subscriptions : a -> Sub Msg

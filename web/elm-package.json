@@ -13,6 +13,7 @@
         "elm-lang/http": "1.0.0 <= v < 2.0.0",
         "elm-lang/svg": "2.0.0 <= v < 3.0.0",
         "elm-lang/window": "1.0.0 <= v < 2.0.0",
+        "jamesmacaulay/elm-graphql": "1.7.0 <= v < 2.0.0",
         "krisajenkins/remotedata": "4.3.1 <= v < 5.0.0",
         "lukewestby/elm-http-builder": "5.1.0 <= v < 6.0.0",
         "mdgriffith/elm-color-mixing": "1.1.1 <= v < 2.0.0",
