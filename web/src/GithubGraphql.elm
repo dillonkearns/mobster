@@ -17,6 +17,32 @@ type alias Release =
     }
 
 
+
+-- {
+--   repository(owner: "dillonkearns", name: "mobster") {
+--     releases(last: 1) {
+--       totalCount
+--       nodes {
+--         releaseAssets(last: 30) {
+--           edges {
+--             node {
+--               downloadUrl
+--               name
+--               downloadCount
+--             }
+--           }
+--         }
+--         description
+--       }
+--     }
+--     stargazers {
+--       totalCount
+--     }
+--   }
+-- }
+-- query : Document Query User { vars | userID : String }
+
+
 type StarGazerCount
     = StarGazerCount Int
 
@@ -28,15 +54,19 @@ query =
             [ "owner" => Arg.string "dillonkearns"
             , "name" => Arg.string "mobster"
             ]
-            (extract
-                (field "stargazers"
-                    []
-                    (object StarGazerCount |> with (field "totalCount" [] int))
-                )
-            )
+            starCount
         )
         |> queryDocument
         |> request ()
+
+
+starCount : ValueSpec NonNull ObjectType StarGazerCount ()
+starCount =
+    extract
+        (field "stargazers"
+            []
+            (object StarGazerCount |> with (field "totalCount" [] int))
+        )
 
 
 (=>) : a -> b -> ( a, b )
