@@ -105,9 +105,12 @@ mainContent model =
             , center
             , spacing 50
             ]
-            [ text "Get a friendly reminder to pass the keyboard"
+            [ text "Choose your preferences, add names, and start the timer"
                 |> el SubHeading []
-            , Element.image None [ width (percent 80) ] { src = "./assets/configure.gif", caption = "configure demo" }
+            , Element.image None [ width (percent 80) ] { src = "./assets/configurenew.gif", caption = "configure demo" }
+            , text "Get a friendly reminder to pass the keyboard when the timer is up"
+                |> el SubHeading []
+            , Element.image None [ width (percent 80) ] { src = "./assets/continue.gif", caption = "continue demo" }
             ]
         ]
 
