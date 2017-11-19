@@ -54,7 +54,7 @@ const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
   }
 })
 if (shouldQuit) {
-  app.quit()
+  app.exit()
 }
 
 function writeToFile(filePath: string, fileContents: string) {
