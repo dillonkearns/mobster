@@ -260,6 +260,7 @@ function setupAutoUpdater() {
   })
 
   autoUpdater.on('error', (ev: any, err: any) => {
+    bugsnag.notify('autoUpdate error', { details: err })
     checkForUpdates = true
   })
 
