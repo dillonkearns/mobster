@@ -25,18 +25,17 @@
     "mac": {
       "category": "Utility"
     },
-    "files": [ "**/*",
+    "files": [
+      "**/*",
       "!web/",
       "!**/*.ts",
       "!**/*.elm",
-"!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme,test,__tests__,tests,powered-test,example,examples,*.d.ts}",
-"!**/node_modules/.bin",
-"!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
-"!**/._*",
-"!.editorconfig",
-"!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,__pycache__,thumbs.db,.gitignore,.gitattributes,.flowconfig,.yarn-metadata.json,.idea,.vs,appveyor.yml,.travis.yml,circle.yml,npm-debug.log,.nyc_output,yarn.lock,.yarn-integrity}"
-
-
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme,test,__tests__,tests,powered-test,example,examples,*.d.ts}",
+      "!**/node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!**/._*",
+      "!.editorconfig",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,__pycache__,thumbs.db,.gitignore,.gitattributes,.flowconfig,.yarn-metadata.json,.idea,.vs,appveyor.yml,.travis.yml,circle.yml,npm-debug.log,.nyc_output,yarn.lock,.yarn-integrity}"
     ]
   },
   "repository": "https://github.com/dillonkearns/mobster",
@@ -60,7 +59,7 @@
     "elm": "^0.18.0",
     "elm-electron": "0.0.3",
     "elm-hot-loader": "^0.5.4",
-    "elm-test": "^0.18.9",
+    "elm-test": "^0.18.10",
     "elm-webpack-loader": "^4.3.1",
     "ts-loader": "^2.3.7",
     "ts-node": "^3.3.0",
