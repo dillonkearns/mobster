@@ -104,6 +104,8 @@ function startTimer(flags: any) {
     focusable: false,
     show: false
   })
+  timerWindow.setAlwaysOnTop(true, 'floating', 1)
+  timerWindow.setVisibleOnAllWorkspaces(true)
   timerWindow.once('ready-to-show', () => {
     timerWindow && timerWindow.show()
   })
@@ -189,7 +191,7 @@ function newTransparentOnTopWindow(
 }
 
 function onReady() {
-  // createMainWindow()
+  app.dock.hide() // needed to support fullscreen mode in OS X, see https://github.com/electron/electron/issues/3302
   displayManager = new DisplayManager(
     transparencyDisabled,
     bugsnag,

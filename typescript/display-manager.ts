@@ -99,6 +99,8 @@ export class DisplayManager {
         this.mainWindow.show()
         this.mainWindow.focus()
       } else {
+        this.mainWindow.setVisibleOnAllWorkspaces(true)
+        this.mainWindow.setAlwaysOnTop(true, 'floating', 1)
         this.mainWindow.show()
       }
     } else {
