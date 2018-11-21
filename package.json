@@ -61,6 +61,7 @@
     "elm-format": "^0.8.1",
     "elm-hot-webpack-loader": "1.0.2",
     "elm-test": "^0.18.12",
+    "elm-typescript-interop": "0.0.15",
     "elm-webpack-loader": "5.0.0",
     "ts-loader": "^3.4.0",
     "ts-node": "^3.3.0",

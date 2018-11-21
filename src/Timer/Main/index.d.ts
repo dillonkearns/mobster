@@ -3,7 +3,7 @@
 // Type definitions for Elm ports
 
 export namespace Elm {
-  namespace Setup.Main {
+  namespace Timer.Main {
     export interface App {
       ports: {
         saveSettings: {
@@ -34,7 +34,7 @@ export namespace Elm {
     }
     export function init(options: {
       node?: HTMLElement | null;
-      flags: { onMac: boolean; isLocal: boolean; settings: any };
-    }): Elm.Setup.Main.App;
+      flags: any;
+    }): Elm.Timer.Main.App;
   }
 }
