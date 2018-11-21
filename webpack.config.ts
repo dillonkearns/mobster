@@ -1,17 +1,17 @@
-import * as webpack from 'webpack'
-import * as path from 'path'
+import * as webpack from "webpack";
+import * as path from "path";
 
 export default function(env: any): webpack.Configuration {
   return {
     entry: {
-      setup: './typescript/setup.ts',
-      timer: './typescript/timer.ts'
+      setup: "./typescript/setup.ts",
+      timer: "./typescript/timer.ts"
     },
-    target: 'electron-renderer',
+    target: "electron-renderer",
     output: {
       path: path.resolve(__dirname),
-      filename: '[name].bundle.js',
-      publicPath: '/'
+      filename: "[name].bundle.js",
+      publicPath: "/"
     },
     module: {
       loaders: [
@@ -19,18 +19,18 @@ export default function(env: any): webpack.Configuration {
           test: /\.elm$/,
           exclude: [/elm-stuff/, /node_modules/],
           use: [
-            { loader: 'elm-hot-loader' },
+            { loader: "elm-hot-webpack-loader" },
             {
-              loader: 'elm-webpack-loader',
-              options: env && env.production ? {} : { debug: false, warn: true }
+              loader: "elm-webpack-loader",
+              options: env && env.production ? {} : { debug: false }
             }
           ]
         },
-        { test: /\.ts$/, loader: 'ts-loader' }
+        { test: /\.ts$/, loader: "ts-loader" }
       ]
     },
     resolve: {
-      extensions: ['.js', '.ts', '.elm']
+      extensions: [".js", ".ts", ".elm"]
     }
-  }
+  };
 }
