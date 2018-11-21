@@ -1,0 +1,73 @@
+INFO: Found elm at node_modules/.bin/elm
+INFO: Found elm 0.19.0
+INFO: Found elm-format at node_modules/.bin/elm-format
+INFO: Found elm-format 0.8.1
+INFO: Cleaning ./elm-stuff before upgrading
+INFO: Converting elm-package.json -> elm.json
+INFO: Detected an application project (this project has no exposed modules)
+INFO: Switching from NoRedInk/elm-decode-pipeline (deprecated) to NoRedInk/elm-json-decode-pipeline
+INFO: Installing latest version of NoRedInk/elm-json-decode-pipeline
+INFO: Installing latest version of ccapndave/elm-update-extra
+INFO: Installing latest version of debois/elm-dom
+WARNING: elm-community/array-extra has not been upgraded to 0.19 yet!
+INFO: Installing latest version of elm-community/basics-extra
+WARNING: elm-community/html-extra has not been upgraded to 0.19 yet!
+INFO: Installing latest version of elm-community/list-extra
+WARNING: Failed to upgrade elm-community/list-extra!
+INFO: Installing latest version of elm-community/random-extra
+INFO: Switching from elm-lang/core (deprecated) to elm/core
+INFO: Installing latest version of elm/core
+INFO: Detected use of elm-lang/core#Json.Decode; installing elm/json
+INFO: Detected use of elm-lang/core#Random; installing elm/random
+INFO: Detected use of elm-lang/core#Time; installing elm/time
+INFO: Detected use of elm-lang/core#Regex; installing elm/regex
+INFO: Switching from elm-lang/dom (deprecated) to elm/browser
+INFO: Installing latest version of elm/browser
+INFO: Switching from elm-lang/html (deprecated) to elm/html
+INFO: Installing latest version of elm/html
+INFO: Switching from elm-lang/svg (deprecated) to elm/svg
+INFO: Installing latest version of elm/svg
+INFO: Switching from elm-lang/window (deprecated) to elm/browser
+INFO: Installing latest version of elm/browser
+WARNING: ktonon/elm-test-extra has not been upgraded to 0.19 yet!
+WARNING: mdgriffith/elm-color-mixing has not been upgraded to 0.19 yet!
+INFO: Installing latest version of mdgriffith/elm-style-animation
+INFO: Installing latest version of mdgriffith/style-elements
+INFO: Installing latest version of myrho/elm-round
+INFO: Installing latest version of norpan/elm-html5-drag-drop
+INFO: Switching from ohanhi/keyboard-extra (deprecated) to ohanhi/keyboard
+INFO: Installing latest version of ohanhi/keyboard
+WARNING: scottcorgan/keyboard-combo has not been upgraded to 0.19 yet!
+INFO: Upgrading *.elm files in ./src/
+
+
+SUCCESS! Your project's dependencies and code have been upgraded.
+However, your project may not yet compile due to API changes in your
+dependencies.
+
+See <https://github.com/elm/compiler/blob/master/upgrade-docs/0.19.md>
+and the documentation for your dependencies for more information.
+
+WARNING! 5 of your dependencies have not yet been upgraded to
+support Elm 0.19.
+  - https://github.com/elm-community/array-extra
+  - https://github.com/elm-community/html-extra
+  - https://github.com/ktonon/elm-test-extra
+  - https://github.com/mdgriffith/elm-color-mixing
+  - https://github.com/scottcorgan/keyboard-combo
+
+Here are some common upgrade steps that you will need to do manually:
+
+- NoRedInk/elm-json-decode-pipeline
+  - [ ] Changes uses of Json.Decode.Pipeline.decode to Json.Decode.succeed
+- elm/core
+  - [ ] Replace uses of toString with String.fromInt, String.fromFloat, or Debug.toString as appropriate
+- undefined
+  - [ ] Read the new documentation here: https://package.elm-lang.org/packages/elm/time/latest/
+  - [ ] Replace uses of Date and Time with Time.Posix
+- elm/browser
+  - [ ] Change code using Window.* to use Browser.Events.onResize
+- elm/html
+  - [ ] If you used Html.program*, install elm/browser and switch to Browser.element or Browser.document
+  - [ ] If you used Html.beginnerProgram, install elm/browser and switch Browser.sandbox
+

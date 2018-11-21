@@ -2,7 +2,6 @@ module Page.ConfigBeta exposing (view)
 
 import Animation
 import Animation.Messenger
-import Basics.Extra exposing ((=>))
 import Dict exposing (Dict)
 import Element exposing (Device)
 import Element.Attributes as Attr
@@ -35,7 +34,6 @@ view :
         , quickRotateState : QuickRotate.State
         , activeMobstersStyle : Animation.Messenger.State Msg.Msg
         , dieStyle : Animation.State
-        , device : Device
         , dragDrop : DragDropModel
         , manualChangeCounter : Int
         , dirtyInputKeys : Dict String Int
@@ -84,31 +82,31 @@ numberInput : { model | dirtyInputKeys : Dict String Int, responsivePalette : Re
 numberInput { dirtyInputKeys, responsivePalette } value ( minValue, maxValue ) onInputMsg inputField =
     let
         plusMsg =
-            Msg.ChangeInput (Msg.IntField inputField) (value + 1 |> toString)
+            Msg.ChangeInput (Msg.IntField inputField) (value + 1 |> String.fromInt)
 
         minusMsg =
-            Msg.ChangeInput (Msg.IntField inputField) (value - 1 |> toString)
+            Msg.ChangeInput (Msg.IntField inputField) (value - 1 |> String.fromInt)
 
         fieldId =
-            toString inputField
+            Debug.toString inputField
     in
     Element.row Styles.None
         []
         [ plusMinusButton "–" minusMsg
         , Element.Input.text Styles.NumberInput
             [ responsivePalette.inputWidth |> Attr.width
-            , minValue |> toString |> Attr.attribute "min"
-            , maxValue |> toString |> Attr.attribute "max"
+            , minValue |> String.fromInt |> Attr.attribute "min"
+            , maxValue |> String.fromInt |> Attr.attribute "max"
             , Attr.attribute "step" "1"
             , Attr.attribute "type" "number"
-            , value |> toString |> Attr.attribute "value"
+            , value |> String.fromInt |> Attr.attribute "value"
             , onClick (Msg.SelectInputField fieldId)
             , Attr.id fieldId
             ]
             { onChange = Msg.ChangeInput (Msg.IntField inputField)
-            , value = value |> toString
+            , value = value |> String.fromInt
             , label = Element.Input.hiddenLabel "input"
-            , options = [ Element.Input.textKey (Dict.get fieldId dirtyInputKeys |> Maybe.withDefault -1 |> toString) ]
+            , options = []
             }
         , plusMinusButton "+" plusMsg
         ]
@@ -138,7 +136,7 @@ editableKeyboardKey model currentKey =
             [ Attr.width (Attr.px 30)
             , Attr.center
             , Attr.verticalCenter
-            , Attr.inlineStyle [ "text-align" => "center" ]
+            , Attr.inlineStyle "text-align" "center"
             ]
             { onChange = Msg.ChangeInput (Msg.StringField Msg.ShowHideShortcut)
             , value = currentKey
@@ -159,7 +157,7 @@ configOptions :
 configOptions ({ os } as model) settings =
     let
         breakIntervalText =
-            "Every " ++ toString (settings.intervalsPerBreak * settings.timerDuration) ++ " Minutes"
+            "Every " ++ String.fromInt (settings.intervalsPerBreak * settings.timerDuration) ++ " Minutes"
     in
     Element.column Styles.PlainBody
         [ Attr.spacing 25, Attr.width (Attr.fillPortion 32) ]

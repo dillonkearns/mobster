@@ -1,6 +1,6 @@
 module Timer.Styles exposing (StyleElement, Styles(..), styleSheet)
 
-import Color
+import Style.Color
 import Element exposing (Element)
 import Style exposing (Font)
 import Style.Color

@@ -1,4 +1,4 @@
-port module Setup.Ports exposing (..)
+port module Setup.Ports exposing (breakDone, saveSettings, selectDuration, sendIpc, timeElapsed, updateDownloaded)
 
 import Json.Encode as Encode
 

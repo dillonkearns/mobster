@@ -1,7 +1,7 @@
 module Roster.Rpg exposing (Experience, Goal, RpgData, badges, init)
 
 import ListHelpers exposing (compact)
-import Roster.RpgRole exposing (RpgRole(Driver, Mobber, Navigator, Researcher, Sponsor))
+import Roster.RpgRole exposing (RpgRole(..))
 
 
 type alias Experience =
@@ -55,6 +55,7 @@ somethingToBadge ( role, experience ) =
     in
     if goalCount > 2 then
         Just role
+
     else
         Nothing
 

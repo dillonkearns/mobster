@@ -1,4 +1,4 @@
-port module Timer.Ports exposing (..)
+port module Timer.Ports exposing (breakTimerDone, timerDone)
 
 
 port timerDone : Int -> Cmd msg

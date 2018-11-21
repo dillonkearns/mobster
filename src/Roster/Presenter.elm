@@ -1,12 +1,11 @@
-module Roster.Presenter
-    exposing
-        ( DriverNavigator
-        , Mobster
-        , MobsterWithRole
-        , Role(Driver, Navigator)
-        , mobsters
-        , nextDriverNavigator
-        )
+module Roster.Presenter exposing
+    ( DriverNavigator
+    , Mobster
+    , MobsterWithRole
+    , Role(..)
+    , mobsters
+    , nextDriverNavigator
+    )
 
 import Array
 import Roster.Data exposing (RosterData, nextIndex)
@@ -85,8 +84,10 @@ mobsterListItemToMobster driverNavigator index mobster =
         role =
             if index == driverNavigator.driver.index then
                 Just Driver
+
             else if index == driverNavigator.navigator.index then
                 Just Navigator
+
             else
                 Nothing
     in

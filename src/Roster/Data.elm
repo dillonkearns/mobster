@@ -1,6 +1,5 @@
 module Roster.Data exposing (Mobster, RosterData, containsName, createMobster, currentMobsterNames, decode, decoder, empty, encoder, nextIndex, previousIndex, randomizeMobsters)
 
-import Basics.Extra exposing ((=>))
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline as Pipeline exposing (optional, required)
 import Json.Encode as Encode
@@ -30,9 +29,9 @@ type alias RosterData =
 encoder : RosterData -> Encode.Value
 encoder rosterData =
     Encode.object
-        [ "mobsters" => Encode.list (List.map encodeMobster rosterData.mobsters)
-        , "inactiveMobsters" => Encode.list (List.map encodeMobster rosterData.inactiveMobsters)
-        , "nextDriver" => Encode.int rosterData.nextDriver
+        [ ( "mobsters", Encode.list encodeMobster rosterData.mobsters )
+        , ( "inactiveMobsters", Encode.list encodeMobster rosterData.inactiveMobsters )
+        , ( "nextDriver", Encode.int rosterData.nextDriver )
         ]
 
 
@@ -48,7 +47,7 @@ empty =
 
 decoder : Decoder RosterData
 decoder =
-    Pipeline.decode RosterData
+    Decode.succeed RosterData
         |> required "mobsters" (Decode.list Decode.string |> Decode.map mobsterNamesToMobsters)
         |> optional "inactiveMobsters" (Decode.list Decode.string |> Decode.map mobsterNamesToMobsters) []
         |> required "nextDriver" Decode.int
@@ -64,7 +63,7 @@ stringToMobster name =
     Mobster name Rpg.init
 
 
-decode : Encode.Value -> Result String RosterData
+decode : Encode.Value -> Result Decode.Error RosterData
 decode data =
     Decode.decodeValue decoder data
 
@@ -103,8 +102,9 @@ previousIndex currentIndex rosterData =
         index =
             if mobSize == 0 then
                 0
+
             else
-                (currentIndex - 1) % mobSize
+                modBy mobSize (currentIndex - 1)
     in
     index
 
@@ -118,7 +118,8 @@ nextIndex currentIndex rosterData =
         index =
             if mobSize == 0 then
                 0
+
             else
-                (currentIndex + 1) % mobSize
+                modBy mobSize (currentIndex + 1)
     in
     index

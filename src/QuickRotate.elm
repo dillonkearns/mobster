@@ -1,15 +1,14 @@
-module QuickRotate
-    exposing
-        ( EntrySelection(Matches, NoMatch, Selected)
-        , Selection(All, Index, New)
-        , State
-        , init
-        , matches
-        , next
-        , previous
-        , selectionTypeFor
-        , update
-        )
+module QuickRotate exposing
+    ( EntrySelection(..)
+    , Selection(..)
+    , State
+    , init
+    , matches
+    , next
+    , previous
+    , selectionTypeFor
+    , update
+    )
 
 import List.Extra
 
@@ -27,19 +26,22 @@ type EntrySelection
 
 
 selectionTypeFor : Int -> List Int -> Selection -> EntrySelection
-selectionTypeFor index matches selection =
+selectionTypeFor index matches_ selection =
     if Index index == selection then
         Selected
+
     else if selection == All then
         NoMatch
+
     else
         let
             match =
-                matches
+                matches_
                     |> List.member index
         in
         if match then
             Matches
+
         else
             NoMatch
 
@@ -67,6 +69,7 @@ previous list state =
         All ->
             if List.isEmpty list then
                 state
+
             else
                 { state | selection = Index (List.length list - 1) }
 
@@ -97,6 +100,7 @@ previous list state =
                 Nothing ->
                     if state.query == "" then
                         previous list { state | selection = New state.query }
+
                     else
                         { state | selection = New state.query }
 
@@ -111,6 +115,7 @@ next list state =
         All ->
             if List.isEmpty list then
                 state
+
             else
                 { state | selection = Index 0 }
 
@@ -141,6 +146,7 @@ next list state =
                 Nothing ->
                     if state.query == "" then
                         next list { state | selection = New state.query }
+
                     else
                         { state | selection = New state.query }
 
@@ -148,7 +154,7 @@ next list state =
 matches : List String -> State -> List Int
 matches list state =
     list
-        |> List.indexedMap (,)
+        |> List.indexedMap (\a b -> ( a, b ))
         |> List.filter (\( index, item ) -> String.contains (String.toLower state.query) (String.toLower item))
         |> List.map (\( index, _ ) -> index)
 
@@ -156,13 +162,13 @@ matches list state =
 update : String -> List String -> State -> State
 update newQuery list state =
     let
-        matches =
+        matches_ =
             list
-                |> List.indexedMap (,)
+                |> List.indexedMap (\a b -> ( a, b ))
                 |> List.filter (\( index, item ) -> String.contains (String.toLower newQuery) (String.toLower item))
 
         firstMatchingIndex =
-            case List.head matches of
+            case List.head matches_ of
                 Nothing ->
                     Nothing
 
@@ -171,10 +177,11 @@ update newQuery list state =
     in
     if newQuery == "" then
         { query = newQuery, selection = All }
+
     else
         case firstMatchingIndex of
             Nothing ->
                 { query = newQuery, selection = New newQuery }
 
-            Just firstMatchingIndex ->
-                { query = newQuery, selection = Index firstMatchingIndex }
+            Just firstMatchingIndex_ ->
+                { query = newQuery, selection = Index firstMatchingIndex_ }

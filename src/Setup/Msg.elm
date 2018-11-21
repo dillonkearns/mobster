@@ -1,16 +1,17 @@
-module Setup.Msg exposing (..)
+module Setup.Msg exposing (Direction(..), DragId(..), DropArea(..), InputField(..), Msg(..), StringInputField(..))
+
+-- import Keyboard.Combo
 
 import Animation
-import Dom
+import Browser
+import Browser.Dom
 import Html5.DragDrop as DragDrop
 import Ipc
-import Keyboard.Combo
-import Keyboard.Extra
+import Keyboard
 import Roster.Operation exposing (MobsterOperation)
 import Roster.RpgRole exposing (RpgRole)
 import Setup.InputField exposing (..)
 import Time
-import Window
 
 
 type Msg
@@ -24,12 +25,12 @@ type Msg
     | StartRpgMode
     | UpdateRosterData MobsterOperation
     | CheckRpgBox { index : Int, role : RpgRole } Int
-    | DomResult (Result Dom.Error ())
+    | DomResult (Result Browser.Dom.Error ())
     | ChangeInput InputField String
     | SelectInputField String
     | OpenConfigure
     | NewTip Int
-    | ComboMsg Keyboard.Combo.Msg
+      -- | ComboMsg Keyboard.Combo.Msg
     | ShuffleMobsters
     | RandomizeMobsters
     | TimeElapsed Int
@@ -42,11 +43,11 @@ type Msg
     | SendIpc Ipc.Msg
     | QuickRotateAdd
     | QuickRotateMove Direction
-    | KeyPressed Bool Keyboard.Extra.Key
+    | KeyPressed Bool Keyboard.Key
     | Animate Animation.Msg
-    | WindowResized Window.Size
-    | MinuteElapsed Time.Time
-    | BreakSecondElapsed Time.Time
+    | WindowResized Int Int
+    | MinuteElapsed Time.Posix
+    | BreakSecondElapsed Time.Posix
     | ShuffleHover Bool
 
 

@@ -46,6 +46,7 @@ mobsterBadgesView mobster =
     in
     if List.length badges == 0 then
         Element.empty
+
     else
         Element.row Styles.None
             []
@@ -75,7 +76,7 @@ rpgCardView : Roster.RpgPresenter.RpgMobster -> Styles.StyleElement
 rpgCardView mobster =
     let
         roleName =
-            toString mobster.role
+            Debug.toString mobster.role
 
         icon =
             Setup.RpgIcons.mobsterIcon mobster.role
@@ -94,7 +95,7 @@ goalView mobster goalIndex goal =
         [ Element.Events.onClick (Msg.CheckRpgBox { index = mobster.index, role = mobster.role } goalIndex)
         , Attr.spacing 55
         ]
-        [ Element.text (toString goal.complete)
+        [ Element.text (Debug.toString goal.complete)
         , Element.paragraph Styles.None [] [ Element.text goal.description ]
         ]
 

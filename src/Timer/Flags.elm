@@ -1,6 +1,5 @@
 module Timer.Flags exposing (IncomingFlags, decoder, encodeBreak, encodeRegularTimer)
 
-import Basics.Extra exposing ((=>))
 import Json.Decode as Decode
 import Json.Decode.Pipeline as Pipeline
 import Json.Encode as Encode
@@ -24,24 +23,24 @@ encodeRegularTimer :
     -> Encode.Value
 encodeRegularTimer flags =
     Encode.object
-        [ "minutes" => Encode.int flags.minutes
-        , "driver" => Encode.string flags.driver
-        , "navigator" => Encode.string flags.navigator
-        , "isBreak" => Encode.bool False
+        [ ( "minutes", Encode.int flags.minutes )
+        , ( "driver", Encode.string flags.driver )
+        , ( "navigator", Encode.string flags.navigator )
+        , ( "isBreak", Encode.bool False )
         ]
 
 
 encodeBreak : Int -> Encode.Value
 encodeBreak breakDurationMinutes =
     Encode.object
-        [ "minutes" => Encode.int breakDurationMinutes
-        , "isBreak" => Encode.bool True
+        [ ( "minutes", Encode.int breakDurationMinutes )
+        , ( "isBreak", Encode.bool True )
         ]
 
 
 decoder : Decode.Decoder IncomingFlags
 decoder =
-    Pipeline.decode IncomingFlags
+    Decode.succeed IncomingFlags
         |> Pipeline.required "minutes" Decode.int
         |> Pipeline.optional "driver" Decode.string ""
         |> Pipeline.optional "navigator" Decode.string ""

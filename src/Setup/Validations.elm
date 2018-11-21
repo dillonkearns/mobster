@@ -16,7 +16,7 @@ parseIntWithinRange ( min, max ) rawInput =
     in
     rawInput
         |> String.toInt
-        |> Result.withDefault default
+        |> Maybe.withDefault default
         |> clamp min max
 
 

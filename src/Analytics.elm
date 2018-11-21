@@ -1,6 +1,5 @@
 module Analytics exposing (Event, trackEvent, trackOperation, trackPage)
 
-import Basics.Extra exposing ((=>))
 import Ipc
 import IpcSerializer
 import Json.Encode as Encode
@@ -24,10 +23,10 @@ trackEvent eventDetails modelCmd =
         |> withIpcMsg
             (Ipc.TrackEvent
                 (Encode.object
-                    [ "ec" => Encode.string eventDetails.category
-                    , "ea" => Encode.string eventDetails.action
-                    , "el" => encodeMaybe Encode.string eventDetails.label
-                    , "ev" => encodeMaybe Encode.int eventDetails.value
+                    [ ( "ec", Encode.string eventDetails.category )
+                    , ( "ea", Encode.string eventDetails.action )
+                    , ( "el", encodeMaybe Encode.string eventDetails.label )
+                    , ( "ev", encodeMaybe Encode.int eventDetails.value )
                     ]
                 )
             )
@@ -43,7 +42,7 @@ operationToEvent : MobsterOperation -> Event
 operationToEvent mobsterOperation =
     case mobsterOperation of
         MobsterOperation.Move from to ->
-            { category = "roster", action = "move", label = Just (toString from ++ "-" ++ toString to), value = Nothing }
+            { category = "roster", action = "move", label = Just (String.fromInt from ++ "-" ++ String.fromInt to), value = Nothing }
 
         MobsterOperation.Remove index ->
             { category = "roster", action = "remove", label = Nothing, value = Just index }
@@ -72,7 +71,7 @@ operationToEvent mobsterOperation =
         MobsterOperation.CompleteGoal _ role goalIndex ->
             { category = "roster"
             , action = "complete-goal"
-            , label = Just (toString role ++ "[" ++ toString goalIndex ++ "]")
+            , label = Just (Debug.toString role ++ "[" ++ String.fromInt goalIndex ++ "]")
             , value = Nothing
             }
 
@@ -102,7 +101,9 @@ screenToString newScreenState =
 
 withIpcMsg : Ipc.Msg -> ( model, Cmd Msg ) -> ( model, Cmd Msg )
 withIpcMsg msgIpc ( model, cmd ) =
-    model ! [ cmd, sendIpcCmd msgIpc ]
+    ( model
+    , Cmd.batch [ cmd, sendIpcCmd msgIpc ]
+    )
 
 
 sendIpcCmd : Ipc.Msg -> Cmd msg

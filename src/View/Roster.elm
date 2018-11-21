@@ -157,6 +157,7 @@ activeMobsterView ({ dragDrop, activeMobstersStyle } as model) mobster =
         chipStyle =
             if isBeingDraggedOver then
                 Styles.RosterDraggedOver
+
             else
                 Styles.RosterEntry mobster.role
     in
@@ -221,16 +222,20 @@ rosterInput model query selection =
                 (\code ->
                     if code == 38 then
                         Ok (Msg.QuickRotateMove Msg.Previous)
+
                     else if code == 9 || code == 40 then
                         Ok (Msg.QuickRotateMove Msg.Next)
+
                     else if code == 13 then
                         Ok Msg.QuickRotateAdd
+
                     else
                         Err "not handling that key"
                 )
                 Element.Events.keyCode
                 |> Json.Decode.andThen
                     fromResult
+                |> Json.Decode.map (\msg -> { message = msg, preventDefault = True, stopPropagation = False })
 
         fromResult : Result String a -> Json.Decode.Decoder a
         fromResult result =
@@ -240,9 +245,6 @@ rosterInput model query selection =
 
                 Err reason ->
                     Json.Decode.fail reason
-
-        options =
-            { preventDefault = True, stopPropagation = False }
     in
     Element.el Styles.None [ Attr.id "add-mobster-container" ] <|
         Element.Input.text (Styles.RosterInput highlightSelection)
@@ -251,12 +253,14 @@ rosterInput model query selection =
             , Attr.id quickRotateQueryId
             , Attr.height (Attr.percent 100)
             , Attr.width Attr.fill
-            , Element.Events.onWithOptions "keydown" options dec
+
+            -- , Element.Events.custom "keydown" options dec
+            , Element.Events.custom "keydown" dec
             ]
             { onChange = Msg.ChangeInput (Msg.StringField Msg.QuickRotateQuery)
             , value = query
             , label = Element.Input.hiddenLabel "Add mobster"
-            , options = [ model.manualChangeCounter |> toString |> Element.Input.textKey ]
+            , options = []
             }
 
 

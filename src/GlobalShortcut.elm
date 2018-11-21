@@ -10,4 +10,4 @@ isInvalid shortcutKey =
 
 invalidRegex : Regex
 invalidRegex =
-    Regex.regex "[^a-zA-Z0-9]"
+    Regex.fromString "[^a-zA-Z0-9]" |> Maybe.withDefault Regex.never

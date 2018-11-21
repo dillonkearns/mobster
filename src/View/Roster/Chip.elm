@@ -94,6 +94,5 @@ removeButton msg =
 
 onClickWithoutPropagation : msg -> Element.Attribute Never msg
 onClickWithoutPropagation msgConstructor =
-    Element.Events.onWithOptions "click"
-        { stopPropagation = True, preventDefault = False }
-        (Json.Decode.succeed msgConstructor)
+    Element.Events.custom "click"
+        (Json.Decode.succeed { message = msgConstructor, stopPropagation = True, preventDefault = False })

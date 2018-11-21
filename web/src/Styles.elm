@@ -1,7 +1,7 @@
 module Styles exposing (StyleElement, StyleProperty, Styles(..), stylesheet)
 
-import Color exposing (Color)
-import Color.Mixing
+import Style.Color exposing (Color)
+import Style.Color.Mixing
 import Element exposing (..)
 import Msg exposing (Msg)
 import Style exposing (..)

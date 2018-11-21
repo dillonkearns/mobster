@@ -1,12 +1,16 @@
 module Setup.Main exposing (main)
 
+-- import Keyboard.Combo
+
 import Analytics exposing (trackEvent)
 import Animation
 import Animation.Messenger
 import Break
+import Browser
+import Browser.Dom
+import Browser.Events
 import Dice
 import Dict exposing (Dict)
-import Dom
 import Element exposing (Device)
 import Element.Attributes
 import GlobalShortcut
@@ -16,8 +20,7 @@ import Ipc
 import IpcSerializer
 import Json.Decode as Decode
 import Json.Encode as Encode
-import Keyboard.Combo
-import Keyboard.Extra
+import Keyboard
 import Os exposing (Os)
 import Page.Break
 import Page.BreakBeta
@@ -49,7 +52,6 @@ import View.Navbar
 import View.Roster
 import View.StartMobbingButton
 import View.UpdateAvailable
-import Window
 
 
 shuffleMobstersCmd : Roster.RosterData -> Cmd Msg
@@ -68,8 +70,8 @@ changeTip =
 
 getInitialWindowSize : Cmd Msg
 getInitialWindowSize =
-    Window.size
-        |> Task.perform Msg.WindowResized
+    Browser.Dom.getViewport
+        |> Task.perform (\{ viewport } -> Msg.WindowResized (round viewport.width) (round viewport.height))
 
 
 view : Model -> Html Msg
@@ -108,8 +110,10 @@ pageView model =
             if Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak then
                 if beta then
                     Page.BreakBeta.view model breakSecondsLeft
+
                 else
                     Page.Break.view model
+
             else
                 Page.Continue.view model
 
@@ -138,6 +142,7 @@ resetIfAfterBreak model =
     in
     if timeForBreak then
         model |> resetBreakData
+
     else
         model
 
@@ -174,7 +179,7 @@ markDirtyIfChangePrevented inputField changePrevented ( possiblyChangedModel, cm
         let
             updatedDict =
                 possiblyChangedModel.dirtyInputKeys
-                    |> Dict.update (toString inputField)
+                    |> Dict.update (Debug.toString inputField)
                         (\value ->
                             value
                                 |> Maybe.withDefault 0
@@ -188,17 +193,16 @@ markDirtyIfChangePrevented inputField changePrevented ( possiblyChangedModel, cm
           }
         , cmd
         )
+
     else
         ( possiblyChangedModel, cmd )
 
 
 
 -- update function 187
-
-
-resetKeyboardCombos : ( { model | combos : Keyboard.Combo.Model Msg }, Cmd Msg ) -> ( { model | combos : Keyboard.Combo.Model Msg }, Cmd Msg )
-resetKeyboardCombos ( model, cmd ) =
-    ( { model | combos = Shortcuts.init }, cmd )
+-- resetKeyboardCombos : ( { model | combos : Keyboard.Combo.Model Msg }, Cmd Msg ) -> ( { model | combos : Keyboard.Combo.Model Msg }, Cmd Msg )
+-- resetKeyboardCombos ( model, cmd ) =
+--     ( { model | combos = Shortcuts.init }, cmd )
 
 
 onContinueScreen : ScreenState -> Bool
@@ -226,12 +230,13 @@ update msg model =
             ( model, Cmd.none ) |> changeScreen (ScreenState.Rpg ScreenState.NextUp)
 
         Msg.StartTimer ->
-            (if
+            if
                 onContinueScreen model.screenState
                     && Break.breakSuggested model.intervalsSinceBreak model.settings.intervalsPerBreak
-             then
+            then
                 startBreak model
-             else
+
+            else
                 case model.screenState of
                     ScreenState.Rpg rpgState ->
                         case rpgState of
@@ -266,9 +271,8 @@ update msg model =
                         in
                         startTimerUpdate
                             |> Update.Extra.andThen update (Msg.UpdateRosterData MobsterOperation.NextTurn)
-            )
-                |> resetKeyboardCombos
 
+        -- |> resetKeyboardCombos
         Msg.SkipBreak ->
             ( model |> resetBreakData, Cmd.none )
                 |> changeScreen
@@ -292,13 +296,12 @@ update msg model =
         Msg.UpdateRosterData operation ->
             model |> performRosterOperation operation
 
-        Msg.ComboMsg comboMsg ->
-            let
-                ( combos, cmd ) =
-                    Keyboard.Combo.update comboMsg model.combos
-            in
-            ( { model | combos = combos }, cmd )
-
+        -- Msg.ComboMsg comboMsg ->
+        --     let
+        --         ( combos, cmd ) =
+        --             Keyboard.Combo.update comboMsg model.combos
+        --     in
+        --     ( { model | combos = combos }, cmd )
         Msg.NewTip tipIndex ->
             ( { model | tip = Tip.get Tip.All.tips tipIndex }, Cmd.none )
 
@@ -330,12 +333,14 @@ update msg model =
         Msg.RotateOutHotkey index ->
             if rosterViewIsShowing model.screenState then
                 performRosterOperation (MobsterOperation.Bench index) model
+
             else
                 ( model, Cmd.none )
 
         Msg.RotateInHotkey index ->
             if rosterViewIsShowing model.screenState then
                 update (Msg.UpdateRosterData (MobsterOperation.RotateIn index)) model
+
             else
                 ( model, Cmd.none )
 
@@ -351,20 +356,23 @@ update msg model =
                 Nothing ->
                     ( updatedModel, Cmd.none )
 
-                Just ( dragId, dropId ) ->
-                    case ( dragId, dropId ) of
-                        ( Msg.ActiveMobster id, Msg.DropActiveMobster actualDropid ) ->
-                            update (Msg.UpdateRosterData (MobsterOperation.Move id actualDropid)) updatedModel
+                _ ->
+                    ( updatedModel, Cmd.none )
 
-                        ( Msg.ActiveMobster id, Msg.DropBench ) ->
-                            update (Msg.UpdateRosterData (MobsterOperation.Bench id)) updatedModel
-
-                        ( Msg.InactiveMobster inactiveMobsterId, Msg.DropActiveMobster activeMobsterId ) ->
-                            update (Msg.UpdateRosterData (MobsterOperation.RotateIn inactiveMobsterId)) updatedModel
-
-                        _ ->
-                            ( updatedModel, Cmd.none )
-
+        -- TODO ???
+        -- Just ( dragId, dropId ) ->
+        --     case ( dragId, dropId ) of
+        --         ( Msg.ActiveMobster id, Msg.DropActiveMobster actualDropid ) ->
+        --             update (Msg.UpdateRosterData (MobsterOperation.Move id actualDropid)) updatedModel
+        --
+        --         ( Msg.ActiveMobster id, Msg.DropBench ) ->
+        --             update (Msg.UpdateRosterData (MobsterOperation.Bench id)) updatedModel
+        --
+        --         ( Msg.InactiveMobster inactiveMobsterId, Msg.DropActiveMobster activeMobsterId ) ->
+        --             update (Msg.UpdateRosterData (MobsterOperation.RotateIn inactiveMobsterId)) updatedModel
+        --
+        --         _ ->
+        --             ( updatedModel, Cmd.none )
         Msg.SendIpc ipcMsg ->
             ( model, sendIpcCmd ipcMsg )
 
@@ -403,6 +411,7 @@ update msg model =
                             if model.altPressed then
                                 ( model, Cmd.none )
                                     |> manualQuickRotateChange
+
                             else
                                 ( { model
                                     | quickRotateState =
@@ -421,7 +430,7 @@ update msg model =
                             Validations.parseInputFieldWithinRange intField newInputValue
 
                         changePrevented =
-                            toString newValueInRange
+                            String.fromInt newValueInRange
                                 == newInputValue
                                 && newInputValue
                                 /= "0"
@@ -476,6 +485,7 @@ update msg model =
                 QuickRotate.New newMobster ->
                     if View.Roster.preventAddingMobster model.settings.rosterData.mobsters newMobster then
                         ( model, Cmd.none )
+
                     else
                         ( { model | quickRotateState = QuickRotate.init }, Cmd.none )
                             |> Update.Extra.andThen update
@@ -504,7 +514,7 @@ update msg model =
 
         Msg.KeyPressed pressed key ->
             case key of
-                Keyboard.Extra.Alt ->
+                Keyboard.Alt ->
                     ( { model | altPressed = pressed }, Cmd.none )
 
                 _ ->
@@ -517,10 +527,10 @@ update msg model =
             in
             ( { model | dieStyle = Animation.update animMsg model.dieStyle, activeMobstersStyle = newMobsterStyle }, shuffleCmd )
 
-        Msg.WindowResized windowSize ->
+        Msg.WindowResized windowX windowY ->
             let
                 device =
-                    Element.classifyDevice windowSize
+                    Element.classifyDevice { width = windowX, height = windowY }
             in
             ( { model
                 | device = device
@@ -568,8 +578,10 @@ update msg model =
                             ( model |> resetBreakData, Cmd.none )
                                 |> changeScreen
                                     (continueScreenState model)
+
                         else
                             ( model, Cmd.none )
+
                     else
                         ( { model
                             | screenState =
@@ -673,11 +685,13 @@ changeGlobalShortcutIfValid : String -> ( { model | settings : Settings.Data }, 
 changeGlobalShortcutIfValid newInputValue ( model, cmd ) =
     if GlobalShortcut.isInvalid newInputValue then
         ( model, Cmd.none )
+
     else
         let
             shortcutString =
                 if newInputValue == "" then
                     ""
+
                 else
                     "CommandOrControl+Shift+" ++ newInputValue
         in
@@ -706,7 +720,7 @@ startTimer (( model, cmd ) as msgAndCmd) =
     msgAndCmd
         |> withIpcMsg (Ipc.StartTimer (timerFlags model.settings))
         |> Update.Extra.addCmd (Cmd.batch [ changeTip, blurContinueButton ])
-        |> Update.Extra.updateModel (\model -> { model | minutesTillBreakReset = TimerInProgress })
+        |> Update.Extra.updateModel (\model_ -> { model_ | minutesTillBreakReset = TimerInProgress })
         |> Analytics.trackEvent
             { category = "stats"
             , action = "active-mobsters"
@@ -753,7 +767,7 @@ rosterViewIsShowing screenState =
 focusQuickRotateInput : Cmd Msg
 focusQuickRotateInput =
     quickRotateQueryId
-        |> Dom.focus
+        |> Browser.Dom.focus
         |> Task.attempt Msg.DomResult
 
 
@@ -761,6 +775,7 @@ focusQuickRotateInputIfVisible : ( { model | screenState : ScreenState }, Cmd Ms
 focusQuickRotateInputIfVisible (( model, cmd ) as updateResult) =
     if model.screenState == ScreenState.Configure then
         ( model, Cmd.batch [ cmd, focusQuickRotateInput ] )
+
     else
         updateResult
 
@@ -778,7 +793,7 @@ reorderOperation shuffledMobsters =
 blurContinueButton : Cmd Msg
 blurContinueButton =
     View.StartMobbingButton.buttonId
-        |> Dom.blur
+        |> Browser.Dom.blur
         |> Task.attempt Msg.DomResult
 
 
@@ -804,11 +819,12 @@ init { onMac, isLocal, settings } =
                 Ok _ ->
                     Nothing
 
-                Err errorString ->
+                Err decodeError ->
                     if isLocal then
-                        Debug.crash ("init failed to decode settings:\n" ++ errorString)
+                        Debug.todo ("init failed to decode settings:\n" ++ Decode.errorToString decodeError)
+
                     else
-                        Just errorString
+                        Just decodeError
 
         initialSettings =
             decodedSettings
@@ -817,8 +833,8 @@ init { onMac, isLocal, settings } =
 
         notifyIfDecodeFailed =
             case maybeDecodeError of
-                Just errorString ->
-                    sendIpcCmd (Ipc.NotifySettingsDecodeFailed errorString)
+                Just decodeError ->
+                    sendIpcCmd (Ipc.NotifySettingsDecodeFailed (Decode.errorToString decodeError))
 
                 Nothing ->
                     Cmd.none
@@ -843,30 +859,42 @@ subscriptions model =
 
         breakTimerSub =
             if breakTimerActive then
-                Time.every Time.second Msg.BreakSecondElapsed
+                Time.every 1000 Msg.BreakSecondElapsed
+
             else
                 Sub.none
     in
     Sub.batch
-        [ Keyboard.Combo.subscriptions model.combos
-        , Setup.Ports.timeElapsed Msg.TimeElapsed
+        [ -- Keyboard.Combo.subscriptions model.combos,
+          Setup.Ports.timeElapsed Msg.TimeElapsed
         , Setup.Ports.breakDone Msg.BreakDone
         , Setup.Ports.updateDownloaded Msg.UpdateAvailable
-        , Keyboard.Extra.downs (Msg.KeyPressed True)
-        , Keyboard.Extra.ups (Msg.KeyPressed False)
+
+        -- TODO restore these keyboard subs
+        -- , Keyboard.downs (Msg.KeyPressed True)
+        -- , Keyboard.ups (Msg.KeyPressed False)
         , Animation.subscription Msg.Animate [ model.dieStyle ]
         , Animation.subscription Msg.Animate [ model.activeMobstersStyle ]
-        , Window.resizes Msg.WindowResized
-        , Time.every Time.minute Msg.MinuteElapsed
+        , Browser.Events.onResize Msg.WindowResized
+        , Time.every minute Msg.MinuteElapsed
         , breakTimerSub
         ]
+
+
+second =
+    1000
+
+
+minute =
+    second * 60
 
 
 type alias Model =
     { settings : Settings.Data
     , screenState : ScreenState
     , newMobster : String
-    , combos : Keyboard.Combo.Model Msg
+
+    -- , combos : Keyboard.Combo.Model Msg
     , tip : Tip.Tip
     , secondsSinceBreak : Int
     , intervalsSinceBreak : Int
@@ -892,13 +920,15 @@ initialModel settings onMac =
         os =
             if onMac then
                 Os.Mac
+
             else
                 Os.NotMac
     in
     { settings = settings
     , screenState = ScreenState.Configure
     , newMobster = ""
-    , combos = Shortcuts.init
+
+    -- , combos = Shortcuts.init
     , tip = Tip.emptyTip
     , secondsSinceBreak = 0
     , intervalsSinceBreak = 0
@@ -920,9 +950,9 @@ initialModel settings onMac =
 
 main : Program Flags Model Msg
 main =
-    Html.programWithFlags
+    Browser.document
         { init = init
         , subscriptions = subscriptions
         , update = update
-        , view = view
+        , view = view >> (\mainElement -> { title = "Mobster", body = [ mainElement ] })
         }

@@ -1,4 +1,4 @@
-module Ipc exposing (..)
+module Ipc exposing (Msg(..))
 
 import Json.Encode as Encode
 

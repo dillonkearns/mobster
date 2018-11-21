@@ -1,14 +1,13 @@
-module ListHelpers
-    exposing
-        ( compact
-        , insertAbove
-        , insertAt
-        , insertBelow
-        , mapToJust
-        , move
-        , removeAndGet
-        , removeFromListAt
-        )
+module ListHelpers exposing
+    ( compact
+    , insertAbove
+    , insertAt
+    , insertBelow
+    , mapToJust
+    , move
+    , removeAndGet
+    , removeFromListAt
+    )
 
 import Array
 import Array.Extra
@@ -87,6 +86,7 @@ insertAt : a -> Int -> Bool -> Array.Array a -> Array.Array a
 insertAt insert pos above string =
     if above then
         insertAbove insert pos string
+
     else
         insertBelow insert pos string
 

@@ -1,6 +1,5 @@
 module Setup.Settings exposing (Data, decode, decoder, encoder, initial)
 
-import Basics.Extra exposing ((=>))
 import Json.Decode as Decode
 import Json.Decode.Pipeline as Pipeline
 import Json.Encode as Encode
@@ -23,7 +22,7 @@ decoder =
 
 settingsDecoder : Decode.Decoder Data
 settingsDecoder =
-    Pipeline.decode Data
+    Decode.succeed Data
         |> Pipeline.required "timerDuration" Decode.int
         |> Pipeline.required "breakDuration" Decode.int
         |> Pipeline.required "intervalsPerBreak" Decode.int
@@ -31,7 +30,7 @@ settingsDecoder =
         |> Pipeline.required "showHideShortcut" Decode.string
 
 
-decode : Encode.Value -> Result String (Maybe Data)
+decode : Encode.Value -> Result Decode.Error (Maybe Data)
 decode data =
     Decode.decodeValue decoder data
 
@@ -39,11 +38,11 @@ decode data =
 encoder : Data -> Encode.Value
 encoder settingsData =
     Encode.object
-        [ "timerDuration" => Encode.int settingsData.timerDuration
-        , "breakDuration" => Encode.int settingsData.breakDuration
-        , "intervalsPerBreak" => Encode.int settingsData.intervalsPerBreak
-        , "mobsterData" => Roster.Data.encoder settingsData.rosterData
-        , "showHideShortcut" => Encode.string settingsData.showHideShortcut
+        [ ( "timerDuration", Encode.int settingsData.timerDuration )
+        , ( "breakDuration", Encode.int settingsData.breakDuration )
+        , ( "intervalsPerBreak", Encode.int settingsData.intervalsPerBreak )
+        , ( "mobsterData", Roster.Data.encoder settingsData.rosterData )
+        , ( "showHideShortcut", Encode.string settingsData.showHideShortcut )
         ]
 
 

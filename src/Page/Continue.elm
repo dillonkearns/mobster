@@ -11,8 +11,8 @@ import Setup.Msg as Msg
 import Setup.Settings as Settings
 import Styles exposing (StyleElement)
 import Tip exposing (Tip)
-import View.StartMobbingButton
 import View.BreakProgress
+import View.StartMobbingButton
 import View.StepButton
 import View.Tip
 

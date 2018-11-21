@@ -19,7 +19,7 @@ breakSuggestionView secondsSinceBreak =
     row Styles.BreakAlertBox
         [ Attr.width Attr.fill, Attr.paddingXY 16 16, Attr.spacing 10, Attr.center, Attr.verticalCenter ]
         [ el Styles.None [ Attr.class "fa fa-exclamation-circle" ] empty
-        , text <| "How about a walk? You've been mobbing for " ++ toString (secondsSinceBreak // 60) ++ " minutes."
+        , text <| "How about a walk? You've been mobbing for " ++ String.fromInt (secondsSinceBreak // 60) ++ " minutes."
         ]
 
 

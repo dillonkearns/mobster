@@ -30,6 +30,7 @@ view ({ intervalsSinceBreak, settings } as model) =
                     (\incompleteInterval ->
                         if incompleteInterval then
                             circleView model Styles.Hollow
+
                         else
                             circleView model Styles.Filled
                     )

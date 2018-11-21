@@ -41,4 +41,4 @@ rollAnimation =
 
 easing : Animation.Interpolation
 easing =
-    Animation.easing { duration = Time.second / 2, ease = identity }
+    Animation.easing { duration = 1000 / 2, ease = identity }

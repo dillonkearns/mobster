@@ -1,11 +1,10 @@
-module Timer.Timer
-    exposing
-        ( Timer
-        , secondsToTimer
-        , timerComplete
-        , timerToString
-        , updateTimer
-        )
+module Timer.Timer exposing
+    ( Timer
+    , secondsToTimer
+    , timerComplete
+    , timerToString
+    , updateTimer
+    )
 
 
 type alias Timer =
@@ -26,9 +25,9 @@ timerComplete secondsLeft =
 
 secondsToTimer : Int -> Timer
 secondsToTimer seconds =
-    Timer (seconds // 60) (rem seconds 60)
+    Timer (seconds // 60) (remainderBy 60 seconds)
 
 
 timerToString : Timer -> String
 timerToString { minutes, seconds } =
-    toString minutes ++ ":" ++ String.pad 2 '0' (toString seconds)
+    String.fromInt minutes ++ ":" ++ String.pad 2 '0' (String.fromInt seconds)

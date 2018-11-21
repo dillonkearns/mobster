@@ -171,6 +171,7 @@ setNextDriverInBounds rosterData =
         indexInBounds =
             if rosterData.nextDriver > maxDriverIndex && rosterData.nextDriver > 0 then
                 0
+
             else
                 rosterData.nextDriver
     in

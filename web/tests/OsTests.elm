@@ -34,4 +34,4 @@ expectOs expectedOs platformStrings =
                 test platformString
                     (\() -> Os.fromString platformString |> Expect.equal expectedOs)
             )
-        |> describe ("extracts to " ++ toString expectedOs)
+        |> describe ("extracts to " ++ Debug.toString expectedOs)

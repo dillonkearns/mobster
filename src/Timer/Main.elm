@@ -57,12 +57,15 @@ update msg model =
                 updatedSecondsLeft =
                     Timer.updateTimer model.secondsLeft
             in
-            { model | secondsLeft = updatedSecondsLeft }
-                ! (if Timer.timerComplete updatedSecondsLeft then
+            ( { model | secondsLeft = updatedSecondsLeft }
+            , Cmd.batch
+                (if Timer.timerComplete updatedSecondsLeft then
                     [ timerDoneCommand model.timerType model.originalDurationSeconds ]
-                   else
+
+                 else
                     []
-                  )
+                )
+            )
 
 
 initialModel : IncomingFlags -> Model
@@ -72,12 +75,14 @@ initialModel flags =
             if flags.isDev then
                 -- just show timer for one second no matter what it's set to
                 1
+
             else
                 flags.minutes * 60
 
         timerType =
             if flags.isBreak then
                 BreakTimer
+
             else
                 RegularTimer { driver = flags.driver, navigator = flags.navigator }
     in
@@ -91,7 +96,9 @@ init : Encode.Value -> ( Model, Cmd msg )
 init flagsJson =
     case Decode.decodeValue Timer.Flags.decoder flagsJson of
         Ok flags ->
-            initialModel flags ! []
+            ( initialModel flags
+            , Cmd.none
+            )
 
         Err _ ->
             Debug.crash "Failed to decode flags"
@@ -101,6 +108,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     if Timer.timerComplete model.secondsLeft then
         Sub.none
+
     else
         Time.every Time.second Msg.Tick
 
@@ -155,6 +163,7 @@ activeMobsters : DriverNavigator -> StyleElement
 activeMobsters driverNavigator =
     if driverNavigator.driver == "" && driverNavigator.navigator == "" then
         Element.empty
+
     else
         Element.column Styles.None
             [ Element.Attributes.spacing 12

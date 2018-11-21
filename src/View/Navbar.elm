@@ -21,6 +21,7 @@ view ({ screenState } as model) =
         cogButton =
             if screenState /= ScreenState.Configure then
                 settingsPageButton model
+
             else
                 Element.empty
     in

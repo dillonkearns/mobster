@@ -1,8 +1,7 @@
-module Setup.ScreenState
-    exposing
-        ( RpgState(Checklist, NextUp)
-        , ScreenState(Configure, Continue, Rpg)
-        )
+module Setup.ScreenState exposing
+    ( RpgState(..)
+    , ScreenState(..)
+    )
 
 
 type ScreenState

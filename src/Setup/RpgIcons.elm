@@ -1,9 +1,9 @@
 module Setup.RpgIcons exposing (mobsterCar, mobsterIcon)
 
-import Color exposing (Color)
 import Html
 import Html.Attributes exposing (attribute)
 import Roster.RpgRole as RpgRole exposing (RpgRole)
+import Style
 import Svg exposing (Svg)
 import Svg.Attributes exposing (d, fill, height, preserveAspectRatio, stroke, transform, viewBox, width)
 
@@ -27,17 +27,17 @@ mobsterIcon role =
             mobberIcon level1Color
 
 
-level1Color : Color
+level1Color : Style.Color
 level1Color =
-    Color.rgb 8 133 236
+    Style.rgb 8 133 236
 
 
-level2Color : Color
+level2Color : Style.Color
 level2Color =
-    Color.rgb 144 7 179
+    Style.rgb 144 7 179
 
 
-researcherIcon : Color -> Svg msg
+researcherIcon : Style.Color -> Svg msg
 researcherIcon =
     rpgIcon
         398
@@ -47,7 +47,7 @@ researcherIcon =
         ]
 
 
-navigatorIcon : Color -> Svg msg
+navigatorIcon : Style.Color -> Svg msg
 navigatorIcon =
     rpgIcon
         428
@@ -56,7 +56,7 @@ navigatorIcon =
         ]
 
 
-driverIcon : Color -> Svg msg
+driverIcon : Style.Color -> Svg msg
 driverIcon =
     rpgIcon
         438
@@ -65,7 +65,7 @@ driverIcon =
         ]
 
 
-sponsorIcon : Color -> Svg msg
+sponsorIcon : Style.Color -> Svg msg
 sponsorIcon =
     rpgIcon
         316
@@ -73,14 +73,14 @@ sponsorIcon =
         ]
 
 
-mobberIcon : Color -> Svg msg
+mobberIcon : Style.Color -> Svg msg
 mobberIcon =
     rpgIcon
         448
         [ "M0 2240 l0 -2240 2240 0 2240 0 0 2240 0 2240 -2240 0 -2240 0 0\n    -2240z m1980 2085 c21 -11 35 -32 55 -84 36 -94 62 -130 114 -158 51 -27 106\n    -29 159 -7 57 23 89 61 119 138 35 92 68 126 123 126 54 0 81 -19 129 -94 91\n    -139 192 -428 257 -730 18 -86 20 -114 11 -122 -20 -19 -174 -74 -292 -104\n    -164 -42 -281 -54 -478 -47 -224 7 -366 36 -576 117 l-83 32 6 46 c12 90 96\n    403 142 529 56 155 112 267 166 328 35 39 45 45 79 45 22 0 53 -7 69 -15z\n    m-395 -1130 c94 -36 280 -82 396 -99 124 -19 355 -21 484 -5 107 13 317 65\n    434 108 47 17 86 29 88 27 2 -2 9 -45 16 -96 l11 -92 -29 -24 c-39 -31 -163\n    -79 -268 -104 -148 -35 -257 -45 -482 -44 -234 0 -383 15 -525 55 -76 21 -233\n    89 -243 105 -5 9 10 166 19 193 2 8 11 10 22 6 9 -4 44 -17 77 -30z m-284\n    -154 l-3 -78 53 -47 c91 -81 237 -140 443 -176 298 -52 572 -53 866 -4 199 34\n    378 102 468 179 l42 37 0 88 0 88 48 -10 c289 -57 557 -131 736 -204 114 -47\n    196 -90 196 -104 0 -18 -80 -76 -155 -111 -263 -123 -748 -209 -1355 -240\n    -254 -13 -776 -7 -1015 11 -594 45 -1100 166 -1269 303 -19 16 -27 29 -23 40\n    14 36 244 132 482 201 157 45 476 117 485 109 2 -2 3 -39 1 -82z m141 -716\n    l47 -6 21 -66 c44 -137 93 -201 174 -232 115 -43 239 -36 351 19 49 24 68 40\n    102 92 23 35 52 84 63 111 12 26 27 47 35 47 8 0 32 -35 55 -79 76 -146 131\n    -188 279 -212 131 -22 270 21 324 98 28 40 70 140 82 192 7 33 21 38 119 43\n    l60 3 -2 -55 c-6 -129 -57 -320 -117 -440 -136 -270 -364 -457 -629 -515 -108\n    -24 -301 -17 -401 15 -293 93 -516 325 -627 650 -32 96 -58 229 -58 302 l0 50\n    38 -6 c20 -3 58 -8 84 -11z m-247 -277 c67 -277 212 -510 430 -688 63 -52 73\n    -65 97 -130 21 -53 25 -76 18 -90 -32 -60 12 -206 106 -357 50 -78 59 -102 86\n    -218 l30 -130 -23 -102 c-13 -57 -26 -103 -30 -103 -4 0 -42 29 -85 65 -229\n    190 -424 279 -754 344 -127 25 -352 60 -469 73 -39 5 -35 24 15 78 114 122\n    268 194 463 216 69 8 127 17 129 19 6 6 -306 252 -403 317 -171 115 -332 183\n    -505 213 -147 26 -146 20 -23 111 211 157 316 223 490 306 105 51 361 146 394\n    147 12 1 21 -18 34 -71z m2256 28 c272 -94 510 -225 765 -423 59 -45 82 -68\n    73 -73 -8 -4 -50 -13 -94 -20 -172 -26 -350 -101 -527 -219 -99 -67 -390 -295\n    -396 -311 -3 -9 47 -20 97 -20 129 -2 300 -64 418 -154 57 -43 128 -124 118\n    -134 -2 -2 -94 -17 -204 -33 -252 -36 -466 -81 -578 -120 -170 -59 -331 -154\n    -491 -288 -46 -40 -74 -57 -77 -49 -3 7 -13 55 -24 107 l-19 94 23 101 c13 55\n    26 115 30 131 4 17 22 53 40 80 53 82 117 216 131 274 10 41 10 67 2 104 -9\n    44 -7 56 16 117 23 58 35 75 83 111 136 103 265 261 343 424 49 102 95 234\n    106 305 5 28 12 40 23 40 9 0 73 -20 142 -44z m-929 -955 c67 -21 71 -32 42\n    -109 -49 -131 -203 -346 -285 -398 -36 -23 -41 -23 -67 -10 -99 51 -306 354\n    -315 458 -2 37 23 54 101 68 67 12 479 5 524 -9z m-306 -688 c23 -3 58 0 78 7\n    21 7 40 9 43 6 5 -5 82 -330 83 -348 0 -5 -84 -8 -186 -8 -172 0 -185 1 -180\n    18 6 19 76 333 76 340 0 2 10 1 23 -2 12 -4 41 -10 63 -13z" ]
 
 
-mobsterCar : Color -> Svg msg
+mobsterCar : Style.Color -> Svg msg
 mobsterCar =
     rpgIcon
         448
@@ -142,19 +142,24 @@ mobsterCar =
         ]
 
 
-rpgIcon : Int -> List String -> Color -> Svg.Svg msg
+toRgba color =
+    -- TODO
+    { red = 0, green = 0, blue = 0, alpha = 0 }
+
+
+rpgIcon : Int -> List String -> Style.Color -> Svg.Svg msg
 rpgIcon widthArg paths color =
     let
         widthString =
-            toString widthArg
+            String.fromInt widthArg
 
         rgbColor =
-            color |> Color.toRgb
+            color |> toRgba
 
         colorString =
             "rgba("
-                ++ ([ toFloat rgbColor.red, toFloat rgbColor.green, toFloat rgbColor.blue, rgbColor.alpha ]
-                        |> List.map toString
+                ++ ([ rgbColor.red, rgbColor.green, rgbColor.blue, rgbColor.alpha ]
+                        |> List.map String.fromFloat
                         |> String.join ", "
                    )
                 ++ ")"

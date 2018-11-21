@@ -4,8 +4,8 @@ import Roster.Data exposing (RosterData)
 import Roster.Rpg exposing (Experience, badges)
 import Roster.RpgRole
     exposing
-        ( Level(Level1, Level2)
-        , RpgRole(Driver, Mobber, Navigator, Researcher, Sponsor)
+        ( Level(..)
+        , RpgRole(..)
         )
 
 
@@ -21,7 +21,7 @@ present : RosterData -> List RpgMobster
 present rosterData =
     let
         mobstersWithIndex =
-            List.indexedMap (,) rosterData.mobsters
+            List.indexedMap (\a b -> ( a, b )) rosterData.mobsters
     in
     mobstersWithIndex
         ++ mobstersWithIndex
@@ -61,6 +61,7 @@ toRpgMobster roleIndex ( mobsterIndex, mobster ) =
         level =
             if badgeCount < 1 then
                 Level1
+
             else
                 Level2
     in
@@ -84,5 +85,6 @@ getRoleForIndex level index =
                 Level2 ->
                     if index == 2 then
                         Researcher
+
                     else
                         Sponsor
