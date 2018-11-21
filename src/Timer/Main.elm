@@ -1,5 +1,6 @@
 port module Timer.Main exposing (main)
 
+import Browser
 import Element exposing (Element)
 import Element.Attributes
 import Html exposing (Html)
@@ -101,7 +102,7 @@ init flagsJson =
             )
 
         Err _ ->
-            Debug.crash "Failed to decode flags"
+            Debug.todo "Failed to decode flags"
 
 
 subscriptions : Model -> Sub Msg
@@ -110,16 +111,20 @@ subscriptions model =
         Sub.none
 
     else
-        Time.every Time.second Msg.Tick
+        Time.every second Msg.Tick
+
+
+second =
+    1000
 
 
 main : Program Decode.Value Model Msg
 main =
-    Html.programWithFlags
+    Browser.document
         { init = init
         , subscriptions = subscriptions
         , update = update
-        , view = view
+        , view = view >> (\mainElement -> { title = "Timer Window", body = [ mainElement ] })
         }
 
 

@@ -4,4 +4,4 @@ import Time
 
 
 type Msg
-    = Tick Time.Time
+    = Tick Time.Posix

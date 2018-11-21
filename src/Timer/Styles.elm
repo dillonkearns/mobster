@@ -1,6 +1,5 @@
 module Timer.Styles exposing (StyleElement, Styles(..), styleSheet)
 
-import Style.Color
 import Element exposing (Element)
 import Style exposing (Font)
 import Style.Color
@@ -38,6 +37,6 @@ styleSheet =
             ]
         , Style.style BreakIcon
             [ Font.size 50
-            , Color.rgb 8 226 108 |> Style.Color.text
+            , Style.rgb 8 226 108 |> Style.Color.text
             ]
         ]
