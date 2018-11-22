@@ -8,20 +8,20 @@ import {
   shell,
   remote,
   screen
-} from 'electron'
-import * as url from 'url'
-const osascript = require('node-osascript')
-import * as path from 'path'
-const assetsDirectory = path.join(__dirname, '../assets')
+} from "electron";
+import * as url from "url";
+const osascript = require("node-osascript");
+import * as path from "path";
+const assetsDirectory = path.join(__dirname, "../assets");
 
-const onMac = /^darwin/.test(process.platform)
-const onWindows = /^win/.test(process.platform)
-import { Ipc, ElmIpc } from './ipc'
+const onMac = /^darwin/.test(process.platform);
+const onWindows = /^win/.test(process.platform);
+import { Ipc, ElmIpc } from "./ipc";
 
 export class DisplayManager {
-  private mainWindow: Electron.BrowserWindow
-  private secondaryWindows: Electron.BrowserWindow[] | undefined
-  private scriptsWindow: Electron.BrowserWindow | null
+  private mainWindow!: Electron.BrowserWindow;
+  private secondaryWindows: Electron.BrowserWindow[] | undefined;
+  private scriptsWindow!: Electron.BrowserWindow | null;
 
   constructor(
     private transparencyDisabled: boolean,
@@ -29,35 +29,35 @@ export class DisplayManager {
     private closeTimerFunction: (() => void),
     private ipcHandler: ((ipc: ElmIpc) => void)
   ) {
-    this.createMainWindow()
+    this.createMainWindow();
   }
 
   showMain() {
     if (!this.mainWindow.isVisible()) {
-      this.createSecondaryWindows()
+      this.createSecondaryWindows();
     }
   }
 
   getMainWindow() {
-    return this.mainWindow
+    return this.mainWindow;
   }
 
   hideMain() {
-    this.hideMainWindow()
-    this.closeSecondaryWindows()
-    returnFocus()
+    this.hideMainWindow();
+    this.closeSecondaryWindows();
+    returnFocus();
   }
 
   hideMainKeepFocus() {
-    this.hideMainWindow()
-    this.closeSecondaryWindows()
+    this.hideMainWindow();
+    this.closeSecondaryWindows();
   }
 
   toggleMain() {
     if (this.mainWindow.isVisible()) {
-      this.hideMain()
+      this.hideMain();
     } else {
-      this.showMain()
+      this.showMain();
     }
   }
 
@@ -68,70 +68,70 @@ export class DisplayManager {
       transparent: !this.transparencyDisabled,
       frame: false,
       alwaysOnTop: true
-    }
+    };
     return new BrowserWindow({
       ...transparentWindowDefaultOptions,
       ...additionalOptions
-    })
+    });
   }
 
   private hideMainWindow() {
-    this.mainWindow.hide()
+    this.mainWindow.hide();
   }
 
   private getSecondaryWindows() {
-    return this.secondaryWindows || []
+    return this.secondaryWindows || [];
   }
 
   private createSecondaryWindows() {
     let displays: Electron.Display[] = screen
       .getAllDisplays()
-      .filter(display => display.id !== screen.getPrimaryDisplay().id)
+      .filter(display => display.id !== screen.getPrimaryDisplay().id);
     this.secondaryWindows = displays.map(display =>
       this.createSecondaryWindow(display)
-    )
+    );
 
     if (this.getSecondaryWindows().length === 0) {
       // TODO: workaround - remove once
       // https://github.com/electron/electron/issues/2867#issuecomment-264312493 has been resolved
       if (onWindows) {
-        this.mainWindow.minimize()
-        this.mainWindow.show()
-        this.mainWindow.focus()
+        this.mainWindow.minimize();
+        this.mainWindow.show();
+        this.mainWindow.focus();
       } else {
-        this.mainWindow.setVisibleOnAllWorkspaces(true)
-        this.mainWindow.setAlwaysOnTop(true, 'floating', 1)
-        this.mainWindow.show()
+        this.mainWindow.setVisibleOnAllWorkspaces(true);
+        this.mainWindow.setAlwaysOnTop(true, "floating", 1);
+        this.mainWindow.show();
       }
     } else {
       let readyToDisplay = this.getSecondaryWindows().map(window => {
-        return { id: window.id, ready: false }
-      })
+        return { id: window.id, ready: false };
+      });
       this.getSecondaryWindows().forEach(window => {
-        window.once('ready-to-show', () => {
+        window.once("ready-to-show", () => {
           if (window) {
-            let entry = readyToDisplay.find(({ id }) => id === window.id)
-            entry && (entry.ready = true)
+            let entry = readyToDisplay.find(({ id }) => id === window.id);
+            entry && (entry.ready = true);
             if (readyToDisplay.every(({ ready }) => ready)) {
-              this.mainWindow.show()
-              this.getSecondaryWindows().forEach(window => window.show())
+              this.mainWindow.show();
+              this.getSecondaryWindows().forEach(window => window.show());
             }
           }
-        })
-      })
+        });
+      });
     }
   }
 
   private showAll() {
-    this.mainWindow.show()
-    this.getSecondaryWindows().forEach(window => window.show())
+    this.mainWindow.show();
+    this.getSecondaryWindows().forEach(window => window.show());
   }
 
   private closeSecondaryWindows() {
     this.getSecondaryWindows().forEach(secondaryWindow =>
       secondaryWindow.close()
-    )
-    this.secondaryWindows = []
+    );
+    this.secondaryWindows = [];
   }
 
   createSecondaryWindow(display: Electron.Display) {
@@ -143,16 +143,16 @@ export class DisplayManager {
         show: false,
         ...display.bounds
       }
-    )
+    );
     secondaryWindow.loadURL(
       url.format({
-        pathname: path.join(__dirname, '../blocker.html'),
-        protocol: 'file:',
+        pathname: path.join(__dirname, "../blocker.html"),
+        protocol: "file:",
         slashes: true
       })
-    )
+    );
 
-    return secondaryWindow
+    return secondaryWindow;
   }
 
   showScripts() {
@@ -162,102 +162,102 @@ export class DisplayManager {
       frame: true,
       icon: `${assetsDirectory}/icon.ico`,
       show: false
-    })
+    });
     this.scriptsWindow.loadURL(
       url.format({
-        pathname: path.join(__dirname, '../script-install-instructions.html'),
-        protocol: 'file:',
+        pathname: path.join(__dirname, "../script-install-instructions.html"),
+        protocol: "file:",
         slashes: true
       })
-    )
-    this.scriptsWindow.once('ready-to-show', () => {
+    );
+    this.scriptsWindow.once("ready-to-show", () => {
       if (this.scriptsWindow) {
-        this.hideMainKeepFocus()
-        this.scriptsWindow.show()
+        this.hideMainKeepFocus();
+        this.scriptsWindow.show();
       }
-    })
+    });
 
-    this.scriptsWindow.on('closed', () => {
-      this.scriptsWindow = null
-      this.showMain()
-    })
+    this.scriptsWindow.on("closed", () => {
+      this.scriptsWindow = null;
+      this.showMain();
+    });
   }
 
   private createMainWindow() {
     this.mainWindow = this.newTransparentOnTopWindow({
       icon: `${assetsDirectory}/icon.ico`,
       show: false
-    })
+    });
 
-    this.mainWindow.once('ready-to-show', () => {
+    this.mainWindow.once("ready-to-show", () => {
       // this.mainWindow && this.mainWindow.show()
-      this.createSecondaryWindows()
-    })
+      this.createSecondaryWindows();
+    });
 
-    this.mainWindow.webContents.on('crashed', () => {
-      this.bugsnag.notify('crashed', 'mainWindow crashed')
-    })
-    this.mainWindow.on('unresponsive', () => {
-      this.bugsnag.notify('unresponsive', 'mainWindow unresponsive')
-    })
+    this.mainWindow.webContents.on("crashed", () => {
+      this.bugsnag.notify("crashed", "mainWindow crashed");
+    });
+    this.mainWindow.on("unresponsive", () => {
+      this.bugsnag.notify("unresponsive", "mainWindow unresponsive");
+    });
     setTimeout(() => {
-      this.mainWindow.setAlwaysOnTop(true) // delay to workaround https://github.com/electron/electron/issues/8287
-    }, 1000)
-    this.mainWindow.maximize()
+      this.mainWindow.setAlwaysOnTop(true); // delay to workaround https://github.com/electron/electron/issues/8287
+    }, 1000);
+    this.mainWindow.maximize();
 
-    screen.on('display-metrics-changed', () => {
-      this.mainWindow.maximize()
-    })
+    screen.on("display-metrics-changed", () => {
+      this.mainWindow.maximize();
+    });
 
     let prodUrl = url.format({
-      pathname: path.join(__dirname, '../setup.prod.html'),
-      protocol: 'file:'
-    })
+      pathname: path.join(__dirname, "../setup.prod.html"),
+      protocol: "file:"
+    });
     let devUrl = url.format({
-      hostname: 'localhost',
-      pathname: 'setup.dev.html',
-      port: '8080',
-      protocol: 'http',
+      hostname: "localhost",
+      pathname: "setup.dev.html",
+      port: "8080",
+      protocol: "http",
       slashes: true
-    })
-    let nodeDevEnv = process.env.NODE_ENV === 'dev'
+    });
+    let nodeDevEnv = process.env.NODE_ENV === "dev";
 
-    this.mainWindow.loadURL(nodeDevEnv ? devUrl : prodUrl)
+    this.mainWindow.loadURL(nodeDevEnv ? devUrl : prodUrl);
 
-    Ipc.setupIpcMessageHandler(this.ipcHandler)
+    Ipc.setupIpcMessageHandler(this.ipcHandler);
 
-    ipcMain.on('timer-done', (event: any, timeElapsed: any) => {
-      this.closeTimerFunction()
-      this.mainWindow.webContents.send('timer-done', timeElapsed)
-      this.showMain()
-    })
+    ipcMain.on("timer-done", (event: any, timeElapsed: any) => {
+      this.closeTimerFunction();
+      this.mainWindow.webContents.send("timer-done", timeElapsed);
+      this.showMain();
+    });
 
-    ipcMain.on('break-done', (event: any, timeElapsed: any) => {
-      this.closeTimerFunction()
-      this.mainWindow.webContents.send('break-done', timeElapsed)
-      this.showMain()
-    })
+    ipcMain.on("break-done", (event: any, timeElapsed: any) => {
+      this.closeTimerFunction();
+      this.mainWindow.webContents.send("break-done", timeElapsed);
+      this.showMain();
+    });
 
-    ipcMain.on('transparent-hover-stop', (event: any) => {
+    ipcMain.on("transparent-hover-stop", (event: any) => {
       this.getSecondaryWindows().forEach(secondaryWindow =>
-        secondaryWindow.webContents.send('transparent-hover-stop')
-      )
-    })
-    ipcMain.on('transparent-hover-start', (event: any) => {
+        secondaryWindow.webContents.send("transparent-hover-stop")
+      );
+    });
+    ipcMain.on("transparent-hover-start", (event: any) => {
       this.getSecondaryWindows().forEach(secondaryWindow =>
-        secondaryWindow.webContents.send('transparent-hover-start')
-      )
-    })
+        secondaryWindow.webContents.send("transparent-hover-start")
+      );
+    });
 
-    this.mainWindow.on('closed', function() {
-      app.quit()
-    })
+    this.mainWindow.on("closed", function() {
+      app.quit();
+    });
   }
 }
 
 function returnFocus() {
   if (onMac) {
-    returnFocusMac()
+    returnFocusMac();
   }
 }
 
@@ -269,7 +269,7 @@ const returnFocusOsascript = `tell application "System Events"
 			key code 48 using {command down}
 		end tell
 	end if
-end tell`
+end tell`;
 
 function returnFocusMac() {
   osascript.execute(returnFocusOsascript, function(
@@ -278,8 +278,8 @@ function returnFocusMac() {
     raw: any
   ) {
     if (err) {
-      return console.error(err)
+      return console.error(err);
     }
-    console.log(result, raw)
-  })
+    console.log(result, raw);
+  });
 }
