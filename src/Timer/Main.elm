@@ -1,4 +1,4 @@
-port module Timer.Main exposing (main)
+module Timer.Main exposing (main)
 
 import Browser
 import Element exposing (Element)
@@ -36,7 +36,7 @@ type alias DriverNavigator =
 view : Model -> Html Msg
 view model =
     Element.column Styles.None
-        []
+        [ Element.Attributes.id "timer-window" ]
         [ Element.column Styles.Timer
             [ Element.Attributes.paddingXY 8 8
             , Element.Attributes.spacing 0
@@ -59,13 +59,11 @@ update msg model =
                     Timer.updateTimer model.secondsLeft
             in
             ( { model | secondsLeft = updatedSecondsLeft }
-            , Cmd.batch
-                (if Timer.timerComplete updatedSecondsLeft then
-                    [ timerDoneCommand model.timerType model.originalDurationSeconds ]
+            , if Timer.timerComplete updatedSecondsLeft then
+                timerDoneCommand model.timerType model.originalDurationSeconds
 
-                 else
-                    []
-                )
+              else
+                Cmd.none
             )
 
 
@@ -107,11 +105,7 @@ init flagsJson =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if Timer.timerComplete model.secondsLeft then
-        Sub.none
-
-    else
-        Time.every second Msg.Tick
+    Time.every second Msg.Tick
 
 
 second =

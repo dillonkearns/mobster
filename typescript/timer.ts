@@ -1,11 +1,11 @@
-const Elm = require("../src/Timer/Main.elm");
-const { ipcRenderer } = require("electron");
+import { Elm } from "../src/Timer/Main";
+import { remote, ipcRenderer, ipcMain } from "electron";
 
 let flags = ipcRenderer.sendSync("timer-flags");
 flags.isDev = process.env.NODE_ENV === "dev";
 
 document.addEventListener("DOMContentLoaded", function(event) {
-  let timer = Elm.Timer.Main.fullscreen(flags);
+  let timer = Elm.Timer.Main.init({ flags: flags });
 
   document.getElementById("timer-window")!.addEventListener(
     "mouseenter",
@@ -15,11 +15,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
     false
   );
 
-  timer.ports.timerDone.subscribe(function(elapsedSeconds: any) {
+  timer.ports.timerDone.subscribe(function(elapsedSeconds) {
     ipcRenderer.send("timer-done", elapsedSeconds);
   });
 
-  timer.ports.breakTimerDone.subscribe(function(elapsedSeconds: any) {
+  timer.ports.breakTimerDone.subscribe(function(elapsedSeconds) {
     ipcRenderer.send("break-done", elapsedSeconds);
   });
 });
