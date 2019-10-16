@@ -19,9 +19,9 @@ const onWindows = /^win/.test(process.platform)
 import { Ipc, ElmIpc } from './ipc'
 
 export class DisplayManager {
-  private mainWindow: Electron.BrowserWindow
+  private mainWindow!: Electron.BrowserWindow
   private secondaryWindows: Electron.BrowserWindow[] | undefined
-  private scriptsWindow: Electron.BrowserWindow | null
+  private scriptsWindow!: Electron.BrowserWindow | null
 
   constructor(
     private transparencyDisabled: boolean,

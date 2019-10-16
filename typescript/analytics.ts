@@ -21,7 +21,7 @@ function screenResolutions() {
 }
 
 export class Analytics {
-  analytics: ua.Visitor
+  analytics!: ua.Visitor
 
   constructor() {
     require('machine-uuid')((uuid: string) => {

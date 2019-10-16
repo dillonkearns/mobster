@@ -9,7 +9,7 @@ module.exports = function(env: any): webpack.Configuration {
       filename: 'bundle.js'
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: [/\.elm$/],
           exclude: [/elm-stuff/, /node_modules/],

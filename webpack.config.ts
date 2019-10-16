@@ -14,7 +14,7 @@ export default function(env: any): webpack.Configuration {
       publicPath: '/'
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.elm$/,
           exclude: [/elm-stuff/, /node_modules/],
@@ -22,7 +22,7 @@ export default function(env: any): webpack.Configuration {
             { loader: 'elm-hot-loader' },
             {
               loader: 'elm-webpack-loader',
-              options: env && env.production ? {} : { debug: false, warn: true }
+              options: env && env.production ? {} : { debug: false, warn: false }
             }
           ]
         },
