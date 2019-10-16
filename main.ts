@@ -47,13 +47,14 @@ bugsnag.register('032040bba551785c7846442332cc067f', {
   releaseStage: releaseStage
 })
 
-const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+const shouldQuit = app.requestSingleInstanceLock()
+app.on('second-instance', (event, commandLine, workingDirectory) => {
   // Someone tried to run a second instance, we should focus our window.
   if (displayManager) {
     displayManager.showMain()
   }
 })
-if (shouldQuit) {
+if (!shouldQuit) {
   app.exit()
 }
 
@@ -191,7 +192,10 @@ function newTransparentOnTopWindow(
 }
 
 function onReady() {
-  app.dock.hide() // needed to support fullscreen mode in OS X, see https://github.com/electron/electron/issues/3302
+  // On Arch Linux with OpenBox, `app.dock` is `undefined`
+  if (app.dock) {
+    app.dock.hide() // needed to support fullscreen mode in OS X, see https://github.com/electron/electron/issues/3302
+  }
   displayManager = new DisplayManager(
     transparencyDisabled,
     bugsnag,
