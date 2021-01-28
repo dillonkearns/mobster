@@ -54,7 +54,7 @@
     "@types/webpack": "^3.8.1",
     "concurrently": "^3.5.1",
     "devtron": "^1.4.0",
-    "electron": "1.8.2-beta.4",
+    "electron": "9.4.0",
     "electron-builder": "19.45.5",
     "elm": "^0.18.0",
     "elm-electron": "0.0.3",
